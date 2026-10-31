@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { maxDpr, tuneOrbitControls } from '../lib/mobile.js';
 
 export async function mountShaderBlob(host) {
   const scene = new THREE.Scene();
@@ -41,7 +42,7 @@ export async function mountShaderBlob(host) {
     camera.aspect = w / h;
     camera.userData.baseFov ??= camera.fov;
     camera.fov = camera.aspect < 1 ? Math.min(100, 2 * Math.atan(Math.tan(camera.userData.baseFov * Math.PI / 360) / camera.aspect) * 180 / Math.PI) : camera.userData.baseFov; camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();

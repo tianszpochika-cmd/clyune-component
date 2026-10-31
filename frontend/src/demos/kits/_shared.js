@@ -202,6 +202,15 @@ export function panel(host, title, {
   if (params.length === 0 && actions.length === 0) {
     wrap.classList.add('ops-collapsed');
     opsToggle.style.display = 'none';
+  } else {
+    // Phones: start with params sheet closed so the stage gets full height.
+    try {
+      const narrow = window.matchMedia && window.matchMedia('(max-width: 860px)').matches;
+      if (narrow) {
+        wrap.classList.add('ops-collapsed');
+        opsToggle.classList.remove('on');
+      }
+    } catch (_) { /* ignore */ }
   }
 
   function syncPresetButtons() {

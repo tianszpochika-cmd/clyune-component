@@ -9,6 +9,18 @@ function useSidebar() {
   const [open, setOpen] = useState(false);
   const loc = useLocation();
   useEffect(() => setOpen(false), [loc.pathname]);
+  useEffect(() => {
+    document.body.classList.toggle('sidebar-open', open);
+    return () => document.body.classList.remove('sidebar-open');
+  }, [open]);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
   return { open, setOpen, close: () => setOpen(false) };
 }
 
@@ -180,13 +192,16 @@ function Sidebar({ open, onClose, filter, setFilter }: {
     <>
       <aside className={`sidebar${open ? ' open' : ''}`} id="sidebar">
         <div className="brand sticky-brand">
-          <Link to="/" className="brand-link" onClick={onClose}>
-            <div className="brand-mark">C</div>
-            <div>
-              <div className="brand-title">Component</div>
-              <div className="brand-sub">Rust + React · {totalDemos} demos</div>
-            </div>
-          </Link>
+          <div className="brand-top">
+            <Link to="/" className="brand-link" onClick={onClose}>
+              <div className="brand-mark">C</div>
+              <div>
+                <div className="brand-title">Component</div>
+                <div className="brand-sub">Rust + React · {totalDemos} demos</div>
+              </div>
+            </Link>
+            <button type="button" className="sidebar-close" aria-label="关闭导航" onClick={onClose}>✕</button>
+          </div>
           <label className="sidebar-search">
             <span className="sr-only">筛选导航</span>
             <input
@@ -408,9 +423,22 @@ function DemoPage() {
           </div>
         </div>
         <div className="demo-actions">
-          <Link className="btn" to={`/${cat.key}`}>← {cat.name}</Link>
-          {prev && <Link className="btn" to={`/${cat.key}/${prev.slug}`} title={prev.title}>‹ 上一个</Link>}
-          {next && <Link className="btn" to={`/${cat.key}/${next.slug}`} title={next.title}>下一个 ›</Link>}
+          <Link className="btn" to={`/${cat.key}`} title={cat.name}>
+            <span className="btn-full">← {cat.name}</span>
+            <span className="btn-short" aria-hidden>← 返回</span>
+          </Link>
+          {prev && (
+            <Link className="btn" to={`/${cat.key}/${prev.slug}`} title={prev.title}>
+              <span className="btn-full">‹ 上一个</span>
+              <span className="btn-short" aria-hidden>‹</span>
+            </Link>
+          )}
+          {next && (
+            <Link className="btn" to={`/${cat.key}/${next.slug}`} title={next.title}>
+              <span className="btn-full">下一个 ›</span>
+              <span className="btn-short" aria-hidden>›</span>
+            </Link>
+          )}
           <button type="button" className="btn primary" onClick={() => setResetKey((k) => k + 1)} title="快捷键 R">Reset</button>
         </div>
       </div>
@@ -448,7 +476,7 @@ export default function App() {
       <Sidebar open={open} onClose={close} filter={filter} setFilter={setFilter} />
       <main className="main">
         <header className="topbar">
-          <button type="button" className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>☰</button>
+          <button type="button" className={`menu-toggle${open ? ' open' : ''}`} aria-label="打开或关闭导航" aria-controls="sidebar" aria-expanded={open} onClick={() => setOpen((v) => !v)}>☰</button>
           <div className="breadcrumb">{crumb}</div>
           <div className="topbar-search">
             <input

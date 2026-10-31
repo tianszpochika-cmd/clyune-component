@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
+import { maxDpr, tuneOrbitControls } from '../lib/mobile.js';
 
 export async function mountParticles(host, opts = {}) {
   const ctrl = opts._controls || {};
@@ -45,7 +46,7 @@ export async function mountParticles(host, opts = {}) {
     const w = host.clientWidth, h = host.clientHeight || 420;
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();

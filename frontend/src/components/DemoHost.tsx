@@ -47,7 +47,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
   }, [mod, fn, variant, slug]);
 
   return (
-    <div className="card canvas-host" id="viewport">
+    <div className="card canvas-host" id="viewport" data-demo-viewport>
       {loading && !error && (
         <div className="loading" aria-live="polite">加载中…</div>
       )}

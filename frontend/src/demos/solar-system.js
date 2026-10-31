@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
+import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
 
 /* ------------------------------------------------------------------ data */
 const DEG = Math.PI / 180;
@@ -482,9 +483,9 @@ function makeStarfield(count = 2200) {
 }
 
 const CSS = `
-.ss-ui{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;z-index:3;pointer-events:none;font:12px/1.2 system-ui,-apple-system,sans-serif;max-width:calc(100% - 20px)}
+.ss-ui{position:absolute;left:max(8px,env(safe-area-inset-left,0px));top:max(8px,env(safe-area-inset-top,0px));right:max(8px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:6px;z-index:3;pointer-events:none;font:12px/1.2 system-ui,-apple-system,sans-serif;max-width:calc(100% - 16px);width:max-content}
 .ss-row{display:flex;flex-wrap:wrap;gap:3px;align-items:center;pointer-events:auto;background:rgba(8,12,24,.62);border:1px solid rgba(148,163,184,.22);border-radius:8px;padding:3px;backdrop-filter:blur(6px);width:max-content;max-width:100%}
-.ss-row button{appearance:none;border:0;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;color:#cbd5e1;font:inherit}
+.ss-row button{appearance:none;border:0;background:transparent;cursor:pointer;padding:4px 8px;border-radius:6px;color:#cbd5e1;font:inherit;min-height:32px}
 .ss-row button:hover{background:rgba(148,163,184,.16)}
 .ss-row button.on{background:rgba(129,140,248,.38);color:#fff}
 .ss-row input[type=range]{width:96px;accent-color:#818cf8}
@@ -492,6 +493,22 @@ const CSS = `
 .ss-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
 .ss-label{position:absolute;left:0;top:0;color:#e2e8f0;font:11px system-ui,sans-serif;text-shadow:0 1px 2px #000,0 0 4px #000;white-space:nowrap;will-change:transform}
 .ss-label.moon{color:#9fb0c8;font-size:10px}
+@media (max-width:860px){
+  .ss-ui{left:6px;top:6px;right:6px;max-width:calc(100% - 12px);width:auto;gap:3px}
+  .ss-row{width:100%;max-width:100%;padding:2px;gap:2px;border-radius:10px;background:rgba(8,12,24,.72)}
+  .ss-row button{min-height:36px;min-width:36px;padding:4px 8px;font-size:12px}
+  .ss-row[data-row=zoom] input[type=range]{flex:1;min-width:0;width:auto;min-height:24px}
+  .ss-row[data-row=focus]{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .ss-row[data-row=focus]::-webkit-scrollbar{display:none}
+  .ss-row[data-row=focus] button{flex:0 0 auto}
+  .ss-hint{display:none}
+  .ss-label{font-size:10px}
+  .ss-label.moon{font-size:9px}
+}
+@media (max-width:420px){
+  .ss-row[data-row=mode] button{flex:1 1 auto;text-align:center}
+  .ss-hint{display:none}
+}
 `;
 
 /* ------------------------------------------------------------------ mount */
@@ -508,6 +525,7 @@ export async function mountSolarSystem(host, opts = {}) {
   if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
 
   const L0 = live();
+  const lite = preferLiteFx();
   let list;
   if (innerOnly) list = PLANETS.slice(0, 4);
   else if (outerOnly) list = PLANETS.slice(4);
@@ -545,10 +563,7 @@ export async function mountSolarSystem(host, opts = {}) {
   camera.position.copy(defaultDir[mode]).multiplyScalar(defaultDist[mode] * sz0);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.07;
-  controls.zoomSpeed = 0.7;
-  controls.rotateSpeed = 0.6;
+  tuneOrbitControls(controls, { mobile: lite });
   controls.minDistance = 1.6;
   controls.maxDistance = 160;
 
@@ -562,7 +577,7 @@ export async function mountSolarSystem(host, opts = {}) {
   };
 
   scene.add(new THREE.AmbientLight(0x334466, 0.32));
-  const stars = makeStarfield();
+  const stars = makeStarfield(lite ? 900 : 2200);
   scene.add(stars);
 
   const system = new THREE.Group();
@@ -572,7 +587,7 @@ export async function mountSolarSystem(host, opts = {}) {
   const sunGroup = new THREE.Group();
   system.add(sunGroup);
   const sunMat = makeSunMaterial();
-  const sun = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), sunMat);
+  const sun = new THREE.Mesh(new THREE.SphereGeometry(1, lite ? 48 : 96, lite ? 32 : 64), sunMat);
   sunGroup.add(sun);
   const coronaMat = new THREE.SpriteMaterial({ map: tex(glowCanvas('corona')), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
   const corona = new THREE.Sprite(coronaMat);
@@ -603,7 +618,7 @@ export async function mountSolarSystem(host, opts = {}) {
 
   list.forEach((p, idx) => {
     const big = ['earth', 'jupiter', 'saturn'].includes(p.tex);
-    const tw = big ? 512 : 256;
+    const tw = lite ? (big ? 256 : 128) : (big ? 512 : 256);
     const map = tex(planetCanvas(p.tex, tw, tw / 2));
     const mat = new THREE.MeshStandardMaterial({ map, roughness: p.tex === 'earth' ? 0.75 : 0.92, metalness: 0 });
 
@@ -618,14 +633,15 @@ export async function mountSolarSystem(host, opts = {}) {
     anchor.add(tiltGroup);
 
     const lod = new THREE.LOD();
-    [[64, 0], [32, p.r * 28], [16, p.r * 90]].forEach(([seg, dist]) => {
+    const lodLevels = lite ? [[32, 0], [16, p.r * 36]] : [[64, 0], [32, p.r * 28], [16, p.r * 90]];
+    lodLevels.forEach(([seg, dist]) => {
       lod.addLevel(new THREE.Mesh(new THREE.SphereGeometry(p.r, seg, Math.max(8, seg / 2)), mat), dist);
     });
     tiltGroup.add(lod);
 
     let clouds = null;
     if (p.clouds) {
-      const cm = new THREE.MeshStandardMaterial({ map: tex(planetCanvas('clouds', 512, 256)), transparent: true, depthWrite: false, roughness: 1 });
+      const cm = new THREE.MeshStandardMaterial({ map: tex(planetCanvas('clouds', lite ? 256 : 512, lite ? 128 : 256)), transparent: true, depthWrite: false, roughness: 1 });
       clouds = new THREE.Mesh(new THREE.SphereGeometry(p.r * 1.015, 48, 24), cm);
       tiltGroup.add(clouds);
     }
@@ -653,7 +669,7 @@ export async function mountSolarSystem(host, opts = {}) {
       const mr = Math.max(0.028, p.r * m.r);
       const md = p.r * m.d;
       const mmat = new THREE.MeshStandardMaterial({ map: moonTex, color: m.color, roughness: 1 });
-      const mesh = new THREE.Mesh(new THREE.SphereGeometry(mr, 24, 16), mmat);
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(mr, lite ? 12 : 24, lite ? 8 : 16), mmat);
       const holder = new THREE.Group();
       if (m.inc) holder.rotation.x = m.inc;
       holder.add(mesh);
@@ -679,7 +695,7 @@ export async function mountSolarSystem(host, opts = {}) {
     label.textContent = p.name;
     labelsEl.appendChild(label);
 
-    const trail = makeTrail(p.trail, 1400);
+    const trail = makeTrail(p.trail, lite ? 600 : 1400);
     scene.add(trail.line);
     trail.line.visible = false;
 
@@ -690,12 +706,12 @@ export async function mountSolarSystem(host, opts = {}) {
     });
   });
 
-  const sunTrail = makeTrail(0xffc070, 1400);
+  const sunTrail = makeTrail(0xffc070, lite ? 600 : 1400);
   scene.add(sunTrail.line);
   sunTrail.line.visible = false;
 
   /* space dust for sense of motion in helix mode */
-  const DUST = 1400, DB = 45;
+  const DUST = lite ? 500 : 1400, DB = 45;
   const dustPos = new Float32Array(DUST * 3);
   for (let i = 0; i < DUST * 3; i++) dustPos[i] = (Math.random() * 2 - 1) * DB;
   const dustGeo = new THREE.BufferGeometry();
@@ -876,7 +892,7 @@ export async function mountSolarSystem(host, opts = {}) {
     camera.aspect = w / Math.max(1, h);
     camera.fov = camera.aspect < 1 ? Math.min(80, (2 * Math.atan(Math.tan(25 * DEG) / camera.aspect)) / DEG) : 50;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(typeof devicePixelRatio !== 'undefined' ? devicePixelRatio : 1, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();
@@ -1019,7 +1035,7 @@ export async function mountSolarSystem(host, opts = {}) {
       b.anchor.getWorldPosition(tmp);
       const cd = camera.position.distanceTo(tmp);
       const near = cd < b.p.r * sz * 40;
-      placeLabel(b.label, tmp, b.p.r * sz, true);
+      placeLabel(b.label, tmp, b.p.r * sz, !lite || focus == null || bodies[focus] === b || cd < b.p.r * sz * 55);
       const showMoonLabels = focus != null && bodies[focus] === b && cd < b.p.r * sz * 30;
       for (const m of b.moons) {
         if (showMoonLabels) { m.mesh.getWorldPosition(prj); const wp = prj.clone(); placeLabel(m.label, wp, m.mesh.geometry.parameters.radius * sz, true); }

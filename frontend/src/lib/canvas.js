@@ -1,4 +1,5 @@
 // Shared helpers for canvas / animation demos
+import { maxDpr as mobileMaxDpr } from './mobile.js';
 export function makeCanvas(host, { webgl = false, maxDpr = 2 } = {}) {
   const canvas = document.createElement('canvas');
   canvas.style.touchAction = 'none';
@@ -7,7 +8,7 @@ export function makeCanvas(host, { webgl = false, maxDpr = 2 } = {}) {
   const state = { w: 1, h: 1, dpr: 1, onResize: null };
   const resize = () => {
     const r = host.getBoundingClientRect();
-    state.dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+    state.dpr = Math.min(window.devicePixelRatio || 1, mobileMaxDpr(maxDpr));
     state.w = Math.max(1, Math.floor(r.width));
     state.h = Math.max(1, Math.floor(r.height));
     canvas.width = Math.floor(state.w * state.dpr);

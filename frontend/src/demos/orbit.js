@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { maxDpr, tuneOrbitControls } from '../lib/mobile.js';
 
 export async function mountOrbit(host) {
   const scene = new THREE.Scene();
@@ -10,6 +11,7 @@ export async function mountOrbit(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   host.appendChild(renderer.domElement);
   const controls = new OrbitControls(camera, renderer.domElement);
+  tuneOrbitControls(controls);
   controls.enableDamping = true;
 
   const hemi = new THREE.HemisphereLight(0x9bb7ff, 0x223344, 0.7);
@@ -52,7 +54,7 @@ export async function mountOrbit(host) {
     camera.userData.baseFov ??= camera.fov;
     camera.fov = camera.aspect < 1 ? Math.min(100, 2 * Math.atan(Math.tan(camera.userData.baseFov * Math.PI / 360) / camera.aspect) * 180 / Math.PI) : camera.userData.baseFov;
     camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();

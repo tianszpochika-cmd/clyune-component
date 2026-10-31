@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { maxDpr, tuneOrbitControls } from '../lib/mobile.js';
 
 export async function mountWave(host) {
   const scene = new THREE.Scene();
@@ -9,6 +10,7 @@ export async function mountWave(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   host.appendChild(renderer.domElement);
   const controls = new OrbitControls(camera, renderer.domElement);
+  tuneOrbitControls(controls);
   controls.enableDamping = true;
   scene.add(new THREE.AmbientLight(0x8899ff, 0.5));
   const dir = new THREE.DirectionalLight(0xffffff, 1);
@@ -32,7 +34,7 @@ export async function mountWave(host) {
     camera.aspect = w / h;
     camera.userData.baseFov ??= camera.fov;
     camera.fov = camera.aspect < 1 ? Math.min(100, 2 * Math.atan(Math.tan(camera.userData.baseFov * Math.PI / 360) / camera.aspect) * 180 / Math.PI) : camera.userData.baseFov; camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();

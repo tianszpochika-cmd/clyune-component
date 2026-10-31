@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { maxDpr, tuneOrbitControls } from '../lib/mobile.js';
 
 /** Procedural "model" showcase (no external GLTF fetch) */
 export async function mountGltfShapes(host) {
@@ -10,6 +11,7 @@ export async function mountGltfShapes(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   host.appendChild(renderer.domElement);
   const controls = new OrbitControls(camera, renderer.domElement);
+  tuneOrbitControls(controls);
   controls.enableDamping = true;
   scene.add(new THREE.HemisphereLight(0xb1c5ff, 0x1a2035, 0.9));
   const spot = new THREE.SpotLight(0xffffff, 2, 30, Math.PI / 5, 0.4);
@@ -39,7 +41,7 @@ export async function mountGltfShapes(host) {
     camera.aspect = w / h;
     camera.userData.baseFov ??= camera.fov;
     camera.fov = camera.aspect < 1 ? Math.min(100, 2 * Math.atan(Math.tan(camera.userData.baseFov * Math.PI / 360) / camera.aspect) * 180 / Math.PI) : camera.userData.baseFov; camera.updateProjectionMatrix();
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
   };
   resize();

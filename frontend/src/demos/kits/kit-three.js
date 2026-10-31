@@ -1,3 +1,4 @@
+import { maxDpr, preferLiteFx, tuneOrbitControls } from '../../lib/mobile.js';
 import * as THREE from 'three';
 import { bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
@@ -229,7 +230,7 @@ function mountLegacy(host, opts = {}) {
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
   renderer.setClearColor(0x060a14, 1);
-  renderer.setPixelRatio(Math.min(typeof devicePixelRatio !== 'undefined' ? devicePixelRatio : 1, 2));
+  renderer.setPixelRatio(maxDpr(2));
   renderer.domElement.style.display = 'block';
   renderer.domElement.style.width = '100%';
   renderer.domElement.style.height = '100%';
