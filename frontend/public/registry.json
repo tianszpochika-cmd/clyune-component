@@ -17,9 +17,9 @@
           "hint": "自动旋转 · MeshStandardMaterial",
           "desc": "基础场景、光照与线框。",
           "tag": "basics",
-          "path": "/threejs/cube",
           "mod": "cube",
-          "fn": "mountCube"
+          "fn": "mountCube",
+          "path": "/threejs/cube"
         },
         {
           "slug": "orbit",
@@ -27,9 +27,9 @@
           "hint": "拖拽旋转 · 滚轮缩放",
           "desc": "OrbitControls 与多光源。",
           "tag": "controls",
-          "path": "/threejs/orbit",
           "mod": "orbit",
-          "fn": "mountOrbit"
+          "fn": "mountOrbit",
+          "path": "/threejs/orbit"
         },
         {
           "slug": "particles",
@@ -37,9 +37,9 @@
           "hint": "移动鼠标扰动粒子场",
           "desc": "Points 粒子场与鼠标交互。",
           "tag": "points",
-          "path": "/threejs/particles",
           "mod": "particles",
-          "fn": "mountParticles"
+          "fn": "mountParticles",
+          "path": "/threejs/particles"
         },
         {
           "slug": "gallery",
@@ -47,9 +47,9 @@
           "hint": "点击几何体切换高亮",
           "desc": "内置几何体与射线拾取。",
           "tag": "geometry",
-          "path": "/threejs/gallery",
           "mod": "gallery",
-          "fn": "mountGallery"
+          "fn": "mountGallery",
+          "path": "/threejs/gallery"
         },
         {
           "slug": "wave",
@@ -57,9 +57,9 @@
           "hint": "程序化起伏地形",
           "desc": "顶点动画生成地形。",
           "tag": "terrain",
-          "path": "/threejs/wave",
           "mod": "wave",
-          "fn": "mountWave"
+          "fn": "mountWave",
+          "path": "/threejs/wave"
         },
         {
           "slug": "character",
@@ -67,9 +67,9 @@
           "hint": "程序化角色 · 摆臂动画",
           "desc": "层级模型与骨骼式动画。",
           "tag": "model",
-          "path": "/threejs/character",
           "mod": "gltf-shapes",
-          "fn": "mountGltfShapes"
+          "fn": "mountGltfShapes",
+          "path": "/threejs/character"
         },
         {
           "slug": "shader",
@@ -77,9 +77,141 @@
           "hint": "自定义顶点/片元着色器",
           "desc": "ShaderMaterial 变形球体。",
           "tag": "shader",
-          "path": "/threejs/shader",
           "mod": "shader-blob",
-          "fn": "mountShaderBlob"
+          "fn": "mountShaderBlob",
+          "path": "/threejs/shader"
+        },
+        {
+          "slug": "scene-1",
+          "title": "Three 场景 晶格",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：晶格",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-1",
+          "path": "/threejs/scene-1"
+        },
+        {
+          "slug": "scene-2",
+          "title": "Three 场景 环带",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：环带",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-2",
+          "path": "/threejs/scene-2"
+        },
+        {
+          "slug": "scene-3",
+          "title": "Three 场景 星云球",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：星云球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-3",
+          "path": "/threejs/scene-3"
+        },
+        {
+          "slug": "scene-4",
+          "title": "Three 场景 多立方",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：多立方",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-4",
+          "path": "/threejs/scene-4"
+        },
+        {
+          "slug": "scene-5",
+          "title": "Three 场景 螺旋柱",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：螺旋柱",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-5",
+          "path": "/threejs/scene-5"
+        },
+        {
+          "slug": "scene-6",
+          "title": "Three 场景 玻璃球",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：玻璃球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-6",
+          "path": "/threejs/scene-6"
+        },
+        {
+          "slug": "scene-7",
+          "title": "Three 场景 线框球",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：线框球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-7",
+          "path": "/threejs/scene-7"
+        },
+        {
+          "slug": "scene-8",
+          "title": "Three 场景 Instanced",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：Instanced",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-8",
+          "path": "/threejs/scene-8"
+        },
+        {
+          "slug": "scene-9",
+          "title": "Three 场景 起伏面",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：起伏面",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-9",
+          "path": "/threejs/scene-9"
+        },
+        {
+          "slug": "scene-10",
+          "title": "Three 场景 点云环",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：点云环",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-10",
+          "path": "/threejs/scene-10"
+        },
+        {
+          "slug": "scene-11",
+          "title": "Three 场景 光柱",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：光柱",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-11",
+          "path": "/threejs/scene-11"
+        },
+        {
+          "slug": "scene-12",
+          "title": "Three 场景 反射地板",
+          "hint": "拖拽旋转",
+          "desc": "Three.js 场景包：反射地板",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "scene-12",
+          "path": "/threejs/scene-12"
         }
       ]
     },
@@ -99,9 +231,9 @@
           "hint": "Chart.js 折线图",
           "desc": "多序列趋势折线。",
           "tag": "line",
-          "path": "/charts/line",
           "mod": "charts-line",
-          "fn": "mountChartLine"
+          "fn": "mountChartLine",
+          "path": "/charts/line"
         },
         {
           "slug": "bar",
@@ -109,9 +241,9 @@
           "hint": "Chart.js 柱状图",
           "desc": "三网延迟对比柱状图。",
           "tag": "bar",
-          "path": "/charts/bar",
           "mod": "charts-bar",
-          "fn": "mountChartBar"
+          "fn": "mountChartBar",
+          "path": "/charts/bar"
         },
         {
           "slug": "doughnut",
@@ -119,9 +251,163 @@
           "hint": "Chart.js 环形图",
           "desc": "占比环形图。",
           "tag": "doughnut",
-          "path": "/charts/doughnut",
           "mod": "charts-doughnut",
-          "fn": "mountChartDoughnut"
+          "fn": "mountChartDoughnut",
+          "path": "/charts/doughnut"
+        },
+        {
+          "slug": "spark-1",
+          "title": "迷你趋势 1",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #1",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-1",
+          "path": "/charts/spark-1"
+        },
+        {
+          "slug": "spark-2",
+          "title": "迷你趋势 2",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #2",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-2",
+          "path": "/charts/spark-2"
+        },
+        {
+          "slug": "spark-3",
+          "title": "迷你趋势 3",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #3",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-3",
+          "path": "/charts/spark-3"
+        },
+        {
+          "slug": "spark-4",
+          "title": "迷你趋势 4",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #4",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-4",
+          "path": "/charts/spark-4"
+        },
+        {
+          "slug": "spark-5",
+          "title": "迷你趋势 5",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #5",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-5",
+          "path": "/charts/spark-5"
+        },
+        {
+          "slug": "spark-6",
+          "title": "迷你趋势 6",
+          "hint": "悬停看数值",
+          "desc": "Sparkline 迷你图 #6",
+          "tag": "spark",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "spark-6",
+          "path": "/charts/spark-6"
+        },
+        {
+          "slug": "gauge-1",
+          "title": "仪表盘 1",
+          "hint": "拖动滑块",
+          "desc": "环形仪表盘变体 #1",
+          "tag": "gauge",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "gauge-1",
+          "path": "/charts/gauge-1"
+        },
+        {
+          "slug": "gauge-2",
+          "title": "仪表盘 2",
+          "hint": "拖动滑块",
+          "desc": "环形仪表盘变体 #2",
+          "tag": "gauge",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "gauge-2",
+          "path": "/charts/gauge-2"
+        },
+        {
+          "slug": "gauge-3",
+          "title": "仪表盘 3",
+          "hint": "拖动滑块",
+          "desc": "环形仪表盘变体 #3",
+          "tag": "gauge",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "gauge-3",
+          "path": "/charts/gauge-3"
+        },
+        {
+          "slug": "gauge-4",
+          "title": "仪表盘 4",
+          "hint": "拖动滑块",
+          "desc": "环形仪表盘变体 #4",
+          "tag": "gauge",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "gauge-4",
+          "path": "/charts/gauge-4"
+        },
+        {
+          "slug": "stack-1",
+          "title": "堆叠图 柱",
+          "hint": "点击图例",
+          "desc": "堆叠柱图",
+          "tag": "stack",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "stack-1",
+          "path": "/charts/stack-1"
+        },
+        {
+          "slug": "stack-2",
+          "title": "堆叠图 面积",
+          "hint": "点击图例",
+          "desc": "堆叠面积图",
+          "tag": "stack",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "stack-2",
+          "path": "/charts/stack-2"
+        },
+        {
+          "slug": "stack-3",
+          "title": "堆叠图 横向",
+          "hint": "点击图例",
+          "desc": "堆叠横向图",
+          "tag": "stack",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "stack-3",
+          "path": "/charts/stack-3"
+        },
+        {
+          "slug": "stack-4",
+          "title": "堆叠图 百分比",
+          "hint": "点击图例",
+          "desc": "堆叠百分比图",
+          "tag": "stack",
+          "mod": "kit-chart",
+          "fn": "mount",
+          "variant": "stack-4",
+          "path": "/charts/stack-4"
         }
       ]
     },
@@ -141,9 +427,9 @@
           "hint": "按钮变体与尺寸",
           "desc": "按钮变体、尺寸与禁用态。",
           "tag": "actions",
-          "path": "/ui/buttons",
           "mod": "ui-buttons",
-          "fn": "mountUiButtons"
+          "fn": "mountUiButtons",
+          "path": "/ui/buttons"
         },
         {
           "slug": "cards",
@@ -151,9 +437,207 @@
           "hint": "卡片与弹层交互",
           "desc": "卡片布局与模态框。",
           "tag": "overlay",
-          "path": "/ui/cards",
           "mod": "ui-cards-modal",
-          "fn": "mountUiCardsModal"
+          "fn": "mountUiCardsModal",
+          "path": "/ui/cards"
+        },
+        {
+          "slug": "input-1",
+          "title": "输入控件 文本框",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：文本框",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-1",
+          "path": "/ui/input-1"
+        },
+        {
+          "slug": "input-2",
+          "title": "输入控件 开关组",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：开关组",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-2",
+          "path": "/ui/input-2"
+        },
+        {
+          "slug": "input-3",
+          "title": "输入控件 滑块",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：滑块",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-3",
+          "path": "/ui/input-3"
+        },
+        {
+          "slug": "input-4",
+          "title": "输入控件 分段",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：分段",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-4",
+          "path": "/ui/input-4"
+        },
+        {
+          "slug": "input-5",
+          "title": "输入控件 标签输入",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：标签输入",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-5",
+          "path": "/ui/input-5"
+        },
+        {
+          "slug": "input-6",
+          "title": "输入控件 评分",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：评分",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-6",
+          "path": "/ui/input-6"
+        },
+        {
+          "slug": "input-7",
+          "title": "输入控件 步进器",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：步进器",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-7",
+          "path": "/ui/input-7"
+        },
+        {
+          "slug": "input-8",
+          "title": "输入控件 搜索栏",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：搜索栏",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-8",
+          "path": "/ui/input-8"
+        },
+        {
+          "slug": "input-9",
+          "title": "输入控件 进度条",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：进度条",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-9",
+          "path": "/ui/input-9"
+        },
+        {
+          "slug": "input-10",
+          "title": "输入控件 通知条",
+          "hint": "点击/输入交互",
+          "desc": "表单控件演示：通知条",
+          "tag": "form",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "input-10",
+          "path": "/ui/input-10"
+        },
+        {
+          "slug": "nav-1",
+          "title": "导航样式 侧栏",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：侧栏",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-1",
+          "path": "/ui/nav-1"
+        },
+        {
+          "slug": "nav-2",
+          "title": "导航样式 顶栏 Tabs",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：顶栏 Tabs",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-2",
+          "path": "/ui/nav-2"
+        },
+        {
+          "slug": "nav-3",
+          "title": "导航样式 面包屑",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：面包屑",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-3",
+          "path": "/ui/nav-3"
+        },
+        {
+          "slug": "nav-4",
+          "title": "导航样式 分页",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：分页",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-4",
+          "path": "/ui/nav-4"
+        },
+        {
+          "slug": "nav-5",
+          "title": "导航样式 步骤条",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：步骤条",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-5",
+          "path": "/ui/nav-5"
+        },
+        {
+          "slug": "nav-6",
+          "title": "导航样式 胶囊菜单",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：胶囊菜单",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-6",
+          "path": "/ui/nav-6"
+        },
+        {
+          "slug": "nav-7",
+          "title": "导航样式 抽屉",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：抽屉",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-7",
+          "path": "/ui/nav-7"
+        },
+        {
+          "slug": "nav-8",
+          "title": "导航样式 命令面板",
+          "hint": "点击切换激活项",
+          "desc": "导航组件：命令面板",
+          "tag": "nav",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "nav-8",
+          "path": "/ui/nav-8"
         }
       ]
     },
@@ -176,9 +660,9 @@
           "hint": "悬停卡片查看 transition · 渐变流光文字",
           "desc": "加载动画、过渡曲线对比与流光渐变文字。",
           "tag": "keyframes",
-          "path": "/css-fx/keyframes",
           "mod": "css-keyframes",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/css-fx/keyframes"
         },
         {
           "slug": "glass",
@@ -186,9 +670,9 @@
           "hint": "拖动滑块调节模糊与透明度",
           "desc": "backdrop-filter 毛玻璃卡片与流动背景。",
           "tag": "glass",
-          "path": "/css-fx/glass",
           "mod": "css-glass",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/css-fx/glass"
         },
         {
           "slug": "tilt",
@@ -196,9 +680,9 @@
           "hint": "移动指针倾斜 · 点击翻转",
           "desc": "perspective + rotateX/Y 的 3D 卡片。",
           "tag": "3d",
-          "path": "/css-fx/tilt",
           "mod": "css-tilt",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/css-fx/tilt"
         },
         {
           "slug": "scroll",
@@ -206,9 +690,339 @@
           "hint": "在面板内滚动",
           "desc": "animation-timeline: view()，不支持时回退 IntersectionObserver。",
           "tag": "scroll",
-          "path": "/css-fx/scroll",
           "mod": "css-scroll",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/css-fx/scroll"
+        },
+        {
+          "slug": "pulse-1",
+          "title": "脉冲环 #1",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #1，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-1",
+          "path": "/css-fx/pulse-1"
+        },
+        {
+          "slug": "pulse-2",
+          "title": "脉冲环 #2",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #2，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-2",
+          "path": "/css-fx/pulse-2"
+        },
+        {
+          "slug": "pulse-3",
+          "title": "脉冲环 #3",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #3，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-3",
+          "path": "/css-fx/pulse-3"
+        },
+        {
+          "slug": "pulse-4",
+          "title": "脉冲环 #4",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #4，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-4",
+          "path": "/css-fx/pulse-4"
+        },
+        {
+          "slug": "pulse-5",
+          "title": "脉冲环 #5",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #5，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-5",
+          "path": "/css-fx/pulse-5"
+        },
+        {
+          "slug": "pulse-6",
+          "title": "脉冲环 #6",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #6，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-6",
+          "path": "/css-fx/pulse-6"
+        },
+        {
+          "slug": "pulse-7",
+          "title": "脉冲环 #7",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #7，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-7",
+          "path": "/css-fx/pulse-7"
+        },
+        {
+          "slug": "pulse-8",
+          "title": "脉冲环 #8",
+          "hint": "拖动滑块调节速度",
+          "desc": "CSS 脉冲环变体 #8，可调周期与颜色。",
+          "tag": "pulse",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "pulse-8",
+          "path": "/css-fx/pulse-8"
+        },
+        {
+          "slug": "loader-1",
+          "title": "加载器样式 环",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：环",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-1",
+          "path": "/css-fx/loader-1"
+        },
+        {
+          "slug": "loader-2",
+          "title": "加载器样式 点阵",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：点阵",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-2",
+          "path": "/css-fx/loader-2"
+        },
+        {
+          "slug": "loader-3",
+          "title": "加载器样式 条",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：条",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-3",
+          "path": "/css-fx/loader-3"
+        },
+        {
+          "slug": "loader-4",
+          "title": "加载器样式 方块翻转",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：方块翻转",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-4",
+          "path": "/css-fx/loader-4"
+        },
+        {
+          "slug": "loader-5",
+          "title": "加载器样式 呼吸",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：呼吸",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-5",
+          "path": "/css-fx/loader-5"
+        },
+        {
+          "slug": "loader-6",
+          "title": "加载器样式 轨道",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：轨道",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-6",
+          "path": "/css-fx/loader-6"
+        },
+        {
+          "slug": "loader-7",
+          "title": "加载器样式 涟漪",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：涟漪",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-7",
+          "path": "/css-fx/loader-7"
+        },
+        {
+          "slug": "loader-8",
+          "title": "加载器样式 交叉",
+          "hint": "悬停暂停",
+          "desc": "纯 CSS 加载动画：交叉",
+          "tag": "loader",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "loader-8",
+          "path": "/css-fx/loader-8"
+        },
+        {
+          "slug": "hover-1",
+          "title": "悬停动效 上浮",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：上浮",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-1",
+          "path": "/css-fx/hover-1"
+        },
+        {
+          "slug": "hover-2",
+          "title": "悬停动效 缩放",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：缩放",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-2",
+          "path": "/css-fx/hover-2"
+        },
+        {
+          "slug": "hover-3",
+          "title": "悬停动效 边光",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：边光",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-3",
+          "path": "/css-fx/hover-3"
+        },
+        {
+          "slug": "hover-4",
+          "title": "悬停动效 扫光",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：扫光",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-4",
+          "path": "/css-fx/hover-4"
+        },
+        {
+          "slug": "hover-5",
+          "title": "悬停动效 倾斜",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：倾斜",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-5",
+          "path": "/css-fx/hover-5"
+        },
+        {
+          "slug": "hover-6",
+          "title": "悬停动效 边框跑马",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：边框跑马",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-6",
+          "path": "/css-fx/hover-6"
+        },
+        {
+          "slug": "hover-7",
+          "title": "悬停动效 阴影扩散",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：阴影扩散",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-7",
+          "path": "/css-fx/hover-7"
+        },
+        {
+          "slug": "hover-8",
+          "title": "悬停动效 模糊聚焦",
+          "hint": "悬停卡片",
+          "desc": "卡片悬停：模糊聚焦",
+          "tag": "hover",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "hover-8",
+          "path": "/css-fx/hover-8"
+        },
+        {
+          "slug": "grad-1",
+          "title": "渐变流动 1",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #1",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-1",
+          "path": "/css-fx/grad-1"
+        },
+        {
+          "slug": "grad-2",
+          "title": "渐变流动 2",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #2",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-2",
+          "path": "/css-fx/grad-2"
+        },
+        {
+          "slug": "grad-3",
+          "title": "渐变流动 3",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #3",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-3",
+          "path": "/css-fx/grad-3"
+        },
+        {
+          "slug": "grad-4",
+          "title": "渐变流动 4",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #4",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-4",
+          "path": "/css-fx/grad-4"
+        },
+        {
+          "slug": "grad-5",
+          "title": "渐变流动 5",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #5",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-5",
+          "path": "/css-fx/grad-5"
+        },
+        {
+          "slug": "grad-6",
+          "title": "渐变流动 6",
+          "hint": "自动播放",
+          "desc": "多色渐变背景流动 #6",
+          "tag": "gradient",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "grad-6",
+          "path": "/css-fx/grad-6"
         }
       ]
     },
@@ -229,9 +1043,9 @@
           "hint": "移动指针吸引粒子",
           "desc": "粒子间距离连线的经典网络背景。",
           "tag": "particles",
-          "path": "/canvas/network",
           "mod": "canvas-network",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/canvas/network"
         },
         {
           "slug": "matrix",
@@ -239,9 +1053,9 @@
           "hint": "点击切换颜色",
           "desc": "黑客帝国风格的字符雨。",
           "tag": "text",
-          "path": "/canvas/matrix",
           "mod": "canvas-matrix",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/canvas/matrix"
         },
         {
           "slug": "fireworks",
@@ -249,9 +1063,9 @@
           "hint": "点击任意位置发射",
           "desc": "带重力与拖尾的粒子烟花。",
           "tag": "physics",
-          "path": "/canvas/fireworks",
           "mod": "canvas-fireworks",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/canvas/fireworks"
         },
         {
           "slug": "draw",
@@ -259,9 +1073,284 @@
           "hint": "按住拖动绘画 · 支持触屏",
           "desc": "平滑笔刷、颜色、粗细、撤销与导出 PNG。",
           "tag": "tool",
-          "path": "/canvas/draw",
           "mod": "canvas-draw",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/canvas/draw"
+        },
+        {
+          "slug": "orbits-1",
+          "title": "轨道粒子 1",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #1",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-1",
+          "path": "/canvas/orbits-1"
+        },
+        {
+          "slug": "orbits-2",
+          "title": "轨道粒子 2",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #2",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-2",
+          "path": "/canvas/orbits-2"
+        },
+        {
+          "slug": "orbits-3",
+          "title": "轨道粒子 3",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #3",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-3",
+          "path": "/canvas/orbits-3"
+        },
+        {
+          "slug": "orbits-4",
+          "title": "轨道粒子 4",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #4",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-4",
+          "path": "/canvas/orbits-4"
+        },
+        {
+          "slug": "orbits-5",
+          "title": "轨道粒子 5",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #5",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-5",
+          "path": "/canvas/orbits-5"
+        },
+        {
+          "slug": "orbits-6",
+          "title": "轨道粒子 6",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #6",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-6",
+          "path": "/canvas/orbits-6"
+        },
+        {
+          "slug": "orbits-7",
+          "title": "轨道粒子 7",
+          "hint": "移动指针扰动",
+          "desc": "多轨粒子系统变体 #7",
+          "tag": "orbit",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "orbits-7",
+          "path": "/canvas/orbits-7"
+        },
+        {
+          "slug": "trail-1",
+          "title": "指针拖尾 霓虹",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：霓虹",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-1",
+          "path": "/canvas/trail-1"
+        },
+        {
+          "slug": "trail-2",
+          "title": "指针拖尾 烟",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：烟",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-2",
+          "path": "/canvas/trail-2"
+        },
+        {
+          "slug": "trail-3",
+          "title": "指针拖尾 星屑",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：星屑",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-3",
+          "path": "/canvas/trail-3"
+        },
+        {
+          "slug": "trail-4",
+          "title": "指针拖尾 墨迹",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：墨迹",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-4",
+          "path": "/canvas/trail-4"
+        },
+        {
+          "slug": "trail-5",
+          "title": "指针拖尾 彩虹",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：彩虹",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-5",
+          "path": "/canvas/trail-5"
+        },
+        {
+          "slug": "trail-6",
+          "title": "指针拖尾 像素",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：像素",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-6",
+          "path": "/canvas/trail-6"
+        },
+        {
+          "slug": "trail-7",
+          "title": "指针拖尾 火花",
+          "hint": "移动画出拖尾",
+          "desc": "指针拖尾效果：火花",
+          "tag": "trail",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "trail-7",
+          "path": "/canvas/trail-7"
+        },
+        {
+          "slug": "blob-1",
+          "title": "软体 Blob 1",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #1",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-1",
+          "path": "/canvas/blob-1"
+        },
+        {
+          "slug": "blob-2",
+          "title": "软体 Blob 2",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #2",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-2",
+          "path": "/canvas/blob-2"
+        },
+        {
+          "slug": "blob-3",
+          "title": "软体 Blob 3",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #3",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-3",
+          "path": "/canvas/blob-3"
+        },
+        {
+          "slug": "blob-4",
+          "title": "软体 Blob 4",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #4",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-4",
+          "path": "/canvas/blob-4"
+        },
+        {
+          "slug": "blob-5",
+          "title": "软体 Blob 5",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #5",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-5",
+          "path": "/canvas/blob-5"
+        },
+        {
+          "slug": "blob-6",
+          "title": "软体 Blob 6",
+          "hint": "拖动变形",
+          "desc": "metaball 风格软体 #6",
+          "tag": "blob",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "blob-6",
+          "path": "/canvas/blob-6"
+        },
+        {
+          "slug": "rain-1",
+          "title": "粒子雨 1",
+          "hint": "点击切换风向",
+          "desc": "重力粒子雨变体 #1",
+          "tag": "rain",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "rain-1",
+          "path": "/canvas/rain-1"
+        },
+        {
+          "slug": "rain-2",
+          "title": "粒子雨 2",
+          "hint": "点击切换风向",
+          "desc": "重力粒子雨变体 #2",
+          "tag": "rain",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "rain-2",
+          "path": "/canvas/rain-2"
+        },
+        {
+          "slug": "rain-3",
+          "title": "粒子雨 3",
+          "hint": "点击切换风向",
+          "desc": "重力粒子雨变体 #3",
+          "tag": "rain",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "rain-3",
+          "path": "/canvas/rain-3"
+        },
+        {
+          "slug": "rain-4",
+          "title": "粒子雨 4",
+          "hint": "点击切换风向",
+          "desc": "重力粒子雨变体 #4",
+          "tag": "rain",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "rain-4",
+          "path": "/canvas/rain-4"
+        },
+        {
+          "slug": "rain-5",
+          "title": "粒子雨 5",
+          "hint": "点击切换风向",
+          "desc": "重力粒子雨变体 #5",
+          "tag": "rain",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "rain-5",
+          "path": "/canvas/rain-5"
         }
       ]
     },
@@ -283,9 +1372,9 @@
           "hint": "点击重播",
           "desc": "利用 getTotalLength 实现手写描边。",
           "tag": "stroke",
-          "path": "/svg/draw",
           "mod": "svg-draw",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/svg/draw"
         },
         {
           "slug": "morph",
@@ -293,9 +1382,9 @@
           "hint": "点击按钮切换形状",
           "desc": "同构路径点插值，平滑形变。",
           "tag": "morph",
-          "path": "/svg/morph",
           "mod": "svg-morph",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/svg/morph"
         },
         {
           "slug": "icons",
@@ -303,9 +1392,229 @@
           "hint": "点击图标切换状态",
           "desc": "菜单/关闭、播放/暂停、加载、对勾等图标动效。",
           "tag": "icons",
-          "path": "/svg/icons",
           "mod": "svg-icons",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/svg/icons"
+        },
+        {
+          "slug": "stroke-1",
+          "title": "描边路径 圆",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：圆",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-1",
+          "path": "/svg/stroke-1"
+        },
+        {
+          "slug": "stroke-2",
+          "title": "描边路径 星",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：星",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-2",
+          "path": "/svg/stroke-2"
+        },
+        {
+          "slug": "stroke-3",
+          "title": "描边路径 心",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：心",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-3",
+          "path": "/svg/stroke-3"
+        },
+        {
+          "slug": "stroke-4",
+          "title": "描边路径 波浪",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：波浪",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-4",
+          "path": "/svg/stroke-4"
+        },
+        {
+          "slug": "stroke-5",
+          "title": "描边路径 折线",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：折线",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-5",
+          "path": "/svg/stroke-5"
+        },
+        {
+          "slug": "stroke-6",
+          "title": "描边路径 螺旋",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：螺旋",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-6",
+          "path": "/svg/stroke-6"
+        },
+        {
+          "slug": "stroke-7",
+          "title": "描边路径 六边形",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：六边形",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-7",
+          "path": "/svg/stroke-7"
+        },
+        {
+          "slug": "stroke-8",
+          "title": "描边路径 字母",
+          "hint": "点击重播",
+          "desc": "SVG stroke-dash 描边：字母",
+          "tag": "stroke",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "stroke-8",
+          "path": "/svg/stroke-8"
+        },
+        {
+          "slug": "icon-anim-1",
+          "title": "图标动效 汉堡",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：汉堡",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-1",
+          "path": "/svg/icon-anim-1"
+        },
+        {
+          "slug": "icon-anim-2",
+          "title": "图标动效 播放",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：播放",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-2",
+          "path": "/svg/icon-anim-2"
+        },
+        {
+          "slug": "icon-anim-3",
+          "title": "图标动效 爱心",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：爱心",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-3",
+          "path": "/svg/icon-anim-3"
+        },
+        {
+          "slug": "icon-anim-4",
+          "title": "图标动效 铃铛",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：铃铛",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-4",
+          "path": "/svg/icon-anim-4"
+        },
+        {
+          "slug": "icon-anim-5",
+          "title": "图标动效 搜索",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：搜索",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-5",
+          "path": "/svg/icon-anim-5"
+        },
+        {
+          "slug": "icon-anim-6",
+          "title": "图标动效 下载",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：下载",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-6",
+          "path": "/svg/icon-anim-6"
+        },
+        {
+          "slug": "icon-anim-7",
+          "title": "图标动效 设置",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：设置",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-7",
+          "path": "/svg/icon-anim-7"
+        },
+        {
+          "slug": "icon-anim-8",
+          "title": "图标动效 云",
+          "hint": "点击切换",
+          "desc": "SVG 图标状态切换：云",
+          "tag": "icons",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icon-8",
+          "path": "/svg/icon-anim-8"
+        },
+        {
+          "slug": "morph-1",
+          "title": "形变 Morph 1",
+          "hint": "点击变形",
+          "desc": "路径 morph 变体 #1",
+          "tag": "morph",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "morph-1",
+          "path": "/svg/morph-1"
+        },
+        {
+          "slug": "morph-2",
+          "title": "形变 Morph 2",
+          "hint": "点击变形",
+          "desc": "路径 morph 变体 #2",
+          "tag": "morph",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "morph-2",
+          "path": "/svg/morph-2"
+        },
+        {
+          "slug": "morph-3",
+          "title": "形变 Morph 3",
+          "hint": "点击变形",
+          "desc": "路径 morph 变体 #3",
+          "tag": "morph",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "morph-3",
+          "path": "/svg/morph-3"
+        },
+        {
+          "slug": "morph-4",
+          "title": "形变 Morph 4",
+          "hint": "点击变形",
+          "desc": "路径 morph 变体 #4",
+          "tag": "morph",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "morph-4",
+          "path": "/svg/morph-4"
         }
       ]
     },
@@ -327,9 +1636,9 @@
           "hint": "播放 / 暂停 / 倒放 / 拖动进度",
           "desc": "多段动画编排与进度控制。",
           "tag": "timeline",
-          "path": "/gsap/timeline",
           "mod": "gsap-timeline",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/gsap/timeline"
         },
         {
           "slug": "scroll",
@@ -337,9 +1646,9 @@
           "hint": "在面板内向下滚动",
           "desc": "滚动进度驱动的固定、视差与进度条。",
           "tag": "scroll",
-          "path": "/gsap/scroll",
           "mod": "gsap-scroll",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/gsap/scroll"
         },
         {
           "slug": "text",
@@ -347,9 +1656,119 @@
           "hint": "点击重播 · 切换效果",
           "desc": "逐字拆分 + stagger 的标题入场。",
           "tag": "text",
-          "path": "/gsap/text",
           "mod": "gsap-text",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/gsap/text"
+        },
+        {
+          "slug": "seq-1",
+          "title": "GSAP 序列 弹跳入场",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：弹跳入场",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-1",
+          "path": "/gsap/seq-1"
+        },
+        {
+          "slug": "seq-2",
+          "title": "GSAP 序列 交错卡片",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：交错卡片",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-2",
+          "path": "/gsap/seq-2"
+        },
+        {
+          "slug": "seq-3",
+          "title": "GSAP 序列 路径跟随",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：路径跟随",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-3",
+          "path": "/gsap/seq-3"
+        },
+        {
+          "slug": "seq-4",
+          "title": "GSAP 序列 旋转出场",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：旋转出场",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-4",
+          "path": "/gsap/seq-4"
+        },
+        {
+          "slug": "seq-5",
+          "title": "GSAP 序列 弹性缩放",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：弹性缩放",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-5",
+          "path": "/gsap/seq-5"
+        },
+        {
+          "slug": "seq-6",
+          "title": "GSAP 序列 颜色闪烁",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：颜色闪烁",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-6",
+          "path": "/gsap/seq-6"
+        },
+        {
+          "slug": "seq-7",
+          "title": "GSAP 序列 翻转牌",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：翻转牌",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-7",
+          "path": "/gsap/seq-7"
+        },
+        {
+          "slug": "seq-8",
+          "title": "GSAP 序列 进度环",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：进度环",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-8",
+          "path": "/gsap/seq-8"
+        },
+        {
+          "slug": "seq-9",
+          "title": "GSAP 序列 打字机",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：打字机",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-9",
+          "path": "/gsap/seq-9"
+        },
+        {
+          "slug": "seq-10",
+          "title": "GSAP 序列 视差层",
+          "hint": "播放控制",
+          "desc": "GSAP 时间线：视差层",
+          "tag": "seq",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "seq-10",
+          "path": "/gsap/seq-10"
         }
       ]
     },
@@ -371,9 +1790,9 @@
           "hint": "移动指针扰动",
           "desc": "FBM 分形噪声 + 域扭曲的流动背景。",
           "tag": "noise",
-          "path": "/webgl/noise",
           "mod": "webgl-shader",
-          "fn": "mountNoise"
+          "fn": "mountNoise",
+          "path": "/webgl/noise"
         },
         {
           "slug": "plasma",
@@ -381,9 +1800,9 @@
           "hint": "经典 demoscene 效果",
           "desc": "多重正弦叠加的彩色等离子。",
           "tag": "plasma",
-          "path": "/webgl/plasma",
           "mod": "webgl-shader",
-          "fn": "mountPlasma"
+          "fn": "mountPlasma",
+          "path": "/webgl/plasma"
         },
         {
           "slug": "raymarch",
@@ -391,9 +1810,185 @@
           "hint": "移动指针旋转视角",
           "desc": "SDF 光线步进的融合球体与光照。",
           "tag": "sdf",
-          "path": "/webgl/raymarch",
           "mod": "webgl-shader",
-          "fn": "mountRaymarch"
+          "fn": "mountRaymarch",
+          "path": "/webgl/raymarch"
+        },
+        {
+          "slug": "shader-voronoi",
+          "title": "着色器 Voronoi",
+          "hint": "移动指针",
+          "desc": "片元着色器：Voronoi",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-voronoi",
+          "path": "/webgl/shader-voronoi"
+        },
+        {
+          "slug": "shader-warp",
+          "title": "着色器 域扭曲",
+          "hint": "移动指针",
+          "desc": "片元着色器：域扭曲",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-warp",
+          "path": "/webgl/shader-warp"
+        },
+        {
+          "slug": "shader-spiral",
+          "title": "着色器 螺旋",
+          "hint": "移动指针",
+          "desc": "片元着色器：螺旋",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-spiral",
+          "path": "/webgl/shader-spiral"
+        },
+        {
+          "slug": "shader-checker",
+          "title": "着色器 棋盘扭曲",
+          "hint": "移动指针",
+          "desc": "片元着色器：棋盘扭曲",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-checker",
+          "path": "/webgl/shader-checker"
+        },
+        {
+          "slug": "shader-tunnel",
+          "title": "着色器 隧道",
+          "hint": "移动指针",
+          "desc": "片元着色器：隧道",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-tunnel",
+          "path": "/webgl/shader-tunnel"
+        },
+        {
+          "slug": "shader-ripple",
+          "title": "着色器 涟漪",
+          "hint": "移动指针",
+          "desc": "片元着色器：涟漪",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-ripple",
+          "path": "/webgl/shader-ripple"
+        },
+        {
+          "slug": "shader-stars",
+          "title": "着色器 星野",
+          "hint": "移动指针",
+          "desc": "片元着色器：星野",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-stars",
+          "path": "/webgl/shader-stars"
+        },
+        {
+          "slug": "shader-lava",
+          "title": "着色器 熔岩",
+          "hint": "移动指针",
+          "desc": "片元着色器：熔岩",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-lava",
+          "path": "/webgl/shader-lava"
+        },
+        {
+          "slug": "shader-grid",
+          "title": "着色器 透视网格",
+          "hint": "移动指针",
+          "desc": "片元着色器：透视网格",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-grid",
+          "path": "/webgl/shader-grid"
+        },
+        {
+          "slug": "shader-kaleido",
+          "title": "着色器 万花筒",
+          "hint": "移动指针",
+          "desc": "片元着色器：万花筒",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-kaleido",
+          "path": "/webgl/shader-kaleido"
+        },
+        {
+          "slug": "shader-hsv",
+          "title": "着色器 HSV 旋转",
+          "hint": "移动指针",
+          "desc": "片元着色器：HSV 旋转",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-hsv",
+          "path": "/webgl/shader-hsv"
+        },
+        {
+          "slug": "shader-scan",
+          "title": "着色器 扫描线",
+          "hint": "移动指针",
+          "desc": "片元着色器：扫描线",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-scan",
+          "path": "/webgl/shader-scan"
+        },
+        {
+          "slug": "shader-metaball2",
+          "title": "着色器 双 Metaball",
+          "hint": "移动指针",
+          "desc": "片元着色器：双 Metaball",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-metaball2",
+          "path": "/webgl/shader-metaball2"
+        },
+        {
+          "slug": "shader-fog",
+          "title": "着色器 体积雾",
+          "hint": "移动指针",
+          "desc": "片元着色器：体积雾",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-fog",
+          "path": "/webgl/shader-fog"
+        },
+        {
+          "slug": "shader-stripes",
+          "title": "着色器 流光条纹",
+          "hint": "移动指针",
+          "desc": "片元着色器：流光条纹",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-stripes",
+          "path": "/webgl/shader-stripes"
+        },
+        {
+          "slug": "shader-circle-sdf",
+          "title": "着色器 SDF 圆",
+          "hint": "移动指针",
+          "desc": "片元着色器：SDF 圆",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "shader-circle-sdf",
+          "path": "/webgl/shader-circle-sdf"
         }
       ]
     },
@@ -414,9 +2009,9 @@
           "hint": "拖动物体 · 点击空白处生成",
           "desc": "重力、碰撞、弹性与鼠标约束。",
           "tag": "matter",
-          "path": "/physics/matter",
           "mod": "physics-matter",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/physics/matter"
         },
         {
           "slug": "drag",
@@ -424,9 +2019,9 @@
           "hint": "按住卡片拖动排序 · 支持触屏",
           "desc": "Pointer Events + FLIP 动画的看板拖拽。",
           "tag": "dnd",
-          "path": "/physics/drag",
           "mod": "physics-drag",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/physics/drag"
         },
         {
           "slug": "magnetic",
@@ -434,9 +2029,119 @@
           "hint": "把指针移向按钮",
           "desc": "磁吸按钮、弹性光标与跟随拖尾。",
           "tag": "cursor",
-          "path": "/physics/magnetic",
           "mod": "physics-magnetic",
-          "fn": "mount"
+          "fn": "mount",
+          "path": "/physics/magnetic"
+        },
+        {
+          "slug": "sim-1",
+          "title": "物理模拟 弹球墙",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：弹球墙",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-1",
+          "path": "/physics/sim-1"
+        },
+        {
+          "slug": "sim-2",
+          "title": "物理模拟 多重力",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：多重力",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-2",
+          "path": "/physics/sim-2"
+        },
+        {
+          "slug": "sim-3",
+          "title": "物理模拟 弹簧链",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：弹簧链",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-3",
+          "path": "/physics/sim-3"
+        },
+        {
+          "slug": "sim-4",
+          "title": "物理模拟 碰撞盒",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：碰撞盒",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-4",
+          "path": "/physics/sim-4"
+        },
+        {
+          "slug": "sim-5",
+          "title": "物理模拟 漂浮气泡",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：漂浮气泡",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-5",
+          "path": "/physics/sim-5"
+        },
+        {
+          "slug": "sim-6",
+          "title": "物理模拟 摆锤",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：摆锤",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-6",
+          "path": "/physics/sim-6"
+        },
+        {
+          "slug": "sim-7",
+          "title": "物理模拟 沙漏粒子",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：沙漏粒子",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-7",
+          "path": "/physics/sim-7"
+        },
+        {
+          "slug": "sim-8",
+          "title": "物理模拟 磁力点",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：磁力点",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-8",
+          "path": "/physics/sim-8"
+        },
+        {
+          "slug": "sim-9",
+          "title": "物理模拟 弹性绳",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：弹性绳",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-9",
+          "path": "/physics/sim-9"
+        },
+        {
+          "slug": "sim-10",
+          "title": "物理模拟 台球",
+          "hint": "拖拽交互",
+          "desc": "轻量物理：台球",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "sim-10",
+          "path": "/physics/sim-10"
         }
       ]
     },
@@ -458,9 +2163,9 @@
           "hint": "点击播放 · 点击琴键演奏",
           "desc": "振荡器 + LFO 合成音色的频谱/波形可视化。",
           "tag": "oscillator",
-          "path": "/audio/synth",
           "mod": "audio-viz",
-          "fn": "mountSynth"
+          "fn": "mountSynth",
+          "path": "/audio/synth"
         },
         {
           "slug": "mic",
@@ -468,9 +2173,130 @@
           "hint": "点击按钮授权麦克风",
           "desc": "实时麦克风输入的环形频谱（需浏览器授权）。",
           "tag": "mic",
-          "path": "/audio/mic",
           "mod": "audio-viz",
-          "fn": "mountMic"
+          "fn": "mountMic",
+          "path": "/audio/mic"
+        },
+        {
+          "slug": "viz-1",
+          "title": "音频视觉 柱状频谱",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：柱状频谱",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-1",
+          "path": "/audio/viz-1"
+        },
+        {
+          "slug": "viz-2",
+          "title": "音频视觉 圆形波",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：圆形波",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-2",
+          "path": "/audio/viz-2"
+        },
+        {
+          "slug": "viz-3",
+          "title": "音频视觉 条形均衡",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：条形均衡",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-3",
+          "path": "/audio/viz-3"
+        },
+        {
+          "slug": "viz-4",
+          "title": "音频视觉 粒子随音",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：粒子随音",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-4",
+          "path": "/audio/viz-4"
+        },
+        {
+          "slug": "viz-5",
+          "title": "音频视觉 示波器",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：示波器",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-5",
+          "path": "/audio/viz-5"
+        },
+        {
+          "slug": "viz-6",
+          "title": "音频视觉 极坐标",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：极坐标",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-6",
+          "path": "/audio/viz-6"
+        },
+        {
+          "slug": "viz-7",
+          "title": "音频视觉 瀑布图",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：瀑布图",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-7",
+          "path": "/audio/viz-7"
+        },
+        {
+          "slug": "viz-8",
+          "title": "音频视觉 节拍脉冲",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：节拍脉冲",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-8",
+          "path": "/audio/viz-8"
+        },
+        {
+          "slug": "viz-9",
+          "title": "音频视觉 和弦板",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：和弦板",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-9",
+          "path": "/audio/viz-9"
+        },
+        {
+          "slug": "viz-10",
+          "title": "音频视觉 噪声垫",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：噪声垫",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-10",
+          "path": "/audio/viz-10"
+        },
+        {
+          "slug": "viz-11",
+          "title": "音频视觉 鼓机垫",
+          "hint": "点击播放合成音",
+          "desc": "Web Audio 可视化：鼓机垫",
+          "tag": "viz",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "viz-11",
+          "path": "/audio/viz-11"
         }
       ]
     },
@@ -492,9 +2318,9 @@
           "hint": "拖动节点 · 滚轮缩放",
           "desc": "力引导布局的技术栈关系网络。",
           "tag": "graph",
-          "path": "/dataviz/graph",
           "mod": "dataviz",
-          "fn": "mountGraph"
+          "fn": "mountGraph",
+          "path": "/dataviz/graph"
         },
         {
           "slug": "treemap",
@@ -502,9 +2328,9 @@
           "hint": "点击下钻 · 面包屑返回",
           "desc": "层级数据的矩形树图。",
           "tag": "treemap",
-          "path": "/dataviz/treemap",
           "mod": "dataviz",
-          "fn": "mountTreemap"
+          "fn": "mountTreemap",
+          "path": "/dataviz/treemap"
         },
         {
           "slug": "d3-force",
@@ -512,9 +2338,141 @@
           "hint": "拖动节点",
           "desc": "d3-force 模拟 + SVG 渲染。",
           "tag": "d3",
-          "path": "/dataviz/d3-force",
           "mod": "dataviz",
-          "fn": "mountD3Force"
+          "fn": "mountD3Force",
+          "path": "/dataviz/d3-force"
+        },
+        {
+          "slug": "viz-1",
+          "title": "数据图 热力格子",
+          "hint": "交互探索",
+          "desc": "数据可视化：热力格子",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-1",
+          "path": "/dataviz/viz-1"
+        },
+        {
+          "slug": "viz-2",
+          "title": "数据图 雷达图",
+          "hint": "交互探索",
+          "desc": "数据可视化：雷达图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-2",
+          "path": "/dataviz/viz-2"
+        },
+        {
+          "slug": "viz-3",
+          "title": "数据图 桑基简化",
+          "hint": "交互探索",
+          "desc": "数据可视化：桑基简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-3",
+          "path": "/dataviz/viz-3"
+        },
+        {
+          "slug": "viz-4",
+          "title": "数据图 气泡散点",
+          "hint": "交互探索",
+          "desc": "数据可视化：气泡散点",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-4",
+          "path": "/dataviz/viz-4"
+        },
+        {
+          "slug": "viz-5",
+          "title": "数据图 日历热力",
+          "hint": "交互探索",
+          "desc": "数据可视化：日历热力",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-5",
+          "path": "/dataviz/viz-5"
+        },
+        {
+          "slug": "viz-6",
+          "title": "数据图 旭日简化",
+          "hint": "交互探索",
+          "desc": "数据可视化：旭日简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-6",
+          "path": "/dataviz/viz-6"
+        },
+        {
+          "slug": "viz-7",
+          "title": "数据图 和弦弧",
+          "hint": "交互探索",
+          "desc": "数据可视化：和弦弧",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-7",
+          "path": "/dataviz/viz-7"
+        },
+        {
+          "slug": "viz-8",
+          "title": "数据图 箱线",
+          "hint": "交互探索",
+          "desc": "数据可视化：箱线",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-8",
+          "path": "/dataviz/viz-8"
+        },
+        {
+          "slug": "viz-9",
+          "title": "数据图 平行坐标",
+          "hint": "交互探索",
+          "desc": "数据可视化：平行坐标",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-9",
+          "path": "/dataviz/viz-9"
+        },
+        {
+          "slug": "viz-10",
+          "title": "数据图 流图",
+          "hint": "交互探索",
+          "desc": "数据可视化：流图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-10",
+          "path": "/dataviz/viz-10"
+        },
+        {
+          "slug": "viz-11",
+          "title": "数据图 词云简化",
+          "hint": "交互探索",
+          "desc": "数据可视化：词云简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-11",
+          "path": "/dataviz/viz-11"
+        },
+        {
+          "slug": "viz-12",
+          "title": "数据图 层级列表",
+          "hint": "交互探索",
+          "desc": "数据可视化：层级列表",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "viz-12",
+          "path": "/dataviz/viz-12"
         }
       ]
     },
@@ -535,9 +2493,9 @@
           "hint": "播放 / 暂停 / 调速",
           "desc": "lottie-web 播放内联 JSON 动画数据。",
           "tag": "lottie",
-          "path": "/micro/lottie",
           "mod": "micro",
-          "fn": "mountLottie"
+          "fn": "mountLottie",
+          "path": "/micro/lottie"
         },
         {
           "slug": "like",
@@ -545,9 +2503,9 @@
           "hint": "点击爱心与按钮",
           "desc": "点赞粒子爆发、收藏、计数滚动。",
           "tag": "like",
-          "path": "/micro/like",
           "mod": "micro",
-          "fn": "mountLike"
+          "fn": "mountLike",
+          "path": "/micro/like"
         },
         {
           "slug": "controls",
@@ -555,12 +2513,1763 @@
           "hint": "点击各类控件",
           "desc": "Toggle、Checkbox 描边、Material 涟漪与加载按钮。",
           "tag": "controls",
-          "path": "/micro/controls",
           "mod": "micro",
-          "fn": "mountControls"
+          "fn": "mountControls",
+          "path": "/micro/controls"
+        },
+        {
+          "slug": "mi-1",
+          "title": "微交互 心跳赞",
+          "hint": "点击反馈",
+          "desc": "微交互组件：心跳赞",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-1",
+          "path": "/micro/mi-1"
+        },
+        {
+          "slug": "mi-2",
+          "title": "微交互 勾选弹跳",
+          "hint": "点击反馈",
+          "desc": "微交互组件：勾选弹跳",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-2",
+          "path": "/micro/mi-2"
+        },
+        {
+          "slug": "mi-3",
+          "title": "微交互 发送纸飞机",
+          "hint": "点击反馈",
+          "desc": "微交互组件：发送纸飞机",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-3",
+          "path": "/micro/mi-3"
+        },
+        {
+          "slug": "mi-4",
+          "title": "微交互 复制成功",
+          "hint": "点击反馈",
+          "desc": "微交互组件：复制成功",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-4",
+          "path": "/micro/mi-4"
+        },
+        {
+          "slug": "mi-5",
+          "title": "微交互 下载进度",
+          "hint": "点击反馈",
+          "desc": "微交互组件：下载进度",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-5",
+          "path": "/micro/mi-5"
+        },
+        {
+          "slug": "mi-6",
+          "title": "微交互 骨架屏",
+          "hint": "点击反馈",
+          "desc": "微交互组件：骨架屏",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-6",
+          "path": "/micro/mi-6"
+        },
+        {
+          "slug": "mi-7",
+          "title": "微交互 Toast",
+          "hint": "点击反馈",
+          "desc": "微交互组件：Toast",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-7",
+          "path": "/micro/mi-7"
+        },
+        {
+          "slug": "mi-8",
+          "title": "微交互 徽章跳动",
+          "hint": "点击反馈",
+          "desc": "微交互组件：徽章跳动",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-8",
+          "path": "/micro/mi-8"
+        },
+        {
+          "slug": "mi-9",
+          "title": "微交互 拖动阈值",
+          "hint": "点击反馈",
+          "desc": "微交互组件：拖动阈值",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-9",
+          "path": "/micro/mi-9"
+        },
+        {
+          "slug": "mi-10",
+          "title": "微交互 长按确认",
+          "hint": "点击反馈",
+          "desc": "微交互组件：长按确认",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-10",
+          "path": "/micro/mi-10"
+        },
+        {
+          "slug": "mi-11",
+          "title": "微交互 摇一摇提示",
+          "hint": "点击反馈",
+          "desc": "微交互组件：摇一摇提示",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-11",
+          "path": "/micro/mi-11"
+        },
+        {
+          "slug": "mi-12",
+          "title": "微交互 滑动验证",
+          "hint": "点击反馈",
+          "desc": "微交互组件：滑动验证",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "mi-12",
+          "path": "/micro/mi-12"
+        }
+      ]
+    },
+    {
+      "key": "layout",
+      "name": "CSS 布局玩具",
+      "icon": "▦",
+      "intro": "Flex / Grid / 容器查询等布局实验：可调间距、列数与对齐。",
+      "tech": [
+        "CSS Grid",
+        "Flexbox",
+        "gap",
+        "container"
+      ],
+      "demos": [
+        {
+          "slug": "grid-1",
+          "title": "Grid 布局 基础栅格",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：基础栅格",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-1",
+          "path": "/layout/grid-1"
+        },
+        {
+          "slug": "grid-2",
+          "title": "Grid 布局 瀑布流模拟",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：瀑布流模拟",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-2",
+          "path": "/layout/grid-2"
+        },
+        {
+          "slug": "grid-3",
+          "title": "Grid 布局 圣杯",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：圣杯",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-3",
+          "path": "/layout/grid-3"
+        },
+        {
+          "slug": "grid-4",
+          "title": "Grid 布局 侧栏可调",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：侧栏可调",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-4",
+          "path": "/layout/grid-4"
+        },
+        {
+          "slug": "grid-5",
+          "title": "Grid 布局 卡片等分",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：卡片等分",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-5",
+          "path": "/layout/grid-5"
+        },
+        {
+          "slug": "grid-6",
+          "title": "Grid 布局 密集自动填充",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：密集自动填充",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-6",
+          "path": "/layout/grid-6"
+        },
+        {
+          "slug": "grid-7",
+          "title": "Grid 布局 命名区域",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：命名区域",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-7",
+          "path": "/layout/grid-7"
+        },
+        {
+          "slug": "grid-8",
+          "title": "Grid 布局 子网格感",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：子网格感",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-8",
+          "path": "/layout/grid-8"
+        },
+        {
+          "slug": "grid-9",
+          "title": "Grid 布局 居中舞台",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：居中舞台",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-9",
+          "path": "/layout/grid-9"
+        },
+        {
+          "slug": "grid-10",
+          "title": "Grid 布局 杂志排版",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：杂志排版",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-10",
+          "path": "/layout/grid-10"
+        },
+        {
+          "slug": "grid-11",
+          "title": "Grid 布局 仪表盘",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：仪表盘",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-11",
+          "path": "/layout/grid-11"
+        },
+        {
+          "slug": "grid-12",
+          "title": "Grid 布局 响应列",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：响应列",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-12",
+          "path": "/layout/grid-12"
+        },
+        {
+          "slug": "grid-13",
+          "title": "Grid 布局 间隔实验",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：间隔实验",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-13",
+          "path": "/layout/grid-13"
+        },
+        {
+          "slug": "grid-14",
+          "title": "Grid 布局 对齐线",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：对齐线",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-14",
+          "path": "/layout/grid-14"
+        },
+        {
+          "slug": "grid-15",
+          "title": "Grid 布局 重叠层",
+          "hint": "拖动滑块改列数/间距",
+          "desc": "CSS Grid 玩具：重叠层",
+          "tag": "grid",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "grid-15",
+          "path": "/layout/grid-15"
+        },
+        {
+          "slug": "flex-1",
+          "title": "Flex 布局 主轴分布",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：主轴分布",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-1",
+          "path": "/layout/flex-1"
+        },
+        {
+          "slug": "flex-2",
+          "title": "Flex 布局 换行",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：换行",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-2",
+          "path": "/layout/flex-2"
+        },
+        {
+          "slug": "flex-3",
+          "title": "Flex 布局 等高卡片",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：等高卡片",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-3",
+          "path": "/layout/flex-3"
+        },
+        {
+          "slug": "flex-4",
+          "title": "Flex 布局 工具栏",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：工具栏",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-4",
+          "path": "/layout/flex-4"
+        },
+        {
+          "slug": "flex-5",
+          "title": "Flex 布局 聊天气泡",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：聊天气泡",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-5",
+          "path": "/layout/flex-5"
+        },
+        {
+          "slug": "flex-6",
+          "title": "Flex 布局 标签云",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：标签云",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-6",
+          "path": "/layout/flex-6"
+        },
+        {
+          "slug": "flex-7",
+          "title": "Flex 布局 底部操作栏",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：底部操作栏",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-7",
+          "path": "/layout/flex-7"
+        },
+        {
+          "slug": "flex-8",
+          "title": "Flex 布局 垂直导航",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：垂直导航",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-8",
+          "path": "/layout/flex-8"
+        },
+        {
+          "slug": "flex-9",
+          "title": "Flex 布局 居中英雄",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：居中英雄",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-9",
+          "path": "/layout/flex-9"
+        },
+        {
+          "slug": "flex-10",
+          "title": "Flex 布局 间距推开",
+          "hint": "点击切换方向/对齐",
+          "desc": "Flexbox 玩具：间距推开",
+          "tag": "flex",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "flex-10",
+          "path": "/layout/flex-10"
+        }
+      ]
+    },
+    {
+      "key": "filters",
+      "name": "CSS 滤镜与混合",
+      "icon": "✧",
+      "intro": "filter / backdrop-filter / mix-blend-mode 视觉实验。",
+      "tech": [
+        "filter",
+        "backdrop-filter",
+        "mix-blend-mode"
+      ],
+      "demos": [
+        {
+          "slug": "f-1",
+          "title": "滤镜 模糊",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：模糊",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-1",
+          "path": "/filters/f-1"
+        },
+        {
+          "slug": "f-2",
+          "title": "滤镜 亮度",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：亮度",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-2",
+          "path": "/filters/f-2"
+        },
+        {
+          "slug": "f-3",
+          "title": "滤镜 对比",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：对比",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-3",
+          "path": "/filters/f-3"
+        },
+        {
+          "slug": "f-4",
+          "title": "滤镜 饱和",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：饱和",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-4",
+          "path": "/filters/f-4"
+        },
+        {
+          "slug": "f-5",
+          "title": "滤镜 色相旋转",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：色相旋转",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-5",
+          "path": "/filters/f-5"
+        },
+        {
+          "slug": "f-6",
+          "title": "滤镜 反相",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：反相",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-6",
+          "path": "/filters/f-6"
+        },
+        {
+          "slug": "f-7",
+          "title": "滤镜 灰度",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：灰度",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-7",
+          "path": "/filters/f-7"
+        },
+        {
+          "slug": "f-8",
+          "title": "滤镜 褐色",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：褐色",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-8",
+          "path": "/filters/f-8"
+        },
+        {
+          "slug": "f-9",
+          "title": "滤镜 投影",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：投影",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-9",
+          "path": "/filters/f-9"
+        },
+        {
+          "slug": "f-10",
+          "title": "滤镜 组合霓虹",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：组合霓虹",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-10",
+          "path": "/filters/f-10"
+        },
+        {
+          "slug": "f-11",
+          "title": "滤镜 毛玻璃背板",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：毛玻璃背板",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-11",
+          "path": "/filters/f-11"
+        },
+        {
+          "slug": "f-12",
+          "title": "滤镜 混合叠加",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：混合叠加",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-12",
+          "path": "/filters/f-12"
+        },
+        {
+          "slug": "f-13",
+          "title": "滤镜 排除混合",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：排除混合",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-13",
+          "path": "/filters/f-13"
+        },
+        {
+          "slug": "f-14",
+          "title": "滤镜 彩色闪烁",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：彩色闪烁",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-14",
+          "path": "/filters/f-14"
+        },
+        {
+          "slug": "f-15",
+          "title": "滤镜 像素感",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：像素感",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-15",
+          "path": "/filters/f-15"
+        },
+        {
+          "slug": "f-16",
+          "title": "滤镜 锐化模拟",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：锐化模拟",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-16",
+          "path": "/filters/f-16"
+        },
+        {
+          "slug": "f-17",
+          "title": "滤镜 暗角",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：暗角",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-17",
+          "path": "/filters/f-17"
+        },
+        {
+          "slug": "f-18",
+          "title": "滤镜 发光描边",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：发光描边",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-18",
+          "path": "/filters/f-18"
+        },
+        {
+          "slug": "f-19",
+          "title": "滤镜 双色调",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：双色调",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-19",
+          "path": "/filters/f-19"
+        },
+        {
+          "slug": "f-20",
+          "title": "滤镜 故障抖动",
+          "hint": "拖动滑块调节",
+          "desc": "CSS filter：故障抖动",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "f-20",
+          "path": "/filters/f-20"
+        }
+      ]
+    },
+    {
+      "key": "particles-fx",
+      "name": "粒子特效包",
+      "icon": "✦",
+      "intro": "Canvas 粒子套件：星空、雪、烟、引力场等可调参数变体。",
+      "tech": [
+        "Canvas",
+        "particles",
+        "RAF"
+      ],
+      "demos": [
+        {
+          "slug": "p-1",
+          "title": "粒子 星空",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：星空",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-1",
+          "path": "/particles-fx/p-1"
+        },
+        {
+          "slug": "p-2",
+          "title": "粒子 降雪",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：降雪",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-2",
+          "path": "/particles-fx/p-2"
+        },
+        {
+          "slug": "p-3",
+          "title": "粒子 金雨",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：金雨",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-3",
+          "path": "/particles-fx/p-3"
+        },
+        {
+          "slug": "p-4",
+          "title": "粒子 烟柱",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：烟柱",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-4",
+          "path": "/particles-fx/p-4"
+        },
+        {
+          "slug": "p-5",
+          "title": "粒子 萤火",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：萤火",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-5",
+          "path": "/particles-fx/p-5"
+        },
+        {
+          "slug": "p-6",
+          "title": "粒子 火花喷泉",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：火花喷泉",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-6",
+          "path": "/particles-fx/p-6"
+        },
+        {
+          "slug": "p-7",
+          "title": "粒子 引力井",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：引力井",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-7",
+          "path": "/particles-fx/p-7"
+        },
+        {
+          "slug": "p-8",
+          "title": "粒子 排斥场",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：排斥场",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-8",
+          "path": "/particles-fx/p-8"
+        },
+        {
+          "slug": "p-9",
+          "title": "粒子 鼠标跟随群",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：鼠标跟随群",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-9",
+          "path": "/particles-fx/p-9"
+        },
+        {
+          "slug": "p-10",
+          "title": "粒子 爆炸碎屑",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：爆炸碎屑",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-10",
+          "path": "/particles-fx/p-10"
+        },
+        {
+          "slug": "p-11",
+          "title": "粒子 螺旋星系",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：螺旋星系",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-11",
+          "path": "/particles-fx/p-11"
+        },
+        {
+          "slug": "p-12",
+          "title": "粒子 心形场",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：心形场",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-12",
+          "path": "/particles-fx/p-12"
+        },
+        {
+          "slug": "p-13",
+          "title": "粒子 文字点阵",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：文字点阵",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-13",
+          "path": "/particles-fx/p-13"
+        },
+        {
+          "slug": "p-14",
+          "title": "粒子 网格跳动",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：网格跳动",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-14",
+          "path": "/particles-fx/p-14"
+        },
+        {
+          "slug": "p-15",
+          "title": "粒子 波浪粒子",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：波浪粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-15",
+          "path": "/particles-fx/p-15"
+        },
+        {
+          "slug": "p-16",
+          "title": "粒子 彗星",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：彗星",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-16",
+          "path": "/particles-fx/p-16"
+        },
+        {
+          "slug": "p-17",
+          "title": "粒子 泡泡上升",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：泡泡上升",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-17",
+          "path": "/particles-fx/p-17"
+        },
+        {
+          "slug": "p-18",
+          "title": "粒子 落叶",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：落叶",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-18",
+          "path": "/particles-fx/p-18"
+        },
+        {
+          "slug": "p-19",
+          "title": "粒子 雷电折线",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：雷电折线",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-19",
+          "path": "/particles-fx/p-19"
+        },
+        {
+          "slug": "p-20",
+          "title": "粒子 沙尘",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：沙尘",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-20",
+          "path": "/particles-fx/p-20"
+        },
+        {
+          "slug": "p-21",
+          "title": "粒子 霓虹点",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：霓虹点",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-21",
+          "path": "/particles-fx/p-21"
+        },
+        {
+          "slug": "p-22",
+          "title": "粒子 量子抖",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：量子抖",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-22",
+          "path": "/particles-fx/p-22"
+        },
+        {
+          "slug": "p-23",
+          "title": "粒子 连接网2",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：连接网2",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-23",
+          "path": "/particles-fx/p-23"
+        },
+        {
+          "slug": "p-24",
+          "title": "粒子 黑洞吸积",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：黑洞吸积",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-24",
+          "path": "/particles-fx/p-24"
+        },
+        {
+          "slug": "p-25",
+          "title": "粒子 彩虹喷泉",
+          "hint": "移动指针 / 点击爆发",
+          "desc": "粒子套件：彩虹喷泉",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "p-25",
+          "path": "/particles-fx/p-25"
+        }
+      ]
+    },
+    {
+      "key": "generative",
+      "name": "生成艺术",
+      "icon": "◐",
+      "intro": "程序化生成图案：噪声场、细胞自动机、递归分形与随机游走。",
+      "tech": [
+        "Canvas",
+        "noise",
+        "fractal"
+      ],
+      "demos": [
+        {
+          "slug": "g-1",
+          "title": "生成 Perlin 流场",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：Perlin 流场",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-1",
+          "path": "/generative/g-1"
+        },
+        {
+          "slug": "g-2",
+          "title": "生成 Julia 简化",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：Julia 简化",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-2",
+          "path": "/generative/g-2"
+        },
+        {
+          "slug": "g-3",
+          "title": "生成 Mandelbrot 漫游",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：Mandelbrot 漫游",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-3",
+          "path": "/generative/g-3"
+        },
+        {
+          "slug": "g-4",
+          "title": "生成 生命游戏",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：生命游戏",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-4",
+          "path": "/generative/g-4"
+        },
+        {
+          "slug": "g-5",
+          "title": "生成 沃罗诺伊",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：沃罗诺伊",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-5",
+          "path": "/generative/g-5"
+        },
+        {
+          "slug": "g-6",
+          "title": "生成 递归树",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：递归树",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-6",
+          "path": "/generative/g-6"
+        },
+        {
+          "slug": "g-7",
+          "title": "生成 Sierpinski",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：Sierpinski",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-7",
+          "path": "/generative/g-7"
+        },
+        {
+          "slug": "g-8",
+          "title": "生成 圆形填充",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：圆形填充",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-8",
+          "path": "/generative/g-8"
+        },
+        {
+          "slug": "g-9",
+          "title": "生成 噪声地形",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：噪声地形",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-9",
+          "path": "/generative/g-9"
+        },
+        {
+          "slug": "g-10",
+          "title": "生成 随机游走",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：随机游走",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-10",
+          "path": "/generative/g-10"
+        },
+        {
+          "slug": "g-11",
+          "title": "生成 L-System 草",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：L-System 草",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-11",
+          "path": "/generative/g-11"
+        },
+        {
+          "slug": "g-12",
+          "title": "生成 波纹干涉",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：波纹干涉",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-12",
+          "path": "/generative/g-12"
+        },
+        {
+          "slug": "g-13",
+          "title": "生成 染色扩散",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：染色扩散",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-13",
+          "path": "/generative/g-13"
+        },
+        {
+          "slug": "g-14",
+          "title": "生成 马赛克噪声",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：马赛克噪声",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-14",
+          "path": "/generative/g-14"
+        },
+        {
+          "slug": "g-15",
+          "title": "生成 极坐标花",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：极坐标花",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-15",
+          "path": "/generative/g-15"
+        },
+        {
+          "slug": "g-16",
+          "title": "生成 三角剖分感",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：三角剖分感",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-16",
+          "path": "/generative/g-16"
+        },
+        {
+          "slug": "g-17",
+          "title": "生成 方块细分",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：方块细分",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-17",
+          "path": "/generative/g-17"
+        },
+        {
+          "slug": "g-18",
+          "title": "生成 等高线",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：等高线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-18",
+          "path": "/generative/g-18"
+        },
+        {
+          "slug": "g-19",
+          "title": "生成 墨水滴",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：墨水滴",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-19",
+          "path": "/generative/g-19"
+        },
+        {
+          "slug": "g-20",
+          "title": "生成 光纤束",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：光纤束",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-20",
+          "path": "/generative/g-20"
+        },
+        {
+          "slug": "g-21",
+          "title": "生成 像素排序感",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：像素排序感",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-21",
+          "path": "/generative/g-21"
+        },
+        {
+          "slug": "g-22",
+          "title": "生成 彩虹噪声",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：彩虹噪声",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-22",
+          "path": "/generative/g-22"
+        },
+        {
+          "slug": "g-23",
+          "title": "生成 细胞增长",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：细胞增长",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-23",
+          "path": "/generative/g-23"
+        },
+        {
+          "slug": "g-24",
+          "title": "生成 引力绘线",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：引力绘线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-24",
+          "path": "/generative/g-24"
+        },
+        {
+          "slug": "g-25",
+          "title": "生成 螺旋采样",
+          "hint": "点击重生 / 拖动参数",
+          "desc": "生成艺术：螺旋采样",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "g-25",
+          "path": "/generative/g-25"
+        }
+      ]
+    },
+    {
+      "key": "text-fx",
+      "name": "文字特效",
+      "icon": "Aa",
+      "intro": "打字机、故障、渐变、描边、拆分入场等文字动效。",
+      "tech": [
+        "CSS",
+        "Canvas",
+        "WAAPI"
+      ],
+      "demos": [
+        {
+          "slug": "t-1",
+          "title": "文字 打字机",
+          "hint": "点击重播",
+          "desc": "文字特效：打字机",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-1",
+          "path": "/text-fx/t-1"
+        },
+        {
+          "slug": "t-2",
+          "title": "文字 故障 Glitch",
+          "hint": "点击重播",
+          "desc": "文字特效：故障 Glitch",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-2",
+          "path": "/text-fx/t-2"
+        },
+        {
+          "slug": "t-3",
+          "title": "文字 渐变扫光",
+          "hint": "点击重播",
+          "desc": "文字特效：渐变扫光",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-3",
+          "path": "/text-fx/t-3"
+        },
+        {
+          "slug": "t-4",
+          "title": "文字 描边填充",
+          "hint": "点击重播",
+          "desc": "文字特效：描边填充",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-4",
+          "path": "/text-fx/t-4"
+        },
+        {
+          "slug": "t-5",
+          "title": "文字 拆分下落",
+          "hint": "点击重播",
+          "desc": "文字特效：拆分下落",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-5",
+          "path": "/text-fx/t-5"
+        },
+        {
+          "slug": "t-6",
+          "title": "文字 弹性弹入",
+          "hint": "点击重播",
+          "desc": "文字特效：弹性弹入",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-6",
+          "path": "/text-fx/t-6"
+        },
+        {
+          "slug": "t-7",
+          "title": "文字 模糊清晰",
+          "hint": "点击重播",
+          "desc": "文字特效：模糊清晰",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-7",
+          "path": "/text-fx/t-7"
+        },
+        {
+          "slug": "t-8",
+          "title": "文字 镜像翻转",
+          "hint": "点击重播",
+          "desc": "文字特效：镜像翻转",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-8",
+          "path": "/text-fx/t-8"
+        },
+        {
+          "slug": "t-9",
+          "title": "文字 波浪字",
+          "hint": "点击重播",
+          "desc": "文字特效：波浪字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-9",
+          "path": "/text-fx/t-9"
+        },
+        {
+          "slug": "t-10",
+          "title": "文字 3D 透视",
+          "hint": "点击重播",
+          "desc": "文字特效：3D 透视",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-10",
+          "path": "/text-fx/t-10"
+        },
+        {
+          "slug": "t-11",
+          "title": "文字 霓虹灯管",
+          "hint": "点击重播",
+          "desc": "文字特效：霓虹灯管",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-11",
+          "path": "/text-fx/t-11"
+        },
+        {
+          "slug": "t-12",
+          "title": "文字 打散重组",
+          "hint": "点击重播",
+          "desc": "文字特效：打散重组",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-12",
+          "path": "/text-fx/t-12"
+        },
+        {
+          "slug": "t-13",
+          "title": "文字 计数滚动",
+          "hint": "点击重播",
+          "desc": "文字特效：计数滚动",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-13",
+          "path": "/text-fx/t-13"
+        },
+        {
+          "slug": "t-14",
+          "title": "文字 密码解码",
+          "hint": "点击重播",
+          "desc": "文字特效：密码解码",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-14",
+          "path": "/text-fx/t-14"
+        },
+        {
+          "slug": "t-15",
+          "title": "文字 打印色带",
+          "hint": "点击重播",
+          "desc": "文字特效：打印色带",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-15",
+          "path": "/text-fx/t-15"
+        },
+        {
+          "slug": "t-16",
+          "title": "文字 手写进度",
+          "hint": "点击重播",
+          "desc": "文字特效：手写进度",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-16",
+          "path": "/text-fx/t-16"
+        },
+        {
+          "slug": "t-17",
+          "title": "文字 字幕卡拉OK",
+          "hint": "点击重播",
+          "desc": "文字特效：字幕卡拉OK",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-17",
+          "path": "/text-fx/t-17"
+        },
+        {
+          "slug": "t-18",
+          "title": "文字 竖排滚动",
+          "hint": "点击重播",
+          "desc": "文字特效：竖排滚动",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-18",
+          "path": "/text-fx/t-18"
+        },
+        {
+          "slug": "t-19",
+          "title": "文字 切页翻转",
+          "hint": "点击重播",
+          "desc": "文字特效：切页翻转",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-19",
+          "path": "/text-fx/t-19"
+        },
+        {
+          "slug": "t-20",
+          "title": "文字 液态变形",
+          "hint": "点击重播",
+          "desc": "文字特效：液态变形",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-20",
+          "path": "/text-fx/t-20"
+        },
+        {
+          "slug": "t-21",
+          "title": "文字 像素显现",
+          "hint": "点击重播",
+          "desc": "文字特效：像素显现",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-21",
+          "path": "/text-fx/t-21"
+        },
+        {
+          "slug": "t-22",
+          "title": "文字 烟雾消散",
+          "hint": "点击重播",
+          "desc": "文字特效：烟雾消散",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-22",
+          "path": "/text-fx/t-22"
+        },
+        {
+          "slug": "t-23",
+          "title": "文字 磁吸排列",
+          "hint": "点击重播",
+          "desc": "文字特效：磁吸排列",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-23",
+          "path": "/text-fx/t-23"
+        },
+        {
+          "slug": "t-24",
+          "title": "文字 彩虹跳动",
+          "hint": "点击重播",
+          "desc": "文字特效：彩虹跳动",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-24",
+          "path": "/text-fx/t-24"
+        },
+        {
+          "slug": "t-25",
+          "title": "文字 打地鼠高亮",
+          "hint": "点击重播",
+          "desc": "文字特效：打地鼠高亮",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "t-25",
+          "path": "/text-fx/t-25"
+        }
+      ]
+    },
+    {
+      "key": "scroll-fx",
+      "name": "滚动特效",
+      "icon": "↕",
+      "intro": "面板内滚动驱动的视差、进度、钉住与揭示效果。",
+      "tech": [
+        "IntersectionObserver",
+        "scroll",
+        "parallax"
+      ],
+      "demos": [
+        {
+          "slug": "s-1",
+          "title": "滚动 视差层",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：视差层",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-1",
+          "path": "/scroll-fx/s-1"
+        },
+        {
+          "slug": "s-2",
+          "title": "滚动 进度条",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：进度条",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-2",
+          "path": "/scroll-fx/s-2"
+        },
+        {
+          "slug": "s-3",
+          "title": "滚动 章节钉住",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：章节钉住",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-3",
+          "path": "/scroll-fx/s-3"
+        },
+        {
+          "slug": "s-4",
+          "title": "滚动 淡入揭示",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：淡入揭示",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-4",
+          "path": "/scroll-fx/s-4"
+        },
+        {
+          "slug": "s-5",
+          "title": "滚动 缩放进入",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：缩放进入",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-5",
+          "path": "/scroll-fx/s-5"
+        },
+        {
+          "slug": "s-6",
+          "title": "滚动 横向滚动画廊",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：横向滚动画廊",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-6",
+          "path": "/scroll-fx/s-6"
+        },
+        {
+          "slug": "s-7",
+          "title": "滚动 卡片堆叠",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：卡片堆叠",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-7",
+          "path": "/scroll-fx/s-7"
+        },
+        {
+          "slug": "s-8",
+          "title": "滚动 文字擦除",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：文字擦除",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-8",
+          "path": "/scroll-fx/s-8"
+        },
+        {
+          "slug": "s-9",
+          "title": "滚动 路径绘制随滚",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：路径绘制随滚",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-9",
+          "path": "/scroll-fx/s-9"
+        },
+        {
+          "slug": "s-10",
+          "title": "滚动 数字递增",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：数字递增",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-10",
+          "path": "/scroll-fx/s-10"
+        },
+        {
+          "slug": "s-11",
+          "title": "滚动 背景变色",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：背景变色",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-11",
+          "path": "/scroll-fx/s-11"
+        },
+        {
+          "slug": "s-12",
+          "title": "滚动 分屏擦除",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：分屏擦除",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-12",
+          "path": "/scroll-fx/s-12"
+        },
+        {
+          "slug": "s-13",
+          "title": "滚动 惯性吸附",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：惯性吸附",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-13",
+          "path": "/scroll-fx/s-13"
+        },
+        {
+          "slug": "s-14",
+          "title": "滚动 目录高亮",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：目录高亮",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-14",
+          "path": "/scroll-fx/s-14"
+        },
+        {
+          "slug": "s-15",
+          "title": "滚动 封面揭开",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：封面揭开",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-15",
+          "path": "/scroll-fx/s-15"
+        },
+        {
+          "slug": "s-16",
+          "title": "滚动 时间线",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：时间线",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-16",
+          "path": "/scroll-fx/s-16"
+        },
+        {
+          "slug": "s-17",
+          "title": "滚动 图片懒显",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：图片懒显",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-17",
+          "path": "/scroll-fx/s-17"
+        },
+        {
+          "slug": "s-18",
+          "title": "滚动 交错网格",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：交错网格",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-18",
+          "path": "/scroll-fx/s-18"
+        },
+        {
+          "slug": "s-19",
+          "title": "滚动 回顶气泡",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：回顶气泡",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-19",
+          "path": "/scroll-fx/s-19"
+        },
+        {
+          "slug": "s-20",
+          "title": "滚动 滚动叙事",
+          "hint": "在面板内滚动",
+          "desc": "滚动特效：滚动叙事",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "s-20",
+          "path": "/scroll-fx/s-20"
         }
       ]
     }
   ],
-  "totalDemos": 40
+  "totalDemos": 370
 }

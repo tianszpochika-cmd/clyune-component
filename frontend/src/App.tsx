@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
+
+type Health = { ok: boolean; db: string; service?: string; version?: string };
 
 function useSidebar() {
   const [open, setOpen] = useState(false);
@@ -10,48 +12,86 @@ function useSidebar() {
   return { open, setOpen, close: () => setOpen(false) };
 }
 
-function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+function useHealth() {
+  const [health, setHealth] = useState<Health | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const load = () => {
+      fetch('/api/health')
+        .then((r) => r.json())
+        .then((j) => { if (alive) setHealth(j); })
+        .catch(() => { if (alive) setHealth({ ok: false, db: 'unreachable' }); });
+    };
+    load();
+    const id = setInterval(load, 30000);
+    return () => { alive = false; clearInterval(id); };
+  }, []);
+  return health;
+}
+
+function Sidebar({ open, onClose, filter }: { open: boolean; onClose: () => void; filter: string }) {
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
     : loc.pathname || '/';
+  const q = filter.trim().toLowerCase();
+
+  const filtered = useMemo(() => {
+    if (!q) return categories;
+    return categories
+      .map((c) => ({
+        ...c,
+        demos: c.demos.filter((d) =>
+          d.title.toLowerCase().includes(q)
+          || d.slug.toLowerCase().includes(q)
+          || d.tag.toLowerCase().includes(q)
+          || c.name.toLowerCase().includes(q)),
+      }))
+      .filter((c) => c.demos.length > 0 || c.name.toLowerCase().includes(q) || c.key.includes(q));
+  }, [q]);
 
   return (
     <>
       <aside className={`sidebar${open ? ' open' : ''}`} id="sidebar">
-        <div className="brand">
+        <div className="brand sticky-brand">
           <div className="brand-mark">C</div>
           <div>
             <div className="brand-title">Component</div>
-            <div className="brand-sub">Rust + React port</div>
+            <div className="brand-sub">Rust + React · {totalDemos} demos</div>
           </div>
         </div>
-        <nav className="nav">
+        <nav className="nav" aria-label="Categories">
           <Link to="/" className={`nav-item${r === '/' ? ' active' : ''}`}>
             <span className="icon">⌂</span> Home<em className="count">{totalDemos}</em>
           </Link>
-          {categories.map((c) => {
-            const groupOpen = r === `/${c.key}` || r.startsWith(`/${c.key}/`);
+          {filtered.map((c) => {
+            const groupOpen = !q && (r === `/${c.key}` || r.startsWith(`/${c.key}/`));
+            const forceOpen = !!q;
             return (
-              <div key={c.key} className={`nav-group${groupOpen ? ' open' : ''}`}>
+              <div key={c.key} className={`nav-group${groupOpen || forceOpen ? ' open' : ''}`}>
                 <Link to={`/${c.key}`} className={`nav-item${r === `/${c.key}` || r.startsWith(`/${c.key}/`) ? ' active' : ''}`}>
                   <span className="icon">{c.icon}</span> {c.name}
                   <em className="count">{c.demos.length}</em>
                 </Link>
                 <div className="nav-children">
-                  {c.demos.map((d) => (
+                  {c.demos.slice(0, q ? 50 : 40).map((d) => (
                     <Link
                       key={d.slug}
                       to={`/${c.key}/${d.slug}`}
                       className={`nav-sub${r === `/${c.key}/${d.slug}` ? ' active' : ''}`}
+                      title={d.hint}
                     >
                       {d.title}
                     </Link>
                   ))}
+                  {c.demos.length > (q ? 50 : 40) && (
+                    <Link to={`/${c.key}`} className="nav-sub more">查看全部 {c.demos.length} →</Link>
+                  )}
                 </div>
               </div>
             );
           })}
+          {filtered.length === 0 && <div className="nav-empty">无匹配演示</div>}
         </nav>
         <div className="sidebar-foot">component.clyune.com</div>
       </aside>
@@ -60,19 +100,30 @@ function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   );
 }
 
-function Home() {
+function DbBadge({ health }: { health: Health | null }) {
+  if (!health) return <><b>…</b><span>数据库</span></>;
+  const ok = health.ok && health.db === 'postgres';
+  return (
+    <>
+      <b className={ok ? 'ok' : 'bad'}>{ok ? 'ON' : health.db === 'fallback-json' ? 'JSON' : 'OFF'}</b>
+      <span>{ok ? 'Postgres' : health.db}</span>
+    </>
+  );
+}
+
+function Home({ health }: { health: Health | null }) {
   return (
     <>
       <section className="card hero">
         <h1>Component Gallery</h1>
         <p>
           管理后台风格的前端技术与 Web 特效演示站：{categories.length} 个分类、{totalDemos} 个可交互 Demo。
-          本仓库为 <strong>Rust (Axum) + React (Vite)</strong> 移植版；演示逻辑沿用原站 mount() 函数，依赖仍按需走 CDN。
+          本仓库为 <strong>Rust (Axum) + React (Vite)</strong> 移植版；演示逻辑按需走 CDN / 本地 kit。
         </p>
         <div className="stats">
           <div><b>{categories.length}</b><span>分类</span></div>
           <div><b>{totalDemos}</b><span>Demos</span></div>
-          <div><b>0</b><span>数据库</span></div>
+          <div><DbBadge health={health} /></div>
         </div>
       </section>
       <div className="grid">
@@ -92,14 +143,14 @@ function Home() {
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>分类</th><th className="num">数量</th><th>Demos</th></tr>
+              <tr><th>分类</th><th className="num">数量</th><th>Demos（节选）</th></tr>
             </thead>
             <tbody>
               {categories.map((c) => (
                 <tr key={c.key}>
                   <td><Link to={`/${c.key}`}>{c.icon} {c.name}</Link></td>
                   <td className="num">{c.demos.length}</td>
-                  <td className="muted">{c.demos.map((d) => d.title).join(' · ')}</td>
+                  <td className="muted">{c.demos.slice(0, 8).map((d) => d.title).join(' · ')}{c.demos.length > 8 ? ' …' : ''}</td>
                 </tr>
               ))}
             </tbody>
@@ -113,7 +164,11 @@ function Home() {
 function CategoryPage() {
   const { category } = useParams();
   const c = categories.find((x) => x.key === category);
+  const [q, setQ] = useState('');
   if (!c) return <NotFound />;
+  const demos = q.trim()
+    ? c.demos.filter((d) => d.title.toLowerCase().includes(q.toLowerCase()) || d.tag.toLowerCase().includes(q.toLowerCase()) || d.slug.includes(q.toLowerCase()))
+    : c.demos;
   return (
     <>
       <section className="card hero">
@@ -123,16 +178,30 @@ function CategoryPage() {
           {c.tech.map((t) => <span key={t} className="chip">{t}</span>)}
           <span className="chip accent">{c.demos.length} demos</span>
         </div>
+        <div className="cat-search">
+          <input
+            type="search"
+            placeholder={`在 ${c.name} 中筛选…`}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            aria-label="筛选演示"
+          />
+          <span className="muted">{demos.length} / {c.demos.length}</span>
+        </div>
       </section>
-      <div className="grid">
-        {c.demos.map((d) => (
-          <Link key={d.slug} className="card tile" to={`/${c.key}/${d.slug}`}>
-            <h3>{d.title}</h3>
-            <p>{d.desc || d.hint}</p>
-            <span className="tag">{d.tag}</span>
-          </Link>
-        ))}
-      </div>
+      {demos.length === 0 ? (
+        <section className="card placeholder"><h2>无结果</h2><p>换个关键词试试</p></section>
+      ) : (
+        <div className="grid">
+          {demos.map((d) => (
+            <Link key={d.slug} className="card tile" to={`/${c.key}/${d.slug}`}>
+              <h3>{d.title}</h3>
+              <p>{d.desc || d.hint}</p>
+              <span className="tag">{d.tag}</span>
+            </Link>
+          ))}
+        </div>
+      )}
     </>
   );
 }
@@ -142,17 +211,41 @@ function DemoPage() {
   const path = `/${category}/${slug}`;
   const demo = routes[path] as DemoMeta | undefined;
   const [resetKey, setResetKey] = useState(0);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'r' && (e.metaKey || e.ctrlKey)) return;
+      if (e.key === 'Escape') history.back();
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement)) {
+        setResetKey((k) => k + 1);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   if (!demo) return <NotFound />;
   const cat = demo.cat as Category;
+  const list = cat.demos;
+  const idx = list.findIndex((d) => d.slug === demo.slug);
+  const prev = idx > 0 ? list[idx - 1] : null;
+  const next = idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null;
   return (
     <div className="demo-wrap">
       <div className="card demo-toolbar">
-        <h2>{demo.title}</h2>
-        <span className="hint">{demo.hint || ''}</span>
-        <Link className="btn" to={`/${cat.key}`}>← {cat.name}</Link>
-        <button type="button" className="btn" onClick={() => setResetKey((k) => k + 1)}>Reset</button>
+        <div className="demo-title-block">
+          <h2>{demo.title}</h2>
+          <div className="demo-meta">
+            <span className="tag">{demo.tag}</span>
+            <span className="hint">{demo.hint || demo.desc}</span>
+          </div>
+        </div>
+        <div className="demo-actions">
+          <Link className="btn" to={`/${cat.key}`}>← {cat.name}</Link>
+          {prev && <Link className="btn" to={`/${cat.key}/${prev.slug}`} title={prev.title}>‹ 上一个</Link>}
+          {next && <Link className="btn" to={`/${cat.key}/${next.slug}`} title={next.title}>下一个 ›</Link>}
+          <button type="button" className="btn primary" onClick={() => setResetKey((k) => k + 1)} title="快捷键 R">Reset</button>
+        </div>
       </div>
-      <DemoHost key={resetKey} mod={demo.mod} fn={demo.fn} />
+      <DemoHost key={resetKey} mod={demo.mod} fn={demo.fn} variant={demo.variant} slug={demo.slug} />
     </div>
   );
 }
@@ -169,6 +262,8 @@ function NotFound() {
 
 export default function App() {
   const { open, setOpen, close } = useSidebar();
+  const health = useHealth();
+  const [filter, setFilter] = useState('');
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
@@ -181,16 +276,30 @@ export default function App() {
 
   return (
     <div id="app">
-      <Sidebar open={open} onClose={close} />
+      <Sidebar open={open} onClose={close} filter={filter} />
       <main className="main">
         <header className="topbar">
           <button type="button" className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>☰</button>
           <div className="breadcrumb">{crumb}</div>
-          <div className="topbar-right"><span className="pill">rust+react</span></div>
+          <div className="topbar-search">
+            <input
+              type="search"
+              placeholder="搜索演示…"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              aria-label="搜索演示"
+            />
+          </div>
+          <div className="topbar-right">
+            <span className={`pill db ${health?.db === 'postgres' ? 'ok' : ''}`}>
+              {health ? (health.db === 'postgres' ? 'DB · Postgres' : `DB · ${health.db}`) : 'DB · …'}
+            </span>
+            <span className="pill">rust+react</span>
+          </div>
         </header>
-        <div className="content">
+        <div className="content" id="main-scroll">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home health={health} />} />
             <Route path="/:category" element={<CategoryPage />} />
             <Route path="/:category/:slug" element={<DemoPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -35,25 +35,32 @@ struct RegDemo {
     mount_fn: String,
 }
 
+/// Upsert categories + demos from registry.json on every boot so new demos appear
+/// without wiping stats (demo_stats stay attached via demos.id when slug unchanged).
 pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result<()> {
-    let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM categories")
-        .fetch_one(pool)
-        .await?;
-    if count.0 > 0 {
-        info!("categories already present ({}); skip seed", count.0);
-        return Ok(());
-    }
-
     let raw = std::fs::read_to_string(path)?;
     let reg: RegistryFile = serde_json::from_str(&raw)?;
-    info!("seeding {} categories from {}", reg.categories.len(), path.display());
+    info!(
+        "upserting {} categories / ~{} demos from {}",
+        reg.categories.len(),
+        reg.total_demos.unwrap_or(0),
+        path.display()
+    );
 
+    let mut demo_total = 0usize;
     for (i, c) in reg.categories.iter().enumerate() {
         let tech = Value::Array(c.tech.iter().cloned().map(Value::String).collect());
         let cat_id: (i64,) = sqlx::query_as(
             r#"
-            INSERT INTO categories (key, name, icon, intro, tech, sort_order)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            INSERT INTO categories (key, name, icon, intro, tech, sort_order, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            ON CONFLICT (key) DO UPDATE SET
+                name = EXCLUDED.name,
+                icon = EXCLUDED.icon,
+                intro = EXCLUDED.intro,
+                tech = EXCLUDED.tech,
+                sort_order = EXCLUDED.sort_order,
+                updated_at = NOW()
             RETURNING id
             "#,
         )
@@ -71,8 +78,18 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
                 r#"
                 INSERT INTO demos (
                     category_id, slug, title, hint, description, tag,
-                    tech, mount_mod, mount_fn, published, sort_order
-                ) VALUES ($1,$2,$3,$4,$5,$6,'[]'::jsonb,$7,$8,TRUE,$9)
+                    tech, mount_mod, mount_fn, published, sort_order, updated_at
+                ) VALUES ($1,$2,$3,$4,$5,$6,'[]'::jsonb,$7,$8,TRUE,$9,NOW())
+                ON CONFLICT (category_id, slug) DO UPDATE SET
+                    title = EXCLUDED.title,
+                    hint = EXCLUDED.hint,
+                    description = EXCLUDED.description,
+                    tag = EXCLUDED.tag,
+                    mount_mod = EXCLUDED.mount_mod,
+                    mount_fn = EXCLUDED.mount_fn,
+                    published = TRUE,
+                    sort_order = EXCLUDED.sort_order,
+                    updated_at = NOW()
                 "#,
             )
             .bind(cat_id.0)
@@ -86,8 +103,34 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
             .bind(j as i32)
             .execute(pool)
             .await?;
+            demo_total += 1;
         }
     }
-    info!("seed complete");
+
+    // Unpublish demos removed from registry (same category key) so API count matches seed.
+    // We only mark unpublished when category still exists and slug not in latest seed set —
+    // done per category for safety.
+    for c in &reg.categories {
+        let slugs: Vec<String> = c.demos.iter().map(|d| d.slug.clone()).collect();
+        if slugs.is_empty() {
+            continue;
+        }
+        sqlx::query(
+            r#"
+            UPDATE demos d
+            SET published = FALSE, updated_at = NOW()
+            FROM categories c
+            WHERE d.category_id = c.id
+              AND c.key = $1
+              AND NOT (d.slug = ANY($2))
+            "#,
+        )
+        .bind(&c.key)
+        .bind(&slugs)
+        .execute(pool)
+        .await?;
+    }
+
+    info!("seed upsert complete: {demo_total} demos");
     Ok(())
 }

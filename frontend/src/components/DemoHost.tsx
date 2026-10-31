@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { mountDemo } from '../demoLoader';
 
-type Props = { mod: string; fn: string };
+type Props = { mod: string; fn: string; variant?: string; slug?: string };
 
-export function DemoHost({ mod, fn }: Props) {
+export function DemoHost({ mod, fn, variant, slug }: Props) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ export function DemoHost({ mod, fn }: Props) {
 
     (async () => {
       try {
-        const d = await mountDemo(mod, fn, el);
+        const d = await mountDemo(mod, fn, el, { variant, slug });
         if (cancelled) {
           if (typeof d === 'function') d();
           return;
@@ -44,23 +44,21 @@ export function DemoHost({ mod, fn }: Props) {
       }
       el.innerHTML = '';
     };
-  }, [mod, fn]);
+  }, [mod, fn, variant, slug]);
 
   return (
-    <div className="card canvas-host" id="viewport" style={{ position: 'relative' }}>
+    <div className="card canvas-host" id="viewport">
       {loading && !error && (
-        <div className="loading" style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
-          加载中…
-        </div>
+        <div className="loading" aria-live="polite">加载中…</div>
       )}
       {error && (
-        <div className="loading err" style={{ position: 'absolute', inset: 0, zIndex: 2 }}>
+        <div className="loading err" role="alert">
           加载失败：{error}
           <br />
           <small>可能是 CDN 暂时不可用，请点击 Reset 重试。</small>
         </div>
       )}
-      <div ref={hostRef} style={{ position: 'absolute', inset: 0 }} />
+      <div ref={hostRef} className="demo-mount" />
     </div>
   );
 }

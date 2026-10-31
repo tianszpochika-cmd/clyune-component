@@ -1,5 +1,8 @@
-/** Dynamic import map: registry.mod → module, then call registry.fn(host). */
-type MountFn = (host: HTMLElement) => void | (() => void) | Promise<void | (() => void)>;
+/** Dynamic import map: registry.mod → module, then call registry.fn(host, opts). */
+type MountFn = (
+  host: HTMLElement,
+  opts?: { variant?: string; slug?: string },
+) => void | (() => void) | Promise<void | (() => void)>;
 
 const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'cube': () => import('./demos/cube.js'),
@@ -35,13 +38,37 @@ const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'audio-viz': () => import('./demos/audio-viz.js'),
   'dataviz': () => import('./demos/dataviz.js'),
   'micro': () => import('./demos/micro.js'),
+  // parameterized kits (≥300 demos)
+  'kit-css': () => import('./demos/kits/kit-css.js'),
+  'kit-canvas': () => import('./demos/kits/kit-canvas.js'),
+  'kit-svg': () => import('./demos/kits/kit-svg.js'),
+  'kit-ui': () => import('./demos/kits/kit-ui.js'),
+  'kit-chart': () => import('./demos/kits/kit-chart.js'),
+  'kit-webgl': () => import('./demos/kits/kit-webgl.js'),
+  'kit-three': () => import('./demos/kits/kit-three.js'),
+  'kit-gsap': () => import('./demos/kits/kit-gsap.js'),
+  'kit-physics': () => import('./demos/kits/kit-physics.js'),
+  'kit-audio': () => import('./demos/kits/kit-audio.js'),
+  'kit-dataviz': () => import('./demos/kits/kit-dataviz.js'),
+  'kit-micro': () => import('./demos/kits/kit-micro.js'),
+  'kit-layout': () => import('./demos/kits/kit-layout.js'),
+  'kit-filters': () => import('./demos/kits/kit-filters.js'),
+  'kit-particles': () => import('./demos/kits/kit-particles.js'),
+  'kit-generative': () => import('./demos/kits/kit-generative.js'),
+  'kit-text': () => import('./demos/kits/kit-text.js'),
+  'kit-scroll': () => import('./demos/kits/kit-scroll.js'),
 };
 
-export async function mountDemo(mod: string, fn: string, host: HTMLElement) {
+export async function mountDemo(
+  mod: string,
+  fn: string,
+  host: HTMLElement,
+  opts?: { variant?: string; slug?: string },
+) {
   const load = loaders[mod];
   if (!load) throw new Error(`Unknown demo module: ${mod}`);
   const m = await load();
   const mount = m[fn];
   if (typeof mount !== 'function') throw new Error(`Missing export ${fn} in ${mod}`);
-  return mount(host);
+  return mount(host, opts);
 }

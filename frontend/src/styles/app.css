@@ -239,3 +239,78 @@ a.btn { text-decoration: none; display: inline-block; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
 }
 @media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+
+
+/* ---- v3: scrollbars, sticky brand, demo chrome, search ---- */
+html, body, #root { height: 100%; max-height: 100%; overflow: hidden; }
+#app { height: 100%; max-height: 100dvh; overflow: hidden; }
+.sidebar { min-height: 0; max-height: 100%; overflow: hidden; padding-bottom: 8px; }
+.sticky-brand { position: sticky; top: 0; z-index: 2; background: linear-gradient(180deg, #10182c, #10182cee); backdrop-filter: blur(8px); margin: -6px -8px 8px; padding: 12px 16px 14px; border-bottom: 1px solid var(--border); }
+.nav {
+  flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  padding-right: 4px; scrollbar-gutter: stable;
+}
+.main { min-height: 0; overflow: hidden; }
+.content {
+  flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto;
+  overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable; padding-bottom: 36px;
+}
+/* Thin elegant scrollbars (Firefox + WebKit/Chromium/Windows) */
+.nav, .content, .fx-scroll, .ksc, .ck, .ku, .kl, .kit-css {
+  scrollbar-width: thin;
+  scrollbar-color: #3b4a6e transparent;
+}
+.nav::-webkit-scrollbar, .content::-webkit-scrollbar, .fx-scroll::-webkit-scrollbar,
+.ksc::-webkit-scrollbar, .ck::-webkit-scrollbar, .ku::-webkit-scrollbar {
+  width: 10px; height: 10px;
+}
+.nav::-webkit-scrollbar-thumb, .content::-webkit-scrollbar-thumb, .fx-scroll::-webkit-scrollbar-thumb,
+.ksc::-webkit-scrollbar-thumb, .ck::-webkit-scrollbar-thumb, .ku::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4b5d8c, #334261);
+  border-radius: 999px; border: 2px solid transparent; background-clip: padding-box;
+}
+.nav::-webkit-scrollbar-thumb:hover, .content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6b7db0, #45567a); background-clip: padding-box; border: 2px solid transparent;
+}
+.nav::-webkit-scrollbar-track, .content::-webkit-scrollbar-track { background: transparent; }
+.nav-item, .nav-sub, .tile, .btn {
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+.nav-item:focus-visible, .nav-sub:focus-visible, .tile:focus-visible, .btn:focus-visible, .topbar-search input:focus-visible, .cat-search input:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+.nav-empty { padding: 12px; color: var(--muted); font-size: 13px; }
+.nav-sub.more { color: var(--accent-2); font-size: 12px; }
+.topbar { position: sticky; top: 0; z-index: 10; flex-shrink: 0; }
+.topbar-search { flex: 1; max-width: 320px; margin-left: 8px; }
+.topbar-search input, .cat-search input {
+  width: 100%; background: var(--panel); border: 1px solid var(--border); color: var(--text);
+  border-radius: 10px; padding: 8px 12px; font-size: 13px;
+}
+.topbar-search input:focus, .cat-search input:focus { border-color: var(--accent); }
+.topbar-right { display: flex; gap: 8px; align-items: center; }
+.pill.db.ok { background: rgba(52,211,153,.12); color: var(--ok); border-color: rgba(52,211,153,.3); }
+.stats b.ok { background: none; color: var(--ok); -webkit-text-fill-color: var(--ok); }
+.stats b.bad { background: none; color: #fca5a5; -webkit-text-fill-color: #fca5a5; }
+.cat-search { display: flex; gap: 12px; align-items: center; margin-top: 14px; max-width: 420px; }
+.cat-search .muted { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.demo-wrap { min-height: 0; }
+.demo-toolbar { gap: 12px; align-items: flex-start; }
+.demo-title-block { flex: 1; min-width: 180px; }
+.demo-title-block h2 { margin: 0 0 6px; font-size: 17px; }
+.demo-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.demo-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn.primary { background: linear-gradient(135deg, #6366f1, #22d3ee); color: #0b1020; border: none; font-weight: 700; }
+.btn.primary:hover { filter: brightness(1.05); }
+.canvas-host { position: relative; overflow: hidden; min-height: 420px; background: #060a14; }
+.demo-mount { position: absolute; inset: 0; }
+.loading { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; text-align: center; color: var(--muted); font-size: 13px; padding: 20px; background: rgba(6,10,20,.55); }
+.tile:active { transform: translateY(0) scale(0.99); }
+.sidebar-foot { flex-shrink: 0; }
+@media (max-width: 860px) {
+  .topbar-search { max-width: none; flex: 1; }
+  .pill:not(.db) { display: none; }
+  .demo-actions { width: 100%; }
+}
