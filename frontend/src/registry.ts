@@ -13,7 +13,6 @@ export const categories: Category[] = [
     tech: ['three@0.170', 'WebGL', 'OrbitControls'],
     demos: [
       { slug: 'solar-system', title: '太阳系轨道', hint: '日心/螺旋前进 · 卫星 · 缩放聚焦', desc: '着色器太阳+日冕、程序化行星与光环、30 颗卫星；可缩放聚焦，并切换太阳前进的螺旋轨迹模式。', tag: 'orbit', mod: 'solar-system', fn: 'mountSolarSystem', presets: ['日心模式', '螺旋前进', '内太阳系', '外行星', '隐藏轨迹', '快进', '慢速'] },
-      { slug: 'trig-waves', title: '三角函数', hint: '单位圆 · sin/cos/tan 波同步展开', desc: '单位圆上旋转点投影出 sin/cos，波形随角度 θ 实时展开；可切换 tan、调相位/频率/振幅。', tag: 'trig', mod: 'trig-waves', fn: 'mountTrigWaves', presets: ['sin+cos', '仅sin', '仅cos', '含tan', '相位波', '快速', '慢速'] },
       { slug: 'cube', title: 'Rotating Cube', hint: '自动旋转 · MeshStandardMaterial', desc: '基础场景、光照与线框。', tag: 'basics', mod: 'cube', fn: 'mountCube' },
       { slug: 'orbit', title: 'Orbit + Lights', hint: '拖拽旋转 · 滚轮缩放', desc: 'OrbitControls 与多光源。', tag: 'controls', mod: 'orbit', fn: 'mountOrbit' },
       { slug: 'particles', title: 'Particles', hint: '移动鼠标扰动粒子场', desc: 'Points 粒子场与鼠标交互。', tag: 'points', mod: 'particles', fn: 'mountParticles' },
@@ -555,6 +554,7 @@ export const categories: Category[] = [
       { slug: 'piecewise', title: '分段函数', hint: '多段拼接', desc: '分段定义函数与动点追踪。', tag: '函数', mod: 'kit-math', fn: 'mount', variant: 'piecewise', presets: ['动点快', '动点慢', '大', '小', '高对比', '柔'] },
       { slug: 'parametric', title: '参数方程', hint: '李萨如曲线', desc: 'x=cos t, y=sin kt 参数曲线。', tag: '函数', mod: 'kit-math', fn: 'mount', variant: 'parametric', presets: ['2叶', '3叶', '快绘', '慢绘', '大', '小'] },
       { slug: 'polar', title: '极坐标', hint: '玫瑰线 r=cos(kθ)', desc: '极坐标网格上的玫瑰曲线。', tag: '函数', mod: 'kit-math', fn: 'mount', variant: 'polar', presets: ['3瓣', '4瓣', '5瓣', '快', '慢', '大'] },
+      { slug: 'trig-waves', title: '三角函数', hint: '单位圆 · sin/cos/tan 波同步展开', desc: '单位圆上旋转点投影出 sin/cos，波形随角度 θ 实时展开；可切换 tan、调相位/频率/振幅。', tag: '三角', mod: 'trig-waves', fn: 'mountTrigWaves', presets: ['sin+cos', '仅sin', '仅cos', '含tan', '相位波', '快速', '慢速'] },
       { slug: 'unit-circle', title: '单位圆与波形', hint: '2D sin/cos 展开', desc: '单位圆投影同步展开正弦余弦波。', tag: '三角', mod: 'kit-math', fn: 'mount', variant: 'unit-circle', presets: ['标准', '快速', '慢速', '大振幅', '小', '相位'] },
       { slug: 'trig-id', title: '三角恒等式', hint: 'sin²+cos²=1', desc: '恒等式曲线与单位圆几何证明。', tag: '三角', mod: 'kit-math', fn: 'mount', variant: 'trig-id', presets: ['标准', '快', '慢', '大圆', '小圆', '高亮'] },
       { slug: 'law-sine', title: '正弦定理', hint: 'a/sinA=2R', desc: '三角形外接圆与正弦定理。', tag: '三角', mod: 'kit-math', fn: 'mount', variant: 'law-sine', presets: ['锐三角', '钝三角', '动', '静', '大圆', '小'] },

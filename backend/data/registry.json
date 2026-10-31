@@ -30,24 +30,6 @@
           ]
         },
         {
-          "slug": "trig-waves",
-          "title": "三角函数",
-          "hint": "单位圆 · sin/cos/tan 波同步展开",
-          "desc": "单位圆上旋转点投影出 sin/cos，波形随角度 θ 实时展开；可切换 tan、调相位/频率/振幅。",
-          "tag": "trig",
-          "mod": "trig-waves",
-          "fn": "mountTrigWaves",
-          "presets": [
-            "sin+cos",
-            "仅sin",
-            "仅cos",
-            "含tan",
-            "相位波",
-            "快速",
-            "慢速"
-          ]
-        },
-        {
           "slug": "cube",
           "title": "Rotating Cube",
           "hint": "自动旋转 · MeshStandardMaterial",
@@ -7425,6 +7407,24 @@
             "快",
             "慢",
             "大"
+          ]
+        },
+        {
+          "slug": "trig-waves",
+          "title": "三角函数",
+          "hint": "单位圆 · sin/cos/tan 波同步展开",
+          "desc": "单位圆上旋转点投影出 sin/cos，波形随角度 θ 实时展开；可切换 tan、调相位/频率/振幅。",
+          "tag": "三角",
+          "mod": "trig-waves",
+          "fn": "mountTrigWaves",
+          "presets": [
+            "sin+cos",
+            "仅sin",
+            "仅cos",
+            "含tan",
+            "相位波",
+            "快速",
+            "慢速"
           ]
         },
         {

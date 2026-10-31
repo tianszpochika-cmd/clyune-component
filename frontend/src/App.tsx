@@ -498,6 +498,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home health={health} />} />
             <Route path="/:category" element={<CategoryPage />} />
+            <Route path="/threejs/trig-waves" element={<Navigate to="/math/trig-waves" replace />} />
             <Route path="/:category/:slug" element={<DemoPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

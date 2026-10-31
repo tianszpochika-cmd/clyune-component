@@ -74,7 +74,7 @@ export async function mountTrigWaves(host, opts = {}) {
 
   if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: false });
   renderer.setClearColor(0x060a14, 1);
   renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;touch-action:none';
   host.appendChild(renderer.domElement);
@@ -319,12 +319,31 @@ export async function mountTrigWaves(host, opts = {}) {
     last = now;
     const L = live();
     const spd = (L.speed > 0 ? L.speed : 1) * speedMult;
-    const A = (L.size > 0 ? L.size : 1) * 0.8 * 2; // amplitude in scene units (1 → 1.6)
+    const szLive = L.size > 0 ? L.size : 1;
+    const A = szLive * 0.8 * 2; // amplitude in scene units (1 → 1.6)
+    disk.material.opacity = Math.min(0.4, 0.04 + 0.14 * szLive);
+    sector.material.opacity = Math.min(0.5, 0.1 + 0.14 * szLive);
+    // uniform world scale so size slider is unmistakable in screenshots / audits
+    const uni = Math.max(0.45, Math.min(1.85, 0.55 + 0.45 * szLive));
+    world.scale.setScalar(uni);
     if (!paused) theta = (theta + dt * 0.9 * spd) % (TAU * 1000);
     const [cr, cg, cb] = colorToRgb(L.color);
     circle.material.color.setRGB(cr, cg, cb);
     disk.material.color.setRGB(cr, cg, cb);
     sector.material.color.setRGB(cr, cg, cb);
+    // accent waves / heads with live color so DemoControls color is obvious
+    if (waves?.sin?.line?.material) {
+      waves.sin.line.material.color.setRGB(cr, Math.min(1, cg * 0.6 + 0.4), Math.min(1, cb * 0.85 + 0.15));
+      waves.cos.line.material.color.setRGB(Math.min(1, cr * 0.55 + 0.45), cg * 0.45, Math.min(1, cb * 0.7 + 0.3));
+      waves.tan.line.material.color.setRGB(Math.min(1, cr * 0.7 + 0.3), Math.min(1, cg * 0.7 + 0.3), cb * 0.35);
+      waves.sin.fill.material.color.setRGB(cr, cg, cb);
+      waves.cos.fill.material.color.setRGB(cr, cg, cb);
+      waves.tan.fill.material.color.setRGB(cr, cg, cb);
+    }
+    if (sinHead?.material) sinHead.material.color.setRGB(cr, cg, cb);
+    if (cosHead?.material) cosHead.material.color.setRGB(cr, Math.min(1, cg + 0.2), cb);
+    if (tanHead?.material) tanHead.material.color.setRGB(Math.min(1, cr + 0.2), Math.min(1, cg + 0.15), cb * 0.5);
+    if (pDot?.material) pDot.material.color.setRGB(cr, cg, cb);
 
     const th = theta % TAU;
     const s = Math.sin(th), c = Math.cos(th), tn = Math.tan(th);
