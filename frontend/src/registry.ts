@@ -12,7 +12,7 @@ export const categories: Category[] = [
     intro: '基于 WebGL 的 3D 渲染库：场景、相机、光照、材质与自定义着色器。',
     tech: ['three@0.170', 'WebGL', 'OrbitControls'],
     demos: [
-      { slug: 'solar-system', title: '太阳系轨道', hint: '行星环绕 · 可见轨迹 · 拖拽视角', desc: '太阳居中，多行星沿可见轨道环绕运行，可调速度/数量/轨迹。', tag: 'orbit', mod: 'solar-system', fn: 'mountSolarSystem', presets: ['八行星', '内太阳系', '气态行星', '显示轨迹', '隐藏轨迹', '快进', '慢速'] },
+      { slug: 'solar-system', title: '太阳系轨道', hint: '日心/螺旋前进 · 卫星 · 缩放聚焦', desc: '着色器太阳+日冕、程序化行星与光环、30 颗卫星；可缩放聚焦，并切换太阳前进的螺旋轨迹模式。', tag: 'orbit', mod: 'solar-system', fn: 'mountSolarSystem', presets: ['日心模式', '螺旋前进', '内太阳系', '外行星', '隐藏轨迹', '快进', '慢速'] },
       { slug: 'cube', title: 'Rotating Cube', hint: '自动旋转 · MeshStandardMaterial', desc: '基础场景、光照与线框。', tag: 'basics', mod: 'cube', fn: 'mountCube' },
       { slug: 'orbit', title: 'Orbit + Lights', hint: '拖拽旋转 · 滚轮缩放', desc: 'OrbitControls 与多光源。', tag: 'controls', mod: 'orbit', fn: 'mountOrbit' },
       { slug: 'particles', title: 'Particles', hint: '移动鼠标扰动粒子场', desc: 'Points 粒子场与鼠标交互。', tag: 'points', mod: 'particles', fn: 'mountParticles' },

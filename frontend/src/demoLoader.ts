@@ -66,7 +66,7 @@ const LEGACY_META: Record<string, {
   color?: boolean; speed?: boolean; size?: boolean; count?: boolean;
   remountKeys?: string[];
 }> = {
-  'solar-system': { title: '太阳系轨道', size: true, speed: true, color: true, count: true, presets: ['八行星', '内太阳系', '气态行星', '显示轨迹', '隐藏轨迹', '快进', '慢速'], remountKeys: ['count'] },
+  'solar-system': { title: '太阳系轨道', size: true, speed: true, color: true, count: true, presets: ['日心模式', '螺旋前进', '内太阳系', '外行星', '隐藏轨迹', '快进', '慢速'], remountKeys: ['count'] },
   'cube': { title: '旋转方块', size: true, speed: true, color: true, count: false },
   'orbit': { title: '轨道', size: true, speed: true, color: true, count: true },
   'particles': { title: '粒子', size: true, speed: true, color: true, count: true },
