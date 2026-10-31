@@ -1,4 +1,4 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
@@ -18,21 +18,23 @@ function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'mi-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const rm = addStyle(`
     .km{position:absolute;inset:0;display:grid;place-items:center;padding:20px;overflow:auto}
-    .km .btnx{border:0;border-radius:999px;padding:14px 22px;font-weight:700;cursor:pointer;background:${hsl(n)};color:#0b1020;position:relative;overflow:hidden}
+    .km .btnx{border:0;border-radius:999px;padding:14px 22px;font-weight:700;cursor:pointer;background:var(--c);color:#0b1020;position:relative;overflow:hidden}
     .km .heart{font-size:48px;cursor:pointer;user-select:none;transition:transform .15s}
     .km .heart.on{color:#f472b6;transform:scale(1.2)}
     .km .check{width:36px;height:36px;border:2px solid #24314f;border-radius:8px;display:grid;place-items:center;cursor:pointer;transition:.2s}
-    .km .check.on{background:${hsl(n)};border-color:transparent;color:#0b1020;animation:pop .35s}
+    .km .check.on{background:var(--c);border-color:transparent;color:#0b1020;animation:pop calc(.35s / var(--spd, 1))}
     @keyframes pop{50%{transform:scale(1.2)}}
-    .km .toast{position:absolute;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:#18233d;border:1px solid ${hsl(n)};padding:10px 16px;border-radius:10px;transition:.3s}
+    .km .toast{position:absolute;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;background:#18233d;border:1px solid var(--c);padding:10px 16px;border-radius:10px;transition:.3s}
     .km .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .km .badge{position:relative}.km .badge em{position:absolute;top:-6px;right:-6px;background:#f43f5e;color:#fff;font-size:10px;border-radius:999px;padding:2px 6px;font-style:normal;animation:bounce .6s}
+    .km .badge{position:relative}.km .badge em{position:absolute;top:-6px;right:-6px;background:#f43f5e;color:#fff;font-size:10px;border-radius:999px;padding:2px 6px;font-style:normal;animation:bounce calc(.6s / var(--spd, 1))}
     @keyframes bounce{50%{transform:translateY(-4px)}}
-    .km .skel{width:min(360px,90%);display:grid;gap:10px}.km .skel i{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,#18233d,#24314f,#18233d);background-size:200% 100%;animation:sh 1.2s linear infinite}
+    .km .skel{width:min(360px,90%);display:grid;gap:10px}.km .skel i{display:block;height:14px;border-radius:8px;background:linear-gradient(90deg,#18233d,#24314f,#18233d);background-size:200% 100%;animation:sh calc(1.2s / var(--spd, 1)) linear infinite}
     @keyframes sh{to{background-position:-200% 0}}
-    .km .prog{width:min(280px,80%);height:8px;background:#18233d;border-radius:999px;overflow:hidden}.km .prog b{display:block;height:100%;width:0;background:${hsl(n)};transition:width .4s}
+    .km .prog{width:min(280px,80%);height:8px;background:#18233d;border-radius:999px;overflow:hidden}.km .prog b{display:block;height:100%;width:0;background:var(--c);transition:width .4s}
   `);
   const root = document.createElement('div'); root.className='km'; stage.appendChild(root);
   const kind=(n-1)%12;
@@ -78,12 +80,13 @@ function mountLegacy(host, opts = {}) {
     stage.onpointermove=(e)=>{ const v=Math.abs(e.clientX-lx); lx=e.clientX; if(v>40 && performance.now()-last>500){ last=performance.now(); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),700);} };
   } else {
     root.innerHTML=`<div style="width:min(280px,80%);height:48px;border-radius:12px;background:#18233d;border:1px solid #24314f;position:relative;overflow:hidden">
-      <div data-s style="position:absolute;inset:4px;width:42%;border-radius:8px;background:${hsl(n)};display:grid;place-items:center;font-size:12px;font-weight:700;color:#0b1020;cursor:pointer;touch-action:none">Slide →</div></div>`;
+      <div data-s style="position:absolute;inset:4px;width:42%;border-radius:8px;background:var(--c);display:grid;place-items:center;font-size:12px;font-weight:700;color:#0b1020;cursor:pointer;touch-action:none">Slide →</div></div>`;
     const s=root.querySelector('[data-s]'); let drag=false, startX=0, x=0;
     const max=()=> (s.parentElement.clientWidth - s.clientWidth - 8);
     s.onpointerdown=(e)=>{ drag=true; s.setPointerCapture(e.pointerId); startX=e.clientX-x; };
     s.onpointermove=(e)=>{ if(!drag)return; x=Math.max(0,Math.min(max(), e.clientX-startX)); s.style.transform=`translateX(${x}px)`; if(x>max()*0.9){ s.textContent='OK'; } };
     s.onpointerup=()=>{ drag=false; if(x<=max()*0.9){ x=0; s.style.transform='translateX(0)'; s.textContent='Slide →'; } };
   }
-  return () => { rm(); host.innerHTML=''; };
+  const sync = setInterval(() => { const L = live(); root.style.setProperty('--c', L.color); root.style.setProperty('--spd', String(L.speed)); stage.style.setProperty('--c', L.color); }, 80);
+  return () => { clearInterval(sync); rm(); host.innerHTML=''; };
 }

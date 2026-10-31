@@ -65,7 +65,11 @@ export function withControls(host, opts, {
 
   function applyLive(state) {
     if (!state) return;
-    const targets = [ui.stage, ...ui.stage.querySelectorAll('.kit-inner, .kit-css, .ks, .ku, .ck, [data-kit-root]')];
+    const targets = [
+      ui.stage,
+      ui.wrap,
+      ...ui.stage.querySelectorAll('.kit-inner, .kit-css, .ks, .ku, .ck, .kf, .kg, [data-kit-root], canvas'),
+    ];
     for (const el of targets) {
       if (!el || !el.style) continue;
       if (liveKeys.includes('color') && state.color) el.style.setProperty('--c', state.color);

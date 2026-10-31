@@ -334,3 +334,52 @@ function esc(s) {
 }
 
 export { addStyle, makeCanvas, loop, localPoint };
+
+/** Read live control CSS vars (set by withControls/panel) with _controls fallback. */
+export function readLiveControls(roots, ctrl = {}) {
+  const els = (Array.isArray(roots) ? roots : [roots]).filter(Boolean);
+  const read = (name, fallback) => {
+    for (const el of els) {
+      try {
+        const v = getComputedStyle(el).getPropertyValue(name).trim();
+        if (v) return v;
+      } catch (_) { /* ignore */ }
+    }
+    if (fallback != null && fallback !== '') return String(fallback);
+    return '';
+  };
+  const num = (name, fallback) => {
+    const raw = read(name, '');
+    const v = parseFloat(raw);
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const speed = num('--spd', ctrl.speed ?? 1);
+  const size = num('--sz', ctrl.size ?? 1);
+  const count = Math.round(num('--count', ctrl.count ?? 40));
+  const blur = num('--blur', ctrl.blur ?? 0);
+  return {
+    color: read('--c', ctrl.color || '#818cf8') || '#818cf8',
+    speed: speed > 0 ? speed : 1,
+    size: size > 0 ? size : 1,
+    count: Number.isFinite(count) && count > 0 ? count : 40,
+    blur: Number.isFinite(blur) ? blur : 0,
+  };
+}
+
+/** Parse #rgb / #rrggbb into [r,g,b] 0..1 for WebGL / canvas. */
+export function colorToRgb(color) {
+  const s = String(color || '#818cf8').trim();
+  if (s.startsWith('#') && (s.length === 4 || s.length === 7)) {
+    const hex = s.length === 4
+      ? `#${s[1]}${s[1]}${s[2]}${s[2]}${s[3]}${s[3]}`
+      : s;
+    return [
+      parseInt(hex.slice(1, 3), 16) / 255,
+      parseInt(hex.slice(3, 5), 16) / 255,
+      parseInt(hex.slice(5, 7), 16) / 255,
+    ];
+  }
+  const m = s.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+  if (m) return [(+m[1]) / 255, (+m[2]) / 255, (+m[3]) / 255];
+  return [0.506, 0.549, 0.973];
+}

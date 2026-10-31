@@ -1,4 +1,4 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
@@ -18,6 +18,8 @@ function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'spark-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-reshuffle>Shuffle</button>`);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);
   let data = Array.from({ length: 24 }, () => rand(20, 100));
   const reshuffle = () => { data = data.map(() => rand(20, 100)); };
@@ -25,15 +27,16 @@ function mountLegacy(host, opts = {}) {
   const mouse = { x: -1 };
   canvas.addEventListener('pointermove', (e) => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; });
   const stop = loop((dt, t) => {
+    const L = live(); const [cr,cg,cb]=colorToRgb(L.color); const tint=L.color; const tt=t*L.speed;
     const { w, h } = state; ctx.clearRect(0,0,w,h);
     const pad = 28, cw = w - pad * 2, ch = h - pad * 2;
     ctx.strokeStyle = '#24314f'; ctx.strokeRect(pad, pad, cw, ch);
     if (id.startsWith('gauge')) {
-      const v = 0.35 + 0.5 * (0.5 + 0.5 * Math.sin(t));
+      const v = 0.35 + 0.5 * (0.5 + 0.5 * Math.sin(tt));
       const cx = w/2, cy = h*0.62, R = Math.min(w,h)*0.32;
       ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI,0); ctx.strokeStyle='#24314f'; ctx.lineWidth=14; ctx.stroke();
-      ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI,Math.PI + Math.PI*v); ctx.strokeStyle=hsl(n); ctx.lineCap='round'; ctx.stroke();
-      ctx.fillStyle=hsl(n); ctx.font='700 28px Inter,sans-serif'; ctx.textAlign='center'; ctx.fillText(Math.round(v*100)+'%', cx, cy-8);
+      ctx.beginPath(); ctx.arc(cx,cy,R,Math.PI,Math.PI + Math.PI*v); ctx.strokeStyle=tint; ctx.lineCap='round'; ctx.stroke();
+      ctx.fillStyle=tint; ctx.font='700 28px Inter,sans-serif'; ctx.textAlign='center'; ctx.fillText(Math.round(v*100)+'%', cx, cy-8);
       return;
     }
     const max = Math.max(...data, 1);
@@ -44,13 +47,13 @@ function mountLegacy(host, opts = {}) {
       if (k === 'hbar') {
         for (let i=0;i<8;i++){
           let x = pad; const y = pad + i*(ch/8)+4; const hh = ch/8-8;
-          for (let s=0;s<m;s++){ const ww = (series[s][i]/max)*cw*0.45; ctx.fillStyle=hsl(n+s*40); ctx.fillRect(x,y,ww,hh); x+=ww; }
+          for (let s=0;s<m;s++){ const ww = (series[s][i]/max)*cw*0.45; ctx.fillStyle=tint; ctx.fillRect(x,y,ww,hh); x+=ww; }
         }
       } else {
         for (let i=0;i<data.length;i++){
           const x = pad + (i+0.1)*(cw/data.length); const bw = cw/data.length*0.7;
           let y = pad + ch; let acc = 0;
-          for (let s=0;s<m;s++){ const val = series[s][i]; const bh = (val/max)*ch*0.55; y -= bh; ctx.fillStyle=hsl(n+s*40); if(k==='area' && s===0){/*skip*/} ctx.fillRect(x,y,bw,bh); acc+=val; }
+          for (let s=0;s<m;s++){ const val = series[s][i]; const bh = (val/max)*ch*0.55; y -= bh; ctx.fillStyle=tint; if(k==='area' && s===0){/*skip*/} ctx.fillRect(x,y,bw,bh); acc+=val; }
         }
       }
       return;
@@ -62,7 +65,7 @@ function mountLegacy(host, opts = {}) {
       const y = pad + ch - (v/max)*ch;
       i?ctx.lineTo(x,y):ctx.moveTo(x,y);
     });
-    ctx.strokeStyle = hsl(n); ctx.lineWidth = 2; ctx.stroke();
+    ctx.strokeStyle = tint; ctx.lineWidth = 2; ctx.stroke();
     ctx.lineTo(pad+cw, pad+ch); ctx.lineTo(pad, pad+ch); ctx.closePath();
     ctx.fillStyle = `color-mix(in srgb, ${hsl(n)} 22%, transparent)`; ctx.fill();
     if (mouse.x >= pad && mouse.x <= pad+cw) {

@@ -1,4 +1,4 @@
-import { addStyle, bar, hsl, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, bar, hsl, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { libs } from '../../lib/load.js';
@@ -18,13 +18,15 @@ async function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'seq-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-play>Play</button><button class="btn" data-rev>Reverse</button>`);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const gsap = await libs.gsap();
   const rm = addStyle(`.kg{position:absolute;inset:0;display:grid;place-items:center;gap:14px;padding:20px;overflow:auto}
-  .kg .item{width:72px;height:72px;border-radius:16px;background:${hsl(n)};display:grid;place-items:center;font-weight:700;color:#0b1020}
+  .kg .item{width:72px;height:72px;border-radius:16px;background:var(--c,${hsl(n)});display:grid;place-items:center;font-weight:700;color:#0b1020}
   .kg .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
   .kg .card{width:120px;height:80px;border-radius:12px;background:#18233d;border:1px solid #24314f}
   .kg .txt{font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:.04em}
-  .kg .ring{width:90px;height:90px;border-radius:50%;border:6px solid #24314f;border-top-color:${hsl(n)}}`);
+  .kg .ring{width:90px;height:90px;border-radius:50%;border:6px solid #24314f;border-top-color:var(--c,${hsl(n)})}`);
   const root = document.createElement('div'); root.className = 'kg'; stage.appendChild(root);
   const kind = (n - 1) % 10;
   let tl;
@@ -91,5 +93,11 @@ async function mountLegacy(host, opts = {}) {
   }
   host.querySelector('[data-play]')?.addEventListener('click', () => tl?.paused(!tl.paused()));
   host.querySelector('[data-rev]')?.addEventListener('click', () => tl?.reversed(!tl.reversed()));
-  return () => { tl?.kill(); rm(); host.innerHTML=''; };
+  const sync = setInterval(() => {
+    const L = live();
+    stage.style.setProperty('--c', L.color);
+    root.style.setProperty('--c', L.color);
+    try { tl?.timeScale(L.speed); } catch (_) {}
+  }, 100);
+  return () => { clearInterval(sync); tl?.kill(); rm(); host.innerHTML=''; };
 }

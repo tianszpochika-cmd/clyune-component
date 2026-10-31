@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
@@ -29,12 +29,21 @@ function useHealth() {
   return health;
 }
 
-function Sidebar({ open, onClose, filter }: { open: boolean; onClose: () => void; filter: string }) {
+function Sidebar({ open, onClose, filter, setFilter }: {
+  open: boolean; onClose: () => void; filter: string; setFilter: (v: string) => void;
+}) {
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
     : loc.pathname || '/';
   const q = filter.trim().toLowerCase();
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const navRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const key = categories.find((c) => r === `/${c.key}` || r.startsWith(`/${c.key}/`))?.key;
+    if (key) setExpanded((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+  }, [r]);
 
   const filtered = useMemo(() => {
     if (!q) return categories;
@@ -50,41 +59,93 @@ function Sidebar({ open, onClose, filter }: { open: boolean; onClose: () => void
       .filter((c) => c.demos.length > 0 || c.name.toLowerCase().includes(q) || c.key.includes(q));
   }, [q]);
 
+  useEffect(() => {
+    const el = navRef.current?.querySelector('.nav-sub.active') as HTMLElement | null;
+    el?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [r]);
+
   return (
     <>
       <aside className={`sidebar${open ? ' open' : ''}`} id="sidebar">
         <div className="brand sticky-brand">
-          <div className="brand-mark">C</div>
-          <div>
-            <div className="brand-title">Component</div>
-            <div className="brand-sub">Rust + React · {totalDemos} demos</div>
-          </div>
-        </div>
-        <nav className="nav" aria-label="Categories">
-          <Link to="/" className={`nav-item${r === '/' ? ' active' : ''}`}>
-            <span className="icon">⌂</span> Home<em className="count">{totalDemos}</em>
+          <Link to="/" className="brand-link" onClick={onClose}>
+            <div className="brand-mark">C</div>
+            <div>
+              <div className="brand-title">Component</div>
+              <div className="brand-sub">Rust + React · {totalDemos} demos</div>
+            </div>
           </Link>
+          <label className="sidebar-search">
+            <span className="sr-only">筛选导航</span>
+            <input
+              type="search"
+              placeholder="筛选分类 / Demo…"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              aria-label="筛选侧栏"
+            />
+            {filter && (
+              <button type="button" className="sidebar-search-clear" onClick={() => setFilter('')} aria-label="清除">✕</button>
+            )}
+          </label>
+        </div>
+        <nav className="nav" aria-label="Categories" ref={navRef as never}>
+          <div className="nav-section-label">浏览</div>
+          <Link to="/" className={`nav-item nav-home${r === '/' ? ' active' : ''}`}>
+            <span className="icon">⌂</span>
+            <span className="nav-label">Home</span>
+            <em className="count">{totalDemos}</em>
+          </Link>
+          <div className="nav-section-label">演示库</div>
           {filtered.map((c) => {
-            const groupOpen = !q && (r === `/${c.key}` || r.startsWith(`/${c.key}/`));
-            const forceOpen = !!q;
+            const routeActive = r === `/${c.key}` || r.startsWith(`/${c.key}/`);
+            const groupOpen = !!q || !!expanded[c.key] || routeActive;
             return (
-              <div key={c.key} className={`nav-group${groupOpen || forceOpen ? ' open' : ''}`}>
-                <Link to={`/${c.key}`} className={`nav-item${r === `/${c.key}` || r.startsWith(`/${c.key}/`) ? ' active' : ''}`}>
-                  <span className="icon">{c.icon}</span> {c.name}
-                  <em className="count">{c.demos.length}</em>
-                </Link>
-                <div className="nav-children">
-                  {c.demos.slice(0, q ? 50 : 40).map((d) => (
-                    <Link
-                      key={d.slug}
-                      to={`/${c.key}/${d.slug}`}
-                      className={`nav-sub${r === `/${c.key}/${d.slug}` ? ' active' : ''}`}
-                      title={d.hint}
+              <div key={c.key} className={`nav-group${groupOpen ? ' open' : ''}${routeActive ? ' route-active' : ''}`}>
+                <div className="nav-item-row">
+                  <Link
+                    to={`/${c.key}`}
+                    className={`nav-item${routeActive ? ' active' : ''}`}
+                    title={c.intro}
+                    onClick={() => setExpanded((prev) => ({ ...prev, [c.key]: true }))}
+                  >
+                    <span className="icon">{c.icon}</span>
+                    <span className="nav-label">{c.name}</span>
+                    <em className="count">{c.demos.length}</em>
+                  </Link>
+                  {!q && (
+                    <button
+                      type="button"
+                      className={`nav-chevron${groupOpen ? ' open' : ''}`}
+                      aria-label={groupOpen ? '折叠' : '展开'}
+                      aria-expanded={groupOpen}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setExpanded((prev) => ({ ...prev, [c.key]: !groupOpen }));
+                      }}
                     >
-                      {d.title}
-                    </Link>
-                  ))}
-                  {c.demos.length > (q ? 50 : 40) && (
+                      <span aria-hidden>▾</span>
+                    </button>
+                  )}
+                </div>
+                <div className="nav-children" role="group" aria-label={c.name}>
+                  {c.demos.slice(0, q ? 80 : 48).map((d) => {
+                    const path = `/${c.key}/${d.slug}`;
+                    const on = r === path;
+                    return (
+                      <Link
+                        key={d.slug}
+                        to={path}
+                        className={`nav-sub${on ? ' active' : ''}`}
+                        title={d.hint || d.desc}
+                      >
+                        <span className="nav-sub-dot" aria-hidden />
+                        <span className="nav-sub-title">{d.title}</span>
+                        <span className="nav-sub-tag">{d.tag}</span>
+                      </Link>
+                    );
+                  })}
+                  {c.demos.length > (q ? 80 : 48) && (
                     <Link to={`/${c.key}`} className="nav-sub more">查看全部 {c.demos.length} →</Link>
                   )}
                 </div>
@@ -93,7 +154,10 @@ function Sidebar({ open, onClose, filter }: { open: boolean; onClose: () => void
           })}
           {filtered.length === 0 && <div className="nav-empty">无匹配演示</div>}
         </nav>
-        <div className="sidebar-foot">component.clyune.com</div>
+        <div className="sidebar-foot">
+          <span>component.clyune.com</span>
+          <span className="sidebar-foot-meta">{categories.length} 类</span>
+        </div>
       </aside>
       <div className={`sidebar-backdrop${open ? ' show' : ''}`} onClick={onClose} />
     </>
@@ -276,7 +340,7 @@ export default function App() {
 
   return (
     <div id="app">
-      <Sidebar open={open} onClose={close} filter={filter} />
+      <Sidebar open={open} onClose={close} filter={filter} setFilter={setFilter} />
       <main className="main">
         <header className="topbar">
           <button type="button" className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen((v) => !v)}>☰</button>

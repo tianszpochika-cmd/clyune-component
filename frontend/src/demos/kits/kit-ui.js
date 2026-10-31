@@ -1,4 +1,4 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
@@ -21,7 +21,9 @@ function mountLegacy(host, opts = {}) {
   const parts = id.split('-');
   const kind = parts.slice(0, -1).join('-') || parts[0];
   const { stage } = bar(host, id);
-  const c = (opts._controls && opts._controls.color) || hsl(n);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
+  const c = ctrl.color || hsl(n);
   const rm = addStyle(`
     .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);/* --c inherited */}
     .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted,#93a0c0)}
@@ -104,7 +106,7 @@ function mountLegacy(host, opts = {}) {
     .ku .tl .e::before{content:'';position:absolute;left:-21px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--c)}
   `);
   const root = document.createElement('div');
-  root.className = 'ku';
+  root.className = 'ku'; root.style.setProperty('--c', c);
   stage.appendChild(root);
   const title = id;
 
@@ -248,5 +250,11 @@ function mountLegacy(host, opts = {}) {
     root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
   }
 
-  return () => { rm(); host.innerHTML = ''; };
+  const sync = setInterval(() => {
+    const L = live();
+    root.style.setProperty('--c', L.color);
+    stage.style.setProperty('--c', L.color);
+  }, 80);
+  return () => { clearInterval(sync); rm(); host.innerHTML = ''; };
 }
+

@@ -1,4 +1,4 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
@@ -18,17 +18,19 @@ function mountLegacy(host, opts = {}) {
   const id = opts.variant || 't-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-replay>Replay</button>`);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const rm = addStyle(`.kt{position:absolute;inset:0;display:grid;place-items:center;padding:24px;overflow:auto}
-  .kt .t{font-size:clamp(28px,6vw,56px);font-weight:800;letter-spacing:.04em;text-align:center;line-height:1.2}
+  .kt .t{font-size:calc(clamp(28px,6vw,56px) * var(--sz, 1));color:var(--c);font-weight:800;letter-spacing:.04em;text-align:center;line-height:1.2}
   .kt .chars span{display:inline-block}
   @keyframes glitch{0%{transform:translate(0);text-shadow:2px 0 #f0f,-2px 0 #0ff}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}100%{transform:translate(0)}}
-  .kt .glitch{animation:glitch .4s infinite;color:${hsl(n)}}
-  .kt .grad{background:linear-gradient(90deg,${hsl(n)},#22d3ee,#f472b6,${hsl(n)});background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow 4s linear infinite}
+  .kt .glitch{animation:glitch calc(.4s / var(--spd, 1)) infinite;color:var(--c)}
+  .kt .grad{background:linear-gradient(90deg,var(--c),#22d3ee,#f472b6,var(--c));background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:flow calc(4s / var(--spd, 1)) linear infinite}
   @keyframes flow{to{background-position:300% 0}}
-  .kt .neon{color:#fff;text-shadow:0 0 6px ${hsl(n)},0 0 18px ${hsl(n)},0 0 32px ${hsl(n)}}
-  .kt .wave span{animation:wv 1.2s ease-in-out infinite}
+  .kt .neon{color:#fff;text-shadow:0 0 6px var(--c),0 0 18px var(--c),0 0 32px var(--c)}
+  .kt .wave span{animation:wv calc(1.2s / var(--spd, 1)) ease-in-out infinite}
   @keyframes wv{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-  .kt .outline{-webkit-text-stroke:2px ${hsl(n)};color:transparent}
+  .kt .outline{-webkit-text-stroke:2px var(--c);color:transparent}
   `);
   const root = document.createElement('div'); root.className = 'kt'; stage.appendChild(root);
   const text = 'Clyune Component';
@@ -61,9 +63,17 @@ function mountLegacy(host, opts = {}) {
         if (frame > text.length * 2 + 10) clearInterval(timer);
       }, 40);
       root._timer = timer;
-    } else root.innerHTML = `<div class="t" style="color:${hsl(n)}">${text}</div>`;
+    } else root.innerHTML = `<div class="t" style="color:var(--c)">${text}</div>`;
   };
   render();
   host.querySelector('[data-replay]')?.addEventListener('click', () => { if (root._timer) clearInterval(root._timer); render(); });
-  return () => { if (root._timer) clearInterval(root._timer); rm(); host.innerHTML = ''; };
+  const sync = setInterval(() => {
+    const L = live();
+    root.style.setProperty('--c', L.color);
+    root.style.setProperty('--spd', String(L.speed));
+    root.style.setProperty('--sz', String(L.size));
+    stage.style.setProperty('--c', L.color);
+  }, 80);
+  return () => { clearInterval(sync); if (root._timer) clearInterval(root._timer); rm(); host.innerHTML = ''; };
 }
+

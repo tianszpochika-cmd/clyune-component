@@ -1,4 +1,4 @@
-import { addStyle, bar, hsl, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, bar, hsl, defaultParams, parseVariant, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { cdn, loadScript } from '../../lib/load.js';
@@ -19,6 +19,8 @@ async function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'scene-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id);
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   await loadScript(cdn('three', '0.170.0', 'build/three.min.js'), 'THREE');
   const THREE = window.THREE;
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -87,7 +89,15 @@ async function mountLegacy(host, opts = {}) {
   let raf = 0;
   const tick = (t) => {
     raf = requestAnimationFrame(tick);
-    const s = t * 0.001;
+    const L = live();
+    const s = t * 0.001 * L.speed;
+    const [cr, cg, cb] = colorToRgb(L.color);
+    const applyColor = (obj) => {
+      if (!obj) return;
+      if (obj.material?.color?.setRGB) obj.material.color.setRGB(cr, cg, cb);
+      if (obj.isGroup || obj.children) obj.children?.forEach(applyColor);
+    };
+    applyColor(mesh);
     if (mesh.rotation) { mesh.rotation.y = s * 0.6 + mx; mesh.rotation.x = my * 0.3; }
     if (kind === 8 && mesh.geometry?.attributes?.position) {
       const pos = mesh.geometry.attributes.position;

@@ -1,4 +1,4 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
@@ -24,21 +24,11 @@ function mountLegacy(host, opts = {}) {
   const parts = id.split('-');
   const kind = parts.slice(0, -1).join('-') || parts[0];
   const ctrl = opts._controls || {};
-  const readVar = (name, fallback) => {
-    const v = getComputedStyle(host).getPropertyValue(name).trim()
-      || getComputedStyle(stage).getPropertyValue(name).trim()
-      || getComputedStyle(host.parentElement || host).getPropertyValue(name).trim();
-    return v || fallback;
-  };
-  const liveColor = () => readVar('--c', ctrl.color || hsl(n, 75, 60));
-  const liveSpd = () => {
-    const s = parseFloat(readVar('--spd', ctrl.speed ?? 1));
-    return Number.isFinite(s) && s > 0 ? s : 1;
-  };
-  const liveCount = () => {
-    const c = parseInt(readVar('--count', ctrl.count ?? 40), 10);
-    return Number.isFinite(c) ? c : 40;
-  };
+  const liveAll = () => readLiveControls([host, stage, host.parentElement], ctrl);
+  const liveColor = () => liveAll().color || hsl(n, 75, 60);
+  const liveSpd = () => liveAll().speed;
+  const liveCount = () => liveAll().count;
+  const liveSize = () => liveAll().size;
   let pwr = 1;
   let partsArr = [];
   let fieldSeed = n * 97;
@@ -119,6 +109,7 @@ function mountLegacy(host, opts = {}) {
   const stop = loop((dt, t) => {
     const color = liveColor();
     const spd = liveSpd();
+    const sz = (typeof liveSize === 'function' ? liveSize() : 1);
     pwr = spd;
     const { w, h } = state;
     if (!w || !h) return;
@@ -344,7 +335,7 @@ function mountLegacy(host, opts = {}) {
         p.vx += (p.ox - p.x) * 8 * dt;
         p.vy += (p.oy - p.y) * 8 * dt;
         p.vx *= 0.95; p.vy *= 0.95;
-        p.x += p.vx * dt; p.y += p.vy * dt;
+        p.x += p.vx * dt * spd; p.y += p.vy * dt * spd;
       }
       ctx.strokeStyle = color; ctx.lineWidth = 1;
       for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
@@ -396,17 +387,19 @@ function mountLegacy(host, opts = {}) {
         p.vy += 80 * dt; p.vx *= 0.99;
         if (p.y > h - 4) { p.y = h - 4; p.vy = 0; p.vx *= 0.5; }
       }
-      p.x += p.vx * dt; p.y += p.vy * dt;
+      p.x += p.vx * dt * spd; p.y += p.vy * dt * spd;
       if (!['rain', 'flow', 'burst', 'ink', 'sand'].includes(kind)) {
         if (p.x < 0 || p.x > w) p.vx *= -1;
         if (p.y < 0 || p.y > h) p.vy *= -1;
       }
       if (p.life <= 0) continue;
       ctx.beginPath();
-      ctx.fillStyle = `hsla(${p.hue} 80% 60% / ${0.55 + 0.45 * Math.max(0, p.life)})`;
-      const rr = kind === 'blob' ? p.r * (2 + Math.sin(t * 3 + p.hue)) : p.r;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.55 + 0.45 * Math.max(0, p.life);
+      const rr = (kind === 'blob' ? p.r * (2 + Math.sin(t * 3 + p.hue)) : p.r) * sz;
       ctx.arc(p.x, p.y, rr, 0, Math.PI * 2);
       ctx.fill();
+      ctx.globalAlpha = 1;
     }
     partsArr = partsArr.filter((p) => p.life === undefined || p.life > 0);
 
@@ -415,8 +408,10 @@ function mountLegacy(host, opts = {}) {
         const a = partsArr[i], b = partsArr[j];
         const d = Math.hypot(a.x - b.x, a.y - b.y);
         if (d < 70) {
-          ctx.strokeStyle = `rgba(129,140,248,${1 - d / 70})`;
+          ctx.strokeStyle = color;
+          ctx.globalAlpha = 1 - d / 70;
           ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          ctx.globalAlpha = 1;
         }
       }
     }

@@ -32,8 +32,8 @@ function mountLegacy(host, opts = {}) {
   const c = (opts._controls && opts._controls.color) || hsl(n);
   const rm = addStyle(`
     .ks{position:absolute;inset:0;display:grid;place-items:center;padding:16px;overflow:auto;/* --c inherited from stage */}
-    .ks svg{width:min(340px,86%);height:auto;overflow:visible}
-    .ks path,.ks polyline,.ks circle,.ks rect,.ks polygon,.ks line,.ks ellipse{fill:none;stroke:var(--c);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .ks svg{width:calc(min(340px,86%) * var(--sz, 1));height:auto;overflow:visible;transform-origin:center}
+    .ks path,.ks polyline,.ks circle,.ks rect,.ks polygon,.ks line,.ks ellipse{fill:none;stroke:var(--c);stroke-width:calc(3px * var(--sz, 1));stroke-linecap:round;stroke-linejoin:round}
     .ks .fillable{fill:color-mix(in srgb,var(--c) 18%,transparent)}
     .ks .ico{width:84px;height:84px;cursor:pointer;border:1px solid #24314f;border-radius:18px;display:grid;place-items:center;background:#121a2f}
     .ks .ico svg{width:40px;height:40px}
@@ -67,6 +67,12 @@ function mountLegacy(host, opts = {}) {
       || parseFloat(getComputedStyle(stage).getPropertyValue('--spd'))
       || parseFloat(getComputedStyle(host.parentElement || host).getPropertyValue('--spd'));
     if (Number.isFinite(v) && v > 0) spd = v;
+    const c = getComputedStyle(host).getPropertyValue('--c').trim()
+      || getComputedStyle(stage).getPropertyValue('--c').trim();
+    if (c) { root.style.setProperty('--c', c); stage.style.setProperty('--c', c); }
+    const sz = parseFloat(getComputedStyle(host).getPropertyValue('--sz'))
+      || parseFloat(getComputedStyle(stage).getPropertyValue('--sz'));
+    if (Number.isFinite(sz) && sz > 0) { root.style.setProperty('--sz', String(sz)); stage.style.setProperty('--sz', String(sz)); }
   };
 
   const strokeAnim = (el, dur = 1.2) => {
