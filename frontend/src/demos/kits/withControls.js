@@ -106,21 +106,42 @@ export function withControls(host, opts, {
     }
   }
 
+  function showMountError(box, err) {
+    console.error('[demo mount]', kitKey, err);
+    if (!box) return;
+    box.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'loading err';
+    el.setAttribute('role', 'alert');
+    el.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;z-index:2';
+    el.innerHTML = `加载失败：${String(err?.message || err)}<br><small>请点重置重试；若持续失败多半是依赖未加载。</small>`;
+    box.appendChild(el);
+  }
+
   function remount(state) {
     try { innerDispose?.(); } catch (_) {}
     innerDispose = undefined;
     ui.stage.innerHTML = '';
     const box = document.createElement('div');
     box.className = 'kit-inner';
-    box.style.cssText = 'position:absolute;inset:0';
+    box.style.cssText = 'position:absolute;inset:0;min-height:120px';
     ui.stage.appendChild(box);
     const style1 = (state?.style ?? 0) + 1;
     const variant = mapVariant
       ? mapVariant(family, style1, state)
       : `${family}-${style1}`;
-    const result = mountLegacy(box, { ...opts, variant, _controls: state });
+    let result;
+    try {
+      result = mountLegacy(box, { ...opts, variant, _controls: state });
+    } catch (err) {
+      showMountError(box, err);
+      return;
+    }
     if (result && typeof result.then === 'function') {
-      result.then((d) => { innerDispose = typeof d === 'function' ? d : undefined; applyLive(state); });
+      result.then((d) => {
+        innerDispose = typeof d === 'function' ? d : undefined;
+        applyLive(state);
+      }).catch((err) => showMountError(box, err));
     } else {
       innerDispose = typeof result === 'function' ? result : undefined;
       applyLive(state);

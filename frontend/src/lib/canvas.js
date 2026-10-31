@@ -18,6 +18,13 @@ export function makeCanvas(host, { webgl = false, maxDpr = 2 } = {}) {
   const ro = new ResizeObserver(resize);
   ro.observe(host);
   resize();
+  // Absolute kit-inner often measures 0 on first paint — retry a couple frames.
+  if (state.w <= 1 || state.h <= 1) {
+    requestAnimationFrame(() => {
+      resize();
+      if (state.w <= 1 || state.h <= 1) requestAnimationFrame(resize);
+    });
+  }
   return { canvas, ctx, state, resize, dispose: () => { ro.disconnect(); canvas.remove(); } };
 }
 
