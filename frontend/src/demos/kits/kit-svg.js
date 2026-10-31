@@ -1,6 +1,21 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
 
+const TITLES={stroke:'描边路径','icon-anim':'图标动效',morph:'形变 Morph',smil:'SMIL/CSS',dash:'虚线流转',drawtext:'文字描边',ring:'环形进度','filter-svg':'SVG 滤镜',mask:'遮罩',follow:'路径跟随','blob-svg':'SVG Blob','chart-draw':'图表描出',sprite:'图标精灵','gradient-svg':'渐变动画'};
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-svg',
+    title: TITLES[parseVariant(opts.variant||'stroke').family]||'SVG',
+    fallbackVariant: 'stroke',
+    params: defaultParams({color:true,speed:true,size:true}),
+    
+    mountLegacy,
+  });
+}
+
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'stroke-1';
   const n = parseInt(String(id).split('-').pop(), 10) || 1;
   const parts = id.split('-');

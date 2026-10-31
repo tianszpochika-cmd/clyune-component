@@ -1,5 +1,20 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-text',
+    title: '文字特效实验室',
+    fallbackVariant: 'text-lab',
+    params: defaultParams({color:true,speed:true,size:true}),
+    mapVariant: (family, n) => `t-${n}`,
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 't-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-replay>Replay</button>`);

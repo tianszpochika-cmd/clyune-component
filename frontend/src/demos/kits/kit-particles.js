@@ -1,5 +1,20 @@
-import { makeCanvas, loop, localPoint, bar, rand, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-particles',
+    title: '粒子实验室',
+    fallbackVariant: 'particles-lab',
+    params: defaultParams({color:true,speed:true,size:true,count:true}),
+    mapVariant: (family, n) => `p-${n}`,
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'p-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-burst>Burst</button>`);

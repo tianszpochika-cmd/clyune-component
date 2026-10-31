@@ -1,4 +1,19 @@
-import { makeCanvas, loop, localPoint, bar } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
+export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-webgl',
+    title: '着色器',
+    fallbackVariant: 'shader-voronoi',
+    params: defaultParams({color:true,speed:true}),
+    mapVariant: () => opts.variant || 'shader-voronoi',
+    mountLegacy,
+  });
+}
+
 
 const VERT = `attribute vec2 a; void main(){ gl_Position=vec4(a,0.,1.); }`;
 function frag(kind) {
@@ -29,7 +44,7 @@ function frag(kind) {
   return common + body + ` gl_FragColor=vec4(col,1.); }`;
 }
 
-export function mount(host, opts = {}) {
+function mountLegacy(host, opts = {}) {
   const id = (opts.variant || 'shader-warp').replace('shader-', '');
   const { stage } = bar(host, `shader-${id}`);
   const { canvas, ctx: gl, state, dispose } = makeCanvas(stage, { webgl: true });

@@ -1,5 +1,20 @@
-import { makeCanvas, loop, localPoint, bar, rand, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-physics',
+    title: '物理模拟',
+    fallbackVariant: 'sim-1',
+    params: defaultParams({color:true,speed:true,count:true}),
+    
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'sim-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-add>Add</button>`);

@@ -1,5 +1,20 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+const TITLES={grid:'Grid 布局',flex:'Flex 布局'};
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-layout',
+    title: TITLES[parseVariant(opts.variant||'grid').family]||'Layout',
+    fallbackVariant: 'grid',
+    params: defaultParams({color:true,speed:false,size:false}).concat([{key:'cols',type:'range',label:'列数',min:1,max:12,step:1,value:3},{key:'gap',type:'range',label:'间距',min:0,max:48,step:2,value:12}]),
+    
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'grid-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<label>列数 <input type="range" min="2" max="6" value="3" data-cols></label><label>间距 <input type="range" min="4" max="28" value="12" data-gap></label>`);

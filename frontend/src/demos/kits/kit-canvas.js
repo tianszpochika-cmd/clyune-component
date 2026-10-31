@@ -1,6 +1,21 @@
-import { makeCanvas, loop, localPoint, bar, rand, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
 
+const TITLES={orbits:'轨道粒子',trail:'指针拖尾',blob:'软体 Blob',rain:'粒子雨',wave:'波浪',noise:'噪声场',flock:'群体',burst:'爆发',flow:'流场',gridwave:'网格起伏',ink:'墨水扩散',aurora:'极光',constellation:'星座连线',sand:'沙粒',kaleido:'万花筒',lightning:'闪电',cloth:'布料感',spiral:'螺旋采样',tunnel:'隧道穿梭'};
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-canvas',
+    title: TITLES[parseVariant(opts.variant||'orbits').family]||'Canvas',
+    fallbackVariant: 'orbits',
+    params: defaultParams({color:true,speed:true,size:true,count:true}),
+    
+    mountLegacy,
+  });
+}
+
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'orbits-1';
   const { stage } = bar(host, id, `<button class="btn" data-burst>Burst / Reset</button>
     <label>强度 <input type="range" min="0.4" max="2" step="0.1" value="1" data-pwr></label>`);

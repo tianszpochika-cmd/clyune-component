@@ -1,19 +1,84 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, panel, defaultParams, parseVariant, hsl } from './_shared.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+const PRESETS = {
+  pulse: ['靛紫','青绿','玫红','琥珀','翠绿','天蓝','橙','品红'],
+  loader: ['环','点阵','条','方块翻转','呼吸','轨道','涟漪','交叉','双环','弹跳点','旋转三角','进度弧'],
+  hover: ['上浮','缩放','边光','扫光','倾斜','边框跑马','阴影扩散','模糊聚焦','霓虹描边','磁吸位移','下划线展开','背景填充'],
+  grad: ['默认','冷色','暖色','霓虹','日落','极光'],
+  ease: ['linear','ease','ease-in','ease-out','ease-in-out','cubic-in','cubic-out','back','elastic感','steps','bounce感','自定义贝塞尔'],
+  spring: ['弹入','弹出','过冲缩放','橡皮筋','沉降回弹','左右晃回','旋转过冲','连环弹跳'],
+  stagger: ['列表淡入','卡片瀑布','网格对角','字母拆分','从中心扩散','反向收起','缩放交错','旋转交错'],
+  flip: ['网格重排','列表排序','展开卡片','交换两格','过滤显隐','尺寸变形'],
+  clip: ['圆揭示','菱形','多边形','斜切','星形','波浪边','对角擦除','圆形收缩','十字','胶囊'],
+  xform3d: ['立方体','翻转牌','旋转木马','层叠卡片','门轴打开','翻书','倾斜面板','球体感','棱柱','行列翻转'],
+  trans: ['颜色','宽高','透明度','变换','阴影','圆角','字号','边框','滤镜','复合多属性'],
+  parallax: ['多层深度','指针跟随','背景慢移','前景快移','卡片深度','文字层差'],
+  filter: ['模糊进出','饱和脉动','色相旋转','对比闪','灰度到彩色','霓虹发光','暗角呼吸','色散感'],
+  blend: ['screen','multiply','overlay','difference','exclusion','color-dodge','hard-light','soft-light'],
+  skeleton: ['卡片','列表','头像行','图表占位','文章段落','网格瓷砖'],
+  progress: ['线性','条纹不确定','环形','半环','分段步进','水波填充','像素块','渐变扫'],
+  ripple: ['圆心扩散','按钮内裁切','双波','彩色','方块波','长按放大'],
+  accordion: ['单开','多开','图标旋转','淡入内容','边框高亮','卡片式'],
+  modal: ['淡入缩放','自下滑入','自右滑入','模糊背景','弹跳入','翻转入'],
+  carousel: ['滑移','淡入淡出','3D 封面流','卡片堆','垂直','无限循环'],
+  reveal: ['遮罩擦除','百叶窗','圆形扩散','对角线','像素块','模糊清晰'],
+  neon: ['文字','边框','按钮','图标','双色交替','故障闪'],
+  liquid: ['按钮变形','blob 边','水滴菜单','果冻点击','波浪底边','粘滞切换'],
+  marquee: ['横向文字','反向','双行','徽标带','垂直','变速'],
+  kenburns: ['默认','慢推','对角','急拉'],
+  shake: ['左右','上下','旋转','弹性','心跳','震动条'],
+  keyseq: ['行走循环','加载变形','颜色节拍','路径感位移','缩放呼吸组合','旋转+位移','闪烁摩斯','多段叙事'],
+};
 
 export function mount(host, opts = {}) {
-  const id = opts.variant || 'pulse-1';
-  const n = parseInt(String(id).split('-').pop(), 10) || 1;
-  const { stage } = bar(
-    host,
-    id,
-    `<label>速度 <input type="range" min="0.3" max="2.5" step="0.1" value="1" data-spd></label>
-     <input type="color" value="#818cf8" data-col>
-     <button class="btn" data-act>触发</button>`,
-  );
-  const rm = addStyle(`
-    .kit-css{position:absolute;inset:0;display:grid;place-items:center;padding:20px;overflow:auto;--c:#818cf8;--spd:1}
-    .kit-css .box{width:min(260px,70%);aspect-ratio:1;border-radius:20px;display:grid;place-items:center;font-weight:700;color:#fff;position:relative;background:var(--c)}
-    .kit-css .card{width:min(220px,85%);padding:16px;border-radius:14px;background:#18233d;border:1px solid #24314f;transition:.35s;text-align:center;color:var(--text,#e8eefc)}
+  const { family: kind, style: initialStyle } = parseVariant(opts.variant || 'pulse', 'pulse');
+  const presets = FAMILY_PRESETS[`kit-css:${kind}`] || PRESETS[kind] || ['默认'];
+  const titles = { pulse:'脉冲环', loader:'加载器', hover:'悬停动效', grad:'渐变流动', ease:'缓动曲线', spring:'弹簧感', stagger:'交错入场', flip:'FLIP 布局', clip:'Clip-path', xform3d:'3D Transform', trans:'过渡属性', parallax:'视差', filter:'滤镜动效', blend:'混合模式', skeleton:'骨架屏', progress:'进度条', ripple:'涟漪', accordion:'手风琴', modal:'弹层进出', carousel:'轮播', reveal:'揭示', neon:'霓虹', liquid:'液态', marquee:'跑马灯', kenburns:'Ken Burns', shake:'抖动反馈', keyseq:'关键帧序列' };
+
+  const needsEasing = kind === 'ease' || kind === 'trans' || kind === 'spring';
+  const params = defaultParams({ color: true, speed: true, size: true, easing: needsEasing });
+  if (kind === 'parallax') params.push({ key: 'depth', type: 'range', label: '深度', min: 0.2, max: 2, step: 0.1, value: 1 });
+
+  const actions = [];
+  if (['ease','spring','stagger','flip','clip','filter','progress','reveal','shake','keyseq','ripple'].includes(kind)) {
+    actions.push({ key: 'trigger', label: '触发 / 重播' });
+  }
+  if (kind === 'modal') actions.push({ key: 'trigger', label: '打开' });
+  if (kind === 'carousel') {
+    actions.push({ key: 'prev', label: '‹' });
+    actions.push({ key: 'next', label: '›' });
+  }
+
+  let live = { style: initialStyle % presets.length, color: '#818cf8', speed: 1, size: 1, easing: 'ease', depth: 1 };
+  let disposers = [];
+
+  const ui = panel(host, titles[kind] || kind, {
+    presets,
+    params,
+    actions,
+    presetIndex: live.style,
+    onChange(state, meta) {
+      live = { ...live, ...state };
+      if (meta.reason === 'preset') {
+        remount();
+        return;
+      }
+      if (meta.reason === 'param') {
+        applyLive();
+        if (meta.key === 'easing' && kind === 'ease') remount();
+        return;
+      }
+      if (meta.reason === 'action') {
+        trigger(meta.key);
+      }
+    },
+  });
+
+  const rmStyle = addStyle(`
+    .kit-css{position:absolute;inset:0;display:grid;place-items:center;padding:20px;overflow:auto;--c:#818cf8;--spd:1;--sz:1}
+    .kit-css .box{width:calc(min(260px,70%) * var(--sz));aspect-ratio:1;border-radius:20px;display:grid;place-items:center;font-weight:700;color:#fff;position:relative;background:var(--c)}
+    .kit-css .card{width:calc(min(220px,85%) * var(--sz));padding:16px;border-radius:14px;background:#18233d;border:1px solid #24314f;transition:.35s;text-align:center;color:var(--text,#e8eefc)}
     .kit-css .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
     .kit-css .list{display:flex;flex-direction:column;gap:8px;width:min(360px,92%)}
     .kit-css .list .item{padding:12px 14px;border-radius:10px;background:#18233d;border:1px solid #24314f}
@@ -22,19 +87,19 @@ export function mount(host, opts = {}) {
     .k-pulse::after{content:'';position:absolute;inset:0;border-radius:inherit;border:2px solid var(--c);animation:kr calc(1.8s / var(--spd)) ease-out infinite}
     @keyframes kp{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
     @keyframes kr{from{transform:scale(1);opacity:.8}to{transform:scale(1.55);opacity:0}}
-    .k-loader{width:56px;height:56px;border:4px solid #24314f;border-top-color:var(--c);border-radius:50%;animation:kl calc(1s / var(--spd)) linear infinite}
+    .k-loader{width:calc(56px * var(--sz));height:calc(56px * var(--sz));border:4px solid #24314f;border-top-color:var(--c);border-radius:50%;animation:kl calc(1s / var(--spd)) linear infinite}
     @keyframes kl{to{transform:rotate(360deg)}}
-    .k-dots{display:flex;gap:8px}.k-dots i{width:12px;height:12px;border-radius:50%;background:var(--c);animation:kb calc(.9s / var(--spd)) ease-in-out infinite}
+    .k-dots{display:flex;gap:8px}.k-dots i{width:calc(12px * var(--sz));height:calc(12px * var(--sz));border-radius:50%;background:var(--c);animation:kb calc(.9s / var(--spd)) ease-in-out infinite}
     .k-dots i:nth-child(2){animation-delay:.15s}.k-dots i:nth-child(3){animation-delay:.3s}
     @keyframes kb{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-14px);opacity:1}}
-    .k-bars{display:flex;gap:5px;align-items:flex-end;height:48px}.k-bars i{width:7px;background:var(--c);border-radius:3px;animation:ke calc(1s / var(--spd)) ease-in-out infinite}
+    .k-bars{display:flex;gap:5px;align-items:flex-end;height:calc(48px * var(--sz))}.k-bars i{width:7px;background:var(--c);border-radius:3px;animation:ke calc(1s / var(--spd)) ease-in-out infinite}
     .k-bars i:nth-child(2){animation-delay:-.2s}.k-bars i:nth-child(3){animation-delay:-.4s}.k-bars i:nth-child(4){animation-delay:-.6s}.k-bars i:nth-child(5){animation-delay:-.8s}
     @keyframes ke{0%,100%{height:10px}50%{height:48px}}
     .k-flip{animation:kf calc(2.4s / var(--spd)) ease-in-out infinite;background:linear-gradient(135deg,var(--c),#22d3ee)}
     @keyframes kf{0%,100%{border-radius:16px;transform:rotateY(0)}50%{border-radius:50%;transform:rotateY(180deg)}}
     .k-breathe{animation:kbr calc(2s / var(--spd)) ease-in-out infinite;box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 50%,transparent)}
     @keyframes kbr{0%,100%{transform:scale(1);box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 45%,transparent)}50%{transform:scale(1.08);box-shadow:0 0 0 18px transparent}}
-    .k-orbit{width:64px;height:64px;position:relative}.k-orbit span{position:absolute;inset:0;border:2px dashed color-mix(in srgb,var(--c) 50%,#24314f);border-radius:50%;animation:ko calc(3s / var(--spd)) linear infinite}
+    .k-orbit{width:calc(64px * var(--sz));height:calc(64px * var(--sz));position:relative}.k-orbit span{position:absolute;inset:0;border:2px dashed color-mix(in srgb,var(--c) 50%,#24314f);border-radius:50%;animation:ko calc(3s / var(--spd)) linear infinite}
     .k-orbit i{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--c);top:50%;left:50%;margin:-7px;animation:ko calc(3s / var(--spd)) linear infinite}
     @keyframes ko{to{transform:rotate(360deg) translateX(32px)}}
     .k-ripple-box{border-radius:50%}.k-ripple-box::before,.k-ripple-box::after{content:'';position:absolute;inset:0;border-radius:inherit;border:2px solid var(--c);animation:kri calc(2s / var(--spd)) ease-out infinite}
@@ -68,7 +133,7 @@ export function mount(host, opts = {}) {
     @keyframes kg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
     .ease-track{width:min(420px,92%);height:64px;background:#0d1426;border-radius:12px;position:relative;border:1px solid #24314f}
     .ease-ball{position:absolute;top:12px;left:12px;width:40px;height:40px;border-radius:50%;background:var(--c)}
-    .spring-box{width:100px;height:100px;border-radius:18px;background:var(--c);display:grid;place-items:center;font-weight:800;color:#0b1020}
+    .spring-box{width:calc(100px * var(--sz));height:calc(100px * var(--sz));border-radius:18px;background:var(--c);display:grid;place-items:center;font-weight:800;color:#0b1020}
     .stagger .item{opacity:0;transform:translateY(16px)}
     .stagger.run .item{animation:stIn calc(.55s / var(--spd)) forwards}
     .stagger.run .item:nth-child(1){animation-delay:.05s}.stagger.run .item:nth-child(2){animation-delay:.12s}
@@ -77,7 +142,7 @@ export function mount(host, opts = {}) {
     @keyframes stIn{to{opacity:1;transform:none}}
     .flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(320px,90%)}
     .flip-grid .cell{height:72px;border-radius:12px;background:color-mix(in srgb,var(--c) 45%,#121a2f);display:grid;place-items:center;font-weight:700;color:#fff;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
-    .clip-demo{width:min(280px,80%);aspect-ratio:1;background:linear-gradient(135deg,var(--c),#22d3ee);display:grid;place-items:center;font-weight:800;color:#0b1020;transition:clip-path .55s}
+    .clip-demo{width:calc(min(280px,80%) * var(--sz));aspect-ratio:1;background:linear-gradient(135deg,var(--c),#22d3ee);display:grid;place-items:center;font-weight:800;color:#0b1020;transition:clip-path .55s}
     .scene3d{perspective:900px;width:min(280px,80%);height:180px;display:grid;place-items:center}
     .cube3d{width:100px;height:100px;position:relative;transform-style:preserve-3d;animation:spin3d calc(6s / var(--spd)) linear infinite}
     .cube3d i{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 70%,#000);border:1px solid #fff3;font-weight:700}
@@ -120,7 +185,7 @@ export function mount(host, opts = {}) {
     .car{width:min(400px,92%);overflow:hidden;border-radius:14px;border:1px solid #24314f;position:relative}
     .car-track{display:flex;transition:transform .45s ease}
     .car-track .slide{min-width:100%;height:160px;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff}
-    .neon-t{font-size:42px;font-weight:900;color:#fff;text-shadow:0 0 6px var(--c),0 0 18px var(--c),0 0 36px var(--c);animation:neonBreath calc(2s / var(--spd)) ease-in-out infinite}
+    .neon-t{font-size:calc(42px * var(--sz));font-weight:900;color:#fff;text-shadow:0 0 6px var(--c),0 0 18px var(--c),0 0 36px var(--c);animation:neonBreath calc(2s / var(--spd)) ease-in-out infinite}
     @keyframes neonBreath{50%{filter:brightness(1.25)}}
     .liquid-btn{padding:14px 28px;border:0;border-radius:999px;background:var(--c);color:#0b1020;font-weight:800;cursor:pointer;transition:border-radius .35s,transform .2s}
     .liquid-btn:hover{border-radius:16px 40px 16px 40px;transform:scale(1.04)}
@@ -145,8 +210,7 @@ export function mount(host, opts = {}) {
 
   const root = document.createElement('div');
   root.className = 'kit-css';
-  root.style.setProperty('--c', hsl(n));
-  stage.appendChild(root);
+  ui.stage.appendChild(root);
 
   const easings = [
     'linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out',
@@ -164,220 +228,253 @@ export function mount(host, opts = {}) {
     'inset(10% 20% round 40px)',
   ];
   const blends = ['screen', 'multiply', 'overlay', 'difference', 'exclusion', 'color-dodge', 'hard-light', 'soft-light'];
-  const parts = id.split('-');
-  const kind = parts.slice(0, -1).join('-') || parts[0];
-  let html = '';
+  let carIdx = 0;
+  let handlers = {};
 
-  if (kind === 'pulse') {
-    html = `<div class="box k-pulse" style="--c:${hsl(n)}">PULSE ${n}</div>`;
-  } else if (kind === 'loader') {
-    const kinds = ['ring','dots','bars','flip','breathe','orbit','ripple','cross','dual','bounce','tri','arc'];
-    const k = kinds[(n - 1) % kinds.length];
-    if (k === 'ring') html = `<div class="k-loader" style="--c:${hsl(n)}"></div>`;
-    else if (k === 'dots' || k === 'bounce') html = `<div class="k-dots" style="--c:${hsl(n)}"><i></i><i></i><i></i>${k==='bounce'?'<i></i>':''}</div>`;
-    else if (k === 'bars') html = `<div class="k-bars" style="--c:${hsl(n)}"><i></i><i></i><i></i><i></i><i></i></div>`;
-    else if (k === 'flip') html = `<div class="box k-flip" style="--c:${hsl(n)};width:80px;height:80px"></div>`;
-    else if (k === 'breathe') html = `<div class="box k-breathe" style="--c:${hsl(n)};width:80px;height:80px"></div>`;
-    else if (k === 'orbit') html = `<div class="k-orbit" style="--c:${hsl(n)}"><span></span><i></i></div>`;
-    else if (k === 'ripple') html = `<div class="box k-ripple-box" style="--c:${hsl(n)};width:72px;height:72px"></div>`;
-    else if (k === 'cross') html = `<div class="k-cross" style="--c:${hsl(n)}"></div>`;
-    else if (k === 'dual') html = `<div class="k-dual" style="--c:${hsl(n)}"></div>`;
-    else if (k === 'tri') html = `<div class="k-tri" style="--c:${hsl(n)}"></div>`;
-    else html = `<div class="k-arc" style="--c:${hsl(n)}"></div>`;
-  } else if (kind === 'hover') {
-    const cls = ['hover-lift','hover-scale','hover-glow','hover-shine','hover-tilt','hover-marquee','hover-shadow','hover-blur','hover-neon','hover-mag','hover-uline','hover-fill'][(n-1)%12];
-    html = `<div class="card ${cls}" style="--c:${hsl(n)}"><b>Hover me</b><div style="color:var(--muted);font-size:12px;margin-top:6px">${cls}</div></div>`;
-  } else if (kind === 'grad') {
-    html = `<div class="grad-flow" style="--c:${hsl(n)}">Gradient Flow ${n}</div>`;
-  } else if (kind === 'ease') {
-    html = `<div class="list" style="gap:14px;align-items:center"><div style="color:var(--muted);font-size:12px">${easings[(n-1)%easings.length]}</div><div class="ease-track"><div class="ease-ball" data-ball style="--c:${hsl(n)}"></div></div></div>`;
-  } else if (kind === 'spring') {
-    html = `<div class="spring-box" data-spring style="--c:${hsl(n)}">SPRING</div>`;
-  } else if (kind === 'stagger') {
-    html = `<div class="list stagger" data-st>${[1,2,3,4,5,6].map(i=>`<div class="item">Stagger item ${i}</div>`).join('')}</div>`;
-  } else if (kind === 'flip') {
-    html = `<div class="flip-grid" data-flip>${[1,2,3,4,5,6,7,8,9].map(i=>`<div class="cell" style="--c:${hsl(i+n)}">${i}</div>`).join('')}</div>`;
-  } else if (kind === 'clip') {
-    html = `<div class="clip-demo" data-clip style="--c:${hsl(n)};clip-path:${clips[(n-1)%clips.length]}">CLIP</div>`;
-  } else if (kind === 'xform3d') {
-    html = n % 2 === 1
-      ? `<div class="scene3d"><div class="cube3d" style="--c:${hsl(n)}"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i></div></div>`
-      : `<div class="card3d" data-flip3d style="--c:${hsl(n)}"><div class="f">Front</div><div class="b">Back</div></div>`;
-  } else if (kind === 'trans') {
-    const props = ['background','width','opacity','transform','box-shadow','border-radius','font-size','border-color','filter','all'];
-    const p = props[(n-1)%props.length];
-    html = `<div class="card" data-trans data-prop="${p}" style="--c:${hsl(n)};transition:${p} .5s">transition: ${p}<div style="font-size:12px;color:var(--muted);margin-top:8px">悬停变化</div></div>`;
-  } else if (kind === 'parallax') {
-    html = `<div class="parallax-stage" data-par>${[0,1,2,3,4].map(i=>`<span style="width:${40+i*20}px;height:${40+i*20}px;left:${10+i*15}%;top:${20+i*10}%;opacity:${0.2+i*0.1};background:${hsl(n+i)}" data-d="${0.2+i*0.2}"></span>`).join('')}<b style="position:relative;z-index:2;color:#fff">Parallax</b></div>`;
-  } else if (kind === 'filter') {
-    html = `<div class="box" data-filt style="--c:${hsl(n)}">FILTER</div>`;
-  } else if (kind === 'blend') {
-    const m = blends[(n-1)%blends.length];
-    html = `<div class="blend-stage" data-blend><div class="a" style="--c:${hsl(n)};background:${hsl(n)}"></div><div class="b" style="mix-blend-mode:${m}"></div><b style="position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#fff">${m}</b></div>`;
-  } else if (kind === 'skeleton') {
-    html = n % 2
-      ? `<div class="skel"><div class="b lg"></div><div class="b"></div><div class="b sm"></div></div>`
-      : `<div class="skel"><div class="row"><div class="b av"></div><div style="flex:1"><div class="b"></div><div class="b sm" style="margin-top:8px"></div></div></div><div class="b"></div><div class="b"></div></div>`;
-  } else if (kind === 'progress') {
-    if (n === 3 || n === 4) html = `<div class="ringp" data-ring data-v="40%" style="--c:${hsl(n)};--p:40%"></div>`;
-    else if (n === 2) html = `<div class="prog indeterminate" style="--c:${hsl(n)}"><i></i></div>`;
-    else html = `<div class="prog" style="--c:${hsl(n)}"><i data-p></i></div>`;
-  } else if (kind === 'ripple') {
-    html = `<button class="rip-host" data-rip style="--c:${hsl(n)}">Click ripple</button>`;
-  } else if (kind === 'accordion') {
-    html = `<div class="acc">${[1,2,3].map(i=>`<details ${i===1?'open':''}><summary>Section ${i}</summary><div class="body">Accordion content ${i}</div></details>`).join('')}</div>`;
-  } else if (kind === 'modal') {
-    html = `<button class="btn" data-open>打开弹层</button><div class="modal-back ${n===4?'blur-bg':''}" data-modal><div class="modal-panel" style="border-color:${hsl(n)}"><h3 style="margin:0 0 8px">Modal ${n}</h3><p style="color:var(--muted);font-size:13px">Enter / exit transition.</p><button class="btn" data-close>关闭</button></div></div>`;
-  } else if (kind === 'carousel') {
-    html = `<div class="car"><div class="car-track" data-car>${[1,2,3,4].map(i=>`<div class="slide" style="background:${hsl(n+i)}">${i}</div>`).join('')}</div></div><div class="row" style="margin-top:12px"><button class="btn" data-prev>‹</button><button class="btn" data-next>›</button></div>`;
-  } else if (kind === 'reveal') {
-    html = `<div class="reveal-box" data-rev style="--c:${hsl(n)}">REVEAL</div>`;
-  } else if (kind === 'neon') {
-    html = `<div class="neon-t" style="--c:${hsl(n)}">NEON</div>`;
-  } else if (kind === 'liquid') {
-    html = `<button class="liquid-btn" style="--c:${hsl(n)}">Liquid</button>`;
-  } else if (kind === 'marquee') {
-    const t = 'Clyune · CSS · Motion · Transition · ';
-    html = `<div class="marq"><div class="marq-inner" style="animation-direction:${n%2?'reverse':'normal'}"><span>${t}</span><span>${t}</span></div></div>`;
-  } else if (kind === 'kenburns') {
-    html = `<div class="kb" style="--c:${hsl(n)}"></div>`;
-  } else if (kind === 'shake') {
-    html = `<div class="shake-box" data-shake>Shake me</div>`;
-  } else if (kind === 'keyseq') {
-    html = `<div class="box" data-keyseq style="--c:${hsl(n)};animation:kp calc(1.2s / var(--spd)) ease-in-out infinite">KF ${n}</div>`;
-  } else {
-    html = `<div class="grad-flow" style="--c:${hsl(n)}">${id}</div>`;
-  }
-  root.innerHTML = html;
-
-  const spd = host.querySelector('[data-spd]');
-  const col = host.querySelector('[data-col]');
-  const act = host.querySelector('[data-act]');
-  spd?.addEventListener('input', () => root.style.setProperty('--spd', spd.value));
-  col?.addEventListener('input', () => root.style.setProperty('--c', col.value));
-
-  if (kind === 'ease') {
-    const run = () => {
-      const b = root.querySelector('[data-ball]');
-      if (!b) return;
-      b.style.transition = 'none'; b.style.left = '12px'; b.getBoundingClientRect();
-      b.style.transition = `left ${1.2 / (parseFloat(spd?.value)||1)}s ${easings[(n-1)%easings.length]}`;
-      b.style.left = 'calc(100% - 52px)';
-    };
-    act?.addEventListener('click', run); setTimeout(run, 200);
-  }
-  if (kind === 'spring') {
-    const run = () => {
-      const el = root.querySelector('[data-spring]'); if (!el) return;
-      const maps = ['scale(0.2)','scale(1.4)','scale(1.35)','scale(0.85) translateY(8px)','translateY(40px)','translateX(30px)','rotate(25deg) scale(1.1)','translateY(-20px)'];
-      el.style.transition = 'none'; el.style.transform = maps[(n-1)%maps.length]; el.getBoundingClientRect();
-      el.style.transition = `transform ${0.7/(parseFloat(spd?.value)||1)}s cubic-bezier(.34,1.56,.64,1)`; el.style.transform = 'none';
-    };
-    act?.addEventListener('click', run); setTimeout(run, 150);
-  }
-  if (kind === 'stagger') {
-    const run = () => { const el = root.querySelector('[data-st]'); el?.classList.remove('run'); void el?.offsetWidth; el?.classList.add('run'); };
-    act?.addEventListener('click', run); setTimeout(run, 100);
-  }
-  if (kind === 'flip') {
-    act?.addEventListener('click', () => {
-      const g = root.querySelector('[data-flip]'); if (!g) return;
-      const cells = [...g.children];
-      const first = cells.map(c => c.getBoundingClientRect());
-      for (let i = cells.length - 1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); g.appendChild(cells[j]); cells.splice(j,1); }
-      [...g.children].forEach((c, i) => {
-        const last = c.getBoundingClientRect();
-        const dx = first[i].left - last.left, dy = first[i].top - last.top;
-        c.style.transition = 'none'; c.style.transform = `translate(${dx}px,${dy}px)`; c.getBoundingClientRect();
-        c.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; c.style.transform = 'none';
-      });
-    });
-  }
-  if (kind === 'clip') {
-    let on = false; const el = root.querySelector('[data-clip]');
-    const tog = () => { on = !on; el.style.clipPath = on ? 'circle(75% at 50% 50%)' : clips[(n-1)%clips.length]; };
-    el?.addEventListener('click', tog); act?.addEventListener('click', tog);
-  }
-  if (kind === 'xform3d') root.querySelector('[data-flip3d]')?.addEventListener('click', (e) => e.currentTarget.classList.toggle('flipped'));
-  if (kind === 'trans') {
-    const el = root.querySelector('[data-trans]'); const prop = el?.dataset.prop;
-    el?.addEventListener('mouseenter', () => {
-      if (prop === 'background') el.style.background = hsl(n+3);
-      if (prop === 'width') el.style.width = '280px';
-      if (prop === 'opacity') el.style.opacity = '0.45';
-      if (prop === 'transform') el.style.transform = 'scale(1.08) rotate(-2deg)';
-      if (prop === 'box-shadow') el.style.boxShadow = `0 12px 40px ${hsl(n)}`;
-      if (prop === 'border-radius') el.style.borderRadius = '40px';
-      if (prop === 'font-size') el.style.fontSize = '20px';
-      if (prop === 'border-color') el.style.borderColor = hsl(n);
-      if (prop === 'filter') el.style.filter = 'hue-rotate(90deg)';
-      if (prop === 'all') { el.style.transform = 'translateY(-6px)'; el.style.background = '#1d2a4a'; el.style.borderColor = hsl(n); }
-    });
-    el?.addEventListener('mouseleave', () => { el.style.background=''; el.style.width=''; el.style.opacity=''; el.style.transform=''; el.style.boxShadow=''; el.style.borderRadius=''; el.style.fontSize=''; el.style.borderColor=''; el.style.filter=''; });
-  }
-  if (kind === 'parallax') {
-    const stageEl = root.querySelector('[data-par]');
-    stageEl?.addEventListener('pointermove', (e) => {
-      const r = stageEl.getBoundingClientRect();
-      const x = (e.clientX - r.left)/r.width - 0.5, y = (e.clientY - r.top)/r.height - 0.5;
-      stageEl.querySelectorAll('span').forEach((s) => { const d = parseFloat(s.dataset.d)||0.3; s.style.transform = `translate(${x*40*d}px,${y*30*d}px)`; });
-    });
-  }
-  if (kind === 'filter') {
-    const filters = ['blur(6px)','saturate(2.5)','hue-rotate(180deg)','contrast(1.8)','grayscale(1)','drop-shadow(0 0 12px var(--c))','brightness(0.6)','blur(1px) contrast(1.4) saturate(1.8)'];
-    const el = root.querySelector('[data-filt]'); let i = 0;
-    const run = () => { el.style.transition = 'filter .6s'; el.style.filter = filters[(n-1+i++)%filters.length]; };
-    act?.addEventListener('click', run); setTimeout(run, 200);
-  }
-  if (kind === 'blend') {
-    const stageEl = root.querySelector('[data-blend]');
-    stageEl?.addEventListener('pointermove', (e) => {
-      const r = stageEl.getBoundingClientRect(); const b = stageEl.querySelector('.b');
-      if (b) { b.style.left = `${e.clientX - r.left - 80}px`; b.style.top = `${e.clientY - r.top - 80}px`; b.style.right = 'auto'; }
-    });
-  }
-  if (kind === 'progress') {
-    const run = () => {
-      const p = root.querySelector('[data-p]');
-      if (p) { p.style.width = '0%'; p.getBoundingClientRect(); p.style.width = `${30+Math.random()*60}%`; }
-      const ring = root.querySelector('[data-ring]');
-      if (ring) { const v = 20+Math.floor(Math.random()*75); ring.style.setProperty('--p', `${v}%`); ring.dataset.v = `${v}%`; }
-    };
-    act?.addEventListener('click', run); setTimeout(run, 200);
-  }
-  if (kind === 'ripple') {
-    root.querySelector('[data-rip]')?.addEventListener('click', (e) => {
-      const btn = e.currentTarget; const r = btn.getBoundingClientRect();
-      const s = document.createElement('span'); s.className = 'r';
-      const size = Math.max(r.width, r.height);
-      s.style.width = s.style.height = `${size}px`;
-      s.style.left = `${e.clientX - r.left - size/2}px`; s.style.top = `${e.clientY - r.top - size/2}px`;
-      btn.appendChild(s); setTimeout(() => s.remove(), 600);
-    });
-  }
-  if (kind === 'modal') {
-    const back = root.querySelector('[data-modal]');
-    root.querySelector('[data-open]')?.addEventListener('click', () => back.classList.add('on'));
-    root.querySelector('[data-close]')?.addEventListener('click', () => back.classList.remove('on'));
-    back?.addEventListener('click', (e) => { if (e.target === back) back.classList.remove('on'); });
-  }
-  if (kind === 'carousel') {
-    let idx = 0; const track = root.querySelector('[data-car]');
-    const go = (d) => { idx = (idx + d + 4) % 4; track.style.transform = `translateX(-${idx*100}%)`; };
-    root.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
-    root.querySelector('[data-next]')?.addEventListener('click', () => go(1));
-  }
-  if (kind === 'reveal') {
-    const el = root.querySelector('[data-rev]');
-    const tog = () => el?.classList.toggle('on');
-    act?.addEventListener('click', tog); el?.addEventListener('click', tog);
-  }
-  if (kind === 'shake') {
-    const el = root.querySelector('[data-shake]');
-    const cls = ['go-x','go-y','go-r','go-x','go-y','go-r'][(n-1)%6];
-    const run = () => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
-    act?.addEventListener('click', run); el?.addEventListener('click', run);
+  function n() { return (live.style || 0) + 1; }
+  function applyLive() {
+    root.style.setProperty('--c', live.color || '#818cf8');
+    root.style.setProperty('--spd', String(live.speed || 1));
+    root.style.setProperty('--sz', String(live.size || 1));
   }
 
-  return () => { rm(); host.innerHTML = ''; };
+  function buildHtml() {
+    const si = live.style || 0;
+    const color = live.color || '#818cf8';
+    if (kind === 'pulse') return `<div class="box k-pulse">PULSE</div>`;
+    if (kind === 'loader') {
+      const kinds = ['ring','dots','bars','flip','breathe','orbit','ripple','cross','dual','bounce','tri','arc'];
+      const k = kinds[si % kinds.length];
+      if (k === 'ring') return `<div class="k-loader"></div>`;
+      if (k === 'dots' || k === 'bounce') return `<div class="k-dots"><i></i><i></i><i></i>${k==='bounce'?'<i></i>':''}</div>`;
+      if (k === 'bars') return `<div class="k-bars"><i></i><i></i><i></i><i></i><i></i></div>`;
+      if (k === 'flip') return `<div class="box k-flip" style="width:80px;height:80px"></div>`;
+      if (k === 'breathe') return `<div class="box k-breathe" style="width:80px;height:80px"></div>`;
+      if (k === 'orbit') return `<div class="k-orbit"><span></span><i></i></div>`;
+      if (k === 'ripple') return `<div class="box k-ripple-box" style="width:72px;height:72px"></div>`;
+      if (k === 'cross') return `<div class="k-cross"></div>`;
+      if (k === 'dual') return `<div class="k-dual"></div>`;
+      if (k === 'tri') return `<div class="k-tri"></div>`;
+      return `<div class="k-arc"></div>`;
+    }
+    if (kind === 'hover') {
+      const cls = ['hover-lift','hover-scale','hover-glow','hover-shine','hover-tilt','hover-marquee','hover-shadow','hover-blur','hover-neon','hover-mag','hover-uline','hover-fill'][si % 12];
+      return `<div class="card ${cls}"><b>Hover me</b><div style="color:var(--muted);font-size:12px;margin-top:6px">${presets[si] || cls}</div></div>`;
+    }
+    if (kind === 'grad') return `<div class="grad-flow">Gradient Flow</div>`;
+    if (kind === 'ease') return `<div class="list" style="gap:14px;align-items:center"><div style="color:var(--muted);font-size:12px">${easings[si % easings.length]}</div><div class="ease-track"><div class="ease-ball" data-ball></div></div></div>`;
+    if (kind === 'spring') return `<div class="spring-box" data-spring>SPRING</div>`;
+    if (kind === 'stagger') return `<div class="list stagger" data-st>${[1,2,3,4,5,6].map(i=>`<div class="item">Stagger item ${i}</div>`).join('')}</div>`;
+    if (kind === 'flip') return `<div class="flip-grid" data-flip>${[1,2,3,4,5,6,7,8,9].map(i=>`<div class="cell">${i}</div>`).join('')}</div>`;
+    if (kind === 'clip') return `<div class="clip-demo" data-clip style="clip-path:${clips[si % clips.length]}">CLIP</div>`;
+    if (kind === 'xform3d') {
+      return si % 2 === 0
+        ? `<div class="scene3d"><div class="cube3d"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i></div></div>`
+        : `<div class="card3d" data-flip3d><div class="f">Front</div><div class="b">Back</div></div>`;
+    }
+    if (kind === 'trans') {
+      const props = ['background','width','opacity','transform','box-shadow','border-radius','font-size','border-color','filter','all'];
+      const p = props[si % props.length];
+      return `<div class="card" data-trans data-prop="${p}">transition: ${p}<div style="font-size:12px;color:var(--muted);margin-top:8px">悬停变化</div></div>`;
+    }
+    if (kind === 'parallax') {
+      return `<div class="parallax-stage" data-par>${[0,1,2,3,4].map(i=>`<span style="width:${40+i*20}px;height:${40+i*20}px;left:${10+i*15}%;top:${20+i*10}%;opacity:${0.2+i*0.1};background:${hsl(i+si)}" data-d="${0.2+i*0.2}"></span>`).join('')}<b style="position:relative;z-index:2;color:#fff">Parallax</b></div>`;
+    }
+    if (kind === 'filter') return `<div class="box" data-filt>FILTER</div>`;
+    if (kind === 'blend') {
+      const m = blends[si % blends.length];
+      return `<div class="blend-stage" data-blend><div class="a"></div><div class="b" style="mix-blend-mode:${m}"></div><b style="position:absolute;bottom:12px;left:0;right:0;text-align:center;color:#fff">${m}</b></div>`;
+    }
+    if (kind === 'skeleton') {
+      return si % 2 === 0
+        ? `<div class="skel"><div class="b lg"></div><div class="b"></div><div class="b sm"></div></div>`
+        : `<div class="skel"><div class="row"><div class="b av"></div><div style="flex:1"><div class="b"></div><div class="b sm" style="margin-top:8px"></div></div></div><div class="b"></div><div class="b"></div></div>`;
+    }
+    if (kind === 'progress') {
+      if (si === 2 || si === 3) return `<div class="ringp" data-ring data-v="40%" style="--p:40%"></div>`;
+      if (si === 1) return `<div class="prog indeterminate"><i></i></div>`;
+      return `<div class="prog"><i data-p></i></div>`;
+    }
+    if (kind === 'ripple') return `<button class="rip-host" data-rip>Click ripple</button>`;
+    if (kind === 'accordion') return `<div class="acc">${[1,2,3].map(i=>`<details ${i===1?'open':''}><summary>Section ${i}</summary><div class="body">Accordion content ${i}</div></details>`).join('')}</div>`;
+    if (kind === 'modal') return `<button class="btn" data-open>打开弹层</button><div class="modal-back ${si===3?'blur-bg':''}" data-modal><div class="modal-panel"><h3 style="margin:0 0 8px">Modal</h3><p style="color:var(--muted);font-size:13px">Enter / exit · ${presets[si]||''}</p><button class="btn" data-close>关闭</button></div></div>`;
+    if (kind === 'carousel') return `<div class="car"><div class="car-track" data-car>${[1,2,3,4].map(i=>`<div class="slide" style="background:${hsl(i+si)}">${i}</div>`).join('')}</div></div>`;
+    if (kind === 'reveal') return `<div class="reveal-box" data-rev>REVEAL</div>`;
+    if (kind === 'neon') return `<div class="neon-t">NEON</div>`;
+    if (kind === 'liquid') return `<button class="liquid-btn">Liquid</button>`;
+    if (kind === 'marquee') {
+      const t = 'Clyune · CSS · Motion · Transition · ';
+      return `<div class="marq"><div class="marq-inner" style="animation-direction:${si%2?'reverse':'normal'}"><span>${t}</span><span>${t}</span></div></div>`;
+    }
+    if (kind === 'kenburns') return `<div class="kb"></div>`;
+    if (kind === 'shake') return `<div class="shake-box" data-shake>Shake me</div>`;
+    if (kind === 'keyseq') return `<div class="box" data-keyseq style="animation:kp calc(1.2s / var(--spd)) ease-in-out infinite">KF</div>`;
+    return `<div class="grad-flow">${kind}</div>`;
+  }
+
+  function wire() {
+    disposers.forEach((fn) => { try { fn(); } catch (_) {} });
+    disposers = [];
+    handlers = {};
+    const si = live.style || 0;
+
+    if (kind === 'ease') {
+      handlers.trigger = () => {
+        const b = root.querySelector('[data-ball]');
+        if (!b) return;
+        const ease = live.easing || easings[si % easings.length];
+        b.style.transition = 'none'; b.style.left = '12px'; b.getBoundingClientRect();
+        b.style.transition = `left ${1.2 / (live.speed || 1)}s ${ease}`;
+        b.style.left = 'calc(100% - 52px)';
+      };
+      setTimeout(() => handlers.trigger?.(), 150);
+    }
+    if (kind === 'spring') {
+      handlers.trigger = () => {
+        const el = root.querySelector('[data-spring]'); if (!el) return;
+        const maps = ['scale(0.2)','scale(1.4)','scale(1.35)','scale(0.85) translateY(8px)','translateY(40px)','translateX(30px)','rotate(25deg) scale(1.1)','translateY(-20px)'];
+        el.style.transition = 'none'; el.style.transform = maps[si % maps.length]; el.getBoundingClientRect();
+        el.style.transition = `transform ${0.7/(live.speed||1)}s cubic-bezier(.34,1.56,.64,1)`; el.style.transform = 'none';
+      };
+      setTimeout(() => handlers.trigger?.(), 120);
+    }
+    if (kind === 'stagger') {
+      handlers.trigger = () => { const el = root.querySelector('[data-st]'); el?.classList.remove('run'); void el?.offsetWidth; el?.classList.add('run'); };
+      setTimeout(() => handlers.trigger?.(), 80);
+    }
+    if (kind === 'flip') {
+      handlers.trigger = () => {
+        const g = root.querySelector('[data-flip]'); if (!g) return;
+        const cells = [...g.children];
+        const first = cells.map((c) => c.getBoundingClientRect());
+        const arr = [...cells];
+        for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); g.appendChild(arr[j]); arr.splice(j, 1); }
+        [...g.children].forEach((c, i) => {
+          const last = c.getBoundingClientRect();
+          const dx = first[i].left - last.left, dy = first[i].top - last.top;
+          c.style.transition = 'none'; c.style.transform = `translate(${dx}px,${dy}px)`; c.getBoundingClientRect();
+          c.style.transition = 'transform .45s cubic-bezier(.2,.8,.2,1)'; c.style.transform = 'none';
+        });
+      };
+    }
+    if (kind === 'clip') {
+      let on = false; const el = root.querySelector('[data-clip]');
+      handlers.trigger = () => { on = !on; if (el) el.style.clipPath = on ? 'circle(75% at 50% 50%)' : clips[si % clips.length]; };
+      el?.addEventListener('click', handlers.trigger);
+    }
+    if (kind === 'xform3d') {
+      const el = root.querySelector('[data-flip3d]');
+      const fn = (e) => e.currentTarget.classList.toggle('flipped');
+      el?.addEventListener('click', fn);
+      if (el) disposers.push(() => el.removeEventListener('click', fn));
+    }
+    if (kind === 'trans') {
+      const el = root.querySelector('[data-trans]'); const prop = el?.dataset.prop;
+      const enter = () => {
+        if (!el) return;
+        if (prop === 'background') el.style.background = hsl(si + 3);
+        if (prop === 'width') el.style.width = '280px';
+        if (prop === 'opacity') el.style.opacity = '0.45';
+        if (prop === 'transform') el.style.transform = 'scale(1.08) rotate(-2deg)';
+        if (prop === 'box-shadow') el.style.boxShadow = `0 12px 40px ${live.color}`;
+        if (prop === 'border-radius') el.style.borderRadius = '40px';
+        if (prop === 'font-size') el.style.fontSize = '20px';
+        if (prop === 'border-color') el.style.borderColor = live.color;
+        if (prop === 'filter') el.style.filter = 'hue-rotate(90deg)';
+        if (prop === 'all') { el.style.transform = 'translateY(-6px)'; el.style.background = '#1d2a4a'; el.style.borderColor = live.color; }
+      };
+      const leave = () => { if (!el) return; el.style.background=''; el.style.width=''; el.style.opacity=''; el.style.transform=''; el.style.boxShadow=''; el.style.borderRadius=''; el.style.fontSize=''; el.style.borderColor=''; el.style.filter=''; };
+      el?.addEventListener('mouseenter', enter); el?.addEventListener('mouseleave', leave);
+      if (el) disposers.push(() => { el.removeEventListener('mouseenter', enter); el.removeEventListener('mouseleave', leave); });
+    }
+    if (kind === 'parallax') {
+      const stageEl = root.querySelector('[data-par]');
+      const move = (e) => {
+        const r = stageEl.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        const depth = live.depth || 1;
+        stageEl.querySelectorAll('span').forEach((s) => { const d = (parseFloat(s.dataset.d) || 0.3) * depth; s.style.transform = `translate(${x * 40 * d}px,${y * 30 * d}px)`; });
+      };
+      stageEl?.addEventListener('pointermove', move);
+      if (stageEl) disposers.push(() => stageEl.removeEventListener('pointermove', move));
+    }
+    if (kind === 'filter') {
+      const filters = ['blur(6px)','saturate(2.5)','hue-rotate(180deg)','contrast(1.8)','grayscale(1)','drop-shadow(0 0 12px var(--c))','brightness(0.6)','blur(1px) contrast(1.4) saturate(1.8)'];
+      const el = root.querySelector('[data-filt]');
+      handlers.trigger = () => { if (!el) return; el.style.transition = 'filter .6s'; el.style.filter = filters[si % filters.length]; };
+      setTimeout(() => handlers.trigger?.(), 120);
+    }
+    if (kind === 'blend') {
+      const stageEl = root.querySelector('[data-blend]');
+      const move = (e) => {
+        const r = stageEl.getBoundingClientRect(); const b = stageEl.querySelector('.b');
+        if (b) { b.style.left = `${e.clientX - r.left - 80}px`; b.style.top = `${e.clientY - r.top - 80}px`; b.style.right = 'auto'; }
+      };
+      stageEl?.addEventListener('pointermove', move);
+      if (stageEl) disposers.push(() => stageEl.removeEventListener('pointermove', move));
+    }
+    if (kind === 'progress') {
+      handlers.trigger = () => {
+        const p = root.querySelector('[data-p]');
+        if (p) { p.style.width = '0%'; p.getBoundingClientRect(); p.style.width = `${30 + Math.random() * 60}%`; }
+        const ring = root.querySelector('[data-ring]');
+        if (ring) { const v = 20 + Math.floor(Math.random() * 75); ring.style.setProperty('--p', `${v}%`); ring.dataset.v = `${v}%`; }
+      };
+      setTimeout(() => handlers.trigger?.(), 120);
+    }
+    if (kind === 'ripple') {
+      const btn = root.querySelector('[data-rip]');
+      const click = (e) => {
+        const r = btn.getBoundingClientRect();
+        const s = document.createElement('span'); s.className = 'r';
+        const size = Math.max(r.width, r.height);
+        s.style.width = s.style.height = `${size}px`;
+        s.style.left = `${e.clientX - r.left - size / 2}px`; s.style.top = `${e.clientY - r.top - size / 2}px`;
+        btn.appendChild(s); setTimeout(() => s.remove(), 600);
+      };
+      btn?.addEventListener('click', click);
+      handlers.trigger = () => btn?.click();
+      if (btn) disposers.push(() => btn.removeEventListener('click', click));
+    }
+    if (kind === 'modal') {
+      const back = root.querySelector('[data-modal]');
+      const open = () => back?.classList.add('on');
+      const close = () => back?.classList.remove('on');
+      root.querySelector('[data-open]')?.addEventListener('click', open);
+      root.querySelector('[data-close]')?.addEventListener('click', close);
+      back?.addEventListener('click', (e) => { if (e.target === back) close(); });
+      handlers.trigger = open;
+    }
+    if (kind === 'carousel') {
+      carIdx = 0;
+      const track = root.querySelector('[data-car]');
+      const go = (d) => { carIdx = (carIdx + d + 4) % 4; if (track) track.style.transform = `translateX(-${carIdx * 100}%)`; };
+      handlers.prev = () => go(-1); handlers.next = () => go(1); handlers.trigger = () => go(1);
+    }
+    if (kind === 'reveal') {
+      const el = root.querySelector('[data-rev]');
+      handlers.trigger = () => el?.classList.toggle('on');
+      el?.addEventListener('click', handlers.trigger);
+    }
+    if (kind === 'shake') {
+      const el = root.querySelector('[data-shake]');
+      const cls = ['go-x','go-y','go-r','go-x','go-y','go-r'][si % 6];
+      handlers.trigger = () => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+      el?.addEventListener('click', handlers.trigger);
+    }
+  }
+
+  function remount() {
+    root.innerHTML = buildHtml();
+    applyLive();
+    wire();
+  }
+  function trigger(key) {
+    if (key === 'prev') handlers.prev?.();
+    else if (key === 'next') handlers.next?.();
+    else handlers.trigger?.();
+  }
+
+  remount();
+  return () => { disposers.forEach((fn) => { try { fn(); } catch (_) {} }); rmStyle(); ui.destroy(); };
 }

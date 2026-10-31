@@ -1,5 +1,20 @@
-import { makeCanvas, loop, bar, rand, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-generative',
+    title: '生成艺术实验室',
+    fallbackVariant: 'gen-lab',
+    params: defaultParams({color:true,speed:true,count:true}),
+    mapVariant: (family, n) => `g-${n}`,
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'g-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-regen>Regenerate</button><label>密度 <input type="range" min="1" max="10" value="5" data-den></label>`);

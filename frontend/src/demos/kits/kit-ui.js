@@ -1,6 +1,21 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
 
+const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效'};
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-ui',
+    title: TITLES[parseVariant(opts.variant||'input').family]||'UI',
+    fallbackVariant: 'input',
+    params: defaultParams({color:true,speed:true,size:false}),
+    
+    mountLegacy,
+  });
+}
+
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'input-1';
   const n = parseInt(String(id).split('-').pop(), 10) || 1;
   const parts = id.split('-');

@@ -1,6 +1,20 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, bar, hsl, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
 import { libs } from '../../lib/load.js';
-export async function mount(host, opts = {}) {
+
+export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-gsap',
+    title: 'GSAP 序列',
+    fallbackVariant: 'seq-1',
+    params: defaultParams({color:true,speed:true}),
+    mapVariant: (family, n) => `seq-${n}`,
+    mountLegacy,
+  });
+}
+
+async function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'seq-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-play>Play</button><button class="btn" data-rev>Reverse</button>`);

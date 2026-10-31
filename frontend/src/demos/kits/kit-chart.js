@@ -1,5 +1,20 @@
-import { makeCanvas, loop, bar, hsl, rand } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+const TITLES={spark:'迷你趋势',gauge:'仪表盘',stack:'堆叠图'};
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-chart',
+    title: TITLES[parseVariant(opts.variant||'spark').family]||'Chart',
+    fallbackVariant: 'spark',
+    params: defaultParams({color:true,speed:true}),
+    
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'spark-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<button class="btn" data-reshuffle>Shuffle</button>`);

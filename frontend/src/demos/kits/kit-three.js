@@ -1,7 +1,21 @@
-import { bar } from './_shared.js';
+import { addStyle, bar, hsl, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
 import { cdn, loadScript } from '../../lib/load.js';
 
-export async function mount(host, opts = {}) {
+export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-three',
+    title: 'Three 场景',
+    fallbackVariant: 'scene-1',
+    params: defaultParams({color:true,speed:true}),
+    mapVariant: (family, n) => `scene-${n}`,
+    mountLegacy,
+  });
+}
+
+
+async function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'scene-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id);

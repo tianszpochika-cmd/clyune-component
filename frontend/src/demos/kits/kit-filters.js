@@ -1,5 +1,20 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-filters',
+    title: '滤镜实验室',
+    fallbackVariant: 'filter-lab',
+    params: defaultParams({color:true,speed:true,blur:true}),
+    mapVariant: (family, n) => `f-${n}`,
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'f-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id, `<label>强度 <input type="range" min="0" max="100" value="60" data-amt></label>`);

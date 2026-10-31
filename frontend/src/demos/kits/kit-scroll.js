@@ -1,5 +1,20 @@
-import { addStyle, bar, hsl } from './_shared.js';
+import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant } from './_shared.js';
+import { withControls } from './withControls.js';
+import { FAMILY_PRESETS } from './presets.js';
+
+
 export function mount(host, opts = {}) {
+  return withControls(host, opts, {
+    kitKey: 'kit-scroll',
+    title: '滚动特效实验室',
+    fallbackVariant: 'scroll-lab',
+    params: defaultParams({color:true,speed:true}),
+    mapVariant: (family, n) => `s-${n}`,
+    mountLegacy,
+  });
+}
+
+function mountLegacy(host, opts = {}) {
   const id = opts.variant || 's-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
   const { stage } = bar(host, id);
