@@ -3,14 +3,17 @@ mod db;
 mod seed;
 
 use api::{categories, health, one_demo, AppState};
-use axum::{routing::get, Router};
-use serde_json::Value;
-use std::{net::SocketAddr, path::PathBuf};
-use tower_http::{
-    cors::CorsLayer,
-    services::{ServeDir, ServeFile},
-    trace::TraceLayer,
+use axum::{
+    body::Body,
+    http::{header, Request, StatusCode},
+    response::{IntoResponse, Response},
+    routing::get,
+    Router,
 };
+use serde_json::Value;
+use std::{net::SocketAddr, path::PathBuf, sync::Arc};
+use tower::ServiceExt;
+use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -29,6 +32,9 @@ async fn main() -> anyhow::Result<()> {
     let fallback_registry: Value = serde_json::from_str(&raw)?;
     let dist = resolve_dist();
     let index = dist.join("index.html");
+    let index_html = Arc::new(std::fs::read(&index).map_err(|e| {
+        anyhow::anyhow!("failed to read {}: {e}", index.display())
+    })?);
 
     tracing::info!("registry: {}", registry_path.display());
     tracing::info!("static dist: {} (exists={})", dist.display(), dist.exists());
@@ -57,11 +63,31 @@ async fn main() -> anyhow::Result<()> {
         .route("/demos/:category/:slug", get(one_demo))
         .with_state(state);
 
-    let static_files = ServeDir::new(&dist).not_found_service(ServeFile::new(&index));
+    // Serve built assets; unknown paths fall back to index.html with HTTP 200 (SPA).
+    let dist_for_fallback = dist.clone();
+    let index_html_fb = index_html.clone();
 
     let app = Router::new()
         .nest("/api", api_router)
-        .fallback_service(static_files)
+        .fallback(move |req: Request<Body>| {
+            let dist = dist_for_fallback.clone();
+            let index_html = index_html_fb.clone();
+            let svc = ServeDir::new(dist).append_index_html_on_directories(true);
+            async move {
+                match svc.oneshot(req).await {
+                    Ok(res) if res.status() == StatusCode::NOT_FOUND => {
+                        Response::builder()
+                            .status(StatusCode::OK)
+                            .header(header::CONTENT_TYPE, "text/html; charset=utf-8")
+                            .header(header::CACHE_CONTROL, "no-cache")
+                            .body(Body::from(index_html.as_ref().clone()))
+                            .unwrap()
+                    }
+                    Ok(res) => res.map(Body::new),
+                    Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "static error").into_response(),
+                }
+            }
+        })
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http());
 
