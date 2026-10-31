@@ -752,20 +752,5 @@ html, body, #root {
   color: var(--accent-2);
 }
 .nav-item-toggle:hover .nav-chevron-inline { color: #c7d2fe; }
-.nav-cat-link {
-  flex: 0 0 auto;
-  font-size: 10px;
-  color: #7f8db0;
-  text-decoration: none;
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  white-space: nowrap;
-}
-.nav-cat-link:hover {
-  color: var(--accent-2);
-  border-color: #24314f;
-  background: rgba(36, 49, 79, .45);
-}
 /* accordion: height animated via AccordionPanel (measured px); see .nav-children */
 .nav-chevron-inline { transition: transform .28s ease, color .18s ease; }

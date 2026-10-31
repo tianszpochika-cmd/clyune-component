@@ -59,26 +59,85 @@ function randSeries(n, base = 40, spread = 60) {
   return out;
 }
 
-function rgba(hex, a) {
+/** colorToRgb() returns 0..1 (WebGL). Charts need 0..255 CSS channels. */
+function rgb255(hex) {
   try {
-    const [r, g, b] = colorToRgb(hex);
-    return `rgba(${r},${g},${b},${a})`;
+    const [r, g, b] = colorToRgb(hex || '#818cf8');
+    return [
+      Math.round(Math.min(1, Math.max(0, r)) * 255),
+      Math.round(Math.min(1, Math.max(0, g)) * 255),
+      Math.round(Math.min(1, Math.max(0, b)) * 255),
+    ];
   } catch {
-    return hex;
+    return [129, 140, 248];
   }
 }
 
-function shiftHex(hex, deg) {
-  try {
-    const [r, g, b] = colorToRgb(hex);
-    // simple channel rotate
-    const rr = Math.min(255, Math.max(0, r + deg));
-    const gg = Math.min(255, Math.max(0, g + ((deg * 2) % 80) - 20));
-    const bb = Math.min(255, Math.max(0, b - deg));
-    return `#${[rr, gg, bb].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
-  } catch {
-    return hex;
+function rgba(hex, a) {
+  const [r, g, b] = rgb255(hex);
+  const alpha = Math.min(1, Math.max(0, Number(a) || 0));
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h = 0, s = 0;
+  const l = (max + min) / 2;
+  if (max !== min) {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+      case g: h = ((b - r) / d + 2); break;
+      default: h = ((r - g) / d + 4); break;
+    }
+    h /= 6;
   }
+  return [h * 360, s * 100, l * 100];
+}
+
+function hslToHex(h, s, l) {
+  h = ((h % 360) + 360) % 360;
+  s = Math.min(100, Math.max(35, s)); // keep vivid — never near-black
+  l = Math.min(72, Math.max(42, l));
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const c = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * c).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+/** Hue-shift a hex while keeping saturation/lightness readable on dark UI. */
+function shiftHex(hex, deg) {
+  const [r, g, b] = rgb255(hex);
+  const [h, s, l] = rgbToHsl(r, g, b);
+  return hslToHex(h + deg, Math.max(s, 55), Math.max(l, 48));
+}
+
+/**
+ * Derive n distinct fills from primary + secondary (and hue wheel),
+ * never black / near-black. Used by pie / doughnut / polar / multi-series.
+ */
+function paletteFrom(primary, secondary, n) {
+  const count = Math.max(1, n | 0);
+  const p = primary || '#818cf8';
+  const s = secondary || shiftHex(p, 40);
+  const [pr, pg, pb] = rgb255(p);
+  const [ph, psat, pl] = rgbToHsl(pr, pg, pb);
+  const out = [];
+  const seeds = [p, s, shiftHex(p, 70), shiftHex(s, 50), shiftHex(p, -55), shiftHex(s, -40), shiftHex(p, 120), shiftHex(s, 160)];
+  for (let i = 0; i < count; i++) {
+    if (i < seeds.length) {
+      out.push(shiftHex(seeds[i], 0)); // normalize lightness
+    } else {
+      out.push(hslToHex(ph + i * (360 / count), Math.max(psat, 60), Math.max(pl, 52)));
+    }
+  }
+  return out;
 }
 
 function labelsFor(n, kind = 'week') {
@@ -103,14 +162,23 @@ function buildConfig(type, style, ctrl) {
 
   const darkTicks = { color: '#93a0c0' };
   const grid = { color: '#24314f' };
-  const legendOpt = { display: legend, labels: { color: '#c7d2fe', boxWidth: 12 } };
+  const legendOpt = { display: legend, labels: { color: '#e8eefc', boxWidth: 14, usePointStyle: true, pointStyle: 'rectRounded' } };
   const anim = { duration: animMs, easing: 'easeOutQuart' };
 
   const baseOpts = {
     responsive: true,
     maintainAspectRatio: false,
     animation: anim,
-    plugins: { legend: legendOpt },
+    plugins: {
+      legend: legendOpt,
+      tooltip: {
+        backgroundColor: 'rgba(15,23,42,0.92)',
+        titleColor: '#e8eefc',
+        bodyColor: '#c7d2fe',
+        borderColor: '#334155',
+        borderWidth: 1,
+      },
+    },
   };
 
   const xyScales = {
@@ -280,7 +348,7 @@ function buildConfig(type, style, ctrl) {
       const cats = type === 'categoryPie' ? CAT6 : CAT5;
       const m = cats.length;
       const data = randSeries(m, 12, 40);
-      const colors = [color, color2, color3, shiftHex(color, 70), shiftHex(color2, 30), shiftHex(color3, 50)].slice(0, m);
+      const colors = paletteFrom(color, color2, m);
       const offset = type === 'pieexplode'
         ? (style === 2 ? data.map(() => 12) : data.map((_, i) => (i === style % m ? 18 : 0)))
         : undefined;
@@ -291,8 +359,8 @@ function buildConfig(type, style, ctrl) {
           datasets: [{
             data,
             backgroundColor: colors.map((c) => rgba(c, 0.85)),
-            borderColor: '#0b1020',
-            borderWidth: style === 1 || style === 3 ? 3 : 1,
+            borderColor: 'rgba(11,16,32,0.85)',
+            borderWidth: style === 1 || style === 3 ? 3 : 2,
             offset,
           }],
         },
@@ -346,9 +414,9 @@ function buildConfig(type, style, ctrl) {
           labels: CAT5,
           datasets: [{
             data: randSeries(m, 10, 40),
-            backgroundColor: [color, color2, color3, shiftHex(color, 60), shiftHex(color2, -40)].map((c) => rgba(c, 0.85)),
+            backgroundColor: paletteFrom(color, color2, m).map((c) => rgba(c, 0.9)),
             borderWidth: 2,
-            borderColor: '#0b1020',
+            borderColor: 'rgba(11,16,32,0.9)',
           }],
         },
         options: {
@@ -403,7 +471,7 @@ function buildConfig(type, style, ctrl) {
           labels: CAT5,
           datasets: [{
             data: randSeries(5, 20, 60),
-            backgroundColor: [color, color2, color3, shiftHex(color, 55), shiftHex(color2, -35)].map((c) => rgba(c, 0.7)),
+            backgroundColor: paletteFrom(color, color2, 5).map((c) => rgba(c, 0.82)),
             borderWidth: style === 1 ? 2 : 0,
           }],
         },

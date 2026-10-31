@@ -230,15 +230,6 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                       <span className={`nav-chevron-inline${groupOpen ? ' open' : ''}`} aria-hidden>▾</span>
                     )}
                   </button>
-                  <Link
-                    to={`/${c.key}`}
-                    className="nav-cat-link"
-                    title={`打开 ${c.name} 目录`}
-                    aria-label={`打开 ${c.name} 目录`}
-                    onClick={(e) => { e.stopPropagation(); setOpenKey(c.key); }}
-                  >
-                    目录
-                  </Link>
                 </div>
                 <AccordionPanel open={groupOpen} label={c.name}>
                     {c.demos.slice(0, q ? 80 : 48).map((d) => {
