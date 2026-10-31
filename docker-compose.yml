@@ -1,0 +1,65 @@
+# Lightweight stack for local / small VPS (GreenCloud SJC later).
+# Hard goal: total RAM under ~2GB. Postgres alone capped at 512MB–1GB.
+#
+# Usage:
+#   cp .env.example .env
+#   docker compose up -d db          # DB only while developing cargo/npm locally
+#   docker compose up -d             # db + api (after frontend dist is built into image)
+#
+# Memory notes (mem_limit is Docker hard cap):
+#   db:  512m–1024m  (shared_buffers ~128MB via command)
+#   api: 256m        (Axum + static; typically 30–80MB RSS)
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-clyune}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-clyune_dev_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-clyune_component}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Keep Postgres lean for a demo gallery (tens of rows, not thousands).
+    command:
+      - postgres
+      - -c
+      - shared_buffers=128MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - effective_cache_size=256MB
+      - -c
+      - max_connections=50
+    mem_limit: ${POSTGRES_MEM_LIMIT:-512m}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-clyune} -d ${POSTGRES_DB:-clyune_component}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-clyune}:${POSTGRES_PASSWORD:-clyune_dev_change_me}@db:5432/${POSTGRES_DB:-clyune_component}
+      PORT: "8080"
+      RUST_LOG: clyune_component=info,tower_http=info,sqlx=warn
+      REGISTRY_PATH: /app/data/registry.json
+      STATIC_DIR: /app/frontend/dist
+    ports:
+      - "${API_PORT:-8080}:8080"
+    mem_limit: ${API_MEM_LIMIT:-256m}
+    profiles: ["full"]  # `docker compose --profile full up -d` for api+db
+
+volumes:
+  pgdata:

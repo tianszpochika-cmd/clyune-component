@@ -1,0 +1,158 @@
+/** Ported from live component.clyune.com registry — categories + demos metadata. */
+export type DemoMeta = {
+  slug: string;
+  title: string;
+  hint: string;
+  desc: string;
+  tag: string;
+  mod: string;
+  fn: string;
+  path?: string;
+  cat?: Category;
+};
+
+export type Category = {
+  key: string;
+  name: string;
+  icon: string;
+  intro: string;
+  tech: string[];
+  demos: DemoMeta[];
+};
+
+export const categories: Category[] = [
+  {
+    key: 'threejs', name: 'Three.js', icon: '◈',
+    intro: '基于 WebGL 的 3D 渲染库：场景、相机、光照、材质与自定义着色器。',
+    tech: ['three@0.170', 'WebGL', 'OrbitControls'],
+    demos: [
+      { slug: 'cube', title: 'Rotating Cube', hint: '自动旋转 · MeshStandardMaterial', desc: '基础场景、光照与线框。', tag: 'basics', mod: 'cube', fn: 'mountCube' },
+      { slug: 'orbit', title: 'Orbit + Lights', hint: '拖拽旋转 · 滚轮缩放', desc: 'OrbitControls 与多光源。', tag: 'controls', mod: 'orbit', fn: 'mountOrbit' },
+      { slug: 'particles', title: 'Particles', hint: '移动鼠标扰动粒子场', desc: 'Points 粒子场与鼠标交互。', tag: 'points', mod: 'particles', fn: 'mountParticles' },
+      { slug: 'gallery', title: 'Geometry Gallery', hint: '点击几何体切换高亮', desc: '内置几何体与射线拾取。', tag: 'geometry', mod: 'gallery', fn: 'mountGallery' },
+      { slug: 'wave', title: 'Wave Terrain', hint: '程序化起伏地形', desc: '顶点动画生成地形。', tag: 'terrain', mod: 'wave', fn: 'mountWave' },
+      { slug: 'character', title: 'Character', hint: '程序化角色 · 摆臂动画', desc: '层级模型与骨骼式动画。', tag: 'model', mod: 'gltf-shapes', fn: 'mountGltfShapes' },
+      { slug: 'shader', title: 'Shader Blob', hint: '自定义顶点/片元着色器', desc: 'ShaderMaterial 变形球体。', tag: 'shader', mod: 'shader-blob', fn: 'mountShaderBlob' },
+    ],
+  },
+  {
+    key: 'charts', name: 'Charts', icon: '▦',
+    intro: 'Chart.js 轻量图表：响应式折线、柱状与环形图。',
+    tech: ['Chart.js 4', 'Canvas'],
+    demos: [
+      { slug: 'line', title: 'Line Chart', hint: 'Chart.js 折线图', desc: '多序列趋势折线。', tag: 'line', mod: 'charts-line', fn: 'mountChartLine' },
+      { slug: 'bar', title: 'Bar Chart', hint: 'Chart.js 柱状图', desc: '三网延迟对比柱状图。', tag: 'bar', mod: 'charts-bar', fn: 'mountChartBar' },
+      { slug: 'doughnut', title: 'Doughnut', hint: 'Chart.js 环形图', desc: '占比环形图。', tag: 'doughnut', mod: 'charts-doughnut', fn: 'mountChartDoughnut' },
+    ],
+  },
+  {
+    key: 'ui', name: 'UI Components', icon: '▣',
+    intro: '后台常用基础组件：按钮、卡片与弹层，纯 CSS + 原生 JS。',
+    tech: ['CSS', 'Vanilla JS'],
+    demos: [
+      { slug: 'buttons', title: 'Buttons', hint: '按钮变体与尺寸', desc: '按钮变体、尺寸与禁用态。', tag: 'actions', mod: 'ui-buttons', fn: 'mountUiButtons' },
+      { slug: 'cards', title: 'Cards + Modal', hint: '卡片与弹层交互', desc: '卡片布局与模态框。', tag: 'overlay', mod: 'ui-cards-modal', fn: 'mountUiCardsModal' },
+    ],
+  },
+  {
+    key: 'css-fx', name: 'CSS 动画与特效', icon: '✦',
+    intro: '纯 CSS 实现的动效：@keyframes、transition、backdrop-filter、3D transform 与滚动驱动动画。',
+    tech: ['@keyframes', 'transition', 'backdrop-filter', 'transform-3d', 'animation-timeline'],
+    demos: [
+      { slug: 'keyframes', title: 'Keyframes 与渐变文字', hint: '悬停卡片查看 transition · 渐变流光文字', desc: '加载动画、过渡曲线对比与流光渐变文字。', tag: 'keyframes', mod: 'css-keyframes', fn: 'mount' },
+      { slug: 'glass', title: '玻璃拟态 Glassmorphism', hint: '拖动滑块调节模糊与透明度', desc: 'backdrop-filter 毛玻璃卡片与流动背景。', tag: 'glass', mod: 'css-glass', fn: 'mount' },
+      { slug: 'tilt', title: '3D 翻转与倾斜卡片', hint: '移动指针倾斜 · 点击翻转', desc: 'perspective + rotateX/Y 的 3D 卡片。', tag: '3d', mod: 'css-tilt', fn: 'mount' },
+      { slug: 'scroll', title: '滚动驱动动画', hint: '在面板内滚动', desc: 'animation-timeline: view()，不支持时回退 IntersectionObserver。', tag: 'scroll', mod: 'css-scroll', fn: 'mount' },
+    ],
+  },
+  {
+    key: 'canvas', name: 'Canvas 2D', icon: '◐',
+    intro: 'HTML5 Canvas 2D 即时绘制：粒子系统、字符雨、烟花物理与手绘画板。',
+    tech: ['CanvasRenderingContext2D', 'requestAnimationFrame', 'Pointer Events'],
+    demos: [
+      { slug: 'network', title: '粒子网络', hint: '移动指针吸引粒子', desc: '粒子间距离连线的经典网络背景。', tag: 'particles', mod: 'canvas-network', fn: 'mount' },
+      { slug: 'matrix', title: '代码雨 Matrix', hint: '点击切换颜色', desc: '黑客帝国风格的字符雨。', tag: 'text', mod: 'canvas-matrix', fn: 'mount' },
+      { slug: 'fireworks', title: '烟花', hint: '点击任意位置发射', desc: '带重力与拖尾的粒子烟花。', tag: 'physics', mod: 'canvas-fireworks', fn: 'mount' },
+      { slug: 'draw', title: '画板', hint: '按住拖动绘画 · 支持触屏', desc: '平滑笔刷、颜色、粗细、撤销与导出 PNG。', tag: 'tool', mod: 'canvas-draw', fn: 'mount' },
+    ],
+  },
+  {
+    key: 'svg', name: 'SVG 动画', icon: '◇',
+    intro: '矢量图形动画：stroke-dasharray 描边、路径插值变形与 SMIL / CSS 图标动效。',
+    tech: ['SVG', 'stroke-dashoffset', 'path morph', 'SMIL'],
+    demos: [
+      { slug: 'draw', title: '路径描边动画', hint: '点击重播', desc: '利用 getTotalLength 实现手写描边。', tag: 'stroke', mod: 'svg-draw', fn: 'mount' },
+      { slug: 'morph', title: '形状变形 Morph', hint: '点击按钮切换形状', desc: '同构路径点插值，平滑形变。', tag: 'morph', mod: 'svg-morph', fn: 'mount' },
+      { slug: 'icons', title: '动画图标', hint: '点击图标切换状态', desc: '菜单/关闭、播放/暂停、加载、对勾等图标动效。', tag: 'icons', mod: 'svg-icons', fn: 'mount' },
+    ],
+  },
+  {
+    key: 'gsap', name: 'GSAP 动画', icon: '➶',
+    intro: 'GSAP 专业级动画引擎：时间轴编排、ScrollTrigger 滚动联动与文字逐字交错。',
+    tech: ['gsap@3.12', 'Timeline', 'ScrollTrigger', 'stagger'],
+    demos: [
+      { slug: 'timeline', title: 'Timeline 时间轴', hint: '播放 / 暂停 / 倒放 / 拖动进度', desc: '多段动画编排与进度控制。', tag: 'timeline', mod: 'gsap-timeline', fn: 'mount' },
+      { slug: 'scroll', title: 'ScrollTrigger', hint: '在面板内向下滚动', desc: '滚动进度驱动的固定、视差与进度条。', tag: 'scroll', mod: 'gsap-scroll', fn: 'mount' },
+      { slug: 'text', title: '文字交错动画', hint: '点击重播 · 切换效果', desc: '逐字拆分 + stagger 的标题入场。', tag: 'text', mod: 'gsap-text', fn: 'mount' },
+    ],
+  },
+  {
+    key: 'webgl', name: 'WebGL / Shader', icon: '◉',
+    intro: '原生 WebGL 全屏片元着色器：程序化噪声、等离子与光线步进，全部在 GPU 实时计算。',
+    tech: ['WebGL 1', 'GLSL', 'fragment shader', 'raymarching'],
+    demos: [
+      { slug: 'noise', title: '噪声流体背景', hint: '移动指针扰动', desc: 'FBM 分形噪声 + 域扭曲的流动背景。', tag: 'noise', mod: 'webgl-shader', fn: 'mountNoise' },
+      { slug: 'plasma', title: '等离子 Plasma', hint: '经典 demoscene 效果', desc: '多重正弦叠加的彩色等离子。', tag: 'plasma', mod: 'webgl-shader', fn: 'mountPlasma' },
+      { slug: 'raymarch', title: '光线步进 Metaballs', hint: '移动指针旋转视角', desc: 'SDF 光线步进的融合球体与光照。', tag: 'sdf', mod: 'webgl-shader', fn: 'mountRaymarch' },
+    ],
+  },
+  {
+    key: 'physics', name: '物理与交互', icon: '⚛',
+    intro: '物理引擎与指针交互：Matter.js 刚体模拟、拖拽排序与磁吸 / 光标跟随效果。',
+    tech: ['matter-js@0.20', 'Pointer Events', 'FLIP'],
+    demos: [
+      { slug: 'matter', title: 'Matter.js 物理', hint: '拖动物体 · 点击空白处生成', desc: '重力、碰撞、弹性与鼠标约束。', tag: 'matter', mod: 'physics-matter', fn: 'mount' },
+      { slug: 'drag', title: '拖拽排序', hint: '按住卡片拖动排序 · 支持触屏', desc: 'Pointer Events + FLIP 动画的看板拖拽。', tag: 'dnd', mod: 'physics-drag', fn: 'mount' },
+      { slug: 'magnetic', title: '磁吸与光标跟随', hint: '把指针移向按钮', desc: '磁吸按钮、弹性光标与跟随拖尾。', tag: 'cursor', mod: 'physics-magnetic', fn: 'mount' },
+    ],
+  },
+  {
+    key: 'audio', name: '音频可视化', icon: '♫',
+    intro: 'Web Audio API：振荡器合成声音，AnalyserNode 提取频谱与波形并实时绘制。',
+    tech: ['Web Audio API', 'OscillatorNode', 'AnalyserNode', 'getUserMedia'],
+    demos: [
+      { slug: 'synth', title: '合成器频谱', hint: '点击播放 · 点击琴键演奏', desc: '振荡器 + LFO 合成音色的频谱/波形可视化。', tag: 'oscillator', mod: 'audio-viz', fn: 'mountSynth' },
+      { slug: 'mic', title: '麦克风可视化', hint: '点击按钮授权麦克风', desc: '实时麦克风输入的环形频谱（需浏览器授权）。', tag: 'mic', mod: 'audio-viz', fn: 'mountMic' },
+    ],
+  },
+  {
+    key: 'dataviz', name: '数据可视化进阶', icon: '⌬',
+    intro: 'ECharts 与 D3：关系图谱、矩形树图与力导向布局，适合复杂数据结构展示。',
+    tech: ['echarts@5.5', 'd3@7', 'force layout', 'treemap'],
+    demos: [
+      { slug: 'graph', title: 'ECharts 关系图', hint: '拖动节点 · 滚轮缩放', desc: '力引导布局的技术栈关系网络。', tag: 'graph', mod: 'dataviz', fn: 'mountGraph' },
+      { slug: 'treemap', title: 'ECharts 矩形树图', hint: '点击下钻 · 面包屑返回', desc: '层级数据的矩形树图。', tag: 'treemap', mod: 'dataviz', fn: 'mountTreemap' },
+      { slug: 'd3-force', title: 'D3 力导向图', hint: '拖动节点', desc: 'd3-force 模拟 + SVG 渲染。', tag: 'd3', mod: 'dataviz', fn: 'mountD3Force' },
+    ],
+  },
+  {
+    key: 'micro', name: 'Lottie / 微交互', icon: '❤',
+    intro: '细节动效提升体验：Lottie 矢量动画、点赞粒子、开关与涟漪反馈。',
+    tech: ['lottie-web@5.12', 'CSS', 'Web Animations API'],
+    demos: [
+      { slug: 'lottie', title: 'Lottie 动画', hint: '播放 / 暂停 / 调速', desc: 'lottie-web 播放内联 JSON 动画数据。', tag: 'lottie', mod: 'micro', fn: 'mountLottie' },
+      { slug: 'like', title: '点赞与反馈', hint: '点击爱心与按钮', desc: '点赞粒子爆发、收藏、计数滚动。', tag: 'like', mod: 'micro', fn: 'mountLike' },
+      { slug: 'controls', title: '开关与涟漪', hint: '点击各类控件', desc: 'Toggle、Checkbox 描边、Material 涟漪与加载按钮。', tag: 'controls', mod: 'micro', fn: 'mountControls' },
+    ],
+  },
+];
+
+export const routes: Record<string, DemoMeta> = {};
+for (const c of categories) {
+  for (const d of c.demos) {
+    d.path = `/${c.key}/${d.slug}`;
+    d.cat = c;
+    routes[d.path] = d;
+  }
+}
+export const totalDemos = categories.reduce((n, c) => n + c.demos.length, 0);
