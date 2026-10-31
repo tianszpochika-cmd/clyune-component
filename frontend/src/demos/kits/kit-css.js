@@ -210,9 +210,21 @@ export function mount(host, opts = {}) {
     @keyframes shx{10%,90%{transform:translateX(-4px)}20%,80%{transform:translateX(6px)}30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
     @keyframes shy{10%,90%{transform:translateY(-3px)}30%,70%{transform:translateY(6px)}50%{transform:translateY(-6px)}}
     @keyframes shr{20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
-    .reveal-box{width:min(280px,80%);height:160px;border-radius:14px;background:linear-gradient(135deg,var(--c),#22d3ee);display:grid;place-items:center;font-weight:800;color:#0b1020;position:relative;overflow:hidden}
-    .reveal-box::after{content:'';position:absolute;inset:0;background:#0b1020;transition:clip-path .7s,opacity .7s;clip-path:circle(75% at 50% 50%)}
-    .reveal-box.on::after{clip-path:circle(0% at 50% 50%);opacity:0}
+    .reveal-box{width:min(280px,80%);height:160px;border-radius:14px;background:linear-gradient(135deg,var(--c),#22d3ee);display:grid;place-items:center;font-weight:800;color:#0b1020;position:relative;overflow:hidden;cursor:pointer;box-shadow:0 0 0 1px #24314f}
+    .reveal-box span{position:relative;z-index:1;pointer-events:none}
+    .reveal-box::after{content:'';position:absolute;inset:0;background:#0b1020;transition:clip-path .7s cubic-bezier(.22,1,.36,1),opacity .7s,filter .7s;clip-path:inset(0 0 0 0);z-index:2}
+    .reveal-box.m-wipe::after{clip-path:inset(0 0 0 0)}
+    .reveal-box.m-wipe.on::after{clip-path:inset(0 0 0 100%)}
+    .reveal-box.m-blinds::after{clip-path:polygon(0 0,100% 0,100% 12%,0 12%,0 22%,100% 22%,100% 34%,0 34%,0 44%,100% 44%,100% 56%,0 56%,0 66%,100% 66%,100% 78%,0 78%,0 88%,100% 88%,100% 100%,0 100%)}
+    .reveal-box.m-blinds.on::after{clip-path:polygon(0 0,100% 0,100% 0,0 0,0 22%,100% 22%,100% 22%,0 22%,0 44%,100% 44%,100% 44%,0 44%,0 66%,100% 66%,100% 66%,0 66%,0 88%,100% 88%,100% 88%,0 88%,100% 100%,0 100%)}
+    .reveal-box.m-circle::after{clip-path:circle(75% at 50% 50%)}
+    .reveal-box.m-circle.on::after{clip-path:circle(0% at 50% 50%);opacity:0}
+    .reveal-box.m-diag::after{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+    .reveal-box.m-diag.on::after{clip-path:polygon(0 0,0 0,0 100%,0 100%)}
+    .reveal-box.m-pixel::after{clip-path:polygon(0 0,33% 0,33% 33%,66% 33%,66% 0,100% 0,100% 33%,66% 33%,66% 66%,100% 66%,100% 100%,66% 100%,66% 66%,33% 66%,33% 100%,0 100%,0 66%,33% 66%,33% 33%,0 33%)}
+    .reveal-box.m-pixel.on::after{clip-path:polygon(50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%,50% 50%);opacity:0}
+    .reveal-box.m-blur::after{clip-path:none;opacity:1;filter:blur(0);backdrop-filter:blur(0)}
+    .reveal-box.m-blur.on::after{opacity:0;filter:blur(12px)}
     .blend-stage{position:relative;width:min(360px,90%);height:200px;border-radius:16px;overflow:hidden;background:#111}
     .blend-stage .a,.blend-stage .b{position:absolute;width:160px;height:160px;border-radius:50%;top:20px}
     .blend-stage .a{left:40px;background:var(--c)}.blend-stage .b{right:40px;background:#22d3ee}
@@ -271,24 +283,48 @@ export function mount(host, opts = {}) {
       const stageEl = root.querySelector('[data-cur]');
       const ring = root.querySelector('[data-ring]');
       const dot = root.querySelector('[data-dot]');
-      const onMove = (e) => {
-        const r = stageEl.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
+      const place = (x, y) => {
         if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; }
         if (dot) { dot.style.left = x + 'px'; dot.style.top = y + 'px'; }
       };
+      const onMove = (e) => {
+        const r = stageEl.getBoundingClientRect();
+        place(e.clientX - r.left, e.clientY - r.top);
+      };
       stageEl?.addEventListener('pointermove', onMove);
       disposers.push(() => stageEl?.removeEventListener('pointermove', onMove));
+      let t0 = performance.now();
+      const idle = () => {
+        if (!stageEl) return;
+        const r = stageEl.getBoundingClientRect();
+        const t = (performance.now() - t0) / 1000;
+        place(r.width * (0.5 + 0.35 * Math.cos(t)), r.height * (0.5 + 0.28 * Math.sin(t * 1.3)));
+      };
+      idle();
+      const timer = setInterval(idle, 32);
+      disposers.push(() => clearInterval(timer));
     }
     if (kind === 'spotlight') {
       const el = root.querySelector('[data-spot]');
+      const set = (x, y) => {
+        el.style.setProperty('--sx', x + '%');
+        el.style.setProperty('--sy', y + '%');
+      };
       const onMove = (e) => {
         const r = el.getBoundingClientRect();
-        el.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
-        el.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+        set((e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100);
       };
       el?.addEventListener('pointermove', onMove);
       disposers.push(() => el?.removeEventListener('pointermove', onMove));
+      let t0 = performance.now();
+      const idle = () => {
+        if (!el) return;
+        const t = (performance.now() - t0) / 1000;
+        set(50 + 35 * Math.cos(t), 50 + 28 * Math.sin(t * 1.2));
+      };
+      idle();
+      const timer = setInterval(idle, 32);
+      disposers.push(() => clearInterval(timer));
     }
 
   function applyLive() {
@@ -364,7 +400,11 @@ export function mount(host, opts = {}) {
     if (kind === 'accordion') return `<div class="acc">${[1,2,3].map(i=>`<details ${i===1?'open':''}><summary>Section ${i}</summary><div class="body">Accordion content ${i}</div></details>`).join('')}</div>`;
     if (kind === 'modal') return `<button class="btn" data-open>打开弹层</button><div class="modal-back ${si===3?'blur-bg':''}" data-modal><div class="modal-panel"><h3 style="margin:0 0 8px">Modal</h3><p style="color:var(--muted);font-size:13px">Enter / exit · ${presets[si]||''}</p><button class="btn" data-close>关闭</button></div></div>`;
     if (kind === 'carousel') return `<div class="car"><div class="car-track" data-car>${[1,2,3,4].map(i=>`<div class="slide" style="background:${hsl(i+si)}">${i}</div>`).join('')}</div></div>`;
-    if (kind === 'reveal') return `<div class="reveal-box" data-rev>REVEAL</div>`;
+    if (kind === 'reveal') {
+      const masks = ['m-wipe','m-blinds','m-circle','m-diag','m-pixel','m-blur'];
+      const m = masks[si % masks.length];
+      return `<div class="reveal-box ${m} on" data-rev><span>REVEAL · ${presets[si] || m}</span></div>`;
+    }
     if (kind === 'neon') return `<div class="neon-t">NEON</div>`;
     if (kind === 'liquid') return `<button class="liquid-btn">Liquid</button>`;
     if (kind === 'marquee') {
@@ -525,6 +565,9 @@ export function mount(host, opts = {}) {
       const el = root.querySelector('[data-rev]');
       handlers.trigger = () => el?.classList.toggle('on');
       el?.addEventListener('click', handlers.trigger);
+      // Auto cycle so the stage is never a blank dark void
+      const timer = setInterval(() => handlers.trigger?.(), 1800);
+      disposers.push(() => clearInterval(timer));
     }
     if (kind === 'shake') {
       const el = root.querySelector('[data-shake]');
@@ -542,24 +585,48 @@ export function mount(host, opts = {}) {
       const stageEl = root.querySelector('[data-cur]');
       const ring = root.querySelector('[data-ring]');
       const dot = root.querySelector('[data-dot]');
-      const onMove = (e) => {
-        const r = stageEl.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
+      const place = (x, y) => {
         if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; }
         if (dot) { dot.style.left = x + 'px'; dot.style.top = y + 'px'; }
       };
+      const onMove = (e) => {
+        const r = stageEl.getBoundingClientRect();
+        place(e.clientX - r.left, e.clientY - r.top);
+      };
       stageEl?.addEventListener('pointermove', onMove);
       disposers.push(() => stageEl?.removeEventListener('pointermove', onMove));
+      let t0 = performance.now();
+      const idle = () => {
+        if (!stageEl) return;
+        const r = stageEl.getBoundingClientRect();
+        const t = (performance.now() - t0) / 1000;
+        place(r.width * (0.5 + 0.35 * Math.cos(t)), r.height * (0.5 + 0.28 * Math.sin(t * 1.3)));
+      };
+      idle();
+      const timer = setInterval(idle, 32);
+      disposers.push(() => clearInterval(timer));
     }
     if (kind === 'spotlight') {
       const el = root.querySelector('[data-spot]');
+      const set = (x, y) => {
+        el.style.setProperty('--sx', x + '%');
+        el.style.setProperty('--sy', y + '%');
+      };
       const onMove = (e) => {
         const r = el.getBoundingClientRect();
-        el.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
-        el.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+        set((e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100);
       };
       el?.addEventListener('pointermove', onMove);
       disposers.push(() => el?.removeEventListener('pointermove', onMove));
+      let t0 = performance.now();
+      const idle = () => {
+        if (!el) return;
+        const t = (performance.now() - t0) / 1000;
+        set(50 + 35 * Math.cos(t), 50 + 28 * Math.sin(t * 1.2));
+      };
+      idle();
+      const timer = setInterval(idle, 32);
+      disposers.push(() => clearInterval(timer));
     }
   }
 
