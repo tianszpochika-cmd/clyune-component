@@ -134,26 +134,34 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                     目录
                   </Link>
                 </div>
-                <div className={`nav-children${groupOpen ? ' open' : ''}`} role="group" aria-label={c.name} hidden={!groupOpen}>
-                  {c.demos.slice(0, q ? 80 : 48).map((d) => {
-                    const path = `/${c.key}/${d.slug}`;
-                    const on = r === path;
-                    return (
-                      <Link
-                        key={d.slug}
-                        to={path}
-                        className={`nav-sub${on ? ' active' : ''}`}
-                        title={d.hint || d.desc}
-                      >
-                        <span className="nav-sub-dot" aria-hidden />
-                        <span className="nav-sub-title">{d.title}</span>
-                        <span className="nav-sub-tag">{d.tag}</span>
-                      </Link>
-                    );
-                  })}
-                  {c.demos.length > (q ? 80 : 48) && (
-                    <Link to={`/${c.key}`} className="nav-sub more">查看全部 {c.demos.length} →</Link>
-                  )}
+                <div
+                  className={`nav-children${groupOpen ? ' open' : ''}`}
+                  role="group"
+                  aria-label={c.name}
+                  aria-hidden={!groupOpen}
+                >
+                  <div className="nav-children-inner">
+                    {c.demos.slice(0, q ? 80 : 48).map((d) => {
+                      const path = `/${c.key}/${d.slug}`;
+                      const on = r === path;
+                      return (
+                        <Link
+                          key={d.slug}
+                          to={path}
+                          className={`nav-sub${on ? ' active' : ''}`}
+                          title={d.hint || d.desc}
+                          tabIndex={groupOpen ? 0 : -1}
+                        >
+                          <span className="nav-sub-dot" aria-hidden />
+                          <span className="nav-sub-title">{d.title}</span>
+                          <span className="nav-sub-tag">{d.tag}</span>
+                        </Link>
+                      );
+                    })}
+                    {c.demos.length > (q ? 80 : 48) && (
+                      <Link to={`/${c.key}`} className="nav-sub more" tabIndex={groupOpen ? 0 : -1}>查看全部 {c.demos.length} →</Link>
+                    )}
+                  </div>
                 </div>
               </div>
             );
