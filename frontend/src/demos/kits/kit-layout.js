@@ -27,7 +27,7 @@ export function mount(host, opts = {}) {
     params: defaultParams({ color: true, speed: false, size: false }).concat([
       { key: 'cols', type: 'range', label: isFlex ? '参考列感' : '列数', min: 1, max: 12, step: 1, value: isFlex ? 4 : 3 },
       { key: 'gap', type: 'range', label: '间距', min: 0, max: 48, step: 2, value: 12 },
-      { key: 'items', type: 'range', label: '元素数', min: 3, max: 24, step: 1, value: isFlex ? 8 : 12 },
+      { key: 'items', type: 'range', label: '元素数', min: 4, max: 48, step: 1, value: isFlex ? 20 : 16, buttons: true },
       { key: 'radius', type: 'range', label: '圆角', min: 0, max: 28, step: 1, value: 14 },
       { key: 'minh', type: 'range', label: '最小高度', min: 36, max: 160, step: 4, value: 64 },
       ...(isFlex ? [
@@ -90,6 +90,27 @@ export function mount(host, opts = {}) {
         },
       ]),
     ]),
+    actions: [
+      { key: 'add-item', label: '+ 元素' },
+      { key: 'remove-item', label: '− 元素' },
+      { key: 'reset', label: '重置' },
+    ],
+    presetDefaults: isFlex ? {
+      '换行': { items: 24, wrap: 'wrap', direction: 'row', justify: 'flex-start', align: 'stretch' },
+      '标签云': { items: 20, wrap: 'wrap' },
+      '等高卡片': { items: 12, wrap: 'wrap' },
+      '两端对齐': { items: 16, wrap: 'wrap' },
+      '反向排列': { items: 16, wrap: 'wrap' },
+      '滚动轨道': { items: 14 },
+      '主轴分布': { items: 12 },
+    } : {
+      '密集自动填充': { items: 20 },
+      '流式卡片': { items: 18 },
+      '相片墙': { items: 18 },
+      '响应列': { items: 16 },
+      '卡片等分': { items: 12 },
+      '瀑布流模拟': { items: 16 },
+    },
     remountKeys: ['cols', 'gap', 'items', 'radius', 'minh', 'justify', 'align', 'direction', 'wrap', 'justifyItems', 'autoFlow'],
     liveKeys: ['color'],
     mountLegacy,
@@ -141,6 +162,8 @@ function mountLegacy(host, opts = {}) {
   .kl .cell.wide{grid-column:span 2}
   .kl .g{display:grid;gap:var(--gap,12px);width:100%}
   .kl .f{display:flex;gap:var(--gap,12px);width:100%;min-height:180px;box-sizing:border-box}
+  .kl .f.wrap-demo{min-height:260px}
+  .kl .f.wrap-demo .cell{flex-shrink:0}
   .kl .holy{display:grid;gap:var(--gap,12px);grid-template-columns:180px 1fr 140px;grid-template-rows:auto 1fr auto;min-height:280px}
   .kl .holy .h{grid-column:1/-1}
   .kl .holy .ftr{grid-column:1/-1}
@@ -181,7 +204,7 @@ function mountLegacy(host, opts = {}) {
     const accent = L.color || ctrl.color || '#818cf8';
     const cols = clamp(Number(ctrl.cols) || (isFlex ? 4 : 3), 1, 12);
     const gap = Number.isFinite(Number(ctrl.gap)) ? Number(ctrl.gap) : 12;
-    const items = clamp(Number(ctrl.items) || (isFlex ? 8 : 12), 3, 24);
+    const items = clamp(Number(ctrl.items) || (isFlex ? 20 : 16), 4, 48);
     const radius = Number.isFinite(Number(ctrl.radius)) ? Number(ctrl.radius) : 14;
     const minh = Number.isFinite(Number(ctrl.minh)) ? Number(ctrl.minh) : 64;
     const list = isFlex ? FLEX_PRESET_KEYS : GRID_PRESET_KEYS;
@@ -407,10 +430,15 @@ function renderFlex(preset, { cols, gap, items, accent, ctrl }) {
   const baseStyle = `justify-content:${justify};align-items:${align};flex-direction:${direction};flex-wrap:${wrap};gap:${gap}px`;
 
   switch (preset) {
-    case '换行':
-      body = `<div class="f" style="${baseStyle}">${cells(n, accent, (i) => ({ style: `flex:0 0 ${70 + (i % 3) * 24}px`, label: `${i + 1}` }))}</div>`;
-      note = 'flex-wrap + 不等宽度项。';
+    case '换行': {
+      const count = Math.max(n, 18);
+      body = `<div class="f wrap-demo" style="${baseStyle};align-content:flex-start">${cells(count, accent, (i) => {
+        const w = 140 + (i % 4) * 36; // 140–248px，宽屏也会折行
+        return { style: `flex:0 0 auto;min-width:${w}px;width:${w}px`, label: `${i + 1}` };
+      })}</div>`;
+      note = `flex-wrap: wrap · ${count} 个定宽项（≥140px）。用「+ / − 元素」或滑条增减数量即可看到折行变化。`;
       break;
+    }
     case '等高卡片':
       body = `<div class="f" style="align-items:stretch;flex-wrap:wrap;gap:${gap}px">${cells(Math.max(cols, n), accent, (i) => ({ style: `flex:1 1 ${Math.floor(100 / Math.max(1, cols))}%;min-width:120px;min-height:120px`, label: `Card ${i + 1}` }))}</div>`;
       note = 'stretch 让同行卡片等高。';
@@ -540,11 +568,14 @@ function renderFlex(preset, { cols, gap, items, accent, ctrl }) {
       note = '相对定位角标叠放。';
       break;
     default:
-      body = `<div class="f" style="${baseStyle}">${cells(n, accent, (i) => ({ style: `flex:0 1 ${80 + (i % 4) * 16}px` }))}</div>`;
-      note = `主轴 ${justify} · 交叉轴 ${align} · ${direction} / ${wrap}。`;
+      body = `<div class="f" style="${baseStyle};align-content:flex-start">${cells(n, accent, (i) => {
+        const w = 96 + (i % 4) * 28;
+        return { style: `flex:0 1 auto;min-width:${Math.min(w, 160)}px;width:${w}px` };
+      })}</div>`;
+      note = `主轴 ${justify} · 交叉轴 ${align} · ${direction} / ${wrap}。元素带 min-width，wrap 时会折行。`;
   }
 
-  return `${meta(preset, [`justify ${justify}`, `align ${align}`, `dir ${direction}`, `wrap ${wrap}`])}
+  return `${meta(preset, [`items ${n}`, `justify ${justify}`, `align ${align}`, `dir ${direction}`, `wrap ${wrap}`])}
     <div class="board">${body}</div>
-    <p class="legend">${note} 右侧可继续改主轴/交叉轴/方向/换行；单元格浅色渐变。</p>`;
+    <p class="legend">${note} 右侧可改主轴/交叉轴/方向/换行，或用「+ / − 元素」增减数量；单元格浅色渐变。</p>`;
 }

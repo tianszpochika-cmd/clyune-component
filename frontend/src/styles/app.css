@@ -421,6 +421,14 @@ html, body, #root { height: 100%; max-height: 100%; overflow: hidden; }
   display: flex; align-items: center; gap: 8px;
 }
 .fx-ops-body .param input[type=range] { flex: 1; width: auto; min-width: 0; }
+.fx-ops-body .param-step {
+  flex: 0 0 28px; width: 28px; height: 28px; padding: 0;
+  border-radius: 8px; border: 1px solid var(--border);
+  background: #0d1426; color: var(--text); cursor: pointer;
+  font-size: 16px; line-height: 1; font-weight: 700;
+}
+.fx-ops-body .param-step:hover { background: var(--panel-2); border-color: #3b4a6d; color: #fff; }
+.fx-ops-body .param-step:active { transform: scale(.96); }
 .fx-ops-body .param em, .fx-ops-body .param code {
   font-style: normal; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   min-width: 36px; text-align: right; color: var(--text);

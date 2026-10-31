@@ -113,14 +113,30 @@ export function panel(host, title, {
     const label = document.createElement('label');
     label.className = 'param param-' + (p.type || 'range');
     if (p.type === 'range') {
+      const minus = p.buttons ? `<button type="button" class="param-step" data-dir="-1" aria-label="减少">−</button>` : '';
+      const plus = p.buttons ? `<button type="button" class="param-step" data-dir="1" aria-label="增加">+</button>` : '';
       label.innerHTML = `<span class="param-label">${esc(p.label || p.key)}</span>
-        <div class="param-ctrl"><input type="range" min="${p.min ?? 0}" max="${p.max ?? 1}" step="${p.step ?? 0.1}" value="${state[p.key]}" data-k="${p.key}"><em data-v>${fmt(state[p.key])}</em></div>`;
+        <div class="param-ctrl">${minus}<input type="range" min="${p.min ?? 0}" max="${p.max ?? 1}" step="${p.step ?? 0.1}" value="${state[p.key]}" data-k="${p.key}">${plus}<em data-v>${fmt(state[p.key])}</em></div>`;
       const input = label.querySelector('input');
       const em = label.querySelector('[data-v]');
-      input.addEventListener('input', () => {
+      const emitRange = () => {
         state[p.key] = parseFloat(input.value);
         em.textContent = fmt(state[p.key]);
         onChange?.(clone(state), { reason: 'param', key: p.key });
+      };
+      input.addEventListener('input', emitRange);
+      label.querySelectorAll('.param-step').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const dir = Number(btn.dataset.dir) || 0;
+          const step = Number(p.step) || 1;
+          const min = p.min ?? 0;
+          const max = p.max ?? 1;
+          const next = Math.max(min, Math.min(max, (Number(state[p.key]) || 0) + dir * step));
+          state[p.key] = next;
+          input.value = String(next);
+          em.textContent = fmt(next);
+          onChange?.(clone(state), { reason: 'param', key: p.key });
+        });
       });
     } else if (p.type === 'color') {
       label.innerHTML = `<span class="param-label">${esc(p.label || '颜色')}</span>
@@ -303,7 +319,7 @@ export function defaultParams({ color = true, speed = true, size = false, count 
   if (color) params.push({ key: 'color', type: 'color', label: '颜色', value: '#818cf8' });
   if (speed) params.push({ key: 'speed', type: 'range', label: '速度', min: 0.3, max: 2.5, step: 0.1, value: 1 });
   if (size) params.push({ key: 'size', type: 'range', label: '尺寸', min: 0.5, max: 2, step: 0.1, value: 1 });
-  if (count) params.push({ key: 'count', type: 'range', label: '数量', min: 1, max: 200, step: 1, value: 40 });
+  if (count) params.push({ key: 'count', type: 'range', label: '数量', min: 1, max: 200, step: 1, value: 40, buttons: true });
   if (blur) params.push({ key: 'blur', type: 'range', label: '模糊', min: 0, max: 20, step: 1, value: 0 });
   if (easing) {
     params.push({

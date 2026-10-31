@@ -17,6 +17,7 @@ export function withControls(host, opts, {
   liveKeys = ['color', 'speed', 'size', 'count', 'blur'],
   remountKeys = ['count'],
   presets: presetsOverride,
+  presetDefaults = {}, // { '换行': { items: 24, wrap: 'wrap' }, ... }
 }) {
   const parsed = parseVariant(opts.variant || fallbackVariant, fallbackVariant);
   let family = parsed.family;
@@ -41,14 +42,36 @@ export function withControls(host, opts, {
     onChange(state, meta) {
       if (meta.reason === 'preset') {
         const named = NAMED_COLORS[state.styleName];
+        const patch = {};
         if (named && paramDefs.some((p) => p.key === 'color')) {
-          state.color = named;
-          ui.set({ color: named });
+          patch.color = named;
         }
+        const pd = presetDefaults?.[state.styleName];
+        if (pd && typeof pd === 'object') Object.assign(patch, pd);
+        if (Object.keys(patch).length) {
+          Object.assign(state, patch);
+          ui.set(patch);
+        }
+      }
+      if (meta.reason === 'action' && (meta.key === 'add-item' || meta.key === 'remove-item')) {
+        const def = paramDefs.find((p) => p.key === 'items') || paramDefs.find((p) => p.key === 'count');
+        if (def) {
+          const cur = Number(ui.get()[def.key]);
+          const base = Number.isFinite(cur) ? cur : (def.value ?? def.min ?? 1);
+          const step = Number(def.step) || 1;
+          const next = meta.key === 'add-item'
+            ? Math.min(def.max ?? 48, base + step)
+            : Math.max(def.min ?? 1, base - step);
+          ui.set({ [def.key]: next });
+          const s = ui.get();
+          applyLive(s);
+          remount(s);
+        }
+        return;
       }
       applyLive(state);
       if (meta.reason === 'preset' || meta.reason === 'action') {
-        remount(state);
+        remount(ui.get());
         return;
       }
       if (meta.reason === 'param' && remountKeys.includes(meta.key)) {
@@ -57,12 +80,14 @@ export function withControls(host, opts, {
     },
   });
 
-  // Seed named color if starting preset maps to one
+  // Seed named color + preset-specific defaults if starting preset maps to them
   const init = ui.get();
+  const seed = {};
   const named0 = NAMED_COLORS[init.styleName];
-  if (named0 && paramDefs.some((p) => p.key === 'color')) {
-    ui.set({ color: named0 });
-  }
+  if (named0 && paramDefs.some((p) => p.key === 'color')) seed.color = named0;
+  const pd0 = presetDefaults?.[init.styleName];
+  if (pd0 && typeof pd0 === 'object') Object.assign(seed, pd0);
+  if (Object.keys(seed).length) ui.set(seed);
 
   function applyLive(state) {
     if (!state) return;

@@ -3337,8 +3337,8 @@
         {
           "slug": "grid",
           "title": "Grid 布局",
-          "hint": "顶部切换布局 · 调列数/间距/对齐",
-          "desc": "CSS Grid 玩具：浅色渐变单元格 + 丰富预设。",
+          "hint": "顶部切换 · +/− 增减元素 · 调列数/间距",
+          "desc": "CSS Grid 玩具：浅色渐变单元格；可用 +/− 增减元素观察自动填充。",
           "tag": "grid",
           "mod": "kit-layout",
           "fn": "mount",
@@ -3374,8 +3374,8 @@
         {
           "slug": "flex",
           "title": "Flex 布局",
-          "hint": "顶部切换 · 调主轴/交叉轴/方向",
-          "desc": "Flexbox 玩具：浅色渐变单元格 + 丰富预设。",
+          "hint": "换行预设默认 24 项 · +/− 增减元素",
+          "desc": "Flexbox 玩具：浅色渐变单元格；换行/标签云等可增减元素观察折行。",
           "tag": "flex",
           "mod": "kit-layout",
           "fn": "mount",
