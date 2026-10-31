@@ -297,7 +297,7 @@ export default function App() {
             <span className="pill">rust+react</span>
           </div>
         </header>
-        <div className="content" id="main-scroll">
+        <div className={`content${demo ? ' content--demo' : ''}`} id="main-scroll">
           <Routes>
             <Route path="/" element={<Home health={health} />} />
             <Route path="/:category" element={<CategoryPage />} />
