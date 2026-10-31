@@ -6,6 +6,7 @@ type MountFn = (
 
 const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'solar-system': () => import('./demos/solar-system.js'),
+  'trig-waves': () => import('./demos/trig-waves.js'),
   'cube': () => import('./demos/cube.js'),
   'orbit': () => import('./demos/orbit.js'),
   'particles': () => import('./demos/particles.js'),
@@ -58,6 +59,8 @@ const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'kit-generative': () => import('./demos/kits/kit-generative.js'),
   'kit-text': () => import('./demos/kits/kit-text.js'),
   'kit-scroll': () => import('./demos/kits/kit-scroll.js'),
+  'kit-math': () => import('./demos/kits/kit-math.js'),
+  'kit-convert': () => import('./demos/kits/kit-convert.js'),
 };
 
 const LEGACY_META: Record<string, {
@@ -67,6 +70,7 @@ const LEGACY_META: Record<string, {
   remountKeys?: string[];
 }> = {
   'solar-system': { title: '太阳系轨道', size: true, speed: true, color: true, count: true, presets: ['日心模式', '螺旋前进', '内太阳系', '外行星', '隐藏轨迹', '快进', '慢速'], remountKeys: ['count'] },
+  'trig-waves': { title: '三角函数', size: true, speed: true, color: true, count: true, presets: ['sin+cos', '仅sin', '仅cos', '含tan', '相位波', '快速', '慢速'], remountKeys: ['count'] },
   'cube': { title: '旋转方块', size: true, speed: true, color: true, count: false },
   'orbit': { title: '轨道', size: true, speed: true, color: true, count: true },
   'particles': { title: '粒子', size: true, speed: true, color: true, count: true },
