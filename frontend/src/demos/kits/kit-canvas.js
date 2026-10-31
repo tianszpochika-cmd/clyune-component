@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultP
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
-const TITLES={orbits:'轨道粒子',trail:'指针拖尾',blob:'软体 Blob',rain:'粒子雨',wave:'波浪',noise:'噪声场',flock:'群体',burst:'爆发',flow:'流场',gridwave:'网格起伏',ink:'墨水扩散',aurora:'极光',constellation:'星座连线',sand:'沙粒',kaleido:'万花筒',lightning:'闪电',cloth:'布料感',spiral:'螺旋采样',tunnel:'隧道穿梭'};
+const TITLES={orbits:'轨道粒子',trail:'指针拖尾',blob:'软体 Blob',rain:'粒子雨',wave:'波浪',noise:'噪声场',flock:'群体',burst:'爆发',flow:'流场',gridwave:'网格起伏',ink:'墨水扩散',aurora:'极光',constellation:'星座连线',sand:'沙粒',kaleido:'万花筒',lightning:'闪电',cloth:'布料感',spiral:'螺旋采样',tunnel:'隧道穿梭',fire:'火焰',smoke:'烟雾',reactdiff:'反应扩散',isometric:'等距方块'};
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-canvas',
@@ -343,6 +343,127 @@ function mountLegacy(host, opts = {}) {
         const p = partsArr[i];
         if (x < cols - 1) { const q = partsArr[i + 1]; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
         if (y < rows - 1) { const q = partsArr[i + cols]; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); }
+      }
+      return;
+    }
+
+
+    if (kind === 'fire') {
+      ctx.fillStyle = 'rgba(6,8,14,0.25)';
+      ctx.fillRect(0, 0, w, h);
+      const count = Math.max(40, liveCount());
+      while (partsArr.length < count) {
+        partsArr.push({ x: w * 0.5 + rand(-40, 40), y: h * 0.85, vx: rand(-20, 20), vy: rand(-120, -40), r: rand(6, 16), life: 1, hue: rand(10, 40) });
+      }
+      for (const p of partsArr) {
+        p.x += p.vx * dt * spd; p.y += p.vy * dt * spd;
+        p.vx += Math.sin(t * 3 + p.y * 0.05) * 30 * dt;
+        p.life -= dt * (0.55 + (1 - p.life) * 0.4) * pwr;
+        p.r *= 0.995;
+        if (p.life <= 0) { p.x = w * 0.5 + rand(-50, 50); p.y = h * 0.88; p.vx = rand(-25, 25); p.vy = rand(-140, -50); p.life = 1; p.r = rand(6, 16) * sz; }
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+        g.addColorStop(0, `hsla(${p.hue},100%,70%,${0.55 * p.life})`);
+        g.addColorStop(0.5, `hsla(${p.hue + 20},100%,50%,${0.25 * p.life})`);
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      // base glow
+      const base = ctx.createRadialGradient(w/2, h*0.9, 10, w/2, h*0.9, 80);
+      base.addColorStop(0, color); base.addColorStop(1, 'transparent');
+      ctx.globalAlpha = 0.35; ctx.fillStyle = base; ctx.fillRect(w/2-80, h*0.7, 160, h*0.3); ctx.globalAlpha = 1;
+      return;
+    }
+
+    if (kind === 'smoke') {
+      ctx.fillStyle = 'rgba(6,10,20,0.08)';
+      ctx.fillRect(0, 0, w, h);
+      const count = Math.max(30, Math.round(liveCount() * 0.7));
+      while (partsArr.length < count) {
+        partsArr.push({ x: mouse.x || w/2, y: mouse.y || h*0.7, vx: rand(-15,15), vy: rand(-40,-10), r: rand(10,28), life: 1, age: 0 });
+      }
+      for (const p of partsArr) {
+        p.age += dt; p.x += p.vx * dt * spd; p.y += p.vy * dt * spd;
+        p.vx += Math.sin(t + p.age) * 10 * dt; p.r += 12 * dt; p.life -= dt * 0.25 * pwr;
+        if (p.life <= 0) { p.x = mouse.x || w/2; p.y = mouse.y || h*0.75; p.vx=rand(-15,15); p.vy=rand(-45,-12); p.r=rand(10,24)*sz; p.life=1; p.age=0; }
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.08 * p.life;
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      return;
+    }
+
+    if (kind === 'reactdiff') {
+      // cheap Gray-Scott-ish: show dual chemical fields via noise feedback
+      const cell = 4;
+      if (!state._rd || state._rd.w !== w || state._rd.h !== h) {
+        const cols = Math.ceil(w / cell), rows = Math.ceil(h / cell);
+        const A = new Float32Array(cols * rows), B = new Float32Array(cols * rows);
+        for (let i = 0; i < A.length; i++) { A[i] = 1; B[i] = 0; }
+        for (let i = 0; i < 40; i++) {
+          const x = (cols * Math.random()) | 0, y = (rows * Math.random()) | 0;
+          for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+            const ix = x + dx, iy = y + dy;
+            if (ix >= 0 && iy >= 0 && ix < cols && iy < rows) B[iy * cols + ix] = 1;
+          }
+        }
+        state._rd = { cols, rows, A, B, tmpA: new Float32Array(A.length), tmpB: new Float32Array(B.length) };
+      }
+      const { cols, rows, A, B, tmpA, tmpB } = state._rd;
+      const feed = 0.036 + (n % 5) * 0.004, kill = 0.06 + (n % 4) * 0.004;
+      const idx = (x, y) => ((y + rows) % rows) * cols + ((x + cols) % cols);
+      const steps = Math.max(1, Math.min(3, Math.round(spd)));
+      for (let s = 0; s < steps; s++) {
+        for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+          const i = y * cols + x;
+          const a = A[i], b = B[i];
+          const lapA = A[idx(x+1,y)] + A[idx(x-1,y)] + A[idx(x,y+1)] + A[idx(x,y-1)] - 4 * a;
+          const lapB = B[idx(x+1,y)] + B[idx(x-1,y)] + B[idx(x,y+1)] + B[idx(x,y-1)] - 4 * b;
+          const abb = a * b * b;
+          tmpA[i] = a + (1.0 * lapA - abb + feed * (1 - a)) * 1.0;
+          tmpB[i] = b + (0.5 * lapB + abb - (kill + feed) * b) * 1.0;
+        }
+        A.set(tmpA); B.set(tmpB);
+      }
+      const img = ctx.createImageData(w, h);
+      const [cr, cg, cb] = (() => { const s = color; /* approx parse */ return [129,140,248]; })();
+      // parse color roughly from css via canvas? use hsl fallback
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const v = B[y * cols + x];
+        const R = (30 + v * 200) | 0, G = (40 + v * 120) | 0, Bv = (80 + v * 160) | 0;
+        for (let dy = 0; dy < cell && y * cell + dy < h; dy++) for (let dx = 0; dx < cell && x * cell + dx < w; dx++) {
+          const i = ((y * cell + dy) * w + (x * cell + dx)) * 4;
+          img.data[i] = R; img.data[i+1] = G; img.data[i+2] = Bv; img.data[i+3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      // tint overlay
+      ctx.globalCompositeOperation = 'tint' in CanvasRenderingContext2D.prototype ? 'source-atop' : 'source-over';
+      ctx.globalAlpha = 0.35; ctx.fillStyle = color; ctx.fillRect(0,0,w,h); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      return;
+    }
+
+    if (kind === 'isometric') {
+      ctx.fillStyle = '#060a14';
+      ctx.fillRect(0, 0, w, h);
+      const size = 18 * sz;
+      const cols = Math.ceil(w / size) + 2;
+      const rows = Math.ceil(h / size) + 2;
+      const ox = w / 2, oy = h * 0.25;
+      const iso = (i, j, k=0) => ({ x: ox + (i - j) * size, y: oy + (i + j) * size * 0.5 - k * size });
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const hgt = (0.5 + 0.5 * Math.sin(i * 0.5 + t * pwr) * Math.cos(j * 0.4 + t * 0.7)) * 2.2 * (0.6 + 0.4 * Math.sin(mouse.x * 0.01 + i));
+        const top = iso(i - cols/2, j - rows/2, hgt);
+        const c = `hsla(${(n * 40 + i * 8 + j * 6) % 360} 70% ${45 + hgt * 8}%)`;
+        // top diamond
+        ctx.beginPath();
+        ctx.moveTo(top.x, top.y - size * 0.5);
+        ctx.lineTo(top.x + size, top.y);
+        ctx.lineTo(top.x, top.y + size * 0.5);
+        ctx.lineTo(top.x - size, top.y);
+        ctx.closePath();
+        ctx.fillStyle = c; ctx.fill();
       }
       return;
     }

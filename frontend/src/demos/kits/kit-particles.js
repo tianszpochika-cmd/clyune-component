@@ -113,8 +113,45 @@ function mountLegacy(host, opts = {}) {
         const hx = w / 2 + 16 * Math.pow(Math.sin(ang), 3) * 8;
         const hy = h / 2 - (13 * Math.cos(ang) - 5 * Math.cos(2 * ang) - 2 * Math.cos(3 * ang) - Math.cos(4 * ang)) * 8;
         p.vx += (hx - p.x) * 0.5 * dtp; p.vy += (hy - p.y) * 0.5 * dtp;
+      } else if (kind === 4) {
+        p.vx += Math.sin(t * 2 + p.hue) * 8 * dtp; p.vy += Math.cos(t * 1.7 + p.x) * 8 * dtp; p.vx *= 0.98; p.vy *= 0.98;
+      } else if (kind === 5) {
+        p.vy += 90 * dtp; p.life -= dtp * 0.35;
+        if (p.life <= 0 || p.y > h) { p.x = w / 2 + (Math.random() - 0.5) * 20; p.y = h; p.vx = (Math.random() - 0.5) * 80; p.vy = -120 - Math.random() * 80; p.life = 1; }
+      } else if (kind === 9) {
+        p.vx *= 0.995; p.vy *= 0.995; p.vy += 15 * dtp;
+      } else if (kind === 12) {
+        const cols = 12, rows = 4; const idx = parts.indexOf(p);
+        const tx = ((idx % cols) + 0.5) / cols * w, ty = ((idx / cols | 0) % rows + 0.5) / rows * h * 0.6 + h * 0.2;
+        p.vx += (tx - p.x) * 1.2 * dtp; p.vy += (ty - p.y) * 1.2 * dtp;
+      } else if (kind === 13) {
+        p.vx *= 0.99; p.vy *= 0.99;
+        p.r = 1.5 + Math.abs(Math.sin(t * 3 + p.x * 0.05)) * 2;
       } else if (kind === 14) {
         p.y += Math.sin(t * 2 * spd + p.x * 0.05) * 20 * dtp;
+      } else if (kind === 15) {
+        p.vx += 20 * dtp; p.vy += Math.sin(t + p.x) * 5 * dtp;
+        if (p.x > w) { p.x = -5; p.y = Math.random() * h; }
+      } else if (kind === 16) {
+        p.vy -= 25 * dtp; p.vx += Math.sin(t + p.y * 0.05) * 10 * dtp;
+        if (p.y < -5) { p.y = h + 5; p.x = Math.random() * w; }
+      } else if (kind === 17) {
+        p.vy += 12 * dtp; p.vx += Math.sin(t * 1.5 + p.y * 0.02) * 20 * dtp;
+        if (p.y > h) { p.y = -5; p.x = Math.random() * w; }
+      } else if (kind === 18) {
+        p.x += (Math.random() - 0.5) * 40 * dtp * 10; p.y += (Math.random() - 0.5) * 40 * dtp * 10;
+        p.vx *= 0.9; p.vy *= 0.9;
+      } else if (kind === 19) {
+        p.vx += (Math.random() - 0.5) * 30 * dtp; p.vy += (Math.random() - 0.5) * 30 * dtp; p.vx *= 0.97; p.vy *= 0.97;
+      } else if (kind === 20) {
+        p.life = 0.5 + 0.5 * Math.sin(t * 4 + p.x * 0.05); p.vx *= 0.99; p.vy *= 0.99;
+      } else if (kind === 21) {
+        if (Math.random() < 0.02) { p.x += (Math.random() - 0.5) * 40; p.y += (Math.random() - 0.5) * 40; }
+        p.vx *= 0.98; p.vy *= 0.98;
+      } else if (kind === 23) {
+        const dx = p.x - w / 2, dy = p.y - h / 2, d = Math.hypot(dx, dy) || 1;
+        p.vx += (-dy / d) * 50 * dtp - (dx / d) * 15 * dtp;
+        p.vy += (dx / d) * 50 * dtp - (dy / d) * 15 * dtp;
       } else {
         p.vx *= 0.99; p.vy *= 0.99;
       }

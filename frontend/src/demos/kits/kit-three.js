@@ -3,13 +3,15 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { cdn, loadScript } from '../../lib/load.js';
 
+const SCENE_PRESETS = ['晶格','环带','星云球','多立方','螺旋柱','玻璃球','线框球','Instanced','起伏面','点云环','光柱','反射地板'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-three',
-    title: 'Three 场景',
-    fallbackVariant: 'scene-1',
-    params: defaultParams({color:true,speed:true}),
-    mapVariant: (family, n) => `scene-${n}`,
+    title: 'Three 场景实验室',
+    fallbackVariant: 'scene',
+    presets: SCENE_PRESETS,
+    params: defaultParams({color:true,speed:true,size:true}),
+    mapVariant: (_family, n) => `scene-${n}`,
     mountLegacy,
   });
 }

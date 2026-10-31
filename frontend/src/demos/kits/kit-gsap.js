@@ -3,13 +3,15 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { libs } from '../../lib/load.js';
 
+const SEQ_PRESETS = ['弹跳入场','交错卡片','路径跟随','旋转出场','弹性缩放','颜色闪烁','翻转牌','进度环','打字机','视差层','网格交错','时间轴 scrub'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-gsap',
-    title: 'GSAP 序列',
-    fallbackVariant: 'seq-1',
-    params: defaultParams({color:true,speed:true}),
-    mapVariant: (family, n) => `seq-${n}`,
+    title: 'GSAP 序列实验室',
+    fallbackVariant: 'seq',
+    presets: SEQ_PRESETS,
+    params: defaultParams({color:true,speed:true,size:true}),
+    mapVariant: (_family, n) => `seq-${n}`,
     mountLegacy,
   });
 }
@@ -28,7 +30,7 @@ async function mountLegacy(host, opts = {}) {
   .kg .txt{font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:.04em}
   .kg .ring{width:90px;height:90px;border-radius:50%;border:6px solid #24314f;border-top-color:var(--c,${hsl(n)})}`);
   const root = document.createElement('div'); root.className = 'kg'; stage.appendChild(root);
-  const kind = (n - 1) % 10;
+  const kind = (n - 1) % 12;
   let tl;
   if (kind === 0) {
     root.innerHTML = `<div class="item" data-el>BOING</div>`;
@@ -83,13 +85,26 @@ async function mountLegacy(host, opts = {}) {
     for (let i = 0; i <= text.length; i++) tl.set(el, { textContent: text.slice(0, i) }, i * 0.08);
     tl.to({}, { duration: 0.8 });
     for (let i = text.length; i >= 0; i--) tl.set(el, { textContent: text.slice(0, i) }, '>');
-  } else {
+  } else if (kind === 9) {
     root.innerHTML = `<div class="row" style="position:relative;height:160px;width:min(420px,90%)">
       <div class="card" data-a style="position:absolute;left:10%;top:20%"></div>
       <div class="card" data-b style="position:absolute;left:40%;top:40%;background:#1d2a4a"></div>
       <div class="card" data-c style="position:absolute;left:65%;top:15%;background:#24314f"></div></div>`;
     tl = gsap.timeline({ repeat: -1, yoyo: true });
     tl.to('[data-a]', { y: 40, duration: 1.2 }).to('[data-b]', { y: -30, duration: 1.2 }, 0).to('[data-c]', { y: 50, duration: 1.2 }, 0);
+  } else if (kind === 10) {
+    root.innerHTML = `<div class="row">${Array.from({length:12},(_,i)=>`<div class="item" data-g style="width:48px;height:48px;font-size:11px">${i+1}</div>`).join('')}</div>`;
+    tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+    tl.from('[data-g]', { scale: 0, opacity: 0, rotate: -20, stagger: { each: 0.05, from: 'center', grid: [3,4] }, duration: 0.45, ease: 'back.out(1.6)' })
+      .to('[data-g]', { y: -8, stagger: { each: 0.03, from: 'edges' }, duration: 0.35 }, '+=0.15')
+      .to('[data-g]', { opacity: 0, scale: 0.6, stagger: 0.03, duration: 0.3 });
+  } else {
+    root.innerHTML = `<div style="width:min(420px,90%)"><input data-scr type="range" min="0" max="100" value="0" style="width:100%"/><div class="row" style="margin-top:16px"><div class="item" data-el>SCRUB</div></div></div>`;
+    const el = root.querySelector('[data-el]');
+    tl = gsap.timeline({ paused: true });
+    tl.fromTo(el, { x: -120, rotate: -30, opacity: 0.2 }, { x: 120, rotate: 30, opacity: 1, duration: 1, ease: 'none' })
+      .to(el, { scale: 1.25, backgroundColor: '#22d3ee', duration: 1, ease: 'none' });
+    root.querySelector('[data-scr]')?.addEventListener('input', (e) => { tl.progress(Number(e.target.value) / 100); });
   }
   host.querySelector('[data-play]')?.addEventListener('click', () => tl?.paused(!tl.paused()));
   host.querySelector('[data-rev]')?.addEventListener('click', () => tl?.reversed(!tl.reversed()));

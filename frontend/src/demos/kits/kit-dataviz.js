@@ -3,13 +3,15 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
+const DV_PRESETS = ['热力格子','雷达图','桑基简化','气泡散点','日历热力','旭日简化','和弦弧','箱线','平行坐标','流图','词云简化','层级列表','漏斗','烛台','树状冰柱'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-dataviz',
-    title: '数据图',
-    fallbackVariant: 'viz-1',
-    params: defaultParams({color:true,speed:true}),
-    
+    title: '数据可视化实验室',
+    fallbackVariant: 'viz',
+    presets: DV_PRESETS,
+    params: defaultParams({color:true,speed:true,size:true}),
+    mapVariant: (_f, n) => `viz-${n}`,
     mountLegacy,
   });
 }
@@ -25,7 +27,7 @@ function mountLegacy(host, opts = {}) {
   const regen = () => { cells = Array.from({length: 64}, () => rand(0,1)); };
   regen();
   host.querySelector('[data-gen]')?.addEventListener('click', regen);
-  const kind = (n-1)%12;
+  const kind = (n-1)%15;
   const stop = loop((dt,t) => {
     const L = live(); const tint=L.color; const tt=t*L.speed;
     const {w,h}=state; ctx.fillStyle='#060a14'; ctx.fillRect(0,0,w,h);
@@ -47,6 +49,27 @@ function mountLegacy(host, opts = {}) {
     } else if (kind===10) { // word cloud simple
       const words=['Rust','React','Vite','Canvas','SVG','WebGL','GSAP','CSS','Three','Axum','Postgres','Demo'];
       words.forEach((word,i)=>{ ctx.font=`${12+cells[i]*22|0}px sans-serif`; ctx.fillStyle=hsl(n+i*25); ctx.fillText(word, 20+(i%4)*(w/4), 40+(i/4|0)*40 + Math.sin(tt+i)*6); });
+    } else if (kind===12) { // funnel
+      const steps=5; for(let i=0;i<steps;i++){
+        const t0=i/steps, t1=(i+1)/steps; const y0=40+t0*(h-80), y1=40+t1*(h-80);
+        const w0=(0.85-t0*0.55)*w*0.5, w1=(0.85-t1*0.55)*w*0.5;
+        ctx.beginPath(); ctx.moveTo(w/2-w0,y0); ctx.lineTo(w/2+w0,y0); ctx.lineTo(w/2+w1,y1); ctx.lineTo(w/2-w1,y1); ctx.closePath();
+        ctx.fillStyle=`color-mix(in srgb, ${tint} ${70-i*10}%, #18233d)`; ctx.fill();
+      }
+    } else if (kind===13) { // candles
+      const nBars=14; const bw=(w-40)/nBars;
+      for(let i=0;i<nBars;i++){
+        const o=h*0.5+Math.sin(tt+i)*20, c=o+Math.sin(tt*1.3+i*0.7)*30, hi=Math.min(o,c)-20, lo=Math.max(o,c)+20;
+        const x=20+i*bw+bw*0.5; ctx.strokeStyle='#93a0c0'; ctx.beginPath(); ctx.moveTo(x,hi); ctx.lineTo(x,lo); ctx.stroke();
+        ctx.fillStyle=c>=o?tint:'#f472b6'; ctx.fillRect(x-bw*0.25, Math.min(o,c), bw*0.5, Math.abs(c-o)+2);
+      }
+    } else if (kind===14) { // icicle-ish
+      const levels=[[1],[.55,.45],[.3,.25,.25,.2]]; let y=20;
+      levels.forEach((row, li)=>{
+        let x=20; const rh=(h-40)/levels.length-8; const total=row.reduce((a,b)=>a+b,0);
+        row.forEach((v,i)=>{ const rw=(w-40)*v/total; ctx.fillStyle=`hsla(${(n*40+li*40+i*25)%360} 70% 55% / .85)`; ctx.fillRect(x,y,rw-2,rh); x+=rw; });
+        y+=rh+8;
+      });
     } else {
       // arcs / sankey-ish / default bars
       for (let i=0;i<12;i++){

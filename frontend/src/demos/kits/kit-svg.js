@@ -9,7 +9,7 @@ export function mount(host, opts = {}) {
     title: TITLES[parseVariant(opts.variant||'stroke').family]||'SVG',
     fallbackVariant: 'stroke',
     params: defaultParams({color:true,speed:true,size:true}),
-    
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }

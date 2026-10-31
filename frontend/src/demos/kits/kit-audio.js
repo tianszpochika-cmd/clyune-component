@@ -3,11 +3,14 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
+const VIZ_PRESETS = ['柱状频谱','圆形波','条形均衡','粒子随音','示波器','极坐标','瀑布图','节拍脉冲','和弦板','噪声垫','鼓机垫'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-audio',
-    title: '音频视觉',
-    fallbackVariant: 'viz-1',
+    presets: VIZ_PRESETS,
+    mapVariant: (_f, n) => `viz-${n}`,
+    title: '音频视觉实验室',
+    fallbackVariant: 'viz',
     params: defaultParams({color:true,speed:true}),
     
     mountLegacy,

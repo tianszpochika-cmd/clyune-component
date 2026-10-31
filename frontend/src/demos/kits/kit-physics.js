@@ -1,13 +1,16 @@
 import { makeCanvas, loop, localPoint, bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const SIM_PRESETS = ['弹球墙','多重力','弹簧链','碰撞盒','漂浮气泡','摆锤','沙漏粒子','磁力点','弹性绳','台球'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-physics',
-    title: '物理模拟',
-    fallbackVariant: 'sim-1',
+    title: '物理模拟实验室',
+    fallbackVariant: 'sim',
+    presets: SIM_PRESETS,
     params: defaultParams({ color: true, speed: true, size: true, count: true }),
     remountKeys: ['count'],
+    mapVariant: (_f, n) => `sim-${n}`,
     mountLegacy,
   });
 }

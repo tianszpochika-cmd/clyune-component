@@ -1,14 +1,17 @@
 import { makeCanvas, loop, localPoint, bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const SHADER_IDS = ['voronoi','warp','spiral','checker','tunnel','ripple','stars','lava','grid','kaleido','hsv','scan','metaball2','fog','stripes','circle-sdf','water','crt','julia','snow','oil'];
+const SHADER_PRESETS = ['Voronoi','域扭曲','螺旋','棋盘扭曲','隧道','涟漪','星野','熔岩','透视网格','万花筒','HSV 旋转','扫描线','双 Metaball','体积雾','流光条纹','SDF 圆','水面','CRT','Julia','飘雪','油画噪声'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-webgl',
-    title: '着色器',
-    fallbackVariant: 'shader-voronoi',
-    params: defaultParams({ color: true, speed: true }),
+    title: '着色器实验室',
+    fallbackVariant: 'shader-lab',
+    presets: SHADER_PRESETS,
+    params: defaultParams({ color: true, speed: true, size: true }),
     remountKeys: [],
-    mapVariant: () => opts.variant || 'shader-voronoi',
+    mapVariant: (_f, n) => `shader-${SHADER_IDS[(n - 1) % SHADER_IDS.length]}`,
     mountLegacy,
   });
 }
@@ -37,6 +40,11 @@ function frag(kind) {
     fog: `float f=0.; for(int i=0;i<6;i++){ float fi=float(i); f+=noise(p*1.5+vec2(0,t*.1)+fi)*.5/exp2(fi);} col=mix(vec3(.02,.03,.08),u_col,f);`,
     stripes: `float s=sin((p.x+p.y)*12.+t*3.+m.x*4.); col=mix(vec3(.1,.12,.25),u_col,smoothstep(-.2,.2,s));`,
     'circle-sdf': `float d=abs(length(p-m*.4)-.45); col=vec3(.08)+u_col*exp(-d*30.); col+=vec3(1.,.6,.2)*exp(-abs(length(p)-.2)*40.);`,
+    water: `float w=0.; for(int i=0;i<5;i++){ float fi=float(i)+1.; w+=sin(p.x*fi*3.+t*fi+m.x)*cos(p.y*fi*2.5-t*fi*.7)/fi; } col=mix(vec3(.02,.08,.18),u_col,.45+.35*w); col+=vec3(.8,.9,1.)*pow(max(0.,w),3.)*.25;`,
+    crt: `float n=noise(uv*vec2(120.,1.)+vec2(0.,t*2.)); float scan=sin(uv.y*800.+t*20.)*.04; float vig=smoothstep(1.2,.3,length(p)); col=u_col*(.4+.6*n)+scan; col*=vig; col.r+=.03; col.b-=.02;`,
+    julia: `vec2 z=p*1.4; vec2 c=vec2(-.4,.6)+m*.35; float it=0.; for(int i=0;i<48;i++){ z=vec2(z.x*z.x-z.y*z.y,2.*z.x*z.y)+c; if(dot(z,z)>4.) break; it+=1.; } float f=it/48.; col=mix(vec3(.02,.03,.08),u_col,pow(f,.7)); col+=vec3(1.,.7,.3)*pow(f,3.);`,
+    snow: `float s=0.; for(int i=0;i<10;i++){ float fi=float(i); vec2 q=uv*vec2(4.+fi*.4,3.)+vec2(fi*1.7, -t*(.2+fi*.05)); float f=fract(q.y); vec2 id=floor(q); float h=hash(id+fi); float d=length(fract(q)-vec2(h,.5+sin(t+h)*0.1)); s+=smoothstep(.04,.01,d)*(1.-f); } col=vec3(.05,.08,.14)+u_col*.15+vec3(s);`,
+    oil: `vec2 q=p; for(int i=0;i<4;i++){ q=q.yx*mat2(.8,-.6,.6,.8)+noise(q*2.+t*.1); } float n=noise(q*3.); col=u_col*(.35+.65*n); col=mix(col,col.bgr,noise(q+3.)); col+=.1*sin(n*20.+vec3(0,2,4));`,
   };
   const body = bodies[kind] || bodies.warp;
   return common + body + ` gl_FragColor=vec4(col,1.); }`;

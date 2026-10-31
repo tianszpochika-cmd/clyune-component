@@ -1,7 +1,18 @@
 import { addStyle, bar, defaultParams, parseVariant, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 
-const TITLES = { grid: 'Grid 布局', flex: 'Flex 布局' };
+const TITLES = {
+  grid: 'Grid 布局', flex: 'Flex 布局',
+  masonry: 'Masonry 瀑布流', columns: '多列排版', sticky: 'Sticky 粘滞', layers: '绝对层叠',
+  container: '容器查询',
+};
+const EXTRA_PRESETS = {
+  masonry: ['三列瀑布','四列','等高砖','卡片流','杂志砖','密铺'],
+  columns: ['双栏正文','三栏报纸','不等宽','首字下沉感','竖线分隔','响应栏数'],
+  sticky: ['侧栏粘滞','章节钉住','表头粘滞','工具条顶吸','双粘滞','卡片吸顶'],
+  layers: ['卡片堆','对角错位','视差层','徽章叠','模态感','网格底层'],
+  container: ['窄变单列','中等双列','宽三列','卡片自适应','工具条折叠','图文换位'],
+};
 
 const GRID_PRESET_KEYS = [
   '基础栅格', '瀑布流模拟', '圣杯', '侧栏可调', '卡片等分', '密集自动填充',
@@ -20,10 +31,12 @@ const FLEX_PRESET_KEYS = [
 export function mount(host, opts = {}) {
   const family = parseVariant(opts.variant || 'grid').family;
   const isFlex = family.startsWith('flex');
+  const extra = EXTRA_PRESETS[family];
   return withControls(host, opts, {
     kitKey: 'kit-layout',
     title: TITLES[family] || 'Layout',
-    fallbackVariant: 'grid',
+    fallbackVariant: family || 'grid',
+    presets: extra || undefined,
     params: defaultParams({ color: true, speed: false, size: false }).concat([
       { key: 'cols', type: 'range', label: isFlex ? '参考列感' : '列数', min: 1, max: 12, step: 1, value: isFlex ? 4 : 3 },
       { key: 'gap', type: 'range', label: '间距', min: 0, max: 48, step: 2, value: 12 },
@@ -217,9 +230,14 @@ function mountLegacy(host, opts = {}) {
     root.style.setProperty('--minh', `${minh}px`);
     stage.style.setProperty('--c', accent);
 
-    root.innerHTML = isFlex
-      ? renderFlex(presetName, { cols, gap, items, accent, ctrl })
-      : renderGrid(presetName, { cols, gap, items, accent, ctrl });
+    if (EXTRA_PRESETS[parsed.family]) {
+      const name = EXTRA_PRESETS[parsed.family][styleIdx % EXTRA_PRESETS[parsed.family].length];
+      root.innerHTML = renderExtra(parsed.family, name, { cols, gap, items, accent, ctrl });
+    } else {
+      root.innerHTML = isFlex
+        ? renderFlex(presetName, { cols, gap, items, accent, ctrl })
+        : renderGrid(presetName, { cols, gap, items, accent, ctrl });
+    }
   };
 
   apply();
@@ -578,4 +596,35 @@ function renderFlex(preset, { cols, gap, items, accent, ctrl }) {
   return `${meta(preset, [`items ${n}`, `justify ${justify}`, `align ${align}`, `dir ${direction}`, `wrap ${wrap}`])}
     <div class="board">${body}</div>
     <p class="legend">${note} 右侧可改主轴/交叉轴/方向/换行，或用「+ / − 元素」增减数量；单元格浅色渐变。</p>`;
+}
+
+
+function renderExtra(family, name, { cols, gap, items, accent, ctrl }) {
+  const n = Math.max(6, Math.min(36, items|0));
+  const cells = Array.from({ length: n }, (_, i) => cellHtml(i, `${i + 1}`, `background:${pastelPair(i, accent)};min-height:${40 + (i % 5) * 18}px`));
+  if (family === 'masonry') {
+    const c = Math.max(2, Math.min(6, cols));
+    return `<div class="kl-meta"><span class="chip">${name}<em>${c} 列</em></span></div><div class="board"><div class="masonry" style="--cols:${c};--gap:${gap}px">${cells.join('')}</div></div>`;
+  }
+  if (family === 'columns') {
+    const c = name.includes('三') ? 3 : name.includes('双') ? 2 : Math.max(2, Math.min(4, cols));
+    const widths = name.includes('不等') ? '2fr 1fr 1fr' : `repeat(${c},1fr)`;
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="g" style="grid-template-columns:${widths};gap:${gap}px;align-items:start">${Array.from({length:c},(_,i)=>`<div class="cell" style="background:${pastelPair(i,accent)};min-height:160px;display:block;padding:14px;text-align:left;font-weight:500;line-height:1.6"><b>栏 ${i+1}</b><br/>多列排版演示正文，调节间距与列数观察折行与栏宽变化。重复内容以填满高度。</div>`).join('')}</div></div>`;
+  }
+  if (family === 'sticky') {
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board" style="max-height:360px;overflow:auto;padding:0">
+      <div style="display:grid;grid-template-columns:160px 1fr;gap:${gap}px;padding:12px">
+        <aside style="position:sticky;top:8px;align-self:start"><div class="cell" style="background:${pastelPair(0,accent)}">粘滞侧栏</div></aside>
+        <div style="display:flex;flex-direction:column;gap:${gap}px">${Array.from({length:10},(_,i)=>`<div class="cell" style="background:${pastelPair(i+1,accent)};min-height:72px">章节 ${i+1}</div>`).join('')}</div>
+      </div></div>`;
+  }
+  if (family === 'layers') {
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="overlap"><div class="stack">${[0,1,2,3].map((i)=>`<div class="cell" style="background:${pastelPair(i,accent)};transform:translate(${i*18}px,${i*14}px) rotate(${i*2-3}deg);width:${70-i*4}%;z-index:${4-i}">Layer ${i+1}</div>`).join('')}</div></div></div>`;
+  }
+  // container
+  return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div style="container-type:inline-size;border:1px dashed #2a3858;border-radius:12px;padding:12px">
+    <div class="g" style="gap:${gap}px;grid-template-columns:1fr;@media ignored">${cells.slice(0, Math.max(3, cols)).map((html,i)=>html.replace('class="cell','class="cell')).join('')}</div>
+    <p style="color:#9aa8c7;font-size:12px;margin-top:10px">容器宽度变化时用列数滑条模拟断点（${cols} 列感）</p>
+    <div class="g" style="margin-top:8px;gap:${gap}px;grid-template-columns:repeat(${Math.max(1,Math.min(6,cols))},1fr)">${cells.slice(0, Math.max(4, cols*2)).join('')}</div>
+  </div></div>`;
 }

@@ -1,15 +1,19 @@
 import { addStyle, bar, hsl, defaultParams, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const FILTER_PRESETS = ['模糊','亮度','对比','饱和','色相旋转','反相','灰度','褐色','投影','组合霓虹','毛玻璃背板','混合叠加','排除混合','彩色闪烁','像素感','锐化模拟','暗角','发光描边','双色调','故障抖动'];
+const BLEND_PRESETS = ['screen','multiply','overlay','difference','exclusion','color-dodge','hard-light','soft-light','lighten','darken','color','hue','saturation','luminosity','plus-lighter','正常对比'];
 export function mount(host, opts = {}) {
+  const family = (opts.variant || 'filter-lab').startsWith('blend') ? 'blend-lab' : 'filter-lab';
   return withControls(host, opts, {
     kitKey: 'kit-filters',
-    title: '滤镜实验室',
-    fallbackVariant: 'filter-lab',
+    title: family === 'blend-lab' ? '混合模式实验室' : '滤镜实验室',
+    fallbackVariant: family,
+    presets: family === 'blend-lab' ? BLEND_PRESETS : FILTER_PRESETS,
     params: defaultParams({ color: true, speed: true, blur: true }),
     remountKeys: [],
     liveKeys: ['color', 'speed', 'blur'],
-    mapVariant: (_family, n) => `f-${n}`,
+    mapVariant: (_family, n) => family === 'blend-lab' ? `blend-${n}` : `f-${n}`,
     mountLegacy,
   });
 }
@@ -17,14 +21,19 @@ export function mount(host, opts = {}) {
 function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'f-1';
   const n = parseInt(id.split('-').pop(), 10) || 1;
+  const isBlend = String(id).startsWith('blend');
   const ctrl = opts._controls || {};
   const { stage } = bar(host, id);
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const rm = addStyle(`.kf{position:absolute;inset:0;display:grid;place-items:center;padding:20px}
-  .kf .art{width:min(420px,86%);aspect-ratio:16/10;border-radius:18px;border:1px solid #24314f;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff;transition:filter .12s}`)
+  .kf .art{width:min(420px,86%);aspect-ratio:16/10;border-radius:18px;border:1px solid #24314f;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff;transition:filter .12s;position:relative;overflow:hidden}
+  .kf .blob{position:absolute;width:55%;height:55%;border-radius:50%;filter:blur(8px);mix-blend-mode:screen}`)
   const root = document.createElement('div'); root.className = 'kf'; stage.appendChild(root);
-  root.innerHTML = `<div class="art" data-a>FILTER ${n}</div>`;
+  root.innerHTML = isBlend
+    ? `<div class="art" data-a><div class="blob" data-b1></div><div class="blob" data-b2></div><span style="position:relative;z-index:1">BLEND</span></div>`
+    : `<div class="art" data-a>FILTER ${n}</div>`;
   const el = root.querySelector('[data-a]');
+  const blends = ['screen','multiply','overlay','difference','exclusion','color-dodge','hard-light','soft-light','lighten','darken','color','hue','saturation','luminosity','plus-lighter','normal'];
   const filters = [
     (v, blur) => `blur(${Math.max(v * 0.12, blur)}px)`,
     (v) => `brightness(${0.5 + v / 100})`,
@@ -53,6 +62,22 @@ function mountLegacy(host, opts = {}) {
     raf = requestAnimationFrame(tick);
     const L = live();
     const amt = 30 + 40 * (0.5 + 0.5 * Math.sin(t * 0.001 * L.speed));
+    if (isBlend) {
+      const mode = blends[(n - 1) % blends.length];
+      el.style.background = 'linear-gradient(135deg,#0b1020,#18233d)';
+      el.style.filter = L.blur ? `blur(${L.blur * 0.15}px)` : 'none';
+      const b1 = root.querySelector('[data-b1]'); const b2 = root.querySelector('[data-b2]');
+      if (b1 && b2) {
+        b1.style.mixBlendMode = mode; b2.style.mixBlendMode = mode;
+        b1.style.background = L.color; b2.style.background = '#22d3ee';
+        b1.style.left = `${20 + 10 * Math.sin(t * 0.001 * L.speed)}%`;
+        b1.style.top = `${18 + 8 * Math.cos(t * 0.0012 * L.speed)}%`;
+        b2.style.right = `${16 + 10 * Math.cos(t * 0.001 * L.speed)}%`;
+        b2.style.bottom = `${14 + 8 * Math.sin(t * 0.0014 * L.speed)}%`;
+        b2.style.left = 'auto'; b2.style.top = 'auto';
+      }
+      return;
+    }
     el.style.background = `radial-gradient(circle at 30% 30%, ${L.color}, transparent 50%), radial-gradient(circle at 70% 60%, #22d3ee, transparent 45%), linear-gradient(135deg,#18233d,#0b1020)`;
     el.style.filter = fn(amt, L.blur, L.color);
   };

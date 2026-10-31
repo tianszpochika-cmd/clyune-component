@@ -3,13 +3,15 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
+const MI_PRESETS = ['心跳赞','勾选弹跳','发送纸飞机','复制成功','下载进度','骨架屏','Toast','徽章跳动','拖动阈值','长按确认','摇一摇提示','滑动验证','双击放大','悬停磁吸','按压波纹'];
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-micro',
-    title: '微交互',
-    fallbackVariant: 'mi-1',
-    params: defaultParams({color:true,speed:true}),
-    
+    title: '微交互实验室',
+    fallbackVariant: 'mi',
+    presets: MI_PRESETS,
+    params: defaultParams({color:true,speed:true,size:true}),
+    mapVariant: (_f, n) => `mi-${n}`,
     mountLegacy,
   });
 }
@@ -37,7 +39,7 @@ function mountLegacy(host, opts = {}) {
     .km .prog{width:min(280px,80%);height:8px;background:#18233d;border-radius:999px;overflow:hidden}.km .prog b{display:block;height:100%;width:0;background:var(--c);transition:width .4s}
   `);
   const root = document.createElement('div'); root.className='km'; stage.appendChild(root);
-  const kind=(n-1)%12;
+  const kind=(n-1)%15;
   if (kind===0) {
     root.innerHTML=`<div class="heart" data-h>♡</div><div class="toast" data-t>Liked!</div>`;
     const h=root.querySelector('[data-h]'), t=root.querySelector('[data-t]');
@@ -78,7 +80,7 @@ function mountLegacy(host, opts = {}) {
     root.innerHTML=`<div style="color:var(--muted)">摇动 / 快速晃动指针试试</div><div class="toast" data-t>Shake detected</div>`;
     const t=root.querySelector('[data-t]'); let last=0, lx=0;
     stage.onpointermove=(e)=>{ const v=Math.abs(e.clientX-lx); lx=e.clientX; if(v>40 && performance.now()-last>500){ last=performance.now(); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),700);} };
-  } else {
+  } else if (kind===11) {
     root.innerHTML=`<div style="width:min(280px,80%);height:48px;border-radius:12px;background:#18233d;border:1px solid #24314f;position:relative;overflow:hidden">
       <div data-s style="position:absolute;inset:4px;width:42%;border-radius:8px;background:var(--c);display:grid;place-items:center;font-size:12px;font-weight:700;color:#0b1020;cursor:pointer;touch-action:none">Slide →</div></div>`;
     const s=root.querySelector('[data-s]'); let drag=false, startX=0, x=0;
@@ -86,6 +88,27 @@ function mountLegacy(host, opts = {}) {
     s.onpointerdown=(e)=>{ drag=true; s.setPointerCapture(e.pointerId); startX=e.clientX-x; };
     s.onpointermove=(e)=>{ if(!drag)return; x=Math.max(0,Math.min(max(), e.clientX-startX)); s.style.transform=`translateX(${x}px)`; if(x>max()*0.9){ s.textContent='OK'; } };
     s.onpointerup=()=>{ drag=false; if(x<=max()*0.9){ x=0; s.style.transform='translateX(0)'; s.textContent='Slide →'; } };
+  } else if (kind===12) {
+    root.innerHTML=`<div class="btnx" data-b style="transition:transform .25s">双击放大</div>`;
+    const b=root.querySelector('[data-b]'); let big=false;
+    b.ondblclick=()=>{ big=!big; b.style.transform = big ? 'scale(1.35)' : 'scale(1)'; };
+  } else if (kind===13) {
+    root.innerHTML=`<button class="btnx" data-b>磁吸悬停</button>`;
+    const b=root.querySelector('[data-b]');
+    stage.onpointermove=(e)=>{
+      const r=b.getBoundingClientRect(); const cx=r.left+r.width/2, cy=r.top+r.height/2;
+      const dx=e.clientX-cx, dy=e.clientY-cy; const d=Math.hypot(dx,dy)||1;
+      if(d<120) b.style.transform=`translate(${dx*0.25}px,${dy*0.25}px)`; else b.style.transform='';
+    };
+  } else {
+    root.innerHTML=`<button class="btnx" data-b style="position:relative;overflow:hidden">按压波纹</button>`;
+    const b=root.querySelector('[data-b]');
+    b.onclick=(e)=>{
+      const r=b.getBoundingClientRect(); const x=e.clientX-r.left, y=e.clientY-r.top;
+      const s=document.createElement('span');
+      s.style.cssText=`position:absolute;left:${x}px;top:${y}px;width:8px;height:8px;border-radius:50%;background:#fff8;transform:translate(-50%,-50%) scale(0);animation:pop .55s ease-out forwards;pointer-events:none`;
+      b.appendChild(s); setTimeout(()=>s.remove(),560);
+    };
   }
   const sync = setInterval(() => { const L = live(); root.style.setProperty('--c', L.color); root.style.setProperty('--spd', String(L.speed)); stage.style.setProperty('--c', L.color); }, 80);
   return () => { clearInterval(sync); rm(); host.innerHTML=''; };

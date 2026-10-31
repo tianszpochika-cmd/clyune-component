@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultP
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
-const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效'};
+const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效',kanban:'看板',colorpick:'取色器',notify:'通知中心'};
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-ui',
@@ -246,6 +246,24 @@ function mountLegacy(host, opts = {}) {
       step = Math.min(4, step + 1);
       root.querySelectorAll('.steps .s').forEach((s,i) => s.classList.toggle('on', i < step));
     };
+  } else if (kind === 'kanban') {
+    const cols = ['待办','进行中','评审','完成'];
+    root.innerHTML = `<h3>${title}</h3><div class="row" style="align-items:stretch;overflow:auto">${cols.map((c,i)=>`<div style="min-width:140px;flex:1;background:#121a2f;border:1px solid #24314f;border-radius:12px;padding:10px"><b style="font-size:12px;color:var(--muted)">${c}</b>${[0,1,2].slice(0,3-i||1).map(j=>`<div class="tag on" style="display:block;margin-top:8px;cursor:grab">卡片 ${i+1}-${j+1}</div>`).join('')}</div>`).join('')}</div>`;
+  } else if (kind === 'colorpick') {
+    root.innerHTML = `<h3>${title}</h3><div class="row"><input type="color" data-cp value="${c}"/><code data-hex>${c}</code></div><div class="row">${['#818cf8','#22d3ee','#f472b6','#34d399','#fbbf24','#fb923c'].map(h=>`<button class="btn" data-sw="${h}" style="background:${h};border:0;width:28px;height:28px;border-radius:8px"></button>`).join('')}</div><div data-prev style="margin-top:12px;height:80px;border-radius:12px;border:1px solid #24314f;background:${c}"></div>`;
+    const syncPrev = (v) => { root.querySelector('[data-hex]').textContent = v; root.querySelector('[data-prev]').style.background = v; root.style.setProperty('--c', v); };
+    root.querySelector('[data-cp]').oninput = (e) => syncPrev(e.target.value);
+    root.querySelectorAll('[data-sw]').forEach((b) => b.onclick = () => { root.querySelector('[data-cp]').value = b.dataset.sw; syncPrev(b.dataset.sw); });
+  } else if (kind === 'notify') {
+    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-push>推送通知</button><button class="btn" data-clear>清空</button></div><div class="toast-stack" data-stack></div>`;
+    const stack = root.querySelector('[data-stack]');
+    const types = ['信息','成功','警告','错误'];
+    root.querySelector('[data-push]').onclick = () => {
+      const t = document.createElement('div'); t.className = 'toast';
+      t.textContent = types[Math.floor(Math.random()*types.length)] + ' · ' + new Date().toLocaleTimeString();
+      stack.prepend(t); setTimeout(() => t.remove(), 3200);
+    };
+    root.querySelector('[data-clear]').onclick = () => { stack.innerHTML = ''; };
   } else {
     root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
   }
