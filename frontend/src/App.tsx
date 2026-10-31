@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
@@ -27,6 +27,112 @@ function useHealth() {
     return () => { alive = false; clearInterval(id); };
   }, []);
   return health;
+}
+
+
+/** Reliable accordion: animate explicit height (works where grid 0fr/1fr does not). */
+function AccordionPanel({
+  open,
+  label,
+  children,
+}: {
+  open: boolean;
+  label: string;
+  children: ReactNode;
+}) {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const first = useRef(true);
+
+  useLayoutEffect(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner) return;
+
+    const reduce = typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+
+    const setH = (px: number | 'auto') => {
+      outer.style.height = px === 'auto' ? 'auto' : `${Math.max(0, px)}px`;
+    };
+
+    if (first.current) {
+      first.current = false;
+      setH(open ? 'auto' : 0);
+      outer.style.opacity = open ? '1' : '0';
+      outer.dataset.open = open ? '1' : '0';
+      return;
+    }
+
+    if (reduce) {
+      setH(open ? 'auto' : 0);
+      outer.style.opacity = open ? '1' : '0';
+      outer.dataset.open = open ? '1' : '0';
+      return;
+    }
+
+    if (open) {
+      // expand: 0 → scrollHeight → auto
+      const target = inner.scrollHeight;
+      setH(0);
+      outer.style.opacity = '0';
+      // force reflow
+      void outer.offsetHeight;
+      outer.dataset.open = '1';
+      outer.style.opacity = '1';
+      setH(target);
+      const onEnd = (e: TransitionEvent) => {
+        if (e.target !== outer || e.propertyName !== 'height') return;
+        if (outer.dataset.open === '1') setH('auto');
+        outer.removeEventListener('transitionend', onEnd);
+      };
+      outer.addEventListener('transitionend', onEnd);
+      return () => outer.removeEventListener('transitionend', onEnd);
+    }
+
+    // collapse: auto/current → 0
+    const current = inner.scrollHeight;
+    setH(current);
+    void outer.offsetHeight;
+    outer.dataset.open = '0';
+    outer.style.opacity = '0';
+    setH(0);
+  }, [open]);
+
+  // Keep height in sync while open if children grow/shrink (filter, etc.)
+  useEffect(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner || !open) return;
+    const ro = new ResizeObserver(() => {
+      if (outer.dataset.open !== '1') return;
+      if (outer.style.height === 'auto' || outer.style.height === '') return;
+      // only adjust if we are mid-transition with a px height after expand settled as auto
+    });
+    // When already auto, ResizeObserver not needed for height; content flows.
+    // Re-measure if still locked to px (e.g. interrupted).
+    const id = window.setTimeout(() => {
+      if (outer.dataset.open === '1' && outer.style.height !== 'auto') {
+        outer.style.height = 'auto';
+      }
+    }, 360);
+    ro.observe(inner);
+    return () => { ro.disconnect(); window.clearTimeout(id); };
+  }, [open, children]);
+
+  return (
+    <div
+      ref={outerRef}
+      className={`nav-children${open ? ' open' : ''}`}
+      role="group"
+      aria-label={label}
+      aria-hidden={!open}
+    >
+      <div ref={innerRef} className="nav-children-inner">
+        {children}
+      </div>
+    </div>
+  );
 }
 
 function Sidebar({ open, onClose, filter, setFilter }: {
@@ -134,13 +240,7 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                     目录
                   </Link>
                 </div>
-                <div
-                  className={`nav-children${groupOpen ? ' open' : ''}`}
-                  role="group"
-                  aria-label={c.name}
-                  aria-hidden={!groupOpen}
-                >
-                  <div className="nav-children-inner">
+                <AccordionPanel open={groupOpen} label={c.name}>
                     {c.demos.slice(0, q ? 80 : 48).map((d) => {
                       const path = `/${c.key}/${d.slug}`;
                       const on = r === path;
@@ -151,6 +251,7 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                           className={`nav-sub${on ? ' active' : ''}`}
                           title={d.hint || d.desc}
                           tabIndex={groupOpen ? 0 : -1}
+                          onClick={onClose}
                         >
                           <span className="nav-sub-dot" aria-hidden />
                           <span className="nav-sub-title">{d.title}</span>
@@ -159,10 +260,9 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                       );
                     })}
                     {c.demos.length > (q ? 80 : 48) && (
-                      <Link to={`/${c.key}`} className="nav-sub more" tabIndex={groupOpen ? 0 : -1}>查看全部 {c.demos.length} →</Link>
+                      <Link to={`/${c.key}`} className="nav-sub more" tabIndex={groupOpen ? 0 : -1} onClick={onClose}>查看全部 {c.demos.length} →</Link>
                     )}
-                  </div>
-                </div>
+                </AccordionPanel>
               </div>
             );
           })}

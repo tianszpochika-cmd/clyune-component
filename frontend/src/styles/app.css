@@ -635,22 +635,25 @@ html, body, #root {
 .nav-chevron:not(.open) span { display: inline-block; transform: rotate(-90deg); }
 .nav-group { margin-bottom: 2px; }
 .nav-group.route-active > .nav-item-row .nav-item { color: #e8eefc; }
+/* Accordion: JS sets height px↔0; CSS only handles opacity/margins/overflow */
 .nav-children {
-  display: grid;
-  grid-template-rows: 0fr;
+  display: block;
+  overflow: hidden;
+  height: 0;
   opacity: 0;
   margin: 0 0 0 14px;
   padding: 0 0 0 10px;
   border-left: 1px solid transparent;
   transform: translateY(-4px);
   transition:
-    grid-template-rows .3s ease,
+    height .32s cubic-bezier(.4, 0, .2, 1),
     opacity .22s ease,
     margin .28s ease,
     padding .28s ease,
     border-color .22s ease,
     transform .28s ease;
   pointer-events: none;
+  will-change: height, opacity;
 }
 .nav-children-inner {
   overflow: hidden;
@@ -661,13 +664,17 @@ html, body, #root {
 }
 .nav-group.open .nav-children,
 .nav-children.open {
-  grid-template-rows: 1fr;
   opacity: 1;
   margin: 2px 0 8px 14px;
   padding: 4px 0 4px 10px;
   border-left-color: #24314f;
   transform: translateY(0);
   pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-children {
+    transition: none !important;
+  }
 }
 .nav-sub {
   display: flex; align-items: center; gap: 8px;
@@ -760,5 +767,5 @@ html, body, #root {
   border-color: #24314f;
   background: rgba(36, 49, 79, .45);
 }
-/* accordion: height/opacity via grid-template-rows (see .nav-children above) */
+/* accordion: height animated via AccordionPanel (measured px); see .nav-children */
 .nav-chevron-inline { transition: transform .28s ease, color .18s ease; }

@@ -43,6 +43,7 @@ const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'kit-svg': () => import('./demos/kits/kit-svg.js'),
   'kit-ui': () => import('./demos/kits/kit-ui.js'),
   'kit-chart': () => import('./demos/kits/kit-chart.js'),
+  'kit-charts': () => import('./demos/kits/kit-charts.js'),
   'kit-webgl': () => import('./demos/kits/kit-webgl.js'),
   'kit-three': () => import('./demos/kits/kit-three.js'),
   'kit-gsap': () => import('./demos/kits/kit-gsap.js'),
