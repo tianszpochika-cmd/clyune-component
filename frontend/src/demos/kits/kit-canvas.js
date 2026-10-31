@@ -19,7 +19,7 @@ function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'orbits-1';
   const { stage } = bar(host, id, `<button class="btn" data-burst>Burst / Reset</button>`);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);
-  const mouse = { x: 0, y: 0, down: false };
+  const mouse = { x: 0, y: 0, down: false, touched: false };
   const n = parseInt(String(id).split('-').pop(), 10) || 1;
   const parts = id.split('-');
   const kind = parts.slice(0, -1).join('-') || parts[0];
@@ -58,10 +58,15 @@ function mountLegacy(host, opts = {}) {
     }
   };
   let cloth = null;
-  state.onResize = reset;
+  state.onResize = () => {
+    reset();
+    if (!mouse.touched) { mouse.x = (state.w || 400) / 2; mouse.y = (state.h || 300) / 2; }
+  };
   reset();
+  mouse.x = (state.w || 400) / 2;
+  mouse.y = (state.h || 300) / 2;
 
-  const onMove = (e) => { const p = localPoint(canvas, e); mouse.x = p.x; mouse.y = p.y; };
+  const onMove = (e) => { const p = localPoint(canvas, e); mouse.x = p.x; mouse.y = p.y; mouse.touched = true; };
   const onDown = (e) => { mouse.down = true; onMove(e); burst(); };
   const onUp = () => { mouse.down = false; };
   const burst = () => {
@@ -111,6 +116,8 @@ function mountLegacy(host, opts = {}) {
     bolts.push({ pts, life: 1 });
   };
 
+  let idleBolt = 0;
+  let idleRip = 0;
   const stop = loop((dt, t) => {
     const color = liveColor();
     const spd = liveSpd();
@@ -118,6 +125,27 @@ function mountLegacy(host, opts = {}) {
     pwr = spd;
     const { w, h } = state;
     if (!w || !h) return;
+    // Keep interactive demos alive when the pointer has not moved yet
+    if (!mouse.touched) {
+      mouse.x = w * 0.5 + Math.cos(t * 0.9 * spd) * Math.min(w, h) * 0.22;
+      mouse.y = h * 0.5 + Math.sin(t * 1.1 * spd) * Math.min(w, h) * 0.18;
+    }
+    if (kind === 'lightning') {
+      idleBolt += dt;
+      if (idleBolt > 0.55 / Math.max(0.4, spd)) { idleBolt = 0; makeBolt(); }
+    }
+    if (kind === 'ripple-c') {
+      idleRip += dt;
+      if (idleRip > 0.9 / Math.max(0.4, spd)) {
+        idleRip = 0;
+        if (!state._rips) state._rips = [];
+        state._rips.push({
+          x: w * (0.3 + 0.4 * Math.random()),
+          y: h * (0.3 + 0.4 * Math.random()),
+          r: 4, a: 1,
+        });
+      }
+    }
 
     if (kind === 'trail') {
       ctx.fillStyle = 'rgba(6,10,20,0.12)';

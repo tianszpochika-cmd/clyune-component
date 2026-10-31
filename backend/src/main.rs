@@ -11,7 +11,7 @@ use axum::{
     Router,
 };
 use serde_json::Value;
-use std::{net::SocketAddr, path::PathBuf, sync::Arc};
+use std::{net::SocketAddr, path::PathBuf};
 use tower::ServiceExt;
 use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 
@@ -32,9 +32,9 @@ async fn main() -> anyhow::Result<()> {
     let fallback_registry: Value = serde_json::from_str(&raw)?;
     let dist = resolve_dist();
     let index = dist.join("index.html");
-    let index_html = Arc::new(std::fs::read(&index).map_err(|e| {
-        anyhow::anyhow!("failed to read {}: {e}", index.display())
-    })?);
+    if !index.exists() {
+        anyhow::bail!("missing {}", index.display());
+    }
 
     tracing::info!("registry: {}", registry_path.display());
     tracing::info!("static dist: {} (exists={})", dist.display(), dist.exists());
@@ -64,23 +64,26 @@ async fn main() -> anyhow::Result<()> {
         .with_state(state);
 
     // Serve built assets; unknown paths fall back to index.html with HTTP 200 (SPA).
+    // Re-read index.html on every SPA fallback so docker-cp / rsync deploys take effect
+    // without restarting the API (old code cached bytes at boot).
     let dist_for_fallback = dist.clone();
-    let index_html_fb = index_html.clone();
+    let index_path = index.clone();
 
     let app = Router::new()
         .nest("/api", api_router)
         .fallback(move |req: Request<Body>| {
             let dist = dist_for_fallback.clone();
-            let index_html = index_html_fb.clone();
+            let index_path = index_path.clone();
             let svc = ServeDir::new(dist).append_index_html_on_directories(true);
             async move {
                 match svc.oneshot(req).await {
                     Ok(res) if res.status() == StatusCode::NOT_FOUND => {
+                        let bytes = tokio::fs::read(&index_path).await.unwrap_or_default();
                         Response::builder()
                             .status(StatusCode::OK)
                             .header(header::CONTENT_TYPE, "text/html; charset=utf-8")
                             .header(header::CACHE_CONTROL, "no-cache")
-                            .body(Body::from(index_html.as_ref().clone()))
+                            .body(Body::from(bytes))
                             .unwrap()
                     }
                     Ok(res) => res.map(Body::new),
