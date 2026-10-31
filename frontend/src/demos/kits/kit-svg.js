@@ -28,11 +28,10 @@ function mountLegacy(host, opts = {}) {
   if (kind === 'gradient-svg') kind = 'grads';
   if (kind === 'drawtext') kind = 'drawtext';
 
-  const { stage } = bar(host, id, `<button class="btn" data-replay>Replay</button>
-    <label>速度 <input type="range" min="0.4" max="2.5" step="0.1" value="1" data-spd></label>`);
-  const c = hsl(n);
+  const { stage } = bar(host, id, `<button class="btn" data-replay>Replay</button>`);
+  const c = (opts._controls && opts._controls.color) || hsl(n);
   const rm = addStyle(`
-    .ks{position:absolute;inset:0;display:grid;place-items:center;padding:16px;overflow:auto;--c:${c};--spd:1}
+    .ks{position:absolute;inset:0;display:grid;place-items:center;padding:16px;overflow:auto;/* --c inherited from stage */}
     .ks svg{width:min(340px,86%);height:auto;overflow:visible}
     .ks path,.ks polyline,.ks circle,.ks rect,.ks polygon,.ks line,.ks ellipse{fill:none;stroke:var(--c);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
     .ks .fillable{fill:color-mix(in srgb,var(--c) 18%,transparent)}
@@ -62,7 +61,13 @@ function mountLegacy(host, opts = {}) {
   };
 
   let on = false;
-  let spd = 1;
+  let spd = (opts._controls && opts._controls.speed) || 1;
+  const syncSpd = () => {
+    const v = parseFloat(getComputedStyle(host).getPropertyValue('--spd'))
+      || parseFloat(getComputedStyle(stage).getPropertyValue('--spd'))
+      || parseFloat(getComputedStyle(host.parentElement || host).getPropertyValue('--spd'));
+    if (Number.isFinite(v) && v > 0) spd = v;
+  };
 
   const strokeAnim = (el, dur = 1.2) => {
     if (!el || !el.getTotalLength) return;
@@ -106,7 +111,7 @@ function mountLegacy(host, opts = {}) {
         requestAnimationFrame(() => { p.style.transition = `opacity ${0.45/spd}s`; p.style.opacity = '1'; });
         strokeAnim(p, 0.8);
       };
-      host.querySelector('[data-replay]').onclick = go;
+      host.querySelector('[data-replay]').onclick = () => { syncSpd(); go(); };
       setTimeout(go, 250);
     } else if (kind === 'smil') {
       const demos = [
@@ -286,14 +291,12 @@ function mountLegacy(host, opts = {}) {
   };
 
   render();
+  syncSpd();
   host.querySelector('[data-replay]')?.addEventListener('click', () => {
+    syncSpd();
     if (root._cleanup) root._cleanup();
     render();
     setTimeout(() => strokeAnim(root.querySelector('#sp, #mp, path')), 40);
-  });
-  host.querySelector('[data-spd]')?.addEventListener('input', (e) => {
-    spd = parseFloat(e.target.value) || 1;
-    root.style.setProperty('--spd', String(spd));
   });
 
   return () => { if (root._cleanup) root._cleanup(); rm(); host.innerHTML = ''; };

@@ -21,9 +21,9 @@ function mountLegacy(host, opts = {}) {
   const parts = id.split('-');
   const kind = parts.slice(0, -1).join('-') || parts[0];
   const { stage } = bar(host, id);
-  const c = hsl(n);
+  const c = (opts._controls && opts._controls.color) || hsl(n);
   const rm = addStyle(`
-    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);--c:${c}}
+    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);/* --c inherited */}
     .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted,#93a0c0)}
     .ku .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
     .ku input[type=text],.ku input[type=search],.ku input[type=password]{background:#0d1426;border:1px solid #24314f;border-radius:10px;padding:10px 12px;color:var(--text);min-width:200px}

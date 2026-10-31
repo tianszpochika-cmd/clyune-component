@@ -1,10 +1,10 @@
-import { panel, defaultParams, parseVariant } from './_shared.js';
+import { panel, defaultParams, parseVariant, NAMED_COLORS } from './_shared.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 /**
  * Wrap a legacy kit mount(host, { variant }) so it gets preset buttons + param sliders.
  * On preset change, remounts with variant `${family}-${style+1}` (1-based), matching old kits.
- * Color/speed/size applied as CSS vars on stage; optional mapVariant for lab slugs.
+ * Color/speed/size applied as CSS vars on stage + child roots; count remounts.
  */
 export function withControls(host, opts, {
   kitKey,
@@ -14,16 +14,15 @@ export function withControls(host, opts, {
   actions = [{ key: 'reset', label: '重置' }],
   mapVariant, // (family, styleIndex1based) => variant string
   mountLegacy,
-  liveKeys = ['color', 'speed', 'size'],
+  liveKeys = ['color', 'speed', 'size', 'count', 'blur'],
+  remountKeys = ['count'],
 }) {
   const parsed = parseVariant(opts.variant || fallbackVariant, fallbackVariant);
   let family = parsed.family;
-  // lab families in registry use names like particles-lab; presets keyed as kitKey:particles-lab
   const presetKey = `${kitKey}:${opts.variant || family}`;
   const presetKey2 = `${kitKey}:${family}`;
   let presets = FAMILY_PRESETS[presetKey] || FAMILY_PRESETS[presetKey2];
 
-  // If variant was already family without number (new registry), use it
   if (!presets && FAMILY_PRESETS[`${kitKey}:${parsed.raw}`]) {
     family = parsed.raw;
     presets = FAMILY_PRESETS[`${kitKey}:${family}`];
@@ -39,20 +38,42 @@ export function withControls(host, opts, {
     actions,
     presetIndex: parsed.style % presets.length,
     onChange(state, meta) {
+      if (meta.reason === 'preset') {
+        const named = NAMED_COLORS[state.styleName];
+        if (named && paramDefs.some((p) => p.key === 'color')) {
+          state.color = named;
+          ui.set({ color: named });
+        }
+      }
       applyLive(state);
       if (meta.reason === 'preset' || meta.reason === 'action') {
+        remount(state);
+        return;
+      }
+      if (meta.reason === 'param' && remountKeys.includes(meta.key)) {
         remount(state);
       }
     },
   });
 
+  // Seed named color if starting preset maps to one
+  const init = ui.get();
+  const named0 = NAMED_COLORS[init.styleName];
+  if (named0 && paramDefs.some((p) => p.key === 'color')) {
+    ui.set({ color: named0 });
+  }
+
   function applyLive(state) {
     if (!state) return;
-    if (liveKeys.includes('color') && state.color) ui.stage.style.setProperty('--c', state.color);
-    if (liveKeys.includes('speed') && state.speed != null) ui.stage.style.setProperty('--spd', String(state.speed));
-    if (liveKeys.includes('size') && state.size != null) ui.stage.style.setProperty('--sz', String(state.size));
-    if (state.count != null) ui.stage.style.setProperty('--count', String(state.count));
-    if (state.blur != null) ui.stage.style.setProperty('--blur', String(state.blur));
+    const targets = [ui.stage, ...ui.stage.querySelectorAll('.kit-inner, .kit-css, .ks, .ku, .ck, [data-kit-root]')];
+    for (const el of targets) {
+      if (!el || !el.style) continue;
+      if (liveKeys.includes('color') && state.color) el.style.setProperty('--c', state.color);
+      if (liveKeys.includes('speed') && state.speed != null) el.style.setProperty('--spd', String(state.speed));
+      if (liveKeys.includes('size') && state.size != null) el.style.setProperty('--sz', String(state.size));
+      if (liveKeys.includes('count') && state.count != null) el.style.setProperty('--count', String(state.count));
+      if (liveKeys.includes('blur') && state.blur != null) el.style.setProperty('--blur', String(state.blur));
+    }
   }
 
   function remount(state) {

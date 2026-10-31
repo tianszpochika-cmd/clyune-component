@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint } from '../../lib/canvas.js';
 
 /**
  * Interactive control panel for demos.
- * Preset buttons switch style; sliders/toggles live-update params.
+ * Layout: top toolbar (title + preset button-group + actions) | stage | right ops sidebar (sliders/toggles).
  * onChange(state, meta) — meta.reason = 'preset'|'param'|'action'
  */
 export function panel(host, title, {
@@ -13,21 +13,29 @@ export function panel(host, title, {
   onChange,
 } = {}) {
   const wrap = document.createElement('div');
-  wrap.className = 'fx-root';
-  const barEl = document.createElement('div');
-  barEl.className = 'fx-bar demo-controls';
+  wrap.className = 'fx-root fx-layout';
+
+  const main = document.createElement('div');
+  main.className = 'fx-main';
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'fx-toolbar demo-controls';
+
   const stage = document.createElement('div');
   stage.className = 'kit-stage';
-  stage.style.cssText = 'position:absolute;inset:0';
+
+  const ops = document.createElement('aside');
+  ops.className = 'fx-ops';
+  ops.setAttribute('aria-label', '参数面板');
 
   const chip = document.createElement('span');
-  chip.className = 'chip accent';
+  chip.className = 'chip accent fx-title';
   chip.textContent = title;
-  barEl.appendChild(chip);
+  toolbar.appendChild(chip);
 
   const state = {
     style: Math.max(0, Math.min(presetIndex, Math.max(presets.length - 1, 0))),
-    styleName: presets[0] || '默认',
+    styleName: presets[Math.max(0, Math.min(presetIndex, Math.max(presets.length - 1, 0)))] || presets[0] || '默认',
   };
 
   for (const p of params) {
@@ -37,8 +45,11 @@ export function panel(host, title, {
     else if (p.type === 'range') state[p.key] = p.value ?? p.min ?? 0;
   }
 
-  const presetWrap = document.createElement('div');
-  presetWrap.className = 'preset-row';
+  const presetGroup = document.createElement('div');
+  presetGroup.className = 'btn-group preset-group';
+  presetGroup.setAttribute('role', 'group');
+  presetGroup.setAttribute('aria-label', '预设');
+
   if (presets.length > 1) {
     presets.forEach((name, i) => {
       const b = document.createElement('button');
@@ -46,28 +57,64 @@ export function panel(host, title, {
       b.className = 'preset-btn' + (i === state.style ? ' on' : '');
       b.textContent = name;
       b.title = name;
+      b.setAttribute('aria-pressed', i === state.style ? 'true' : 'false');
       b.addEventListener('click', () => {
         state.style = i;
         state.styleName = name;
-        presetWrap.querySelectorAll('.preset-btn').forEach((el, j) => {
-          el.classList.toggle('on', j === i);
-        });
+        syncPresetButtons();
         onChange?.(clone(state), { reason: 'preset', key: 'style' });
       });
-      presetWrap.appendChild(b);
+      presetGroup.appendChild(b);
     });
-    barEl.appendChild(presetWrap);
+    toolbar.appendChild(presetGroup);
   } else if (presets.length === 1) {
     state.styleName = presets[0];
   }
 
+  const actionGroup = document.createElement('div');
+  actionGroup.className = 'btn-group action-group';
+  for (const a of actions) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn action-btn';
+    b.textContent = a.label || a.key;
+    b.dataset.action = a.key;
+    b.addEventListener('click', () => {
+      onChange?.(clone(state), { reason: 'action', key: a.key });
+    });
+    actionGroup.appendChild(b);
+  }
+  if (actions.length) toolbar.appendChild(actionGroup);
+
+  const opsToggle = document.createElement('button');
+  opsToggle.type = 'button';
+  opsToggle.className = 'btn fx-ops-toggle on';
+  opsToggle.textContent = '参数';
+  opsToggle.title = '显示/隐藏参数面板';
+  opsToggle.addEventListener('click', () => {
+    wrap.classList.toggle('ops-collapsed');
+    opsToggle.classList.toggle('on', !wrap.classList.contains('ops-collapsed'));
+  });
+  toolbar.appendChild(opsToggle);
+
+  const opsHead = document.createElement('div');
+  opsHead.className = 'fx-ops-head';
+  opsHead.innerHTML = '<span>参数</span><button type="button" class="fx-ops-close" aria-label="收起">✕</button>';
+  opsHead.querySelector('.fx-ops-close').addEventListener('click', () => {
+    wrap.classList.add('ops-collapsed');
+    opsToggle.classList.remove('on');
+  });
+  ops.appendChild(opsHead);
+
   const paramWrap = document.createElement('div');
-  paramWrap.className = 'param-row';
+  paramWrap.className = 'fx-ops-body param-row';
+
   for (const p of params) {
     const label = document.createElement('label');
-    label.className = 'param';
+    label.className = 'param param-' + (p.type || 'range');
     if (p.type === 'range') {
-      label.innerHTML = `${p.label || p.key} <input type="range" min="${p.min ?? 0}" max="${p.max ?? 1}" step="${p.step ?? 0.1}" value="${state[p.key]}" data-k="${p.key}"><em data-v>${fmt(state[p.key])}</em>`;
+      label.innerHTML = `<span class="param-label">${esc(p.label || p.key)}</span>
+        <div class="param-ctrl"><input type="range" min="${p.min ?? 0}" max="${p.max ?? 1}" step="${p.step ?? 0.1}" value="${state[p.key]}" data-k="${p.key}"><em data-v>${fmt(state[p.key])}</em></div>`;
       const input = label.querySelector('input');
       const em = label.querySelector('[data-v]');
       input.addEventListener('input', () => {
@@ -76,21 +123,27 @@ export function panel(host, title, {
         onChange?.(clone(state), { reason: 'param', key: p.key });
       });
     } else if (p.type === 'color') {
-      label.innerHTML = `${p.label || '颜色'} <input type="color" value="${state[p.key]}" data-k="${p.key}">`;
-      label.querySelector('input').addEventListener('input', (e) => {
+      label.innerHTML = `<span class="param-label">${esc(p.label || '颜色')}</span>
+        <div class="param-ctrl"><input type="color" value="${esc(state[p.key])}" data-k="${p.key}"><code data-v>${esc(state[p.key])}</code></div>`;
+      const input = label.querySelector('input');
+      const code = label.querySelector('[data-v]');
+      input.addEventListener('input', (e) => {
         state[p.key] = e.target.value;
+        code.textContent = state[p.key];
         onChange?.(clone(state), { reason: 'param', key: p.key });
       });
     } else if (p.type === 'select') {
-      const opts = (p.options || []).map((o) => `<option value="${esc(String(o.value))}" ${String(o.value) === String(state[p.key]) ? 'selected' : ''}>${esc(o.label)}</option>`).join('');
-      label.innerHTML = `${p.label || p.key} <select data-k="${p.key}">${opts}</select>`;
+      const optsHtml = (p.options || []).map((o) => `<option value="${esc(String(o.value))}" ${String(o.value) === String(state[p.key]) ? 'selected' : ''}>${esc(o.label)}</option>`).join('');
+      label.innerHTML = `<span class="param-label">${esc(p.label || p.key)}</span>
+        <div class="param-ctrl"><select data-k="${p.key}">${optsHtml}</select></div>`;
       label.querySelector('select').addEventListener('change', (e) => {
         state[p.key] = e.target.value;
         onChange?.(clone(state), { reason: 'param', key: p.key });
       });
     } else if (p.type === 'toggle') {
       label.classList.add('toggle');
-      label.innerHTML = `<input type="checkbox" data-k="${p.key}" ${state[p.key] ? 'checked' : ''}> ${p.label || p.key}`;
+      label.innerHTML = `<span class="param-label">${esc(p.label || p.key)}</span>
+        <div class="param-ctrl"><input type="checkbox" data-k="${p.key}" ${state[p.key] ? 'checked' : ''}></div>`;
       label.querySelector('input').addEventListener('change', (e) => {
         state[p.key] = e.target.checked;
         onChange?.(clone(state), { reason: 'param', key: p.key });
@@ -98,43 +151,70 @@ export function panel(host, title, {
     }
     paramWrap.appendChild(label);
   }
-  if (params.length) barEl.appendChild(paramWrap);
 
-  for (const a of actions) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'btn';
-    b.textContent = a.label || a.key;
-    b.addEventListener('click', () => {
-      onChange?.(clone(state), { reason: 'action', key: a.key });
-    });
-    barEl.appendChild(b);
+  if (params.length) {
+    ops.appendChild(paramWrap);
+  } else {
+    const empty = document.createElement('div');
+    empty.className = 'fx-ops-empty';
+    empty.textContent = '此演示无可调参数';
+    ops.appendChild(empty);
   }
 
-  wrap.appendChild(barEl);
-  wrap.appendChild(stage);
+  if (actions.length) {
+    const opsActions = document.createElement('div');
+    opsActions.className = 'fx-ops-actions btn-group';
+    for (const a of actions) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn';
+      b.textContent = a.label || a.key;
+      b.addEventListener('click', () => {
+        onChange?.(clone(state), { reason: 'action', key: a.key });
+      });
+      opsActions.appendChild(b);
+    }
+    ops.appendChild(opsActions);
+  }
+
+  main.appendChild(toolbar);
+  main.appendChild(stage);
+  wrap.appendChild(main);
+  wrap.appendChild(ops);
   host.appendChild(wrap);
+
+  if (params.length === 0 && actions.length === 0) {
+    wrap.classList.add('ops-collapsed');
+    opsToggle.style.display = 'none';
+  }
+
+  function syncPresetButtons() {
+    presetGroup.querySelectorAll('.preset-btn').forEach((el, j) => {
+      const on = j === state.style;
+      el.classList.toggle('on', on);
+      el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
 
   return {
     wrap,
     stage,
-    bar: barEl,
+    bar: toolbar,
+    ops,
     get: () => clone(state),
     set(patch) {
       Object.assign(state, patch);
       if (typeof patch.style === 'number' && presets.length) {
         state.styleName = presets[state.style] || state.styleName;
-        presetWrap.querySelectorAll('.preset-btn').forEach((el, j) => {
-          el.classList.toggle('on', j === state.style);
-        });
+        syncPresetButtons();
       }
       for (const p of params) {
         const el = paramWrap.querySelector(`[data-k="${p.key}"]`);
         if (!el) continue;
         if (p.type === 'toggle') el.checked = !!state[p.key];
         else el.value = state[p.key];
-        const em = el.parentElement?.querySelector?.('[data-v]');
-        if (em) em.textContent = fmt(state[p.key]);
+        const em = el.closest('.param')?.querySelector?.('[data-v]');
+        if (em) em.textContent = p.type === 'color' ? state[p.key] : fmt(state[p.key]);
       }
     },
     destroy() {
@@ -143,9 +223,31 @@ export function panel(host, title, {
   };
 }
 
+/** Named color presets used by pulse / neon / grad families */
+export const NAMED_COLORS = {
+  '靛紫': '#818cf8',
+  '青绿': '#22d3ee',
+  '玫红': '#f472b6',
+  '琥珀': '#fbbf24',
+  '翠绿': '#34d399',
+  '天蓝': '#38bdf8',
+  '橙': '#fb923c',
+  '品红': '#e879f9',
+  '默认': '#818cf8',
+  '冷色': '#22d3ee',
+  '暖色': '#fb923c',
+  '霓虹': '#e879f9',
+  '日落': '#f472b6',
+  '极光': '#34d399',
+  '绿紫': '#a78bfa',
+  '蓝青': '#22d3ee',
+  '粉橙': '#fb7185',
+  '慢漂': '#34d399',
+};
+
 /** Backward-compatible thin bar. Prefer panel(). Skips outer chrome when already inside withControls. */
 export function bar(host, title, controlsHtml = '') {
-  if (host.classList?.contains('kit-inner') || host.closest?.('.demo-controls') || host.parentElement?.classList?.contains('kit-stage')) {
+  if (host.classList?.contains('kit-inner') || host.closest?.('.demo-controls') || host.parentElement?.classList?.contains('kit-stage') || host.closest?.('.kit-stage')) {
     const stage = document.createElement('div');
     stage.style.cssText = 'position:absolute;inset:0';
     if (controlsHtml) {
@@ -153,7 +255,6 @@ export function bar(host, title, controlsHtml = '') {
       mini.className = 'fx-bar nested-actions';
       mini.innerHTML = controlsHtml;
       host.appendChild(mini);
-      stage.style.top = '44px';
     }
     host.appendChild(stage);
     return { wrap: host, stage, bar: null };
@@ -229,7 +330,7 @@ function fmt(v) {
   return Number.isInteger(v) ? String(v) : v.toFixed(1);
 }
 function esc(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 }
 
 export { addStyle, makeCanvas, loop, localPoint };

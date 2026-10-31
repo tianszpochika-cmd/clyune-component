@@ -1,4 +1,4 @@
-import { addStyle, panel, defaultParams, parseVariant, hsl } from './_shared.js';
+import { addStyle, panel, defaultParams, parseVariant, hsl, NAMED_COLORS } from './_shared.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 const PRESETS = {
@@ -61,6 +61,11 @@ export function mount(host, opts = {}) {
     onChange(state, meta) {
       live = { ...live, ...state };
       if (meta.reason === 'preset') {
+        const named = NAMED_COLORS[state.styleName];
+        if (named) {
+          live.color = named;
+          ui.set({ color: named });
+        }
         remount();
         return;
       }
@@ -233,9 +238,15 @@ export function mount(host, opts = {}) {
 
   function n() { return (live.style || 0) + 1; }
   function applyLive() {
-    root.style.setProperty('--c', live.color || '#818cf8');
-    root.style.setProperty('--spd', String(live.speed || 1));
-    root.style.setProperty('--sz', String(live.size || 1));
+    const c = live.color || '#818cf8';
+    const spd = String(live.speed || 1);
+    const sz = String(live.size || 1);
+    for (const el of [root, ui.stage]) {
+      if (!el) continue;
+      el.style.setProperty('--c', c);
+      el.style.setProperty('--spd', spd);
+      el.style.setProperty('--sz', sz);
+    }
   }
 
   function buildHtml() {
@@ -475,6 +486,11 @@ export function mount(host, opts = {}) {
     else handlers.trigger?.();
   }
 
+  // Seed color from named preset (pulse/grad/neon)
+  {
+    const named = NAMED_COLORS[presets[live.style] || ''];
+    if (named) { live.color = named; ui.set({ color: named }); }
+  }
   remount();
   return () => { disposers.forEach((fn) => { try { fn(); } catch (_) {} }); rmStyle(); ui.destroy(); };
 }

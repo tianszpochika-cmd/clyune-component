@@ -315,71 +315,149 @@ html, body, #root { height: 100%; max-height: 100%; overflow: hidden; }
   .demo-actions { width: 100%; }
 }
 
-/* Demo interactive controls */
-.demo-controls {
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 8px;
-  max-height: 42%;
-  overflow: auto;
-  z-index: 6;
+/* Demo interactive controls — toolbar + right ops sidebar */
+.fx-root.fx-layout {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: row;
+  min-height: 0; background: #060a14;
 }
-.preset-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.fx-main {
+  flex: 1 1 auto; min-width: 0; min-height: 0;
+  display: flex; flex-direction: column; position: relative;
+}
+.fx-toolbar.demo-controls {
+  position: relative; left: auto; top: auto; max-width: none; max-height: none;
+  flex: 0 0 auto; z-index: 6;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, rgba(12,18,36,.96), rgba(10,14,28,.88));
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  overflow: visible;
+}
+.fx-toolbar .fx-title { flex: 0 0 auto; }
+.btn-group {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0;
+  background: rgba(18,26,47,.75);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
   max-width: 100%;
 }
-.preset-btn {
-  background: rgba(18,26,47,.9);
-  border: 1px solid var(--border);
+.btn-group.preset-group {
+  flex: 1 1 220px; min-width: 0;
+  max-height: 76px; overflow: auto;
+  scrollbar-width: thin;
+}
+.btn-group .preset-btn,
+.btn-group .btn {
+  border-radius: 7px;
+  border: 0;
+  background: transparent;
+  margin: 0;
+  box-shadow: none;
+}
+.btn-group .preset-btn {
   color: var(--muted);
-  border-radius: 999px;
   padding: 5px 10px;
   font-size: 12px;
   cursor: pointer;
   transition: .15s;
+  white-space: nowrap;
 }
-.preset-btn:hover { color: var(--text); border-color: #3a4a72; }
-.preset-btn.on {
+.btn-group .preset-btn:hover { color: var(--text); background: rgba(36,49,79,.55); }
+.btn-group .preset-btn.on {
   color: #0b1020;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border-color: transparent;
   font-weight: 700;
 }
-.param-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
+.btn-group.action-group { flex: 0 0 auto; }
+.btn-group.action-group .btn { padding: 5px 10px; }
+.fx-ops-toggle.on {
+  border-color: var(--accent);
+  color: var(--accent);
 }
-.param-row .param {
-  font-size: 12px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.fx-main .kit-stage {
+  position: relative !important;
+  inset: auto !important;
+  flex: 1 1 auto; min-height: 0;
+  --c: #818cf8; --spd: 1; --sz: 1; --count: 40; --blur: 0;
+}
+.fx-ops {
+  flex: 0 0 232px; width: 232px; max-width: 42vw;
+  display: flex; flex-direction: column; min-height: 0;
+  border-left: 1px solid var(--border);
+  background: linear-gradient(180deg, #10182c, #0d1426);
+  z-index: 7;
+}
+.fx-root.ops-collapsed .fx-ops { display: none; }
+.fx-ops-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 8px; font-size: 12px; font-weight: 700;
+  color: var(--text); letter-spacing: .04em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.fx-ops-close {
+  background: transparent; border: 0; color: var(--muted); cursor: pointer;
+  font-size: 14px; line-height: 1; padding: 4px 6px; border-radius: 6px;
+}
+.fx-ops-close:hover { color: var(--text); background: var(--panel-2); }
+.fx-ops-body.param-row {
+  flex: 1 1 auto; min-height: 0; overflow: auto;
+  display: flex; flex-direction: column; flex-wrap: nowrap;
+  gap: 10px; padding: 12px 12px 16px;
+  scrollbar-width: thin;
+}
+.fx-ops-body .param {
+  font-size: 12px; color: var(--muted);
+  display: flex; flex-direction: column; align-items: stretch; gap: 6px;
   background: rgba(18,26,47,.85);
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 8px;
+  border-radius: 10px;
+  padding: 10px 10px 12px;
 }
-.param-row .param em {
-  font-style: normal;
-  min-width: 28px;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
+.fx-ops-body .param-label { color: var(--text); font-weight: 600; font-size: 12px; }
+.fx-ops-body .param-ctrl {
+  display: flex; align-items: center; gap: 8px;
 }
-.param-row .param.toggle { cursor: pointer; }
+.fx-ops-body .param input[type=range] { flex: 1; width: auto; min-width: 0; }
+.fx-ops-body .param em, .fx-ops-body .param code {
+  font-style: normal; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  min-width: 36px; text-align: right; color: var(--text);
+  font-variant-numeric: tabular-nums; font-size: 11px;
+}
+.fx-ops-body .param input[type=color] {
+  width: 42px; height: 32px; border: 1px solid var(--border);
+  border-radius: 8px; padding: 2px; background: #0d1426; cursor: pointer;
+}
+.fx-ops-body .param select {
+  flex: 1; width: 100%; color: var(--text); background: #0d1426;
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 12px;
+}
+.fx-ops-body .param.toggle { cursor: pointer; }
+.fx-ops-body .param.toggle .param-ctrl { justify-content: flex-end; }
+.fx-ops-actions {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 10px 12px 14px; border-top: 1px solid var(--border);
+  background: transparent; border-radius: 0; border-left: 0; border-right: 0; border-bottom: 0;
+}
+.fx-ops-empty { padding: 16px; color: var(--muted); font-size: 12px; }
 .fx-bar.nested-actions {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  left: auto;
-  width: auto;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  z-index: 5;
+  position: absolute; top: 10px; right: 10px; left: auto; width: auto;
+  background: transparent; border: 0; padding: 0; z-index: 5;
+  display: flex; gap: 6px; flex-wrap: wrap; max-width: calc(100% - 24px);
 }
-.kit-stage { --c: #818cf8; --spd: 1; --sz: 1; }
+.kit-stage { --c: #818cf8; --spd: 1; --sz: 1; --count: 40; --blur: 0; }
+
+/* legacy absolute bar still used by non-panel demos */
+.fx-bar:not(.nested-actions):not(.fx-toolbar) {
+  position: absolute; left: 12px; top: 12px; z-index: 3;
+  display: flex; gap: 6px; flex-wrap: wrap; max-width: calc(100% - 24px);
+}
+
+@media (max-width: 860px) {
+  .fx-ops { position: absolute; right: 0; top: 0; bottom: 0; width: min(240px, 78vw); max-width: none;
+    box-shadow: -12px 0 40px rgba(0,0,0,.45); }
+  .fx-root:not(.ops-collapsed) .fx-ops { display: flex; }
+  .btn-group.preset-group { max-height: 64px; }
+}

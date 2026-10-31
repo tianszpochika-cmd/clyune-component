@@ -9,7 +9,7 @@ export function mount(host, opts = {}) {
     title: TITLES[parseVariant(opts.variant||'orbits').family]||'Canvas',
     fallbackVariant: 'orbits',
     params: defaultParams({color:true,speed:true,size:true,count:true}),
-    
+    remountKeys: ['count'],
     mountLegacy,
   });
 }
@@ -17,20 +17,35 @@ export function mount(host, opts = {}) {
 
 function mountLegacy(host, opts = {}) {
   const id = opts.variant || 'orbits-1';
-  const { stage } = bar(host, id, `<button class="btn" data-burst>Burst / Reset</button>
-    <label>强度 <input type="range" min="0.4" max="2" step="0.1" value="1" data-pwr></label>`);
+  const { stage } = bar(host, id, `<button class="btn" data-burst>Burst / Reset</button>`);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);
   const mouse = { x: 0, y: 0, down: false };
   const n = parseInt(String(id).split('-').pop(), 10) || 1;
-  const color = hsl(n, 75, 60);
   const parts = id.split('-');
   const kind = parts.slice(0, -1).join('-') || parts[0];
+  const ctrl = opts._controls || {};
+  const readVar = (name, fallback) => {
+    const v = getComputedStyle(host).getPropertyValue(name).trim()
+      || getComputedStyle(stage).getPropertyValue(name).trim()
+      || getComputedStyle(host.parentElement || host).getPropertyValue(name).trim();
+    return v || fallback;
+  };
+  const liveColor = () => readVar('--c', ctrl.color || hsl(n, 75, 60));
+  const liveSpd = () => {
+    const s = parseFloat(readVar('--spd', ctrl.speed ?? 1));
+    return Number.isFinite(s) && s > 0 ? s : 1;
+  };
+  const liveCount = () => {
+    const c = parseInt(readVar('--count', ctrl.count ?? 40), 10);
+    return Number.isFinite(c) ? c : 40;
+  };
   let pwr = 1;
   let partsArr = [];
   let fieldSeed = n * 97;
 
   const reset = () => {
-    const count = kind === 'sand' ? 400 : kind === 'cloth' ? 0 : 70 + n * 10;
+    const base = liveCount();
+    const count = kind === 'sand' ? Math.max(80, base * 4) : kind === 'cloth' ? 0 : Math.max(10, base + n * 5);
     partsArr = Array.from({ length: count }, (_, i) => ({
       x: rand(0, state.w || 400), y: rand(0, state.h || 300),
       vx: rand(-40, 40), vy: rand(-40, 40),
@@ -78,7 +93,6 @@ function mountLegacy(host, opts = {}) {
   canvas.addEventListener('pointerdown', onDown);
   window.addEventListener('pointerup', onUp);
   host.querySelector('[data-burst]')?.addEventListener('click', burst);
-  host.querySelector('[data-pwr]')?.addEventListener('input', (e) => { pwr = parseFloat(e.target.value) || 1; });
 
   // simple hash noise
   const noise = (x, y) => {
@@ -103,6 +117,9 @@ function mountLegacy(host, opts = {}) {
   };
 
   const stop = loop((dt, t) => {
+    const color = liveColor();
+    const spd = liveSpd();
+    pwr = spd;
     const { w, h } = state;
     if (!w || !h) return;
 
