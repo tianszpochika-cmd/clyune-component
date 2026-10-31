@@ -1,20 +1,30 @@
 import { addStyle, bar, defaultParams, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const FAMILIES = ["typewriter", "glitch", "gradient", "outline", "split-fall", "bounce-in", "blur-clear", "mirror", "wave-text", "perspective", "neon-text", "scramble", "counter", "decode", "ribbon", "handwrite", "karaoke", "vertical", "pageflip", "liquid", "pixel", "smoke", "magnetic", "rainbow"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'typewriter').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'typewriter';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-text',
-    title: '文字特效实验室',
-    fallbackVariant: 'text-lab',
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, size: true }),
-    mapVariant: (_family, n) => `t-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 't-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'typewriter-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id, `<button class="btn" data-replay>Replay</button>`);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

@@ -3,23 +3,38 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { cdn, loadScript } from '../../lib/load.js';
 
-const SCENE_PRESETS = ['晶格','环带','星云球','多立方','螺旋柱','玻璃球','线框球','Instanced','起伏面','点云环','光柱','反射地板'];
+const FAMILIES = ["lattice", "torus", "nebula", "polycubes", "helix", "glass", "wire", "instanced", "terrain-3", "ringcloud", "pillar", "mirror-floor", "knots", "orbit-moons"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'lattice').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'lattice';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-three',
-    title: 'Three 场景实验室',
-    fallbackVariant: 'scene',
-    presets: SCENE_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({color:true,speed:true,size:true}),
-    mapVariant: (_family, n) => `scene-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 
+
 async function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'scene-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'lattice-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    for (let i = partsId.length - 1; i >= 1; i--) {
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) { family = cand; break; }
+    }
+  }
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
@@ -35,7 +50,7 @@ async function mountLegacy(host, opts = {}) {
   const dir = new THREE.DirectionalLight(0xffffff, 1.1); dir.position.set(3, 5, 2); scene.add(dir);
   const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(((n * 47) % 360) / 360, 0.7, 0.55), metalness: 0.35, roughness: 0.35 });
   let mesh;
-  const kind = (n - 1) % 12;
+  const kind = (n - 1) % FAMILIES.length;
   if (kind === 0) {
     const g = new THREE.Group();
     for (let i = 0; i < 27; i++) {
@@ -72,7 +87,17 @@ async function mountLegacy(host, opts = {}) {
     g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     mesh = new THREE.Points(g, new THREE.PointsMaterial({ color: mat.color, size: 0.04 }));
   } else if (kind === 10) mesh = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.35, 2.4, 24), mat);
-  else {
+  else if (kind === 12) {
+    mesh = new THREE.Mesh(new THREE.TorusKnotGeometry(0.7, 0.22, 128, 16), mat);
+  } else if (kind === 13) {
+    mesh = new THREE.Group();
+    mesh.add(new THREE.Mesh(new THREE.SphereGeometry(0.45, 32, 32), mat));
+    for (let i = 0; i < 3; i++) {
+      const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), mat.clone());
+      m.position.set(Math.cos(i * 2.1) * 1.3, Math.sin(i) * 0.2, Math.sin(i * 2.1) * 1.3);
+      mesh.add(m);
+    }
+  } else {
     mesh = new THREE.Group();
     const floor = new THREE.Mesh(new THREE.CircleGeometry(2.2, 48), new THREE.MeshStandardMaterial({ color: 0x1a2440, metalness: 0.8, roughness: 0.2 }));
     floor.rotation.x = -Math.PI / 2; floor.position.y = -1; mesh.add(floor);

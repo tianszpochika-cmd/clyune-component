@@ -3,23 +3,36 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
-const VIZ_PRESETS = ['柱状频谱','圆形波','条形均衡','粒子随音','示波器','极坐标','瀑布图','节拍脉冲','和弦板','噪声垫','鼓机垫'];
+const FAMILIES = ["bars", "circle-wave", "eq", "part-audio", "scope", "polar", "waterfall", "beat", "chord", "noise-pad", "drum"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'bars').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'bars';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-audio',
-    presets: VIZ_PRESETS,
-    mapVariant: (_f, n) => `viz-${n}`,
-    title: '音频视觉实验室',
-    fallbackVariant: 'viz',
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({color:true,speed:true}),
-    
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'viz-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'bars-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {{
+    for (let i = partsId.length - 1; i >= 1; i--) {{
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) {{ family = cand; break; }}
+    }}
+  }}
+  if (!FAMILIES.includes(family)) {{
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }}
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id, `<button class="btn" data-play>Play tone</button><button class="btn" data-stop>Stop</button>`);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

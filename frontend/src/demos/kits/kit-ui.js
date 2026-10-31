@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultP
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
-const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效',kanban:'看板',colorpick:'取色器',notify:'通知中心'};
+const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效',kanban:'看板',colorpick:'取色器',notify:'通知中心',command:'命令面板',pagination:'分页器',breadcrumb:'面包屑',rating:'评分星',empty:'空状态',banner:'顶栏横幅'};
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-ui',
@@ -264,6 +264,41 @@ function mountLegacy(host, opts = {}) {
       stack.prepend(t); setTimeout(() => t.remove(), 3200);
     };
     root.querySelector('[data-clear]').onclick = () => { stack.innerHTML = ''; };
+  } else if (kind === 'command') {
+    root.innerHTML = `<h3>${title}</h3><div style="width:min(420px,95%);background:#121a2f;border:1px solid #24314f;border-radius:14px;overflow:hidden">
+      <input type="search" placeholder="搜索命令…" style="width:100%;box-sizing:border-box;border:0;border-bottom:1px solid #24314f;border-radius:0;padding:12px 14px" data-q/>
+      <div data-list>${['打开文件','切换主题','导出 JSON','新建演示','复制链接','设置'].map((x,i)=>`<div class="tag" style="display:block;margin:0;border-radius:0;border:0;border-bottom:1px solid #1a2440;padding:10px 14px">${x}<span style="float:right;opacity:.45;font-size:11px">⌘${i+1}</span></div>`).join('')}</div></div>`;
+    const list = root.querySelector('[data-list]');
+    root.querySelector('[data-q]').oninput = (e) => {
+      const q = e.target.value.trim();
+      [...list.children].forEach((el) => { el.style.display = !q || el.textContent.includes(q) ? '' : 'none'; });
+    };
+  } else if (kind === 'pagination') {
+    root.innerHTML = `<h3>${title}</h3><div class="row" data-pg>${[1,2,3,'…',8,9].map((x)=>`<button class="btn ${x===1?'on':''}" data-p="${x}" style="${x===1?'border-color:var(--c)':''}">${x}</button>`).join('')}</div>`;
+    root.querySelectorAll('[data-p]').forEach((b) => b.onclick = () => {
+      if (b.dataset.p === '…') return;
+      root.querySelectorAll('[data-p]').forEach((x) => { x.classList.remove('on'); x.style.borderColor=''; });
+      b.classList.add('on'); b.style.borderColor='var(--c)';
+    });
+  } else if (kind === 'breadcrumb') {
+    root.innerHTML = `<h3>${title}</h3><div class="row" style="gap:6px;color:var(--muted);font-size:13px"><a href="#" style="color:var(--c)">首页</a><span>/</span><a href="#" style="color:var(--c)">组件</a><span>/</span><a href="#" style="color:var(--c)">UI</a><span>/</span><b style="color:#e8eefc">当前页</b></div>`;
+  } else if (kind === 'rating') {
+    root.innerHTML = `<h3>${title}</h3><div class="stars" data-stars>${[1,2,3,4,5].map(i=>`<span data-s="${i}">★</span>`).join('')}</div><div style="margin-top:8px;color:var(--muted);font-size:12px" data-lab>0 / 5</div>`;
+    const stars = root.querySelector('[data-stars]');
+    const lab = root.querySelector('[data-lab]');
+    const paint = (n) => { stars.querySelectorAll('span').forEach((s) => s.classList.toggle('on', +s.dataset.s <= n)); lab.textContent = `${n} / 5`; };
+    stars.querySelectorAll('span').forEach((s) => s.onclick = () => paint(+s.dataset.s));
+  } else if (kind === 'empty') {
+    root.innerHTML = `<h3>${title}</h3><div style="text-align:center;padding:28px;border:1px dashed #24314f;border-radius:16px;max-width:360px">
+      <div style="font-size:42px;margin-bottom:8px">📭</div>
+      <b>暂无数据</b>
+      <p style="color:var(--muted);font-size:13px;margin:8px 0 14px">创建或筛选后这里会显示结果</p>
+      <button class="btn">新建一条</button></div>`;
+  } else if (kind === 'banner') {
+    root.innerHTML = `<h3>${title}</h3><div data-ban style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--c) 22%,#18233d);border:1px solid var(--c);width:min(480px,95%)">
+      <span style="flex:1;font-size:13px">系统将于今晚 23:00 维护，请提前保存。</span>
+      <button class="btn" data-x style="padding:4px 10px">关闭</button></div>`;
+    root.querySelector('[data-x]').onclick = () => { root.querySelector('[data-ban]').style.display='none'; };
   } else {
     root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
   }

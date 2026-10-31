@@ -1,27 +1,40 @@
 import { addStyle, bar, hsl, defaultParams, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 
-const FILTER_PRESETS = ['模糊','亮度','对比','饱和','色相旋转','反相','灰度','褐色','投影','组合霓虹','毛玻璃背板','混合叠加','排除混合','彩色闪烁','像素感','锐化模拟','暗角','发光描边','双色调','故障抖动'];
-const BLEND_PRESETS = ['screen','multiply','overlay','difference','exclusion','color-dodge','hard-light','soft-light','lighten','darken','color','hue','saturation','luminosity','plus-lighter','正常对比'];
+const FAMILIES = ["blur", "brightness", "contrast", "saturate", "hue", "invert", "grayscale", "sepia", "drop-shadow", "neon-combo", "glass", "duotone", "glitch-f", "vignette", "glow-edge", "backdrop"];
 export function mount(host, opts = {}) {
-  const family = (opts.variant || 'filter-lab').startsWith('blend') ? 'blend-lab' : 'filter-lab';
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'blur').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'blur';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-filters',
-    title: family === 'blend-lab' ? '混合模式实验室' : '滤镜实验室',
-    fallbackVariant: family,
-    presets: family === 'blend-lab' ? BLEND_PRESETS : FILTER_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, blur: true }),
     remountKeys: [],
     liveKeys: ['color', 'speed', 'blur'],
-    mapVariant: (_family, n) => family === 'blend-lab' ? `blend-${n}` : `f-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
+
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'f-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
-  const isBlend = String(id).startsWith('blend');
+  const id = opts.variant || 'blur-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    for (let i = partsId.length - 1; i >= 1; i--) {
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) { family = cand; break; }
+    }
+  }
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
+  const isBlend = false;
   const ctrl = opts._controls || {};
   const { stage } = bar(host, id);
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

@@ -621,6 +621,34 @@ function renderExtra(family, name, { cols, gap, items, accent, ctrl }) {
   if (family === 'layers') {
     return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="overlap"><div class="stack">${[0,1,2,3].map((i)=>`<div class="cell" style="background:${pastelPair(i,accent)};transform:translate(${i*18}px,${i*14}px) rotate(${i*2-3}deg);width:${70-i*4}%;z-index:${4-i}">Layer ${i+1}</div>`).join('')}</div></div></div>`;
   }
+  if (family === 'bento') {
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="g" style="gap:${gap}px;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(64px,auto);min-height:280px">
+      <div class="cell" style="grid-column:span 2;grid-row:span 2;background:${pastelPair(0,accent)};min-height:140px">Hero</div>
+      ${[1,2,3,4,5].map((i)=>`<div class="cell" style="background:${pastelPair(i,accent)};grid-column:span ${i===3?2:1}">B${i}</div>`).join('')}
+    </div></div>`;
+  }
+  if (family === 'holy') {
+    const side = name.includes('窄') ? 120 : name.includes('宽') ? 220 : 160;
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="holy" style="gap:${gap}px;grid-template-columns:${side}px 1fr ${Math.max(100, side-40)}px">
+      <div class="cell" style="grid-column:1/-1;background:${pastelPair(0,accent)};min-height:${name.includes('矮')?36:56}px">Header</div>
+      <div class="cell" style="background:${pastelPair(1,accent)}">Nav</div>
+      <div class="cell" style="background:${pastelPair(2,accent)};min-height:160px">Main</div>
+      <div class="cell" style="background:${pastelPair(3,accent)}">Aside</div>
+      <div class="cell" style="grid-column:1/-1;background:${pastelPair(4,accent)};min-height:40px">Footer</div>
+    </div></div>`;
+  }
+  if (family === 'aspect') {
+    const ar = name.includes('1:1') ? '1/1' : name.includes('4:3') ? '4/3' : name.includes('21:9') ? '21/9' : '16/9';
+    return `<div class="kl-meta"><span class="chip">${name}<em>${ar}</em></span></div><div class="board"><div class="g" style="gap:${gap}px;grid-template-columns:repeat(${Math.max(2,Math.min(4,cols))},1fr)">${Array.from({length:Math.max(4,cols)},(_,i)=>`<div class="cell" style="background:${pastelPair(i,accent)};aspect-ratio:${ar};min-height:0">AR ${i+1}</div>`).join('')}</div></div>`;
+  }
+  if (family === 'overlap') {
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board" style="display:grid;place-items:center;min-height:280px"><div style="position:relative;width:min(360px,90%);height:200px">
+      ${[0,1,2].map((i)=>`<div class="cell" style="position:absolute;left:${i*36}px;top:${i*28}px;width:70%;height:120px;background:${pastelPair(i,accent)};z-index:${i+1};box-shadow:0 12px 30px rgba(0,0,0,.25)">Card ${i+1}</div>`).join('')}
+    </div></div>`;
+  }
+  if (family === 'subgrid') {
+    return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div class="subgrid-like" style="gap:${gap}px">${[0,1].map((p)=>`<div class="panel">${[0,1,2,3].map((i)=>`<div class="cell" style="background:${pastelPair(p*4+i,accent)};min-height:56px">P${p+1}-${i+1}</div>`).join('')}</div>`).join('')}</div></div>`;
+  }
   // container
   return `<div class="kl-meta"><span class="chip">${name}</span></div><div class="board"><div style="container-type:inline-size;border:1px dashed #2a3858;border-radius:12px;padding:12px">
     <div class="g" style="gap:${gap}px;grid-template-columns:1fr;@media ignored">${cells.slice(0, Math.max(3, cols)).map((html,i)=>html.replace('class="cell','class="cell')).join('')}</div>

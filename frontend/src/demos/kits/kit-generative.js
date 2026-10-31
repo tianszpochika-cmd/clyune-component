@@ -1,21 +1,32 @@
 import { makeCanvas, loop, bar, hsl, defaultParams, readLiveControls, colorToRgb, rand } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const FAMILIES = ["flowfield", "julia", "mandelbrot", "gol", "voronoi", "tree", "sierpinski", "circles", "terrain", "walk", "lsystem", "interfere", "diffuse", "mosaic", "polar-flower", "tri", "subdiv", "contour", "inkdrop", "fiber", "pixelsort", "cellgrow", "gravline", "spiral-gen"];
+const TITLES = Object.fromEntries(FAMILIES.map((f,i)=>[f,['流场','Julia','Mandelbrot','生命游戏','Voronoi','递归树','Sierpinski','圆填充','地形','游走','L-System','干涉','扩散','马赛克','极座花','三角','细分','等高','墨滴','光纤','像素序','细胞','引力线','螺旋'][i]||f]));
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'flowfield').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'flowfield';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-generative',
-    title: '生成艺术实验室',
-    fallbackVariant: 'gen-lab',
+    title: TITLES[fam] || '生成艺术',
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, count: true }),
     remountKeys: ['count'],
-    mapVariant: (_family, n) => `g-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'g-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'flowfield-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const ctrl = opts._controls || {};
   const { stage } = bar(host, id, `<button class="btn" data-regen>Regenerate</button>`);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);

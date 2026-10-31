@@ -82,27 +82,255 @@
           "presets": []
         },
         {
-          "slug": "scene",
-          "title": "Three 场景实验室",
-          "hint": "顶部切换场景 · 调颜色/速度",
-          "desc": "晶格/环带/玻璃/Instanced 等场景合集。",
+          "slug": "lattice",
+          "title": "晶格",
+          "hint": "3x3x3 晶格",
+          "desc": "立方晶格",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
-          "variant": "scene",
+          "variant": "lattice",
           "presets": [
-            "晶格",
-            "环带",
-            "星云球",
-            "多立方",
-            "螺旋柱",
-            "玻璃球",
-            "线框球",
-            "Instanced",
-            "起伏面",
-            "点云环",
-            "光柱",
-            "反射地板"
+            "疏",
+            "密",
+            "快转",
+            "慢转",
+            "金属",
+            "哑光"
+          ]
+        },
+        {
+          "slug": "torus",
+          "title": "环带",
+          "hint": "Torus",
+          "desc": "环带",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "torus",
+          "presets": [
+            "细管",
+            "粗管",
+            "快",
+            "慢",
+            "金属",
+            "玻璃感"
+          ]
+        },
+        {
+          "slug": "nebula",
+          "title": "星云球",
+          "hint": "点球面",
+          "desc": "星云球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "nebula",
+          "presets": [
+            "密点",
+            "疏点",
+            "大点",
+            "小点",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "polycubes",
+          "title": "多立方",
+          "hint": "环绕立方",
+          "desc": "多立方",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "polycubes",
+          "presets": [
+            "少",
+            "多",
+            "快",
+            "慢",
+            "金属",
+            "哑光"
+          ]
+        },
+        {
+          "slug": "helix",
+          "title": "螺旋柱",
+          "hint": "螺旋导管",
+          "desc": "螺旋柱",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "helix",
+          "presets": [
+            "紧螺",
+            "松螺",
+            "细管",
+            "粗管",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "glass",
+          "title": "玻璃球",
+          "hint": "透射球",
+          "desc": "玻璃球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "glass",
+          "presets": [
+            "高透",
+            "低透",
+            "大",
+            "小",
+            "快转",
+            "慢转"
+          ]
+        },
+        {
+          "slug": "wire",
+          "title": "线框球",
+          "hint": "Icosahedron 线框",
+          "desc": "线框球",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "wire",
+          "presets": [
+            "细线",
+            "密线",
+            "快",
+            "慢",
+            "亮",
+            "暗"
+          ]
+        },
+        {
+          "slug": "instanced",
+          "title": "Instanced",
+          "hint": "实例化方块",
+          "desc": "Instanced Mesh",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "instanced",
+          "presets": [
+            "少",
+            "多",
+            "散布",
+            "聚拢",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "terrain-3",
+          "title": "起伏面",
+          "hint": "顶点起伏",
+          "desc": "起伏面",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "terrain-3",
+          "presets": [
+            "高波",
+            "低波",
+            "密网",
+            "疏网",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "ringcloud",
+          "title": "点云环",
+          "hint": "环状点云",
+          "desc": "点云环",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "ringcloud",
+          "presets": [
+            "密",
+            "疏",
+            "厚环",
+            "薄环",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "pillar",
+          "title": "光柱",
+          "hint": "圆柱光柱",
+          "desc": "光柱",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "pillar",
+          "presets": [
+            "细柱",
+            "粗柱",
+            "高",
+            "矮",
+            "快转",
+            "慢转"
+          ]
+        },
+        {
+          "slug": "mirror-floor",
+          "title": "反射地板",
+          "hint": "地板+球",
+          "desc": "反射地板",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "mirror-floor",
+          "presets": [
+            "大球",
+            "小球",
+            "亮地",
+            "暗地",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "knots",
+          "title": "环结",
+          "hint": "TorusKnot 感",
+          "desc": "环结",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "knots",
+          "presets": [
+            "紧",
+            "松",
+            "快",
+            "慢",
+            "金属",
+            "线框感"
+          ]
+        },
+        {
+          "slug": "orbit-moons",
+          "title": "卫星轨道",
+          "hint": "多卫星",
+          "desc": "卫星轨道",
+          "tag": "scene",
+          "mod": "kit-three",
+          "fn": "mount",
+          "variant": "orbit-moons",
+          "presets": [
+            "双星",
+            "三星",
+            "近",
+            "远",
+            "快",
+            "慢"
           ]
         }
       ]
@@ -1165,6 +1393,114 @@
             "自动消失",
             "多类型"
           ]
+        },
+        {
+          "slug": "command",
+          "title": "命令面板",
+          "hint": "⌘K 面板",
+          "desc": "命令面板",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "command",
+          "presets": [
+            "短列表",
+            "长列表",
+            "分组",
+            "搜索感",
+            "暗",
+            "亮点"
+          ]
+        },
+        {
+          "slug": "pagination",
+          "title": "分页器",
+          "hint": "页码分页",
+          "desc": "分页器",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "pagination",
+          "presets": [
+            "少页",
+            "多页",
+            "含省略",
+            "简洁",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "breadcrumb",
+          "title": "面包屑",
+          "hint": "路径面包屑",
+          "desc": "面包屑",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "breadcrumb",
+          "presets": [
+            "三级",
+            "五级",
+            "图标",
+            "纯文",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "rating",
+          "title": "评分星",
+          "hint": "星级评分",
+          "desc": "评分",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "rating",
+          "presets": [
+            "5星",
+            "半星感",
+            "大",
+            "小",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "empty",
+          "title": "空状态",
+          "hint": "空状态插画感",
+          "desc": "空状态",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "empty",
+          "presets": [
+            "无数据",
+            "无网络",
+            "可操作",
+            "纯文",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "banner",
+          "title": "顶栏横幅",
+          "hint": "通知横幅",
+          "desc": "顶栏横幅",
+          "tag": "ui",
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "banner",
+          "presets": [
+            "信息",
+            "成功",
+            "警告",
+            "可关",
+            "彩",
+            "单"
+          ]
         }
       ]
     },
@@ -1748,6 +2084,96 @@
             "闪烁摩斯",
             "多段叙事"
           ]
+        },
+        {
+          "slug": "neumorph",
+          "title": "新拟态",
+          "hint": "Neumorphism",
+          "desc": "新拟态按钮/卡片",
+          "tag": "css",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "neumorph",
+          "presets": [
+            "凸起",
+            "凹陷",
+            "软",
+            "硬",
+            "彩光",
+            "单"
+          ]
+        },
+        {
+          "slug": "cursor-fx",
+          "title": "自定义光标",
+          "hint": "跟随光标",
+          "desc": "自定义光标环",
+          "tag": "css",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "cursor-fx",
+          "presets": [
+            "环",
+            "点",
+            "拖尾",
+            "混合",
+            "大",
+            "小"
+          ]
+        },
+        {
+          "slug": "text-stroke",
+          "title": "文字描边动",
+          "hint": "描边奔跑",
+          "desc": "文字描边",
+          "tag": "css",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "text-stroke",
+          "presets": [
+            "细",
+            "粗",
+            "快",
+            "慢",
+            "霓虹",
+            "单"
+          ]
+        },
+        {
+          "slug": "border-beam",
+          "title": "边框光束",
+          "hint": "旋转边光",
+          "desc": "边框光束",
+          "tag": "css",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "border-beam",
+          "presets": [
+            "快",
+            "慢",
+            "粗光",
+            "细光",
+            "双色",
+            "单色"
+          ]
+        },
+        {
+          "slug": "spotlight",
+          "title": "聚光跟随",
+          "hint": "指针聚光",
+          "desc": "聚光卡片",
+          "tag": "css",
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "spotlight",
+          "presets": [
+            "小光",
+            "大光",
+            "强",
+            "弱",
+            "彩",
+            "白"
+          ]
         }
       ]
     },
@@ -2208,6 +2634,78 @@
             "密",
             "彩虹高"
           ]
+        },
+        {
+          "slug": "metaballs2d",
+          "title": "2D Metaball",
+          "hint": "软体融合",
+          "desc": "2D Metaball",
+          "tag": "canvas",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "metaballs2d",
+          "presets": [
+            "双球",
+            "三球",
+            "软",
+            "硬",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "pixelate",
+          "title": "像素化游标",
+          "hint": "指针像素化",
+          "desc": "像素化",
+          "tag": "canvas",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "pixelate",
+          "presets": [
+            "大像素",
+            "小像素",
+            "强",
+            "弱",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "ascii",
+          "title": "ASCII 艺术",
+          "hint": "字符画",
+          "desc": "ASCII",
+          "tag": "canvas",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "ascii",
+          "presets": [
+            "密字",
+            "疏字",
+            "动",
+            "静",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "ripple-c",
+          "title": "水波纹点击",
+          "hint": "点击涟漪",
+          "desc": "水波纹",
+          "tag": "canvas",
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "ripple-c",
+          "presets": [
+            "单波",
+            "多波",
+            "快",
+            "慢",
+            "强",
+            "弱"
+          ]
         }
       ]
     },
@@ -2499,6 +2997,78 @@
             "描边渐变",
             "文字渐变"
           ]
+        },
+        {
+          "slug": "line-draw",
+          "title": "线条生长",
+          "hint": "路径生长",
+          "desc": "线条生长",
+          "tag": "svg",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "line-draw",
+          "presets": [
+            "快",
+            "慢",
+            "粗",
+            "细",
+            "虚线",
+            "实线"
+          ]
+        },
+        {
+          "slug": "check-morph",
+          "title": "勾选变形",
+          "hint": "形态到勾",
+          "desc": "勾选 Morph",
+          "tag": "svg",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "check-morph",
+          "presets": [
+            "快",
+            "慢",
+            "弹",
+            "线性",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "loader-svg",
+          "title": "SVG 加载弧",
+          "hint": "旋转弧",
+          "desc": "SVG 加载",
+          "tag": "svg",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "loader-svg",
+          "presets": [
+            "细弧",
+            "粗弧",
+            "双弧",
+            "单",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "menu-morph",
+          "title": "菜单变形",
+          "hint": "汉堡变 X",
+          "desc": "菜单 Morph",
+          "tag": "svg",
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "menu-morph",
+          "presets": [
+            "快",
+            "慢",
+            "弹",
+            "线性",
+            "粗",
+            "细"
+          ]
         }
       ]
     },
@@ -2545,27 +3115,219 @@
           "presets": []
         },
         {
-          "slug": "seq",
-          "title": "GSAP 序列实验室",
-          "hint": "顶部切换序列 · 播放/倒放",
-          "desc": "弹跳/交错/打字机/scrub 等时间线合集。",
-          "tag": "seq",
+          "slug": "bounce",
+          "title": "弹跳入场",
+          "hint": "弹跳循环 · Play",
+          "desc": "bounce.out 入场",
+          "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
-          "variant": "seq",
+          "variant": "bounce",
           "presets": [
-            "弹跳入场",
-            "交错卡片",
-            "路径跟随",
-            "旋转出场",
-            "弹性缩放",
-            "颜色闪烁",
-            "翻转牌",
-            "进度环",
-            "打字机",
-            "视差层",
-            "网格交错",
-            "时间轴 scrub"
+            "轻弹",
+            "重弹",
+            "慢",
+            "快",
+            "大",
+            "小"
+          ]
+        },
+        {
+          "slug": "stagger",
+          "title": "交错卡片",
+          "hint": "交错入场",
+          "desc": "stagger 卡片",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "stagger",
+          "presets": [
+            "从左",
+            "从中",
+            "从边",
+            "快",
+            "慢",
+            "回弹"
+          ]
+        },
+        {
+          "slug": "path",
+          "title": "路径跟随",
+          "hint": "折线路径",
+          "desc": "路径位移",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "path",
+          "presets": [
+            "方径",
+            "三角",
+            "8字感",
+            "快",
+            "慢",
+            "平滑"
+          ]
+        },
+        {
+          "slug": "spin-out",
+          "title": "旋转出场",
+          "hint": "旋转缩小",
+          "desc": "旋转出场再入",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "spin-out",
+          "presets": [
+            "180",
+            "360",
+            "快",
+            "慢",
+            "弹性入",
+            "淡入"
+          ]
+        },
+        {
+          "slug": "elastic",
+          "title": "弹性缩放",
+          "hint": "elastic 缩放",
+          "desc": "弹性缩放",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "elastic",
+          "presets": [
+            "轻",
+            "重",
+            "慢",
+            "快",
+            "yoyo",
+            "单次感"
+          ]
+        },
+        {
+          "slug": "colorflash",
+          "title": "颜色闪烁",
+          "hint": "色闪循环",
+          "desc": "颜色关键",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "colorflash",
+          "presets": [
+            "双色",
+            "三色",
+            "快闪",
+            "慢闪",
+            "霓虹",
+            "柔和"
+          ]
+        },
+        {
+          "slug": "flipcard",
+          "title": "翻转牌",
+          "hint": "rotateY 翻牌",
+          "desc": "卡片翻转",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "flipcard",
+          "presets": [
+            "单面",
+            "三牌",
+            "快",
+            "慢",
+            "交错",
+            "同步"
+          ]
+        },
+        {
+          "slug": "ring",
+          "title": "进度环",
+          "hint": "旋转环",
+          "desc": "环形旋转",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "ring",
+          "presets": [
+            "细环",
+            "粗环",
+            "快",
+            "慢",
+            "双环感",
+            "单环"
+          ]
+        },
+        {
+          "slug": "type",
+          "title": "打字机",
+          "hint": "GSAP 打字",
+          "desc": "打字机时间轴",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "type",
+          "presets": [
+            "慢",
+            "中",
+            "快",
+            "删除回放",
+            "仅打出",
+            "循环"
+          ]
+        },
+        {
+          "slug": "parallax-g",
+          "title": "视差层",
+          "hint": "多层位移",
+          "desc": "视差时间轴",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "parallax-g",
+          "presets": [
+            "浅",
+            "深",
+            "三层",
+            "二层",
+            "慢",
+            "快"
+          ]
+        },
+        {
+          "slug": "grid-stagger",
+          "title": "网格交错",
+          "hint": "网格 stagger",
+          "desc": "中心扩散网格",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "grid-stagger",
+          "presets": [
+            "3x4",
+            "快",
+            "慢",
+            "回弹",
+            "淡出",
+            "边缘优先"
+          ]
+        },
+        {
+          "slug": "scrub",
+          "title": "时间轴 scrub",
+          "hint": "拖动进度",
+          "desc": "scrub 时间轴",
+          "tag": "gsap",
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "scrub",
+          "presets": [
+            "位转",
+            "缩放色",
+            "复合",
+            "慢感",
+            "快感",
+            "线性"
           ]
         }
       ]
@@ -2613,36 +3375,381 @@
           "presets": []
         },
         {
-          "slug": "shader-lab",
-          "title": "着色器实验室",
-          "hint": "顶部切换着色器 · 调颜色/速度",
-          "desc": "Voronoi/水面/CRT/Julia/飘雪等片元着色器合集。",
+          "slug": "voronoi",
+          "title": "Voronoi",
+          "hint": "细胞噪声",
+          "desc": "Voronoi 着色",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
-          "variant": "shader-lab",
+          "variant": "voronoi",
           "presets": [
-            "Voronoi",
-            "域扭曲",
-            "螺旋",
-            "棋盘扭曲",
-            "隧道",
-            "涟漪",
-            "星野",
-            "熔岩",
-            "透视网格",
-            "万花筒",
-            "HSV 旋转",
-            "扫描线",
-            "双 Metaball",
-            "体积雾",
-            "流光条纹",
-            "SDF 圆",
-            "水面",
-            "CRT",
-            "Julia",
-            "飘雪",
-            "油画噪声"
+            "经典",
+            "高对比",
+            "柔边",
+            "动核",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "warp",
+          "title": "域扭曲",
+          "hint": "噪声扭曲",
+          "desc": "域扭曲着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "warp",
+          "presets": [
+            "轻扭曲",
+            "重扭曲",
+            "快",
+            "慢",
+            "细噪",
+            "粗噪"
+          ]
+        },
+        {
+          "slug": "spiral",
+          "title": "螺旋",
+          "hint": "极坐标螺旋",
+          "desc": "螺旋着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "spiral",
+          "presets": [
+            "紧",
+            "松",
+            "快转",
+            "慢转",
+            "多臂",
+            "单臂"
+          ]
+        },
+        {
+          "slug": "checker",
+          "title": "棋盘扭曲",
+          "hint": "扭曲棋盘",
+          "desc": "棋盘着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "checker",
+          "presets": [
+            "密格",
+            "疏格",
+            "强扭",
+            "弱扭",
+            "高对比",
+            "柔"
+          ]
+        },
+        {
+          "slug": "tunnel",
+          "title": "隧道",
+          "hint": "隧道穿梭",
+          "desc": "隧道着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "tunnel",
+          "presets": [
+            "快",
+            "慢",
+            "密环",
+            "疏环",
+            "霓虹",
+            "暗"
+          ]
+        },
+        {
+          "slug": "ripple",
+          "title": "涟漪",
+          "hint": "鼠标涟漪",
+          "desc": "涟漪着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "ripple",
+          "presets": [
+            "密波",
+            "疏波",
+            "强",
+            "弱",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "stars",
+          "title": "星野",
+          "hint": "分形星野",
+          "desc": "星野着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "stars",
+          "presets": [
+            "密星",
+            "疏星",
+            "亮",
+            "暗",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "lava",
+          "title": "熔岩",
+          "hint": "熔岩噪声",
+          "desc": "熔岩着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "lava",
+          "presets": [
+            "炽热",
+            "暗岩",
+            "快涌",
+            "慢涌",
+            "高对比",
+            "柔"
+          ]
+        },
+        {
+          "slug": "grid3d",
+          "title": "透视网格",
+          "hint": "地平网格",
+          "desc": "透视网格",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "grid3d",
+          "presets": [
+            "密",
+            "疏",
+            "快",
+            "慢",
+            "霓虹",
+            "暗"
+          ]
+        },
+        {
+          "slug": "kaleido",
+          "title": "万花筒",
+          "hint": "万花筒对称",
+          "desc": "万花筒",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "kaleido",
+          "presets": [
+            "4瓣",
+            "8瓣",
+            "快",
+            "慢",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "hsv",
+          "title": "HSV 旋转",
+          "hint": "色相轮",
+          "desc": "HSV 着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "hsv",
+          "presets": [
+            "全轮",
+            "半轮",
+            "快转",
+            "慢转",
+            "饱和",
+            "淡"
+          ]
+        },
+        {
+          "slug": "scan",
+          "title": "扫描线",
+          "hint": "CRT 扫描",
+          "desc": "扫描着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "scan",
+          "presets": [
+            "密线",
+            "疏线",
+            "绿幕",
+            "霓虹",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "metaball",
+          "title": "双 Metaball",
+          "hint": "双球融合",
+          "desc": "Metaball",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "metaball",
+          "presets": [
+            "近",
+            "远",
+            "快",
+            "慢",
+            "高亮",
+            "柔"
+          ]
+        },
+        {
+          "slug": "fog",
+          "title": "体积雾",
+          "hint": "层叠雾",
+          "desc": "体积雾",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "fog",
+          "presets": [
+            "浓",
+            "淡",
+            "快飘",
+            "慢飘",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "stripes",
+          "title": "流光条纹",
+          "hint": "斜向条纹",
+          "desc": "流光条纹",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "stripes",
+          "presets": [
+            "密",
+            "疏",
+            "快",
+            "慢",
+            "霓虹",
+            "柔"
+          ]
+        },
+        {
+          "slug": "circle-sdf",
+          "title": "SDF 圆",
+          "hint": "距离场圆",
+          "desc": "SDF 圆",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "circle-sdf",
+          "presets": [
+            "细环",
+            "粗环",
+            "双环",
+            "鼠标跟",
+            "亮",
+            "暗"
+          ]
+        },
+        {
+          "slug": "water",
+          "title": "水面",
+          "hint": "多层水面",
+          "desc": "水面着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "water",
+          "presets": [
+            "静水",
+            "涌浪",
+            "快",
+            "慢",
+            "清",
+            "浊"
+          ]
+        },
+        {
+          "slug": "crt",
+          "title": "CRT",
+          "hint": "CRT 效果",
+          "desc": "CRT 着色",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "crt",
+          "presets": [
+            "强扫描",
+            "弱扫描",
+            "强暗角",
+            "弱暗角",
+            "绿",
+            "彩"
+          ]
+        },
+        {
+          "slug": "julia-sh",
+          "title": "Julia",
+          "hint": "Julia 着色器",
+          "desc": "Julia 集",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "julia-sh",
+          "presets": [
+            "经典",
+            "旋动",
+            "深",
+            "浅",
+            "火",
+            "冰"
+          ]
+        },
+        {
+          "slug": "snow-sh",
+          "title": "飘雪",
+          "hint": "着色器雪",
+          "desc": "飘雪",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "snow-sh",
+          "presets": [
+            "细雪",
+            "密雪",
+            "慢",
+            "快",
+            "大片",
+            "小片"
+          ]
+        },
+        {
+          "slug": "oil",
+          "title": "油画噪声",
+          "hint": "油画感",
+          "desc": "油画噪声",
+          "tag": "shader",
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "oil",
+          "presets": [
+            "粗笔",
+            "细笔",
+            "快",
+            "慢",
+            "彩",
+            "暗"
           ]
         }
       ]
@@ -2689,25 +3796,219 @@
           "presets": []
         },
         {
-          "slug": "sim",
-          "title": "物理模拟实验室",
-          "hint": "顶部切换模拟 · 调数量/颜色",
-          "desc": "弹球/弹簧/摆锤/台球等轻量物理合集。",
+          "slug": "wall-ball",
+          "title": "弹球墙",
+          "hint": "重力弹球",
+          "desc": "弹球墙碰撞",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
-          "variant": "sim",
+          "variant": "wall-ball",
           "presets": [
-            "弹球墙",
-            "多重力",
-            "弹簧链",
-            "碰撞盒",
-            "漂浮气泡",
-            "摆锤",
-            "沙漏粒子",
-            "磁力点",
-            "弹性绳",
-            "台球"
+            "少球",
+            "多球",
+            "大",
+            "小",
+            "高弹",
+            "低弹"
+          ]
+        },
+        {
+          "slug": "multigrav",
+          "title": "多重力",
+          "hint": "可变重力",
+          "desc": "多重力场",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "multigrav",
+          "presets": [
+            "无重力",
+            "反重力",
+            "低g",
+            "高g",
+            "侧向",
+            "混沌"
+          ]
+        },
+        {
+          "slug": "spring",
+          "title": "弹簧链",
+          "hint": "弹簧拉拽",
+          "desc": "弹簧链",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "spring",
+          "presets": [
+            "软簧",
+            "硬簧",
+            "少点",
+            "多点",
+            "鼠标拉",
+            "静"
+          ]
+        },
+        {
+          "slug": "box-collide",
+          "title": "碰撞盒",
+          "hint": "盒体碰撞",
+          "desc": "碰撞盒",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "box-collide",
+          "presets": [
+            "少",
+            "多",
+            "大",
+            "小",
+            "高弹",
+            "粘滞"
+          ]
+        },
+        {
+          "slug": "bubbles",
+          "title": "漂浮气泡",
+          "hint": "上浮气泡",
+          "desc": "漂浮气泡",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "bubbles",
+          "presets": [
+            "少",
+            "多",
+            "大",
+            "小",
+            "慢升",
+            "快升"
+          ]
+        },
+        {
+          "slug": "pendulum",
+          "title": "摆锤",
+          "hint": "单摆感",
+          "desc": "摆锤",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "pendulum",
+          "presets": [
+            "长臂",
+            "短臂",
+            "重锤",
+            "轻锤",
+            "阻尼大",
+            "阻尼小"
+          ]
+        },
+        {
+          "slug": "hourglass",
+          "title": "沙漏粒子",
+          "hint": "沙漏下落",
+          "desc": "沙漏粒子",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "hourglass",
+          "presets": [
+            "细沙",
+            "粗沙",
+            "快漏",
+            "慢漏",
+            "密",
+            "疏"
+          ]
+        },
+        {
+          "slug": "magnet",
+          "title": "磁力点",
+          "hint": "鼠标磁力",
+          "desc": "磁力点",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "magnet",
+          "presets": [
+            "弱磁",
+            "强磁",
+            "斥力",
+            "吸力",
+            "多点",
+            "少点"
+          ]
+        },
+        {
+          "slug": "rope",
+          "title": "弹性绳",
+          "hint": "中心弹性绳",
+          "desc": "弹性绳",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "rope",
+          "presets": [
+            "软",
+            "硬",
+            "多节",
+            "少节",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "billiard",
+          "title": "台球",
+          "hint": "台球碰撞",
+          "desc": "台球",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "billiard",
+          "presets": [
+            "少球",
+            "多球",
+            "大",
+            "小",
+            "高摩擦",
+            "低摩擦"
+          ]
+        },
+        {
+          "slug": "orbit-p",
+          "title": "轨道物理",
+          "hint": "圆周轨道",
+          "desc": "轨道物理",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "orbit-p",
+          "presets": [
+            "近轨",
+            "远轨",
+            "快",
+            "慢",
+            "椭圆感",
+            "圆"
+          ]
+        },
+        {
+          "slug": "softbody",
+          "title": "软体感",
+          "hint": "软体挤压",
+          "desc": "软体球",
+          "tag": "sim",
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "softbody",
+          "presets": [
+            "软",
+            "硬",
+            "大",
+            "小",
+            "多",
+            "少"
           ]
         }
       ]
@@ -2745,26 +4046,201 @@
           "presets": []
         },
         {
-          "slug": "viz",
-          "title": "音频视觉实验室",
-          "hint": "顶部切换视觉 · 点击播放",
-          "desc": "频谱/示波/极坐标/鼓机等可视化合集。",
-          "tag": "viz",
+          "slug": "bars",
+          "title": "柱状频谱",
+          "hint": "Play tone · 柱状",
+          "desc": "柱状频谱",
+          "tag": "audio",
           "mod": "kit-audio",
           "fn": "mount",
-          "variant": "viz",
+          "variant": "bars",
           "presets": [
-            "柱状频谱",
-            "圆形波",
-            "条形均衡",
-            "粒子随音",
-            "示波器",
-            "极坐标",
-            "瀑布图",
-            "节拍脉冲",
-            "和弦板",
-            "噪声垫",
-            "鼓机垫"
+            "细柱",
+            "粗柱",
+            "密",
+            "疏",
+            "霓虹",
+            "柔"
+          ]
+        },
+        {
+          "slug": "circle-wave",
+          "title": "圆形波",
+          "hint": "圆形频谱",
+          "desc": "圆形波",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "circle-wave",
+          "presets": [
+            "细线",
+            "粗线",
+            "多环感",
+            "单环",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "eq",
+          "title": "条形均衡",
+          "hint": "均衡器条",
+          "desc": "条形均衡",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "eq",
+          "presets": [
+            "少段",
+            "多段",
+            "高对比",
+            "柔",
+            "霓虹",
+            "暗"
+          ]
+        },
+        {
+          "slug": "part-audio",
+          "title": "粒子随音",
+          "hint": "音驱动粒子",
+          "desc": "粒子随音",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "part-audio",
+          "presets": [
+            "少",
+            "多",
+            "大点",
+            "小点",
+            "爆发",
+            "平稳"
+          ]
+        },
+        {
+          "slug": "scope",
+          "title": "示波器",
+          "hint": "波形示波",
+          "desc": "示波器",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "scope",
+          "presets": [
+            "细线",
+            "粗线",
+            "高幅",
+            "低幅",
+            "霓虹",
+            "绿"
+          ]
+        },
+        {
+          "slug": "polar",
+          "title": "极坐标",
+          "hint": "极坐标频谱",
+          "desc": "极坐标",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "polar",
+          "presets": [
+            "密采样",
+            "疏采样",
+            "大半径",
+            "小",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "waterfall",
+          "title": "瀑布图",
+          "hint": "频谱瀑布",
+          "desc": "瀑布图",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "waterfall",
+          "presets": [
+            "密行",
+            "疏行",
+            "高对比",
+            "柔",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "beat",
+          "title": "节拍脉冲",
+          "hint": "中心脉冲",
+          "desc": "节拍脉冲",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "beat",
+          "presets": [
+            "大脉",
+            "小脉",
+            "快感",
+            "慢感",
+            "霓虹",
+            "柔"
+          ]
+        },
+        {
+          "slug": "chord",
+          "title": "和弦板",
+          "hint": "垫板网格",
+          "desc": "和弦板",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "chord",
+          "presets": [
+            "4x2",
+            "亮",
+            "暗",
+            "彩",
+            "单",
+            "脉动"
+          ]
+        },
+        {
+          "slug": "noise-pad",
+          "title": "噪声垫",
+          "hint": "噪声垫",
+          "desc": "噪声垫",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "noise-pad",
+          "presets": [
+            "柔",
+            "硬",
+            "亮",
+            "暗",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "drum",
+          "title": "鼓机垫",
+          "hint": "鼓机网格",
+          "desc": "鼓机垫",
+          "tag": "audio",
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "drum",
+          "presets": [
+            "亮击",
+            "暗",
+            "彩",
+            "单",
+            "密闪",
+            "疏"
           ]
         }
       ]
@@ -2812,30 +4288,291 @@
           "presets": []
         },
         {
-          "slug": "viz",
-          "title": "数据可视化实验室",
-          "hint": "顶部切换图种 · 调颜色",
-          "desc": "热力/雷达/桑基/漏斗等进阶图合集。",
+          "slug": "heatmap",
+          "title": "热力格子",
+          "hint": "热力格子",
+          "desc": "热力格子",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
-          "variant": "viz",
+          "variant": "heatmap",
           "presets": [
-            "热力格子",
-            "雷达图",
-            "桑基简化",
-            "气泡散点",
-            "日历热力",
-            "旭日简化",
-            "和弦弧",
-            "箱线",
-            "平行坐标",
-            "流图",
-            "词云简化",
-            "层级列表",
-            "漏斗",
-            "烛台",
-            "树状冰柱"
+            "8x8",
+            "高对比",
+            "冷热",
+            "动",
+            "静",
+            "柔"
+          ]
+        },
+        {
+          "slug": "radar",
+          "title": "雷达图",
+          "hint": "多维雷达",
+          "desc": "雷达图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "radar",
+          "presets": [
+            "填充",
+            "描边",
+            "双层感",
+            "尖角",
+            "快脉",
+            "静"
+          ]
+        },
+        {
+          "slug": "sankey",
+          "title": "桑基简化",
+          "hint": "流向桑基",
+          "desc": "桑基简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "sankey",
+          "presets": [
+            "少流",
+            "多流",
+            "粗带",
+            "细带",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "bubbles",
+          "title": "气泡散点",
+          "hint": "气泡散点",
+          "desc": "气泡散点",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "bubbles",
+          "presets": [
+            "疏",
+            "密",
+            "大泡",
+            "小泡",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "cal-heat",
+          "title": "日历热力",
+          "hint": "周历热力",
+          "desc": "日历热力",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "cal-heat",
+          "presets": [
+            "年感",
+            "月感",
+            "高活",
+            "低活",
+            "绿谱",
+            "火谱"
+          ]
+        },
+        {
+          "slug": "sunburst",
+          "title": "旭日简化",
+          "hint": "旭日层级",
+          "desc": "旭日简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "sunburst",
+          "presets": [
+            "双层",
+            "三层",
+            "亮",
+            "暗",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "chord",
+          "title": "和弦弧",
+          "hint": "和弦关系",
+          "desc": "和弦弧",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "chord",
+          "presets": [
+            "密弧",
+            "疏弧",
+            "粗",
+            "细",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "boxplot",
+          "title": "箱线图",
+          "hint": "箱线",
+          "desc": "箱线图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "boxplot",
+          "presets": [
+            "多组",
+            "少组",
+            "高对比",
+            "柔",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "parallel",
+          "title": "平行坐标",
+          "hint": "平行坐标",
+          "desc": "平行坐标",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "parallel",
+          "presets": [
+            "多轴",
+            "少轴",
+            "高亮",
+            "淡",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "stream",
+          "title": "流图",
+          "hint": "层流图",
+          "desc": "流图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "stream",
+          "presets": [
+            "多层",
+            "少层",
+            "高波",
+            "低波",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "wordcloud",
+          "title": "词云简化",
+          "hint": "词云",
+          "desc": "词云简化",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "wordcloud",
+          "presets": [
+            "密",
+            "疏",
+            "大字",
+            "小字",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "hierarchy",
+          "title": "层级列表",
+          "hint": "层级条",
+          "desc": "层级列表",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "hierarchy",
+          "presets": [
+            "深",
+            "浅",
+            "缩进",
+            "色条",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "funnel",
+          "title": "漏斗",
+          "hint": "转化漏斗",
+          "desc": "漏斗图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "funnel",
+          "presets": [
+            "5层",
+            "陡",
+            "缓",
+            "彩",
+            "单",
+            "高对比"
+          ]
+        },
+        {
+          "slug": "candle",
+          "title": "烛台",
+          "hint": "K 线烛台",
+          "desc": "烛台图",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "candle",
+          "presets": [
+            "多柱",
+            "少柱",
+            "涨跌色",
+            "细",
+            "粗",
+            "动"
+          ]
+        },
+        {
+          "slug": "icicle",
+          "title": "树状冰柱",
+          "hint": "冰柱图",
+          "desc": "树状冰柱",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "icicle",
+          "presets": [
+            "三层",
+            "二层",
+            "彩",
+            "单",
+            "密",
+            "疏"
+          ]
+        },
+        {
+          "slug": "arc",
+          "title": "弧形进度",
+          "hint": "多层弧",
+          "desc": "弧形进度",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "arc",
+          "presets": [
+            "多层",
+            "单层",
+            "粗",
+            "细",
+            "霓虹",
+            "柔"
           ]
         }
       ]
@@ -2882,30 +4619,291 @@
           "presets": []
         },
         {
-          "slug": "mi",
-          "title": "微交互实验室",
-          "hint": "顶部切换交互 · 点击反馈",
-          "desc": "点赞/复制/长按/滑动验证等微交互合集。",
+          "slug": "heart",
+          "title": "心跳赞",
+          "hint": "点击点赞",
+          "desc": "心跳赞",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
-          "variant": "mi",
+          "variant": "heart",
           "presets": [
-            "心跳赞",
-            "勾选弹跳",
-            "发送纸飞机",
-            "复制成功",
-            "下载进度",
-            "骨架屏",
-            "Toast",
-            "徽章跳动",
-            "拖动阈值",
-            "长按确认",
-            "摇一摇提示",
-            "滑动验证",
-            "双击放大",
-            "悬停磁吸",
-            "按压波纹"
+            "粉",
+            "红",
+            "大",
+            "小",
+            "带Toast",
+            "静赞"
+          ]
+        },
+        {
+          "slug": "check",
+          "title": "勾选弹跳",
+          "hint": "勾选弹跳",
+          "desc": "勾选弹跳",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "check",
+          "presets": [
+            "方框",
+            "圆框",
+            "快弹",
+            "慢弹",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "send",
+          "title": "发送纸飞机",
+          "hint": "发送反馈",
+          "desc": "发送纸飞机",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "send",
+          "presets": [
+            "快反馈",
+            "慢",
+            "成功色",
+            "默认",
+            "大钮",
+            "小钮"
+          ]
+        },
+        {
+          "slug": "copy",
+          "title": "复制成功",
+          "hint": "复制 Toast",
+          "desc": "复制成功",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "copy",
+          "presets": [
+            "短提示",
+            "长提示",
+            "快消",
+            "慢消",
+            "彩边",
+            "单"
+          ]
+        },
+        {
+          "slug": "download",
+          "title": "下载进度",
+          "hint": "进度条下载",
+          "desc": "下载进度",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "download",
+          "presets": [
+            "快满",
+            "慢满",
+            "粗条",
+            "细条",
+            "霓虹",
+            "柔"
+          ]
+        },
+        {
+          "slug": "skeleton",
+          "title": "骨架屏",
+          "hint": "加载骨架",
+          "desc": "骨架屏",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "skeleton",
+          "presets": [
+            "列表",
+            "卡片",
+            "快闪",
+            "慢闪",
+            "亮",
+            "暗"
+          ]
+        },
+        {
+          "slug": "toast",
+          "title": "Toast",
+          "hint": "弹出提示",
+          "desc": "Toast",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "toast",
+          "presets": [
+            "底中",
+            "快",
+            "慢",
+            "成功",
+            "信息",
+            "警告感"
+          ]
+        },
+        {
+          "slug": "badge",
+          "title": "徽章跳动",
+          "hint": "数字徽章",
+          "desc": "徽章跳动",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "badge",
+          "presets": [
+            "快跳",
+            "慢跳",
+            "红点",
+            "数字",
+            "大",
+            "小"
+          ]
+        },
+        {
+          "slug": "drag",
+          "title": "拖动卡片",
+          "hint": "拖拽",
+          "desc": "拖动卡片",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "drag",
+          "presets": [
+            "自由拖",
+            "大卡",
+            "小卡",
+            "彩",
+            "单",
+            "回弹感"
+          ]
+        },
+        {
+          "slug": "longpress",
+          "title": "长按确认",
+          "hint": "长按触发",
+          "desc": "长按确认",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "longpress",
+          "presets": [
+            "短阈",
+            "长阈",
+            "大钮",
+            "小钮",
+            "成功",
+            "静"
+          ]
+        },
+        {
+          "slug": "shake",
+          "title": "摇一摇提示",
+          "hint": "快速晃动",
+          "desc": "摇一摇提示",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "shake",
+          "presets": [
+            "灵敏",
+            "钝感",
+            "大提示",
+            "小",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "slide-verify",
+          "title": "滑动验证",
+          "hint": "滑块验证",
+          "desc": "滑动验证",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "slide-verify",
+          "presets": [
+            "短轨",
+            "长轨",
+            "大块",
+            "小块",
+            "成功色",
+            "默认"
+          ]
+        },
+        {
+          "slug": "dblzoom",
+          "title": "双击放大",
+          "hint": "双击缩放",
+          "desc": "双击放大",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "dblzoom",
+          "presets": [
+            "大缩放",
+            "小缩放",
+            "快",
+            "慢",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "hover-mag",
+          "title": "悬停磁吸",
+          "hint": "磁吸按钮",
+          "desc": "悬停磁吸",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "hover-mag",
+          "presets": [
+            "弱吸",
+            "强吸",
+            "近",
+            "远",
+            "大钮",
+            "小钮"
+          ]
+        },
+        {
+          "slug": "press-ripple",
+          "title": "按压波纹",
+          "hint": "点击涟漪",
+          "desc": "按压波纹",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "press-ripple",
+          "presets": [
+            "大波",
+            "小波",
+            "快",
+            "慢",
+            "白涟漪",
+            "色涟漪"
+          ]
+        },
+        {
+          "slug": "toggle-spring",
+          "title": "开关弹簧",
+          "hint": "弹簧开关",
+          "desc": "开关弹簧",
+          "tag": "micro",
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "toggle-spring",
+          "presets": [
+            "大",
+            "小",
+            "彩轨",
+            "快弹",
+            "慢弹",
+            "图标感"
           ]
         }
       ]
@@ -3083,6 +5081,96 @@
             "工具条折叠",
             "图文换位"
           ]
+        },
+        {
+          "slug": "bento",
+          "title": "Bento 拼贴",
+          "hint": "Bento 网格",
+          "desc": "Bento 拼贴",
+          "tag": "layout",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "bento",
+          "presets": [
+            "2x2",
+            "不等块",
+            "密",
+            "疏",
+            "彩块",
+            "单色"
+          ]
+        },
+        {
+          "slug": "holy",
+          "title": "圣杯经典",
+          "hint": "圣杯三栏",
+          "desc": "圣杯布局",
+          "tag": "layout",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "holy",
+          "presets": [
+            "宽侧",
+            "窄侧",
+            "顶栏高",
+            "顶栏矮",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "aspect",
+          "title": "纵横比卡片",
+          "hint": "aspect-ratio",
+          "desc": "纵横比",
+          "tag": "layout",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "aspect",
+          "presets": [
+            "16:9",
+            "1:1",
+            "4:3",
+            "21:9",
+            "密",
+            "疏"
+          ]
+        },
+        {
+          "slug": "overlap",
+          "title": "重叠层叠",
+          "hint": "负边距重叠",
+          "desc": "重叠卡片",
+          "tag": "layout",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "overlap",
+          "presets": [
+            "轻叠",
+            "重叠",
+            "对角",
+            "水平",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "subgrid",
+          "title": "子网格感",
+          "hint": "子网格对齐",
+          "desc": "子网格感",
+          "tag": "layout",
+          "mod": "kit-layout",
+          "fn": "mount",
+          "variant": "subgrid",
+          "presets": [
+            "双层",
+            "三列",
+            "对齐",
+            "错位",
+            "彩",
+            "单"
+          ]
         }
       ]
     },
@@ -3098,63 +5186,291 @@
       ],
       "demos": [
         {
-          "slug": "filter-lab",
-          "title": "滤镜实验室",
-          "hint": "顶部切换滤镜 · 拖动强度",
-          "desc": "CSS filter 合集。",
+          "slug": "blur",
+          "title": "模糊",
+          "hint": "高斯模糊",
+          "desc": "模糊滤镜",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
-          "variant": "filter-lab",
+          "variant": "blur",
           "presets": [
-            "模糊",
-            "亮度",
-            "对比",
-            "饱和",
-            "色相旋转",
-            "反相",
-            "灰度",
-            "褐色",
-            "投影",
-            "组合霓虹",
-            "毛玻璃背板",
-            "混合叠加",
-            "排除混合",
-            "彩色闪烁",
-            "像素感",
-            "锐化模拟",
-            "暗角",
-            "发光描边",
-            "双色调",
-            "故障抖动"
+            "轻",
+            "中",
+            "重",
+            "呼吸",
+            "定向感",
+            "静"
           ]
         },
         {
-          "slug": "blend-lab",
-          "title": "混合模式实验室",
-          "hint": "顶部切换 blend · 调颜色",
-          "desc": "mix-blend-mode 双色块。",
-          "tag": "blend",
+          "slug": "brightness",
+          "title": "亮度",
+          "hint": "亮度脉动",
+          "desc": "亮度",
+          "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
-          "variant": "blend-lab",
+          "variant": "brightness",
           "presets": [
-            "screen",
-            "multiply",
-            "overlay",
-            "difference",
-            "exclusion",
-            "color-dodge",
-            "hard-light",
-            "soft-light",
-            "lighten",
-            "darken",
-            "color",
-            "hue",
-            "saturation",
-            "luminosity",
-            "plus-lighter",
-            "正常对比"
+            "暗",
+            "亮",
+            "脉动",
+            "静",
+            "强脉",
+            "弱脉"
+          ]
+        },
+        {
+          "slug": "contrast",
+          "title": "对比",
+          "hint": "对比度",
+          "desc": "对比",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "contrast",
+          "presets": [
+            "低",
+            "高",
+            "闪",
+            "静",
+            "强",
+            "弱"
+          ]
+        },
+        {
+          "slug": "saturate",
+          "title": "饱和",
+          "hint": "饱和脉动",
+          "desc": "饱和",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "saturate",
+          "presets": [
+            "灰",
+            "艳",
+            "脉动",
+            "静",
+            "强",
+            "弱"
+          ]
+        },
+        {
+          "slug": "hue",
+          "title": "色相旋转",
+          "hint": "色相旋转",
+          "desc": "色相",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "hue",
+          "presets": [
+            "慢转",
+            "快转",
+            "小幅",
+            "大幅",
+            "霓虹",
+            "柔"
+          ]
+        },
+        {
+          "slug": "invert",
+          "title": "反相",
+          "hint": "反相",
+          "desc": "反相",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "invert",
+          "presets": [
+            "全反",
+            "半反",
+            "闪反",
+            "静",
+            "彩底",
+            "暗底"
+          ]
+        },
+        {
+          "slug": "grayscale",
+          "title": "灰度",
+          "hint": "灰度",
+          "desc": "灰度",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "grayscale",
+          "presets": [
+            "全灰",
+            "半灰",
+            "回彩",
+            "静",
+            "高对比",
+            "柔"
+          ]
+        },
+        {
+          "slug": "sepia",
+          "title": "褐色",
+          "hint": "褐色",
+          "desc": "褐色",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "sepia",
+          "presets": [
+            "浅褐",
+            "深褐",
+            "脉动",
+            "静",
+            "暖",
+            "冷褐"
+          ]
+        },
+        {
+          "slug": "drop-shadow",
+          "title": "投影发光",
+          "hint": "投影",
+          "desc": "投影发光",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "drop-shadow",
+          "presets": [
+            "轻光",
+            "重光",
+            "大模糊",
+            "小模糊",
+            "彩光",
+            "白光"
+          ]
+        },
+        {
+          "slug": "neon-combo",
+          "title": "组合霓虹",
+          "hint": "多滤镜霓虹",
+          "desc": "组合霓虹",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "neon-combo",
+          "presets": [
+            "冷霓虹",
+            "暖霓虹",
+            "强",
+            "弱",
+            "快闪",
+            "常亮"
+          ]
+        },
+        {
+          "slug": "glass",
+          "title": "毛玻璃",
+          "hint": "毛玻璃背板",
+          "desc": "毛玻璃",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "glass",
+          "presets": [
+            "轻糊",
+            "重糊",
+            "亮",
+            "暗",
+            "彩边",
+            "无边"
+          ]
+        },
+        {
+          "slug": "duotone",
+          "title": "双色调",
+          "hint": "双色调",
+          "desc": "双色调",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "duotone",
+          "presets": [
+            "冷双色",
+            "暖双色",
+            "高对比",
+            "柔",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "glitch-f",
+          "title": "故障抖动",
+          "hint": "故障滤镜",
+          "desc": "故障抖动",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "glitch-f",
+          "presets": [
+            "轻",
+            "重",
+            "快",
+            "慢",
+            "彩错",
+            "单"
+          ]
+        },
+        {
+          "slug": "vignette",
+          "title": "暗角",
+          "hint": "暗角",
+          "desc": "暗角",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "vignette",
+          "presets": [
+            "轻",
+            "重",
+            "呼吸",
+            "静",
+            "冷",
+            "暖"
+          ]
+        },
+        {
+          "slug": "glow-edge",
+          "title": "发光描边",
+          "hint": "描边光",
+          "desc": "发光描边",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "glow-edge",
+          "presets": [
+            "细",
+            "粗",
+            "强光",
+            "弱光",
+            "彩",
+            "白"
+          ]
+        },
+        {
+          "slug": "backdrop",
+          "title": "背板模糊",
+          "hint": "backdrop 感",
+          "desc": "背板模糊",
+          "tag": "filter",
+          "mod": "kit-filters",
+          "fn": "mount",
+          "variant": "backdrop",
+          "presets": [
+            "轻",
+            "重",
+            "亮卡",
+            "暗卡",
+            "彩",
+            "单"
           ]
         }
       ]
@@ -3171,40 +5487,435 @@
       ],
       "demos": [
         {
-          "slug": "particles-lab",
-          "title": "粒子实验室",
-          "hint": "顶部切换效果 · 调数量/颜色",
-          "desc": "粒子套件合集。",
+          "slug": "starfield",
+          "title": "星空",
+          "hint": "星空漂浮 · 调数量/颜色",
+          "desc": "星点与慢漂粒子场",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
-          "variant": "particles-lab",
+          "variant": "starfield",
           "presets": [
-            "星空",
-            "降雪",
-            "金雨",
-            "烟柱",
-            "萤火",
-            "火花喷泉",
-            "引力井",
-            "排斥场",
-            "鼠标跟随群",
-            "爆炸碎屑",
-            "螺旋星系",
-            "心形场",
-            "文字点阵",
-            "网格跳动",
-            "波浪粒子",
-            "彗星",
-            "泡泡上升",
-            "落叶",
-            "雷电折线",
-            "沙尘",
-            "霓虹点",
-            "量子抖",
-            "连接网2",
-            "黑洞吸积",
-            "彩虹喷泉"
+            "疏",
+            "密",
+            "快",
+            "慢",
+            "彩点",
+            "远近"
+          ]
+        },
+        {
+          "slug": "snow",
+          "title": "降雪",
+          "hint": "雪花下落 · 调速度",
+          "desc": "飘雪粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "snow",
+          "presets": [
+            "细雪",
+            "暴雪",
+            "斜风",
+            "大片",
+            "慢飘",
+            "彩雪"
+          ]
+        },
+        {
+          "slug": "goldrain",
+          "title": "金雨",
+          "hint": "金色雨帘",
+          "desc": "矩阵金雨感",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "goldrain",
+          "presets": [
+            "细",
+            "密",
+            "快",
+            "慢",
+            "宽",
+            "窄"
+          ]
+        },
+        {
+          "slug": "smoke-col",
+          "title": "烟柱",
+          "hint": "上升烟柱",
+          "desc": "烟雾粒子柱",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "smoke-col",
+          "presets": [
+            "轻",
+            "浓",
+            "快喷",
+            "慢散",
+            "彩烟",
+            "双柱感"
+          ]
+        },
+        {
+          "slug": "firefly",
+          "title": "萤火",
+          "hint": "萤火虫闪烁",
+          "desc": "闪烁光点",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "firefly",
+          "presets": [
+            "疏",
+            "密",
+            "慢闪",
+            "快闪",
+            "暖色",
+            "冷色"
+          ]
+        },
+        {
+          "slug": "fountain",
+          "title": "火花喷泉",
+          "hint": "底部喷泉 · Burst",
+          "desc": "上喷火花",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "fountain",
+          "presets": [
+            "弱",
+            "强",
+            "宽口",
+            "窄口",
+            "彩火",
+            "连喷"
+          ]
+        },
+        {
+          "slug": "attractor",
+          "title": "引力井",
+          "hint": "鼠标吸引",
+          "desc": "粒子吸入",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "attractor",
+          "presets": [
+            "弱吸",
+            "强吸",
+            "旋吸",
+            "脉冲",
+            "密群",
+            "疏群"
+          ]
+        },
+        {
+          "slug": "repulsor",
+          "title": "排斥场",
+          "hint": "鼠标排斥",
+          "desc": "推开粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "repulsor",
+          "presets": [
+            "弱",
+            "强",
+            "环形",
+            "脉冲",
+            "密",
+            "疏"
+          ]
+        },
+        {
+          "slug": "follow-swarm",
+          "title": "跟随群",
+          "hint": "鼠标跟随群",
+          "desc": "蜂群跟随",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "follow-swarm",
+          "presets": [
+            "紧随",
+            "松散",
+            "延迟",
+            "加速",
+            "彩虹",
+            "单色"
+          ]
+        },
+        {
+          "slug": "explode",
+          "title": "爆炸碎屑",
+          "hint": "点击爆发",
+          "desc": "碎屑喷射",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "explode",
+          "presets": [
+            "小爆",
+            "大爆",
+            "环爆",
+            "星爆",
+            "彩屑",
+            "慢散"
+          ]
+        },
+        {
+          "slug": "galaxy",
+          "title": "螺旋星系",
+          "hint": "旋转星系臂",
+          "desc": "臂状粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "galaxy",
+          "presets": [
+            "双臂",
+            "多臂",
+            "密核",
+            "疏臂",
+            "彩旋",
+            "慢转"
+          ]
+        },
+        {
+          "slug": "heartfield",
+          "title": "心形场",
+          "hint": "心形吸引",
+          "desc": "爱心轨迹",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "heartfield",
+          "presets": [
+            "小",
+            "大",
+            "密",
+            "疏",
+            "脉动",
+            "慢聚"
+          ]
+        },
+        {
+          "slug": "text-dots",
+          "title": "文字点阵",
+          "hint": "点阵聚字",
+          "desc": "粒子成字",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "text-dots",
+          "presets": [
+            "密点",
+            "疏点",
+            "弹性",
+            "慢聚",
+            "彩点",
+            "单色"
+          ]
+        },
+        {
+          "slug": "grid-pulse",
+          "title": "网格跳动",
+          "hint": "网格脉冲",
+          "desc": "点阵呼吸",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "grid-pulse",
+          "presets": [
+            "疏网",
+            "密网",
+            "强脉",
+            "弱脉",
+            "彩格",
+            "单色"
+          ]
+        },
+        {
+          "slug": "wave-part",
+          "title": "波浪粒子",
+          "hint": "波面起伏",
+          "desc": "正弦波粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "wave-part",
+          "presets": [
+            "低波",
+            "高波",
+            "多层",
+            "快",
+            "慢",
+            "彩波"
+          ]
+        },
+        {
+          "slug": "comet",
+          "title": "彗星",
+          "hint": "拖尾彗星",
+          "desc": "流星划过",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "comet",
+          "presets": [
+            "单星",
+            "雨幕",
+            "长尾",
+            "短尾",
+            "彩尾",
+            "慢掠"
+          ]
+        },
+        {
+          "slug": "bubbles",
+          "title": "泡泡上升",
+          "hint": "上升气泡",
+          "desc": "透明泡感",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "bubbles",
+          "presets": [
+            "小泡",
+            "大泡",
+            "密",
+            "疏",
+            "慢升",
+            "快升"
+          ]
+        },
+        {
+          "slug": "leaves",
+          "title": "落叶",
+          "hint": "飘落叶",
+          "desc": "摇摆下落",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "leaves",
+          "presets": [
+            "秋叶",
+            "密落",
+            "疏落",
+            "大风",
+            "微风",
+            "彩叶"
+          ]
+        },
+        {
+          "slug": "dust",
+          "title": "沙尘",
+          "hint": "沙尘漂浮",
+          "desc": "扬尘场",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "dust",
+          "presets": [
+            "细尘",
+            "粗尘",
+            "风暴",
+            "静",
+            "彩尘",
+            "暗尘"
+          ]
+        },
+        {
+          "slug": "neon-dots",
+          "title": "霓虹点",
+          "hint": "霓虹闪点",
+          "desc": "发光粒子",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "neon-dots",
+          "presets": [
+            "冷霓虹",
+            "暖霓虹",
+            "密闪",
+            "疏闪",
+            "脉冲",
+            "常亮"
+          ]
+        },
+        {
+          "slug": "quantum",
+          "title": "量子抖",
+          "hint": "随机跃迁",
+          "desc": "量子抖动",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "quantum",
+          "presets": [
+            "微抖",
+            "狂抖",
+            "低频",
+            "高频",
+            "彩跳",
+            "单色"
+          ]
+        },
+        {
+          "slug": "net",
+          "title": "连接网",
+          "hint": "近邻连线",
+          "desc": "粒子网络",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "net",
+          "presets": [
+            "短链",
+            "长链",
+            "密网",
+            "疏网",
+            "发光",
+            "淡线"
+          ]
+        },
+        {
+          "slug": "blackhole",
+          "title": "黑洞吸积",
+          "hint": "中心吸入",
+          "desc": "吸积盘",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "blackhole",
+          "presets": [
+            "弱",
+            "强",
+            "盘旋",
+            "急吸",
+            "彩盘",
+            "暗核"
+          ]
+        },
+        {
+          "slug": "rainbow",
+          "title": "彩虹喷泉",
+          "hint": "彩虹喷射",
+          "desc": "多彩喷泉",
+          "tag": "particles",
+          "mod": "kit-particles",
+          "fn": "mount",
+          "variant": "rainbow",
+          "presets": [
+            "全彩",
+            "半弧",
+            "密喷",
+            "疏喷",
+            "高柱",
+            "矮柱"
           ]
         }
       ]
@@ -3221,40 +5932,435 @@
       ],
       "demos": [
         {
-          "slug": "gen-lab",
-          "title": "生成艺术实验室",
-          "hint": "顶部切换算法 · 点击重生",
-          "desc": "生成艺术合集。",
+          "slug": "flowfield",
+          "title": "Perlin 流场",
+          "hint": "噪声流场 · 重生",
+          "desc": "粒子沿噪声流动",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
-          "variant": "gen-lab",
+          "variant": "flowfield",
           "presets": [
-            "Perlin 流场",
-            "Julia 简化",
-            "Mandelbrot 漫游",
-            "生命游戏",
-            "沃罗诺伊",
-            "递归树",
-            "Sierpinski",
-            "圆形填充",
-            "噪声地形",
-            "随机游走",
-            "L-System 草",
-            "波纹干涉",
-            "染色扩散",
-            "马赛克噪声",
-            "极坐标花",
-            "三角剖分感",
-            "方块细分",
-            "等高线",
-            "墨水滴",
-            "光纤束",
-            "像素排序感",
-            "彩虹噪声",
-            "细胞增长",
-            "引力绘线",
-            "螺旋采样"
+            "疏",
+            "密",
+            "快",
+            "慢",
+            "粗线",
+            "细线"
+          ]
+        },
+        {
+          "slug": "julia",
+          "title": "Julia 集",
+          "hint": "Julia 漫游",
+          "desc": "复平面 Julia",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "julia",
+          "presets": [
+            "经典",
+            "旋动",
+            "高对比",
+            "柔和",
+            "深探",
+            "浅探"
+          ]
+        },
+        {
+          "slug": "mandelbrot",
+          "title": "Mandelbrot",
+          "hint": "曼德勃漫游",
+          "desc": "分形缩放",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "mandelbrot",
+          "presets": [
+            "经典",
+            "火彩",
+            "冷色",
+            "深潜",
+            "宽景",
+            "细部"
+          ]
+        },
+        {
+          "slug": "gol",
+          "title": "生命游戏",
+          "hint": "细胞自动机",
+          "desc": "Conway GOL",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "gol",
+          "presets": [
+            "疏",
+            "密",
+            "快演化",
+            "慢演化",
+            "大格",
+            "小格"
+          ]
+        },
+        {
+          "slug": "voronoi",
+          "title": "沃罗诺伊",
+          "hint": "Voronoi 色块",
+          "desc": "最近点图",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "voronoi",
+          "presets": [
+            "少核",
+            "多核",
+            "动核",
+            "静态",
+            "高对比",
+            "柔边"
+          ]
+        },
+        {
+          "slug": "tree",
+          "title": "递归树",
+          "hint": "分形树",
+          "desc": "递归枝干",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "tree",
+          "presets": [
+            "矮",
+            "高",
+            "密枝",
+            "疏枝",
+            "摇摆",
+            "静"
+          ]
+        },
+        {
+          "slug": "sierpinski",
+          "title": "Sierpinski",
+          "hint": "三角分形",
+          "desc": "垫片递归",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "sierpinski",
+          "presets": [
+            "浅",
+            "深",
+            "线",
+            "面",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "circles",
+          "title": "圆形填充",
+          "hint": "圆堆积",
+          "desc": "随机圆填充",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "circles",
+          "presets": [
+            "疏",
+            "密",
+            "描边",
+            "填充",
+            "大小差",
+            "均匀"
+          ]
+        },
+        {
+          "slug": "terrain",
+          "title": "噪声地形",
+          "hint": "等高噪声",
+          "desc": "伪地形",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "terrain",
+          "presets": [
+            "高山",
+            "丘陵",
+            "细纹",
+            "粗纹",
+            "动态",
+            "静态"
+          ]
+        },
+        {
+          "slug": "walk",
+          "title": "随机游走",
+          "hint": "醉步轨迹",
+          "desc": "随机折线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "walk",
+          "presets": [
+            "短",
+            "长",
+            "粗",
+            "细",
+            "彩色",
+            "单色"
+          ]
+        },
+        {
+          "slug": "lsystem",
+          "title": "L-System",
+          "hint": "文法植物",
+          "desc": "L 系统草",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "lsystem",
+          "presets": [
+            "草",
+            "灌",
+            "树",
+            "密",
+            "疏",
+            "摇摆"
+          ]
+        },
+        {
+          "slug": "interfere",
+          "title": "波纹干涉",
+          "hint": "双波干涉",
+          "desc": "同心干涉",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "interfere",
+          "presets": [
+            "双源",
+            "三源",
+            "快",
+            "慢",
+            "强",
+            "弱"
+          ]
+        },
+        {
+          "slug": "diffuse",
+          "title": "染色扩散",
+          "hint": "墨染扩散",
+          "desc": "径向扩散",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "diffuse",
+          "presets": [
+            "少点",
+            "多点",
+            "慢",
+            "快",
+            "浓",
+            "淡"
+          ]
+        },
+        {
+          "slug": "mosaic",
+          "title": "马赛克噪声",
+          "hint": "块噪声",
+          "desc": "像素马赛克",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "mosaic",
+          "presets": [
+            "大块",
+            "小块",
+            "动",
+            "静",
+            "彩虹",
+            "单色"
+          ]
+        },
+        {
+          "slug": "polar-flower",
+          "title": "极坐标花",
+          "hint": "极坐标曲线",
+          "desc": "玫瑰线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "polar-flower",
+          "presets": [
+            "少瓣",
+            "多瓣",
+            "旋转",
+            "呼吸",
+            "描边",
+            "填充"
+          ]
+        },
+        {
+          "slug": "tri",
+          "title": "三角剖分",
+          "hint": "三角网",
+          "desc": "随机三角",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "tri",
+          "presets": [
+            "疏",
+            "密",
+            "线",
+            "面",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "subdiv",
+          "title": "方块细分",
+          "hint": "四叉细分",
+          "desc": "递归方块",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "subdiv",
+          "presets": [
+            "浅",
+            "深",
+            "线框",
+            "色块",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "contour",
+          "title": "等高线",
+          "hint": "噪声等高",
+          "desc": "层状等高",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "contour",
+          "presets": [
+            "少层",
+            "多层",
+            "细线",
+            "粗线",
+            "动",
+            "静"
+          ]
+        },
+        {
+          "slug": "inkdrop",
+          "title": "墨水滴",
+          "hint": "涟漪墨滴",
+          "desc": "扩散环",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "inkdrop",
+          "presets": [
+            "单滴",
+            "多滴",
+            "慢",
+            "快",
+            "浓",
+            "淡"
+          ]
+        },
+        {
+          "slug": "fiber",
+          "title": "光纤束",
+          "hint": "竖向光纤",
+          "desc": "束状曲线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "fiber",
+          "presets": [
+            "疏",
+            "密",
+            "摆动",
+            "静",
+            "彩",
+            "单色"
+          ]
+        },
+        {
+          "slug": "pixelsort",
+          "title": "像素排序感",
+          "hint": "行偏移",
+          "desc": "排序错位",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "pixelsort",
+          "presets": [
+            "弱",
+            "强",
+            "动",
+            "静",
+            "彩",
+            "灰"
+          ]
+        },
+        {
+          "slug": "cellgrow",
+          "title": "细胞增长",
+          "hint": "圆胞扩张",
+          "desc": "生长圆",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "cellgrow",
+          "presets": [
+            "慢",
+            "快",
+            "少",
+            "多",
+            "描边",
+            "填充"
+          ]
+        },
+        {
+          "slug": "gravline",
+          "title": "引力绘线",
+          "hint": "向心力轨迹",
+          "desc": "吸引折线",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "gravline",
+          "presets": [
+            "弱",
+            "强",
+            "多线",
+            "少线",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "spiral-gen",
+          "title": "螺旋采样",
+          "hint": "阿基米德螺线",
+          "desc": "螺旋采样点",
+          "tag": "gen",
+          "mod": "kit-generative",
+          "fn": "mount",
+          "variant": "spiral-gen",
+          "presets": [
+            "紧",
+            "松",
+            "旋转",
+            "静",
+            "彩",
+            "单"
           ]
         }
       ]
@@ -3271,40 +6377,435 @@
       ],
       "demos": [
         {
-          "slug": "text-lab",
-          "title": "文字特效实验室",
-          "hint": "顶部切换效果 · 点击重播",
-          "desc": "文字特效合集。",
+          "slug": "typewriter",
+          "title": "打字机",
+          "hint": "逐字打出 · 重播",
+          "desc": "打字机效果",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
-          "variant": "text-lab",
+          "variant": "typewriter",
           "presets": [
-            "打字机",
-            "故障 Glitch",
-            "渐变扫光",
-            "描边填充",
-            "拆分下落",
-            "弹性弹入",
-            "模糊清晰",
-            "镜像翻转",
-            "波浪字",
-            "3D 透视",
-            "霓虹灯管",
-            "打散重组",
-            "计数滚动",
-            "密码解码",
-            "打印色带",
-            "手写进度",
-            "字幕卡拉OK",
-            "竖排滚动",
-            "切页翻转",
-            "液态变形",
-            "像素显现",
-            "烟雾消散",
-            "磁吸排列",
-            "彩虹跳动",
-            "打地鼠高亮"
+            "慢",
+            "中",
+            "快",
+            "闪标",
+            "无标",
+            "循环"
+          ]
+        },
+        {
+          "slug": "glitch",
+          "title": "故障 Glitch",
+          "hint": "故障抖动",
+          "desc": "RGB 错位",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "glitch",
+          "presets": [
+            "轻",
+            "重",
+            "快闪",
+            "慢闪",
+            "彩错",
+            "单色"
+          ]
+        },
+        {
+          "slug": "gradient",
+          "title": "渐变扫光",
+          "hint": "渐变流动字",
+          "desc": "扫光渐变",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "gradient",
+          "presets": [
+            "冷",
+            "暖",
+            "霓虹",
+            "慢扫",
+            "快扫",
+            "三色"
+          ]
+        },
+        {
+          "slug": "outline",
+          "title": "描边填充",
+          "hint": "空心描边",
+          "desc": "描边字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "outline",
+          "presets": [
+            "细描",
+            "粗描",
+            "双描",
+            "填充延迟",
+            "闪边",
+            "静"
+          ]
+        },
+        {
+          "slug": "split-fall",
+          "title": "拆分下落",
+          "hint": "字母落下",
+          "desc": "拆分入场",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "split-fall",
+          "presets": [
+            "上落",
+            "下落",
+            "旋转落",
+            "弹性",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "bounce-in",
+          "title": "弹性弹入",
+          "hint": "过冲弹入",
+          "desc": "弹性缩放",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "bounce-in",
+          "presets": [
+            "轻弹",
+            "重弹",
+            "交错",
+            "同步",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "blur-clear",
+          "title": "模糊清晰",
+          "hint": "从糊到清",
+          "desc": "模糊入场",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "blur-clear",
+          "presets": [
+            "轻糊",
+            "重糊",
+            "快清",
+            "慢清",
+            "带色",
+            "白"
+          ]
+        },
+        {
+          "slug": "mirror",
+          "title": "镜像翻转",
+          "hint": "镜像还原",
+          "desc": "翻转显现",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "mirror",
+          "presets": [
+            "水平",
+            "垂直",
+            "快",
+            "慢",
+            "弹性",
+            "线性"
+          ]
+        },
+        {
+          "slug": "wave-text",
+          "title": "波浪字",
+          "hint": "逐字起伏",
+          "desc": "波浪动画",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "wave-text",
+          "presets": [
+            "低波",
+            "高波",
+            "快",
+            "慢",
+            "彩",
+            "单色"
+          ]
+        },
+        {
+          "slug": "perspective",
+          "title": "3D 透视",
+          "hint": "透视翻转",
+          "desc": "3D 字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "perspective",
+          "presets": [
+            "Y转",
+            "X转",
+            "慢",
+            "快",
+            "大",
+            "小"
+          ]
+        },
+        {
+          "slug": "neon-text",
+          "title": "霓虹灯管",
+          "hint": "霓虹发光",
+          "desc": "灯管字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "neon-text",
+          "presets": [
+            "冷",
+            "暖",
+            "闪烁",
+            "常亮",
+            "双色",
+            "单色"
+          ]
+        },
+        {
+          "slug": "scramble",
+          "title": "打散重组",
+          "hint": "散开再聚",
+          "desc": "重组动画",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "scramble",
+          "presets": [
+            "轻散",
+            "狂散",
+            "快聚",
+            "慢聚",
+            "旋转",
+            "平移"
+          ]
+        },
+        {
+          "slug": "counter",
+          "title": "计数滚动",
+          "hint": "数字递增",
+          "desc": "计数器",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "counter",
+          "presets": [
+            "百",
+            "千",
+            "万",
+            "快",
+            "慢",
+            "带号"
+          ]
+        },
+        {
+          "slug": "decode",
+          "title": "密码解码",
+          "hint": "乱码解码",
+          "desc": "解码显现",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "decode",
+          "presets": [
+            "字母",
+            "符号",
+            "快",
+            "慢",
+            "循环",
+            "一次"
+          ]
+        },
+        {
+          "slug": "ribbon",
+          "title": "打印色带",
+          "hint": "色带扫过",
+          "desc": "打印感",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "ribbon",
+          "presets": [
+            "慢扫",
+            "快扫",
+            "彩带",
+            "单色",
+            "循环",
+            "一次"
+          ]
+        },
+        {
+          "slug": "handwrite",
+          "title": "手写进度",
+          "hint": "逐步显现",
+          "desc": "手写感",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "handwrite",
+          "presets": [
+            "慢",
+            "快",
+            "描边",
+            "填充",
+            "循环",
+            "一次"
+          ]
+        },
+        {
+          "slug": "karaoke",
+          "title": "字幕卡拉OK",
+          "hint": "逐字高亮",
+          "desc": "卡拉OK",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "karaoke",
+          "presets": [
+            "慢",
+            "快",
+            "发光",
+            "朴素",
+            "循环",
+            "一次"
+          ]
+        },
+        {
+          "slug": "vertical",
+          "title": "竖排滚动",
+          "hint": "竖排文字",
+          "desc": "竖排展示",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "vertical",
+          "presets": [
+            "慢滚",
+            "静",
+            "密距",
+            "疏距",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "pageflip",
+          "title": "切页翻转",
+          "hint": "翻页字",
+          "desc": "翻转入场",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "pageflip",
+          "presets": [
+            "慢",
+            "快",
+            "弹性",
+            "线性",
+            "大",
+            "小"
+          ]
+        },
+        {
+          "slug": "liquid",
+          "title": "液态变形",
+          "hint": "液态缩放",
+          "desc": "果冻字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "liquid",
+          "presets": [
+            "轻",
+            "重",
+            "快",
+            "慢",
+            "交错",
+            "同步"
+          ]
+        },
+        {
+          "slug": "pixel",
+          "title": "像素显现",
+          "hint": "像素风字",
+          "desc": "像素字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "pixel",
+          "presets": [
+            "细",
+            "粗",
+            "闪现",
+            "静",
+            "彩",
+            "单"
+          ]
+        },
+        {
+          "slug": "smoke",
+          "title": "烟雾消散",
+          "hint": "烟散消失",
+          "desc": "消散字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "smoke",
+          "presets": [
+            "慢散",
+            "快散",
+            "上飘",
+            "糊散",
+            "循环",
+            "一次"
+          ]
+        },
+        {
+          "slug": "magnetic",
+          "title": "磁吸排列",
+          "hint": "指针磁吸",
+          "desc": "字母磁吸",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "magnetic",
+          "presets": [
+            "弱",
+            "强",
+            "近距",
+            "远距",
+            "回弹",
+            "粘滞"
+          ]
+        },
+        {
+          "slug": "rainbow",
+          "title": "彩虹跳动",
+          "hint": "彩虹起伏",
+          "desc": "彩虹字",
+          "tag": "text",
+          "mod": "kit-text",
+          "fn": "mount",
+          "variant": "rainbow",
+          "presets": [
+            "慢跳",
+            "快跳",
+            "全彩",
+            "双色",
+            "低波",
+            "高波"
           ]
         }
       ]
@@ -3321,39 +6822,367 @@
       ],
       "demos": [
         {
-          "slug": "scroll-lab",
-          "title": "滚动特效实验室",
-          "hint": "顶部切换 · 在面板内滚动",
-          "desc": "滚动特效合集。",
+          "slug": "parallax",
+          "title": "视差层",
+          "hint": "面板内滚动 · 视差",
+          "desc": "滚动视差",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
-          "variant": "scroll-lab",
+          "variant": "parallax",
           "presets": [
-            "视差层",
-            "进度条",
-            "章节钉住",
-            "淡入揭示",
-            "缩放进入",
-            "横向滚动画廊",
-            "卡片堆叠",
-            "文字擦除",
-            "路径绘制随滚",
-            "数字递增",
-            "背景变色",
-            "分屏擦除",
-            "惯性吸附",
-            "目录高亮",
-            "封面揭开",
-            "时间线",
-            "图片懒显",
-            "交错网格",
-            "回顶气泡",
-            "滚动叙事"
+            "浅",
+            "深",
+            "双层",
+            "三层",
+            "慢",
+            "快"
+          ]
+        },
+        {
+          "slug": "progress",
+          "title": "进度条",
+          "hint": "顶栏进度",
+          "desc": "滚动进度",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "progress",
+          "presets": [
+            "细",
+            "粗",
+            "渐变",
+            "单色",
+            "发光",
+            "朴素"
+          ]
+        },
+        {
+          "slug": "pin",
+          "title": "章节钉住",
+          "hint": "Sticky 钉住",
+          "desc": "章节钉住",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "pin",
+          "presets": [
+            "短",
+            "长",
+            "卡片",
+            "标题",
+            "双钉",
+            "单钉"
+          ]
+        },
+        {
+          "slug": "reveal",
+          "title": "淡入揭示",
+          "hint": "滚入淡入",
+          "desc": "揭示卡片",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "reveal",
+          "presets": [
+            "上滑",
+            "淡入",
+            "快",
+            "慢",
+            "交错",
+            "同步"
+          ]
+        },
+        {
+          "slug": "scale-in",
+          "title": "缩放进入",
+          "hint": "滚入缩放",
+          "desc": "缩放显现",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "scale-in",
+          "presets": [
+            "轻缩",
+            "重缩",
+            "快",
+            "慢",
+            "弹性",
+            "线性"
+          ]
+        },
+        {
+          "slug": "h-gallery",
+          "title": "横向画廊",
+          "hint": "横向滚动",
+          "desc": "画廊轨道",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "h-gallery",
+          "presets": [
+            "少卡",
+            "多卡",
+            "宽卡",
+            "窄卡",
+            "吸附",
+            "自由"
+          ]
+        },
+        {
+          "slug": "stack",
+          "title": "卡片堆叠",
+          "hint": "Sticky 堆叠",
+          "desc": "堆叠卡片",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "stack",
+          "presets": [
+            "少",
+            "多",
+            "紧",
+            "松",
+            "彩色",
+            "单色"
+          ]
+        },
+        {
+          "slug": "wipe-text",
+          "title": "文字擦除",
+          "hint": "擦除显现",
+          "desc": "擦除揭示",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "wipe-text",
+          "presets": [
+            "左擦",
+            "右擦",
+            "快",
+            "慢",
+            "强",
+            "弱"
+          ]
+        },
+        {
+          "slug": "path-draw",
+          "title": "路径随滚",
+          "hint": "描边随滚",
+          "desc": "路径绘制",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "path-draw",
+          "presets": [
+            "短径",
+            "长径",
+            "粗",
+            "细",
+            "发光",
+            "朴素"
+          ]
+        },
+        {
+          "slug": "countup",
+          "title": "数字递增",
+          "hint": "滚入计数",
+          "desc": "数字递增",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "countup",
+          "presets": [
+            "百",
+            "千",
+            "快",
+            "慢",
+            "多组",
+            "单组"
+          ]
+        },
+        {
+          "slug": "bg-shift",
+          "title": "背景变色",
+          "hint": "滚改背景",
+          "desc": "背景渐变",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "bg-shift",
+          "presets": [
+            "冷暖",
+            "霓虹",
+            "慢变",
+            "快变",
+            "双色",
+            "多色"
+          ]
+        },
+        {
+          "slug": "split-wipe",
+          "title": "分屏擦除",
+          "hint": "左右分屏",
+          "desc": "分屏揭示",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "split-wipe",
+          "presets": [
+            "左右",
+            "上下",
+            "快",
+            "慢",
+            "强对比",
+            "柔"
+          ]
+        },
+        {
+          "slug": "snap",
+          "title": "惯性吸附",
+          "hint": "段落吸附",
+          "desc": "滚动吸附",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "snap",
+          "presets": [
+            "强吸",
+            "弱吸",
+            "多段",
+            "少段",
+            "快",
+            "慢"
+          ]
+        },
+        {
+          "slug": "toc",
+          "title": "目录高亮",
+          "hint": "锚点高亮",
+          "desc": "目录联动",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "toc",
+          "presets": [
+            "顶栏",
+            "侧栏",
+            "密",
+            "疏",
+            "胶囊",
+            "下划线"
+          ]
+        },
+        {
+          "slug": "cover",
+          "title": "封面揭开",
+          "hint": "封面滚走",
+          "desc": "封面层",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "cover",
+          "presets": [
+            "高封面",
+            "矮封面",
+            "渐变",
+            "纯色",
+            "字大",
+            "字小"
+          ]
+        },
+        {
+          "slug": "timeline",
+          "title": "滚动时间线",
+          "hint": "竖向时间线",
+          "desc": "时间线",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "timeline",
+          "presets": [
+            "紧凑",
+            "宽松",
+            "彩点",
+            "单色",
+            "卡片",
+            "纯文"
+          ]
+        },
+        {
+          "slug": "lazy-img",
+          "title": "图片懒显",
+          "hint": "滚入显图",
+          "desc": "懒显卡片",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "lazy-img",
+          "presets": [
+            "淡入",
+            "上滑",
+            "快",
+            "慢",
+            "网格",
+            "单列"
+          ]
+        },
+        {
+          "slug": "stagger-grid",
+          "title": "交错网格",
+          "hint": "网格交错显",
+          "desc": "交错入场",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "stagger-grid",
+          "presets": [
+            "3列",
+            "4列",
+            "快",
+            "慢",
+            "对角",
+            "行优"
+          ]
+        },
+        {
+          "slug": "totop",
+          "title": "回顶气泡",
+          "hint": "回顶按钮",
+          "desc": "回顶",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "totop",
+          "presets": [
+            "右下",
+            "左下",
+            "大",
+            "小",
+            "渐显",
+            "常显"
+          ]
+        },
+        {
+          "slug": "story",
+          "title": "滚动叙事",
+          "hint": "长文叙事",
+          "desc": "叙事滚屏",
+          "tag": "scroll",
+          "mod": "kit-scroll",
+          "fn": "mount",
+          "variant": "story",
+          "presets": [
+            "短章",
+            "长章",
+            "大字",
+            "小字",
+            "插图",
+            "纯文"
           ]
         }
       ]
     }
   ],
-  "totalDemos": 181
+  "totalDemos": 402
 }

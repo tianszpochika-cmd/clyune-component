@@ -1,23 +1,39 @@
 import { makeCanvas, loop, localPoint, bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 
-const SIM_PRESETS = ['弹球墙','多重力','弹簧链','碰撞盒','漂浮气泡','摆锤','沙漏粒子','磁力点','弹性绳','台球'];
+const FAMILIES = ["wall-ball", "multigrav", "spring", "box-collide", "bubbles", "pendulum", "hourglass", "magnet", "rope", "billiard", "orbit-p", "softbody"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'wall-ball').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'wall-ball';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-physics',
-    title: '物理模拟实验室',
-    fallbackVariant: 'sim',
-    presets: SIM_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, size: true, count: true }),
     remountKeys: ['count'],
-    mapVariant: (_f, n) => `sim-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'sim-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'wall-ball-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  // multi-segment slugs like wall-ball
+  if (!FAMILIES.includes(family)) {{
+    // try progressive join
+    for (let i = partsId.length - 1; i >= 1; i--) {{
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) {{ family = cand; break; }}
+    }}
+  }}
+  if (!FAMILIES.includes(family)) {{
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }}
+  const n = FAMILIES.indexOf(family) + 1;
   const ctrl = opts._controls || {};
   const { stage } = bar(host, id, `<button class="btn" data-add>Add</button>`);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);

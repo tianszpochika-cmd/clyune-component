@@ -29,12 +29,17 @@ const PRESETS = {
   kenburns: ['默认','慢推','对角','急拉'],
   shake: ['左右','上下','旋转','弹性','心跳','震动条'],
   keyseq: ['行走循环','加载变形','颜色节拍','路径感位移','缩放呼吸组合','旋转+位移','闪烁摩斯','多段叙事'],
+  neumorph: ['凸起','凹陷','软','硬','彩光','单'],
+  'cursor-fx': ['环','点','拖尾','混合','大','小'],
+  'text-stroke': ['细','粗','快','慢','霓虹','单'],
+  'border-beam': ['快','慢','粗光','细光','双色','单色'],
+  spotlight: ['小光','大光','强','弱','彩','白'],
 };
 
 export function mount(host, opts = {}) {
   const { family: kind, style: initialStyle } = parseVariant(opts.variant || 'pulse', 'pulse');
   const presets = FAMILY_PRESETS[`kit-css:${kind}`] || PRESETS[kind] || ['默认'];
-  const titles = { pulse:'脉冲环', loader:'加载器', hover:'悬停动效', grad:'渐变流动', ease:'缓动曲线', spring:'弹簧感', stagger:'交错入场', flip:'FLIP 布局', clip:'Clip-path', xform3d:'3D Transform', trans:'过渡属性', parallax:'视差', filter:'滤镜动效', blend:'混合模式', skeleton:'骨架屏', progress:'进度条', ripple:'涟漪', accordion:'手风琴', modal:'弹层进出', carousel:'轮播', reveal:'揭示', neon:'霓虹', liquid:'液态', marquee:'跑马灯', kenburns:'Ken Burns', shake:'抖动反馈', keyseq:'关键帧序列' };
+  const titles = { pulse:'脉冲环', loader:'加载器', hover:'悬停动效', grad:'渐变流动', ease:'缓动曲线', spring:'弹簧感', stagger:'交错入场', flip:'FLIP 布局', clip:'Clip-path', xform3d:'3D Transform', trans:'过渡属性', parallax:'视差', filter:'滤镜动效', blend:'混合模式', skeleton:'骨架屏', progress:'进度条', ripple:'涟漪', accordion:'手风琴', modal:'弹层进出', carousel:'轮播', reveal:'揭示', neon:'霓虹', liquid:'液态', marquee:'跑马灯', kenburns:'Ken Burns', shake:'抖动反馈', keyseq:'关键帧序列', neumorph:'新拟态', 'cursor-fx':'自定义光标', 'text-stroke':'文字描边动', 'border-beam':'边框光束', spotlight:'聚光跟随' };
 
   const needsEasing = kind === 'ease' || kind === 'trans' || kind === 'spring';
   const params = defaultParams({ color: true, speed: true, size: true, easing: needsEasing });
@@ -211,7 +216,27 @@ export function mount(host, opts = {}) {
     .blend-stage{position:relative;width:min(360px,90%);height:200px;border-radius:16px;overflow:hidden;background:#111}
     .blend-stage .a,.blend-stage .b{position:absolute;width:160px;height:160px;border-radius:50%;top:20px}
     .blend-stage .a{left:40px;background:var(--c)}.blend-stage .b{right:40px;background:#22d3ee}
-  `);
+  
+    .neu-card{width:min(220px,70%);aspect-ratio:1;border-radius:24px;display:grid;place-items:center;font-weight:800;color:#c7d2fe;
+      background:#1a2440;box-shadow:10px 10px 24px #0b1020, -8px -8px 20px #24314f;cursor:pointer}
+    .neu-card.in{box-shadow:inset 8px 8px 18px #0b1020, inset -6px -6px 14px #24314f}
+    .cur-stage{position:absolute;inset:0;display:grid;place-items:center;cursor:none}
+    .cur-ring{position:absolute;width:36px;height:36px;border:2px solid var(--c);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:width .15s,height .15s}
+    .cur-dot{position:absolute;width:6px;height:6px;background:var(--c);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)}
+    .stroke-t{font-size:clamp(36px,8vw,72px);font-weight:900;color:transparent;-webkit-text-stroke:2px var(--c);
+      background:linear-gradient(90deg,var(--c),#22d3ee,var(--c));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+      animation:flowStroke calc(3s / var(--spd)) linear infinite}
+    @keyframes flowStroke{to{background-position:200% 0;-webkit-text-stroke-color:#22d3ee}}
+    .beam-card{position:relative;width:min(280px,80%);aspect-ratio:16/10;border-radius:16px;display:grid;place-items:center;font-weight:800;color:#e8eefc;background:#121a2f;overflow:hidden}
+    .beam-card::before{content:'';position:absolute;inset:-50%;background:conic-gradient(from var(--ang,0deg),transparent 0 70%,var(--c) 80%,#22d3ee 88%,transparent 95%);
+      animation:spinBeam calc(2.5s / var(--spd)) linear infinite}
+    .beam-card::after{content:'';position:absolute;inset:2px;border-radius:14px;background:#121a2f}
+    .beam-card span{position:relative;z-index:1}
+    @keyframes spinBeam{to{--ang:360deg;transform:rotate(1turn)}}
+    .spot-card{width:min(320px,86%);aspect-ratio:16/10;border-radius:16px;display:grid;place-items:center;font-weight:800;color:#e8eefc;
+      background:radial-gradient(circle at var(--sx,50%) var(--sy,50%), color-mix(in srgb,var(--c) 55%,transparent), #121a2f 42%);
+      border:1px solid #24314f;cursor:crosshair}
+`);
 
   const root = document.createElement('div');
   root.className = 'kit-css';
@@ -237,6 +262,35 @@ export function mount(host, opts = {}) {
   let handlers = {};
 
   function n() { return (live.style || 0) + 1; }
+    if (kind === 'neumorph') {
+      const el = root.querySelector('[data-neu]');
+      handlers.trigger = () => el?.classList.toggle('in');
+      el?.addEventListener('click', () => handlers.trigger?.());
+    }
+    if (kind === 'cursor-fx') {
+      const stageEl = root.querySelector('[data-cur]');
+      const ring = root.querySelector('[data-ring]');
+      const dot = root.querySelector('[data-dot]');
+      const onMove = (e) => {
+        const r = stageEl.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; }
+        if (dot) { dot.style.left = x + 'px'; dot.style.top = y + 'px'; }
+      };
+      stageEl?.addEventListener('pointermove', onMove);
+      disposers.push(() => stageEl?.removeEventListener('pointermove', onMove));
+    }
+    if (kind === 'spotlight') {
+      const el = root.querySelector('[data-spot]');
+      const onMove = (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
+        el.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+      };
+      el?.addEventListener('pointermove', onMove);
+      disposers.push(() => el?.removeEventListener('pointermove', onMove));
+    }
+
   function applyLive() {
     const c = live.color || '#818cf8';
     const spd = String(live.speed || 1);
@@ -320,6 +374,11 @@ export function mount(host, opts = {}) {
     if (kind === 'kenburns') return `<div class="kb"></div>`;
     if (kind === 'shake') return `<div class="shake-box" data-shake>Shake me</div>`;
     if (kind === 'keyseq') return `<div class="box" data-keyseq style="animation:kp calc(1.2s / var(--spd)) ease-in-out infinite">KF</div>`;
+    if (kind === 'neumorph') return `<div class="neu-card" data-neu>NEUMO</div>`;
+    if (kind === 'cursor-fx') return `<div class="cur-stage" data-cur><div class="cur-ring" data-ring></div><div class="cur-dot" data-dot></div><span style="color:var(--muted);font-size:13px">移动指针</span></div>`;
+    if (kind === 'text-stroke') return `<div class="stroke-t" data-st>STROKE</div>`;
+    if (kind === 'border-beam') return `<div class="beam-card" data-beam><span>BEAM</span></div>`;
+    if (kind === 'spotlight') return `<div class="spot-card" data-spot><span>SPOTLIGHT</span></div>`;
     return `<div class="grad-flow">${kind}</div>`;
   }
 
@@ -472,6 +531,35 @@ export function mount(host, opts = {}) {
       const cls = ['go-x','go-y','go-r','go-x','go-y','go-r'][si % 6];
       handlers.trigger = () => { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
       el?.addEventListener('click', handlers.trigger);
+    }
+
+    if (kind === 'neumorph') {
+      const el = root.querySelector('[data-neu]');
+      handlers.trigger = () => el?.classList.toggle('in');
+      el?.addEventListener('click', () => handlers.trigger?.());
+    }
+    if (kind === 'cursor-fx') {
+      const stageEl = root.querySelector('[data-cur]');
+      const ring = root.querySelector('[data-ring]');
+      const dot = root.querySelector('[data-dot]');
+      const onMove = (e) => {
+        const r = stageEl.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        if (ring) { ring.style.left = x + 'px'; ring.style.top = y + 'px'; }
+        if (dot) { dot.style.left = x + 'px'; dot.style.top = y + 'px'; }
+      };
+      stageEl?.addEventListener('pointermove', onMove);
+      disposers.push(() => stageEl?.removeEventListener('pointermove', onMove));
+    }
+    if (kind === 'spotlight') {
+      const el = root.querySelector('[data-spot]');
+      const onMove = (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%');
+        el.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%');
+      };
+      el?.addEventListener('pointermove', onMove);
+      disposers.push(() => el?.removeEventListener('pointermove', onMove));
     }
   }
 

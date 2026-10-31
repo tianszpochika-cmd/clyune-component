@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultP
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
-const TITLES={stroke:'描边路径','icon-anim':'图标动效',morph:'形变 Morph',smil:'SMIL/CSS',dash:'虚线流转',drawtext:'文字描边',ring:'环形进度','filter-svg':'SVG 滤镜',mask:'遮罩',follow:'路径跟随','blob-svg':'SVG Blob','chart-draw':'图表描出',sprite:'图标精灵','gradient-svg':'渐变动画'};
+const TITLES={stroke:'描边路径','icon-anim':'图标动效',morph:'形变 Morph',smil:'SMIL/CSS',dash:'虚线流转',drawtext:'文字描边',ring:'环形进度','filter-svg':'SVG 滤镜',mask:'遮罩',follow:'路径跟随','blob-svg':'SVG Blob','chart-draw':'图表描出',sprite:'图标精灵','gradient-svg':'渐变动画','line-draw':'线条生长','check-morph':'勾选变形','loader-svg':'SVG 加载弧','menu-morph':'菜单变形'};
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-svg',
@@ -288,6 +288,36 @@ function mountLegacy(host, opts = {}) {
         <rect x="30" y="40" width="140" height="120" rx="20" fill="url(#lg)" stroke="none"/>
         <text x="100" y="115" text-anchor="middle" fill="#0b1020" stroke="none" font-size="22">GRAD</text>
       </svg>`;
+    } else if (kind === 'line-draw' || kind === 'linedraw') {
+      root.innerHTML = `<svg viewBox="0 0 200 200"><path id="sp" d="M20 100 C 60 20, 140 180, 180 100" fill="none" stroke="${c}" stroke-width="4"/></svg>`;
+      setTimeout(() => strokeAnim(root.querySelector('#sp')), 40);
+    } else if (kind === 'check-morph' || kind === 'checkmorph') {
+      root.innerHTML = `<div class="ico" data-ck style="width:96px;height:96px;cursor:pointer"><svg viewBox="0 0 140 140" stroke="${c}" fill="none" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="30" y="30" width="80" height="80" rx="16" data-box/>
+        <path d="M45 72 L65 92 L100 50" data-chk style="stroke-dasharray:120;stroke-dashoffset:120;opacity:0"/></svg></div>`;
+      let on = false;
+      root.querySelector('[data-ck]').onclick = () => {
+        on = !on;
+        const chk = root.querySelector('[data-chk]'); const box = root.querySelector('[data-box]');
+        if (on) { box.style.opacity='.35'; chk.style.opacity='1'; chk.style.transition=`stroke-dashoffset ${0.45/spd}s ease`; chk.style.strokeDashoffset='0'; }
+        else { chk.style.strokeDashoffset='120'; chk.style.opacity='0'; box.style.opacity='1'; }
+      };
+    } else if (kind === 'loader-svg' || kind === 'loadersvg') {
+      root.innerHTML = `<svg viewBox="0 0 120 120" width="120" height="120"><circle cx="60" cy="60" r="42" stroke="#24314f" stroke-width="8" fill="none"/>
+        <circle cx="60" cy="60" r="42" stroke="${c}" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="80 180">
+          <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="${1.2/spd}s" repeatCount="indefinite"/>
+        </circle></svg>`;
+    } else if (kind === 'menu-morph' || kind === 'menumorph') {
+      root.innerHTML = `<div class="ico" data-m style="width:88px;height:88px;cursor:pointer"><svg viewBox="0 0 140 140" stroke="${c}" fill="none" stroke-width="10" stroke-linecap="round">
+        <path data-a d="M40 50 H100"/><path data-b d="M40 70 H100"/><path data-c d="M40 90 H100"/></svg></div>`;
+      let open = false;
+      root.querySelector('[data-m]').onclick = () => {
+        open = !open;
+        const a = root.querySelector('[data-a]'), b = root.querySelector('[data-b]'), c = root.querySelector('[data-c]');
+        [a,b,c].forEach((el) => { el.style.transition = `all ${0.35/spd}s`; el.style.transformOrigin='70px 70px'; });
+        if (open) { a.style.transform='translateY(20px) rotate(45deg)'; b.style.opacity='0'; c.style.transform='translateY(-20px) rotate(-45deg)'; }
+        else { a.style.transform=''; b.style.opacity='1'; c.style.transform=''; }
+      };
     } else {
       // stroke default
       const d = paths[((n - 1) % 12) + 1];

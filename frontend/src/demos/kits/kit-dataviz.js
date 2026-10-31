@@ -3,22 +3,36 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
-const DV_PRESETS = ['热力格子','雷达图','桑基简化','气泡散点','日历热力','旭日简化','和弦弧','箱线','平行坐标','流图','词云简化','层级列表','漏斗','烛台','树状冰柱'];
+const FAMILIES = ["heatmap", "radar", "sankey", "bubbles", "cal-heat", "sunburst", "chord", "boxplot", "parallel", "stream", "wordcloud", "hierarchy", "funnel", "candle", "icicle", "arc"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'heatmap').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'heatmap';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-dataviz',
-    title: '数据可视化实验室',
-    fallbackVariant: 'viz',
-    presets: DV_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({color:true,speed:true,size:true}),
-    mapVariant: (_f, n) => `viz-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'viz-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'heatmap-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {{
+    for (let i = partsId.length - 1; i >= 1; i--) {{
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) {{ family = cand; break; }}
+    }}
+  }}
+  if (!FAMILIES.includes(family)) {{
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }}
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id, `<button class="btn" data-gen>Regenerate</button>`);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

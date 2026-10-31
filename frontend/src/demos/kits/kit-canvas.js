@@ -2,7 +2,7 @@ import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultP
 import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
-const TITLES={orbits:'轨道粒子',trail:'指针拖尾',blob:'软体 Blob',rain:'粒子雨',wave:'波浪',noise:'噪声场',flock:'群体',burst:'爆发',flow:'流场',gridwave:'网格起伏',ink:'墨水扩散',aurora:'极光',constellation:'星座连线',sand:'沙粒',kaleido:'万花筒',lightning:'闪电',cloth:'布料感',spiral:'螺旋采样',tunnel:'隧道穿梭',fire:'火焰',smoke:'烟雾',reactdiff:'反应扩散',isometric:'等距方块'};
+const TITLES={orbits:'轨道粒子',trail:'指针拖尾',blob:'软体 Blob',rain:'粒子雨',wave:'波浪',noise:'噪声场',flock:'群体',burst:'爆发',flow:'流场',gridwave:'网格起伏',ink:'墨水扩散',aurora:'极光',constellation:'星座连线',sand:'沙粒',kaleido:'万花筒',lightning:'闪电',cloth:'布料感',spiral:'螺旋采样',tunnel:'隧道穿梭',fire:'火焰',smoke:'烟雾',reactdiff:'反应扩散',isometric:'等距方块',metaballs2d:'2D Metaball',pixelate:'像素化游标',ascii:'ASCII 艺术','ripple-c':'水波纹点击'};
 export function mount(host, opts = {}) {
   return withControls(host, opts, {
     kitKey: 'kit-canvas',
@@ -65,6 +65,11 @@ function mountLegacy(host, opts = {}) {
   const onDown = (e) => { mouse.down = true; onMove(e); burst(); };
   const onUp = () => { mouse.down = false; };
   const burst = () => {
+    if (kind === 'ripple-c') {
+      if (!state._rips) state._rips = [];
+      state._rips.push({ x: mouse.x || state.w/2, y: mouse.y || state.h/2, r: 4, a: 1 });
+      return;
+    }
     fieldSeed = Math.random() * 1000;
     if (kind === 'burst' || kind === 'lightning' || kind === 'ink' || kind.startsWith('trail') === false) {
       for (let i = 0; i < 36; i++) {
@@ -465,6 +470,70 @@ function mountLegacy(host, opts = {}) {
         ctx.closePath();
         ctx.fillStyle = c; ctx.fill();
       }
+      return;
+    }
+
+
+    if (kind === 'metaballs2d') {
+      ctx.fillStyle = '#060a14'; ctx.fillRect(0, 0, w, h);
+      const blobs = [
+        { x: w*0.35 + Math.sin(t*1.2)*40, y: h*0.45 + Math.cos(t)*30, r: 55*sz },
+        { x: mouse.x || w*0.6, y: mouse.y || h*0.5, r: 48*sz },
+        { x: w*0.5 + Math.cos(t*0.8)*50, y: h*0.6 + Math.sin(t*1.1)*35, r: 40*sz },
+      ];
+      const img = ctx.createImageData(w, h);
+      const [cr,cg,cb] = [parseInt((color||'#818cf8').slice(1,3),16)||129, parseInt((color||'#818cf8').slice(3,5),16)||140, parseInt((color||'#818cf8').slice(5,7),16)||248];
+      for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+        let sum = 0;
+        for (const b of blobs) { const dx=x-b.x, dy=y-b.y; sum += (b.r*b.r) / (dx*dx + dy*dy + 1); }
+        if (sum > 1) {
+          const a = Math.min(255, (sum - 1) * 180);
+          for (let oy=0; oy<2 && y+oy<h; oy++) for (let ox=0; ox<2 && x+ox<w; ox++) {
+            const i = ((y+oy)*w + (x+ox)) * 4;
+            img.data[i]=cr; img.data[i+1]=cg; img.data[i+2]=cb; img.data[i+3]=a;
+          }
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      return;
+    }
+    if (kind === 'pixelate') {
+      ctx.fillStyle = '#060a14'; ctx.fillRect(0, 0, w, h);
+      const cell = Math.max(4, 8 * sz);
+      const mx = mouse.x || w/2, my = mouse.y || h/2;
+      for (let y = 0; y < h; y += cell) for (let x = 0; x < w; x += cell) {
+        const d = Math.hypot(x - mx, y - my);
+        const on = d < 90 * sz;
+        ctx.fillStyle = on ? color : `hsla(${(x+y+t*40)%360} 40% 20% / .9)`;
+        ctx.fillRect(x, y, cell - 1, cell - 1);
+      }
+      return;
+    }
+    if (kind === 'ascii') {
+      ctx.fillStyle = '#060a14'; ctx.fillRect(0, 0, w, h);
+      const glyphs = ' .:-=+*#%@';
+      const cell = Math.max(6, 10 * sz);
+      ctx.font = `${cell}px monospace`;
+      for (let y = 0; y < h; y += cell) for (let x = 0; x < w; x += cell) {
+        const v = 0.5 + 0.5 * Math.sin(x*0.05 + t) * Math.cos(y*0.04 + t*0.7);
+        const g = glyphs[(v * (glyphs.length - 1)) | 0];
+        ctx.fillStyle = color; ctx.globalAlpha = 0.35 + v * 0.65;
+        ctx.fillText(g, x, y);
+      }
+      ctx.globalAlpha = 1;
+      return;
+    }
+    if (kind === 'ripple-c') {
+      ctx.fillStyle = 'rgba(6,10,20,0.18)'; ctx.fillRect(0, 0, w, h);
+      if (!state._rips) state._rips = [];
+      for (const r of state._rips) {
+        r.r += 80 * dt * spd; r.a -= 0.35 * dt * spd;
+        if (r.a <= 0) continue;
+        ctx.beginPath(); ctx.strokeStyle = color; ctx.globalAlpha = Math.max(0, r.a);
+        ctx.lineWidth = 2 * sz; ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2); ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      state._rips = state._rips.filter((r) => r.a > 0);
       return;
     }
 

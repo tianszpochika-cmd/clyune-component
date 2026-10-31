@@ -1,17 +1,18 @@
 import { makeCanvas, loop, localPoint, bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 
-const SHADER_IDS = ['voronoi','warp','spiral','checker','tunnel','ripple','stars','lava','grid','kaleido','hsv','scan','metaball2','fog','stripes','circle-sdf','water','crt','julia','snow','oil'];
-const SHADER_PRESETS = ['Voronoi','域扭曲','螺旋','棋盘扭曲','隧道','涟漪','星野','熔岩','透视网格','万花筒','HSV 旋转','扫描线','双 Metaball','体积雾','流光条纹','SDF 圆','水面','CRT','Julia','飘雪','油画噪声'];
+const FAMILIES = ["voronoi", "warp", "spiral", "checker", "tunnel", "ripple", "stars", "lava", "grid3d", "kaleido", "hsv", "scan", "metaball", "fog", "stripes", "circle-sdf", "water", "crt", "julia-sh", "snow-sh", "oil"];
+const SLUG_TO_SHADER = {"voronoi": "voronoi", "warp": "warp", "spiral": "spiral", "checker": "checker", "tunnel": "tunnel", "ripple": "ripple", "stars": "stars", "lava": "lava", "grid3d": "grid", "kaleido": "kaleido", "hsv": "hsv", "scan": "scan", "metaball": "metaball2", "fog": "fog", "stripes": "stripes", "circle-sdf": "circle-sdf", "water": "water", "crt": "crt", "julia-sh": "julia", "snow-sh": "snow", "oil": "oil"};
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'voronoi').replace(/-\d+$/, '').replace(/^shader-/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'voronoi';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-webgl',
-    title: '着色器实验室',
-    fallbackVariant: 'shader-lab',
-    presets: SHADER_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, size: true }),
     remountKeys: [],
-    mapVariant: (_f, n) => `shader-${SHADER_IDS[(n - 1) % SHADER_IDS.length]}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
@@ -51,7 +52,17 @@ function frag(kind) {
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = (opts.variant || 'shader-warp').replace('shader-', '');
+  let raw = String(opts.variant || 'voronoi-1');
+  const partsId = raw.split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : raw.replace(/^shader-/, '');
+  family = family.replace(/^shader-/, '');
+  if (!FAMILIES.includes(family)) {
+    // legacy shader-voronoi etc
+    const key = raw.replace(/^shader-/, '').replace(/-\d+$/, '');
+    family = FAMILIES.includes(key) ? key : (Object.keys(SLUG_TO_SHADER).find(k => SLUG_TO_SHADER[k] === key) || 'voronoi');
+  }
+  const id = SLUG_TO_SHADER[family] || family;
   const ctrl = opts._controls || {};
   const { stage } = bar(host, `shader-${id}`);
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

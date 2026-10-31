@@ -3,22 +3,30 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 import { libs } from '../../lib/load.js';
 
-const SEQ_PRESETS = ['弹跳入场','交错卡片','路径跟随','旋转出场','弹性缩放','颜色闪烁','翻转牌','进度环','打字机','视差层','网格交错','时间轴 scrub'];
+const FAMILIES = ["bounce", "stagger", "path", "spin-out", "elastic", "colorflash", "flipcard", "ring", "type", "parallax-g", "grid-stagger", "scrub"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'bounce').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : (parsed.startsWith('seq') ? FAMILIES[0] : 'bounce');
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-gsap',
-    title: 'GSAP 序列实验室',
-    fallbackVariant: 'seq',
-    presets: SEQ_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({color:true,speed:true,size:true}),
-    mapVariant: (_family, n) => `seq-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 async function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'seq-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'bounce-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id, `<button class="btn" data-play>Play</button><button class="btn" data-rev>Reverse</button>`);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

@@ -1,20 +1,30 @@
 import { addStyle, bar, hsl, defaultParams, readLiveControls } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const FAMILIES = ["parallax", "progress", "pin", "reveal", "scale-in", "h-gallery", "stack", "wipe-text", "path-draw", "countup", "bg-shift", "split-wipe", "snap", "toc", "cover", "timeline", "lazy-img", "stagger-grid", "totop", "story"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'parallax').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'parallax';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-scroll',
-    title: '滚动特效实验室',
-    fallbackVariant: 'scroll-lab',
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true }),
-    mapVariant: (_family, n) => `s-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 's-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'parallax-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);

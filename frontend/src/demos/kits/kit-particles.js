@@ -1,21 +1,33 @@
-import { makeCanvas, loop, localPoint, bar, defaultParams, readLiveControls, colorToRgb } from './_shared.js';
+import { makeCanvas, loop, localPoint, bar, defaultParams, parseVariant, readLiveControls, colorToRgb } from './_shared.js';
 import { withControls } from './withControls.js';
 
+const FAMILIES = ["starfield", "snow", "goldrain", "smoke-col", "firefly", "fountain", "attractor", "repulsor", "follow-swarm", "explode", "galaxy", "heartfield", "text-dots", "grid-pulse", "wave-part", "comet", "bubbles", "leaves", "dust", "neon-dots", "quantum", "net", "blackhole", "rainbow"];
+const TITLES = {starfield:'星空',snow:'降雪',goldrain:'金雨','smoke-col':'烟柱',firefly:'萤火',fountain:'火花喷泉',attractor:'引力井',repulsor:'排斥场','follow-swarm':'跟随群',explode:'爆炸碎屑',galaxy:'螺旋星系',heartfield:'心形场','text-dots':'文字点阵','grid-pulse':'网格跳动','wave-part':'波浪粒子',comet:'彗星',bubbles:'泡泡上升',leaves:'落叶',dust:'沙尘','neon-dots':'霓虹点',quantum:'量子抖',net:'连接网',blackhole:'黑洞吸积',rainbow:'彩虹喷泉'};
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'starfield').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : (FAMILIES.includes(String(opts.variant||'').split('-')[0]) ? String(opts.variant).split('-')[0] : 'starfield');
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-particles',
-    title: '粒子实验室',
-    fallbackVariant: 'particles-lab',
+    title: TITLES[fam] || '粒子',
+    fallbackVariant: fam,
     params: defaultParams({ color: true, speed: true, size: true, count: true }),
     remountKeys: ['count'],
-    mapVariant: (_family, n) => `p-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'p-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'starfield-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  const styleN = /^\d+$/.test(last) ? parseInt(last, 10) : 1;
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const ctrl = opts._controls || {};
   const { stage } = bar(host, id, `<button class="btn" data-burst>Burst</button>`);
   const { canvas, ctx, state, dispose } = makeCanvas(stage);

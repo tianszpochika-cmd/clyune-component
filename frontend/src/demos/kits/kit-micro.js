@@ -3,22 +3,37 @@ import { withControls } from './withControls.js';
 import { FAMILY_PRESETS } from './presets.js';
 
 
-const MI_PRESETS = ['心跳赞','勾选弹跳','发送纸飞机','复制成功','下载进度','骨架屏','Toast','徽章跳动','拖动阈值','长按确认','摇一摇提示','滑动验证','双击放大','悬停磁吸','按压波纹'];
+const FAMILIES = ["heart", "check", "send", "copy", "download", "skeleton", "toast", "badge", "drag", "longpress", "shake", "slide-verify", "dblzoom", "hover-mag", "press-ripple", "toggle-spring"];
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const parsed = String(opts.variant || 'heart').replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'heart';
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-micro',
-    title: '微交互实验室',
-    fallbackVariant: 'mi',
-    presets: MI_PRESETS,
+    title: fam,
+    fallbackVariant: fam,
     params: defaultParams({color:true,speed:true,size:true}),
-    mapVariant: (_f, n) => `mi-${n}`,
+    mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy,
   });
 }
 
+
 function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'mi-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const id = opts.variant || 'heart-1';
+  const partsId = String(id).split('-');
+  const last = partsId[partsId.length - 1];
+  let family = /^\d+$/.test(last) ? partsId.slice(0, -1).join('-') : String(id);
+  if (!FAMILIES.includes(family)) {
+    for (let i = partsId.length - 1; i >= 1; i--) {
+      const cand = partsId.slice(0, i).join('-');
+      if (FAMILIES.includes(cand)) { family = cand; break; }
+    }
+  }
+  if (!FAMILIES.includes(family)) {
+    const num = parseInt(String(id).split('-').pop(), 10) || 1;
+    family = FAMILIES[(num - 1) % FAMILIES.length];
+  }
+  const n = FAMILIES.indexOf(family) + 1;
   const { stage } = bar(host, id);
   const ctrl = opts._controls || {};
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
