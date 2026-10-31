@@ -94,56 +94,259 @@ def pack(n, cat, kit, items):
 VARIANTS = []
 
 # --- expand existing via kits ---
+
 css_fx_more = [
   (f"pulse-{i}", f"脉冲环 #{i}", "拖动滑块调节速度", f"CSS 脉冲环变体 #{i}，可调周期与颜色。", "pulse", f"pulse-{i}")
   for i in range(1, 9)
 ] + [
   (f"loader-{i}", f"加载器样式 {name}", "悬停暂停", f"纯 CSS 加载动画：{name}", "loader", f"loader-{i}")
-  for i, name in enumerate(["环","点阵","条","方块翻转","呼吸","轨道","涟漪","交叉"], 1)
+  for i, name in enumerate(["环","点阵","条","方块翻转","呼吸","轨道","涟漪","交叉","双环","弹跳点","旋转三角","进度弧"], 1)
 ] + [
   (f"hover-{i}", f"悬停动效 {name}", "悬停卡片", f"卡片悬停：{name}", "hover", f"hover-{i}")
-  for i, name in enumerate(["上浮","缩放","边光","扫光","倾斜","边框跑马","阴影扩散","模糊聚焦"], 1)
+  for i, name in enumerate(["上浮","缩放","边光","扫光","倾斜","边框跑马","阴影扩散","模糊聚焦","霓虹描边","磁吸位移","下划线展开","背景填充"], 1)
 ] + [
   (f"grad-{i}", f"渐变流动 {i}", "自动播放", f"多色渐变背景流动 #{i}", "gradient", f"grad-{i}")
-  for i in range(1, 7)
+  for i in range(1, 9)
+] + [
+  (f"ease-{i}", f"缓动曲线 {name}", "点击重播对比", f"CSS transition-timing-function：{name}", "easing", f"ease-{i}")
+  for i, name in enumerate(["linear","ease","ease-in","ease-out","ease-in-out","cubic-in","cubic-out","back","elastic感","steps","bounce感","自定义贝塞尔"], 1)
+] + [
+  (f"spring-{i}", f"弹簧感 {name}", "点击触发", f"近似弹簧/回弹：{name}", "spring", f"spring-{i}")
+  for i, name in enumerate(["弹入","弹出","过冲缩放","橡皮筋","沉降回弹","左右晃回","旋转过冲","连环弹跳"], 1)
+] + [
+  (f"stagger-{i}", f"交错入场 {name}", "点击重播", f"子元素 stagger：{name}", "stagger", f"stagger-{i}")
+  for i, name in enumerate(["列表淡入","卡片瀑布","网格对角","字母拆分","从中心扩散","反向收起","缩放交错","旋转交错"], 1)
+] + [
+  (f"flip-{i}", f"FLIP 布局 {name}", "点击打乱/排序", f"First-Last-Invert-Play：{name}", "flip", f"flip-{i}")
+  for i, name in enumerate(["网格重排","列表排序","展开卡片","交换两格","过滤显隐","尺寸变形"], 1)
+] + [
+  (f"clip-{i}", f"Clip-path {name}", "悬停/点击变形", f"clip-path 动画：{name}", "clip", f"clip-{i}")
+  for i, name in enumerate(["圆揭示","菱形","多边形","斜切","星形","波浪边","对角擦除","圆形收缩","十字","胶囊"], 1)
+] + [
+  (f"xform3d-{i}", f"3D Transform {name}", "拖动/悬停旋转", f"perspective 三维：{name}", "3d", f"xform3d-{i}")
+  for i, name in enumerate(["立方体","翻转牌","旋转木马","层叠卡片","门轴打开","翻书","倾斜面板","球体感","棱柱","行列翻转"], 1)
+] + [
+  (f"trans-{i}", f"过渡属性 {name}", "悬停观察", f"CSS transition 专属属性：{name}", "transition", f"trans-{i}")
+  for i, name in enumerate(["颜色","宽高","透明度","变换","阴影","圆角","字号","边框","滤镜","复合多属性"], 1)
+] + [
+  (f"parallax-{i}", f"视差 {name}", "移动指针或滚动", f"CSS 视差层：{name}", "parallax", f"parallax-{i}")
+  for i, name in enumerate(["多层深度","指针跟随","背景慢移","前景快移","卡片深度","文字层差"], 1)
+] + [
+  (f"filter-{i}", f"滤镜动效 {name}", "拖动滑块", f"animated filter：{name}", "filter", f"filter-{i}")
+  for i, name in enumerate(["模糊进出","饱和脉动","色相旋转","对比闪","灰度到彩色","霓虹发光","暗角呼吸","色散感"], 1)
+] + [
+  (f"blend-{i}", f"混合模式 {name}", "移动色块", f"mix-blend-mode：{name}", "blend", f"blend-{i}")
+  for i, name in enumerate(["screen","multiply","overlay","difference","exclusion","color-dodge","hard-light","soft-light"], 1)
+] + [
+  (f"skeleton-{i}", f"骨架屏 {name}", "自动闪烁", f"Skeleton loading：{name}", "skeleton", f"skeleton-{i}")
+  for i, name in enumerate(["卡片","列表","头像行","图表占位","文章段落","网格瓷砖"], 1)
+] + [
+  (f"progress-{i}", f"进度条 {name}", "点击开始", f"进度动效：{name}", "progress", f"progress-{i}")
+  for i, name in enumerate(["线性","条纹不确定","环形","半环","分段步进","水波填充","像素块","渐变扫"], 1)
+] + [
+  (f"ripple-{i}", f"涟漪 {name}", "点击产生涟漪", f"Material/水波纹：{name}", "ripple", f"ripple-{i}")
+  for i, name in enumerate(["圆心扩散","按钮内裁切","双波","彩色","方块波","长按放大"], 1)
+] + [
+  (f"accordion-{i}", f"手风琴 {name}", "点击展开收起", f"高度过渡手风琴：{name}", "accordion", f"accordion-{i}")
+  for i, name in enumerate(["单开","多开","图标旋转","淡入内容","边框高亮","卡片式"], 1)
+] + [
+  (f"modal-{i}", f"弹层进出 {name}", "打开/关闭", f"Modal enter/exit：{name}", "modal", f"modal-{i}")
+  for i, name in enumerate(["淡入缩放","自下滑入","自右滑入","模糊背景","弹跳入","翻转入"], 1)
+] + [
+  (f"carousel-{i}", f"轮播 {name}", "箭头/自动播放", f"Carousel：{name}", "carousel", f"carousel-{i}")
+  for i, name in enumerate(["滑移","淡入淡出","3D 封面流","卡片堆","垂直","无限循环"], 1)
+] + [
+  (f"reveal-{i}", f"揭示 {name}", "点击/滚动触发", f"内容揭示：{name}", "reveal", f"reveal-{i}")
+  for i, name in enumerate(["遮罩擦除","百叶窗","圆形扩散","对角线","像素块","模糊清晰"], 1)
+] + [
+  (f"neon-{i}", f"霓虹 {name}", "自动呼吸", f"霓虹发光字/边：{name}", "neon", f"neon-{i}")
+  for i, name in enumerate(["文字","边框","按钮","图标","双色交替","故障闪"], 1)
+] + [
+  (f"liquid-{i}", f"液态 {name}", "悬停变形", f"液态/果冻感：{name}", "liquid", f"liquid-{i}")
+  for i, name in enumerate(["按钮变形","blob 边","水滴菜单","果冻点击","波浪底边","粘滞切换"], 1)
+] + [
+  (f"marquee-{i}", f"跑马灯 {name}", "悬停暂停", f"无限滚动：{name}", "marquee", f"marquee-{i}")
+  for i, name in enumerate(["横向文字","反向","双行","徽标带","垂直","变速"], 1)
+] + [
+  (f"kenburns-{i}", f"Ken Burns {i}", "自动推拉", f"图片缓动缩放平移 #{i}", "kenburns", f"kenburns-{i}")
+  for i in range(1, 5)
+] + [
+  (f"shake-{i}", f"抖动反馈 {name}", "点击触发", f"错误/提醒抖动：{name}", "shake", f"shake-{i}")
+  for i, name in enumerate(["左右","上下","旋转","弹性","心跳","震动条"], 1)
+] + [
+  (f"keyseq-{i}", f"关键帧序列 {name}", "播放控制", f"复杂 @keyframes：{name}", "keyframes", f"keyseq-{i}")
+  for i, name in enumerate(["行走循环","加载变形","颜色节拍","路径感位移","缩放呼吸组合","旋转+位移","闪烁摩斯","多段叙事"], 1)
 ]
 VARIANTS += pack(0, "css-fx", "kit-css", css_fx_more)
 
 canvas_more = [
   (f"orbits-{i}", f"轨道粒子 {i}", "移动指针扰动", f"多轨粒子系统变体 #{i}", "orbit", f"orbits-{i}")
-  for i in range(1, 8)
+  for i in range(1, 10)
 ] + [
   (f"trail-{i}", f"指针拖尾 {name}", "移动画出拖尾", f"指针拖尾效果：{name}", "trail", f"trail-{i}")
-  for i, name in enumerate(["霓虹","烟","星屑","墨迹","彩虹","像素","火花"], 1)
+  for i, name in enumerate(["霓虹","烟","星屑","墨迹","彩虹","像素","火花","光剑","萤火","水彩"], 1)
 ] + [
   (f"blob-{i}", f"软体 Blob {i}", "拖动变形", f"metaball 风格软体 #{i}", "blob", f"blob-{i}")
-  for i in range(1, 7)
+  for i in range(1, 8)
 ] + [
   (f"rain-{i}", f"粒子雨 {i}", "点击切换风向", f"重力粒子雨变体 #{i}", "rain", f"rain-{i}")
-  for i in range(1, 6)
+  for i in range(1, 8)
+] + [
+  (f"wave-{i}", f"波浪 {name}", "拖动振幅/频率", f"Canvas 波浪：{name}", "wave", f"wave-{i}")
+  for i, name in enumerate(["正弦叠层","干涉纹","液体面","声波","海岸线","多层视差波","极坐标波","噪声波"], 1)
+] + [
+  (f"noise-{i}", f"噪声场 {name}", "拖动缩放", f"程序噪声：{name}", "noise", f"noise-{i}")
+  for i, name in enumerate(["Value","FBM 流","域扭曲","云层","大理石","电浆","像素风","湍流"], 1)
+] + [
+  (f"flock-{i}", f"群体 {name}", "移动吸引点", f"Boids/群体：{name}", "flock", f"flock-{i}")
+  for i, name in enumerate(["鸟群","鱼群","避障","环绕","捕食逃逸","网格对齐"], 1)
+] + [
+  (f"burst-{i}", f"爆发 {name}", "点击爆发", f"粒子爆发：{name}", "burst", f"burst-{i}")
+  for i, name in enumerate(["烟花","彩纸","星爆","环波","像素碎","火花四射","爱心雨","字母喷"], 1)
+] + [
+  (f"flow-{i}", f"流场 {name}", "点击重置种子", f"向量场粒子：{name}", "flow", f"flow-{i}")
+  for i, name in enumerate(["旋涡","螺旋","网格风","噪声流","吸引子","双涡"], 1)
+] + [
+  (f"gridwave-{i}", f"网格起伏 {i}", "移动指针扰动", f"点阵/网格顶点波动 #{i}", "grid", f"gridwave-{i}")
+  for i in range(1, 7)
+] + [
+  (f"ink-{i}", f"墨水扩散 {i}", "点击滴墨", f"墨水/扩散模拟 #{i}", "ink", f"ink-{i}")
+  for i in range(1, 5)
+] + [
+  (f"aurora-{i}", f"极光 {i}", "自动流动", f"极光色带 #{i}", "aurora", f"aurora-{i}")
+  for i in range(1, 5)
+] + [
+  (f"constellation-{i}", f"星座连线 {i}", "移动成线", f"近邻连线星空 #{i}", "constellation", f"constellation-{i}")
+  for i in range(1, 5)
+] + [
+  (f"sand-{i}", f"沙粒 {i}", "点击倾倒", f"沙漏/沙堆简化 #{i}", "sand", f"sand-{i}")
+  for i in range(1, 4)
+] + [
+  (f"kaleido-{i}", f"万花筒 {i}", "移动图案", f"对称镜像绘制 #{i}", "kaleido", f"kaleido-{i}")
+  for i in range(1, 5)
+] + [
+  (f"lightning-{i}", f"闪电折线 {i}", "点击放雷", f"随机闪电路径 #{i}", "lightning", f"lightning-{i}")
+  for i in range(1, 4)
+] + [
+  (f"cloth-{i}", f"布料感 {i}", "拖拽扰动", f"弹簧网格布料简化 #{i}", "cloth", f"cloth-{i}")
+  for i in range(1, 4)
+] + [
+  (f"spiral-{i}", f"螺旋采样 {i}", "自动旋转", f"阿基米德/对数螺旋 #{i}", "spiral", f"spiral-{i}")
+  for i in range(1, 5)
+] + [
+  (f"tunnel-{i}", f"隧道穿梭 {i}", "前进感", f"2D 隧道伪 3D #{i}", "tunnel", f"tunnel-{i}")
+  for i in range(1, 4)
 ]
 VARIANTS += pack(0, "canvas", "kit-canvas", canvas_more)
 
 svg_more = [
   (f"stroke-{i}", f"描边路径 {name}", "点击重播", f"SVG stroke-dash 描边：{name}", "stroke", f"stroke-{i}")
-  for i, name in enumerate(["圆","星","心","波浪","折线","螺旋","六边形","字母"], 1)
+  for i, name in enumerate(["圆","星","心","波浪","折线","螺旋","六边形","字母","无穷","齿轮感","山脉","签名"], 1)
 ] + [
   (f"icon-anim-{i}", f"图标动效 {name}", "点击切换", f"SVG 图标状态切换：{name}", "icons", f"icon-{i}")
-  for i, name in enumerate(["汉堡","播放","爱心","铃铛","搜索","下载","设置","云"], 1)
+  for i, name in enumerate(["汉堡","播放","爱心","铃铛","搜索","下载","设置","云","勾选","箭头","菜单变X","加载弧"], 1)
 ] + [
   (f"morph-{i}", f"形变 Morph {i}", "点击变形", f"路径 morph 变体 #{i}", "morph", f"morph-{i}")
-  for i in range(1, 5)
+  for i in range(1, 10)
+] + [
+  (f"smil-{i}", f"SMIL/CSS 动画 {name}", "自动播放", f"SVG 声明式动画：{name}", "smil", f"smil-{i}")
+  for i, name in enumerate(["animate","animateTransform","路径上运动","颜色渐变","描边呼吸","缩放弹跳","旋转齿轮","闪烁点"], 1)
+] + [
+  (f"dash-{i}", f"虚线流转 {name}", "调节速度", f"stroke-dashoffset 循环：{name}", "dash", f"dash-{i}")
+  for i, name in enumerate(["圆环","方框","曲线","箭头流","虚线边框","多段色"], 1)
+] + [
+  (f"drawtext-{i}", f"文字描边 {name}", "点击重播", f"SVG 文字路径描边：{name}", "text", f"drawtext-{i}")
+  for i, name in enumerate(["单行","渐变描边","逐字","弧形字","填充延迟","中文"], 1)
+] + [
+  (f"ring-{i}", f"环形进度 {name}", "拖动数值", f"SVG 圆环进度：{name}", "ring", f"ring-{i}")
+  for i, name in enumerate(["单环","双环","刻度","渐变弧","缺口环","仪表针"], 1)
+] + [
+  (f"filter-svg-{i}", f"SVG 滤镜 {name}", "拖动参数", f"feGaussianBlur 等：{name}", "filter", f"filter-svg-{i}")
+  for i, name in enumerate(["模糊","阴影","浮雕","湍流噪","位移贴图","色彩矩阵","形态学","光晕"], 1)
+] + [
+  (f"mask-{i}", f"遮罩 {name}", "移动遮罩", f"SVG mask/clipPath：{name}", "mask", f"mask-{i}")
+  for i, name in enumerate(["圆形窥视","文字镂空","渐变淡出","条纹","菱形窗","跟随指针"], 1)
+] + [
+  (f"follow-{i}", f"路径跟随 {name}", "播放", f"物体沿 path 运动：{name}", "follow", f"follow-{i}")
+  for i, name in enumerate(["圆点","箭头朝向","多点队列","往返","变速","无限符"], 1)
+] + [
+  (f"blob-svg-{i}", f"SVG Blob {i}", "自动变形", f"path 插值有机形 #{i}", "blob", f"blob-svg-{i}")
+  for i in range(1, 6)
+] + [
+  (f"chart-draw-{i}", f"图表描出 {name}", "点击重播", f"折线/面积描画：{name}", "chart", f"chart-draw-{i}")
+  for i, name in enumerate(["折线","面积","柱生长","雷达","饼弧","散点连"], 1)
+] + [
+  (f"sprite-{i}", f"图标精灵 {name}", "悬停切换", f"SVG sprite / use：{name}", "sprite", f"sprite-{i}")
+  for i, name in enumerate(["状态色","线面切换","旋转集","大小集"], 1)
+] + [
+  (f"gradient-svg-{i}", f"渐变动画 {name}", "自动", f"linear/radialGradient 动画：{name}", "gradient", f"gradient-svg-{i}")
+  for i, name in enumerate(["线性扫","径向呼吸","锥感","双停色移动","描边渐变","文字渐变"], 1)
 ]
 VARIANTS += pack(0, "svg", "kit-svg", svg_more)
 
 ui_more = [
   (f"input-{i}", f"输入控件 {name}", "点击/输入交互", f"表单控件演示：{name}", "form", f"input-{i}")
-  for i, name in enumerate(["文本框","开关组","滑块","分段","标签输入","评分","步进器","搜索栏","进度条","通知条"], 1)
+  for i, name in enumerate(["文本框","开关组","滑块","分段","标签输入","评分","步进器","搜索栏","进度条","通知条","密码可见","OTP 格"], 1)
 ] + [
   (f"nav-{i}", f"导航样式 {name}", "点击切换激活项", f"导航组件：{name}", "nav", f"nav-{i}")
-  for i, name in enumerate(["侧栏","顶栏 Tabs","面包屑","分页","步骤条","胶囊菜单","抽屉","命令面板"], 1)
+  for i, name in enumerate(["侧栏","顶栏 Tabs","面包屑","分页","步骤条","胶囊菜单","抽屉","命令面板","底部 Tab","锚点目录"], 1)
+] + [
+  (f"acc-{i}", f"手风琴组件 {name}", "展开/收起", f"UI Accordion：{name}", "accordion", f"acc-{i}")
+  for i, name in enumerate(["基础","多开","嵌套感","图标","卡片","FAQ"], 1)
+] + [
+  (f"mod-{i}", f"对话框 {name}", "打开关闭", f"Modal/Dialog：{name}", "modal", f"mod-{i}")
+  for i, name in enumerate(["确认","表单","全屏","抽屉式","无障碍焦点","堆叠"], 1)
+] + [
+  (f"car-{i}", f"走马灯组件 {name}", "切换幻灯", f"UI Carousel：{name}", "carousel", f"car-{i}")
+  for i, name in enumerate(["指示点","缩略图","自动播","卡片多可见","淡入","垂直"], 1)
+] + [
+  (f"toast-{i}", f"Toast {name}", "触发通知", f"通知栈：{name}", "toast", f"toast-{i}")
+  for i, name in enumerate(["成功","错误","信息","进度","可撤销","堆叠多条"], 1)
+] + [
+  (f"drop-{i}", f"下拉 {name}", "打开菜单", f"Dropdown/Select：{name}", "dropdown", f"drop-{i}")
+  for i, name in enumerate(["基础","分组","搜索过滤","多选","右键菜单","级联"], 1)
+] + [
+  (f"tip-{i}", f"提示 {name}", "悬停显示", f"Tooltip/Popover：{name}", "tooltip", f"tip-{i}")
+  for i, name in enumerate(["上","下","左","右","富文本","延迟"], 1)
+] + [
+  (f"skel-{i}", f"加载占位 {name}", "脉冲", f"UI Skeleton：{name}", "skeleton", f"skel-{i}")
+  for i, name in enumerate(["列表","卡片墙","表格","详情","头像墙"], 1)
+] + [
+  (f"btn-{i}", f"按钮动效 {name}", "点击反馈", f"Button micro：{name}", "button", f"btn-{i}")
+  for i, name in enumerate(["涟漪","加载中","成功勾","磁性","抖动失败","渐变边","图标滑入","按压缩放"], 1)
+] + [
+  (f"switch-{i}", f"开关弹簧 {name}", "切换", f"Spring switch：{name}", "switch", f"switch-{i}")
+  for i, name in enumerate(["基础","带图标","三态","尺寸","彩色轨","软弹"], 1)
+] + [
+  (f"sheet-{i}", f"底栏/浮层 {name}", "拖拽关闭", f"Bottom sheet：{name}", "sheet", f"sheet-{i}")
+  for i, name in enumerate(["半屏","全屏","句柄","操作表","分享板"], 1)
+] + [
+  (f"tabs-{i}", f"Tabs 动效 {name}", "切换", f"指示条滑动 Tabs：{name}", "tabs", f"tabs-{i}")
+  for i, name in enumerate(["下滑条","胶囊滑块","下划线","淡入面板","垂直","图标"], 1)
+] + [
+  (f"timeline-{i}", f"时间线 {name}", "滚动查看", f"Timeline UI：{name}", "timeline", f"timeline-{i}")
+  for i, name in enumerate(["垂直","交替","进度点","卡片","紧凑"], 1)
+] + [
+  (f"tree-{i}", f"树形 {name}", "展开节点", f"Tree view：{name}", "tree", f"tree-{i}")
+  for i, name in enumerate(["文件夹","懒展开","选中高亮","连接线"], 1)
+] + [
+  (f"fab-{i}", f"FAB {name}", "展开动作", f"浮动操作按钮：{name}", "fab", f"fab-{i}")
+  for i, name in enumerate(["单按钮","扇形","速度拨号","工具条"], 1)
+] + [
+  (f"chip-{i}", f"芯片/标签 {name}", "选择", f"Chip/Tag：{name}", "chip", f"chip-{i}")
+  for i, name in enumerate(["筛选","可删","头像芯片","拖排序"], 1)
+] + [
+  (f"table-{i}", f"表格交互 {name}", "排序筛选", f"Table UX：{name}", "table", f"table-{i}")
+  for i, name in enumerate(["排序动画","行展开","骨架载入","行选中"], 1)
+] + [
+  (f"avatar-{i}", f"头像组 {name}", "悬停", f"Avatar stack：{name}", "avatar", f"avatar-{i}")
+  for i, name in enumerate(["重叠","加号剩余","状态点","呼吸边"], 1)
+] + [
+  (f"stepper-{i}", f"步骤条动效 {name}", "下一步", f"Stepper：{name}", "stepper", f"stepper-{i}")
+  for i, name in enumerate(["水平","垂直","进度填充","勾选完成"], 1)
 ]
 VARIANTS += pack(0, "ui", "kit-ui", ui_more)
+
 
 charts_more = [
   (f"spark-{i}", f"迷你趋势 {i}", "悬停看数值", f"Sparkline 迷你图 #{i}", "spark", f"spark-{i}")

@@ -1,55 +1,130 @@
 import { addStyle, bar, hsl } from './_shared.js';
+
 export function mount(host, opts = {}) {
   const id = opts.variant || 'input-1';
-  const n = parseInt(id.split('-').pop(), 10) || 1;
+  const n = parseInt(String(id).split('-').pop(), 10) || 1;
+  const parts = id.split('-');
+  const kind = parts.slice(0, -1).join('-') || parts[0];
   const { stage } = bar(host, id);
+  const c = hsl(n);
   const rm = addStyle(`
-    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text)}
-    .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted)}
+    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);--c:${c}}
+    .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted,#93a0c0)}
     .ku .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
-    .ku input[type=text],.ku input[type=search]{background:#0d1426;border:1px solid #24314f;border-radius:10px;padding:10px 12px;color:var(--text);min-width:200px}
-    .ku input:focus{outline:none;border-color:${hsl(n)};box-shadow:0 0 0 3px color-mix(in srgb,${hsl(n)} 25%,transparent)}
-    .ku .sw{width:46px;height:26px;border-radius:999px;background:#24314f;position:relative;cursor:pointer;transition:.2s}
-    .ku .sw.on{background:${hsl(n)}} .ku .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+    .ku input[type=text],.ku input[type=search],.ku input[type=password]{background:#0d1426;border:1px solid #24314f;border-radius:10px;padding:10px 12px;color:var(--text);min-width:200px}
+    .ku input:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+    .ku .sw{width:46px;height:26px;border-radius:999px;background:#24314f;position:relative;cursor:pointer;transition:.25s cubic-bezier(.34,1.56,.64,1)}
+    .ku .sw.on{background:var(--c)} .ku .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s cubic-bezier(.34,1.56,.64,1)}
     .ku .sw.on i{left:23px}
-    .ku .seg{display:flex;border:1px solid #24314f;border-radius:10px;overflow:hidden}
-    .ku .seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;cursor:pointer}
-    .ku .seg button.on{background:color-mix(in srgb,${hsl(n)} 25%,#121a2f);color:var(--text)}
-    .ku .stars span{cursor:pointer;font-size:22px;opacity:.35} .ku .stars span.on{opacity:1;color:${hsl(n)}}
+    .ku .seg{display:flex;border:1px solid #24314f;border-radius:10px;overflow:hidden;position:relative}
+    .ku .seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;cursor:pointer;position:relative;z-index:1}
+    .ku .seg button.on{color:var(--text)}
+    .ku .seg .pill{position:absolute;inset:2px auto 2px 2px;width:0;background:color-mix(in srgb,var(--c) 30%,#121a2f);border-radius:8px;transition:left .25s,width .25s}
+    .ku .stars span{cursor:pointer;font-size:22px;opacity:.35;transition:.15s} .ku .stars span.on{opacity:1;color:var(--c)}
     .ku .step{display:flex;align-items:center;gap:0;border:1px solid #24314f;border-radius:10px;overflow:hidden}
     .ku .step button{width:34px;height:34px;border:0;background:#18233d;color:var(--text);cursor:pointer}
     .ku .step b{min-width:40px;text-align:center}
-    .ku .tags{display:flex;flex-wrap:wrap;gap:6px}.ku .tag{background:#18233d;border:1px solid #24314f;border-radius:999px;padding:4px 10px;font-size:12px}
-    .ku .prog{height:10px;background:#0d1426;border-radius:999px;overflow:hidden;width:min(360px,100%)}.ku .prog i{display:block;height:100%;width:40%;background:linear-gradient(90deg,${hsl(n)},#22d3ee)}
-    .ku .toast{background:#18233d;border:1px solid ${hsl(n)};padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    .ku .nav{display:flex;gap:6px;flex-wrap:wrap}.ku .nav a{padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none;border:1px solid transparent}
-    .ku .nav a.on{color:var(--text);background:color-mix(in srgb,${hsl(n)} 18%,transparent);border-color:#24314f}
+    .ku .tags{display:flex;flex-wrap:wrap;gap:6px}.ku .tag{background:#18233d;border:1px solid #24314f;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;transition:.2s}
+    .ku .tag.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,#18233d)}
+    .ku .prog{height:10px;background:#0d1426;border-radius:999px;overflow:hidden;width:min(360px,100%)}.ku .prog i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--c),#22d3ee);transition:width .6s}
+    .ku .toast{background:#18233d;border:1px solid var(--c);padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+    .ku .toast-stack{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;gap:8px;z-index:5}
+    @keyframes pop{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+    .ku .nav{display:flex;gap:6px;flex-wrap:wrap}.ku .nav a{padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:.2s}
+    .ku .nav a.on{color:var(--text);background:color-mix(in srgb,var(--c) 18%,transparent);border-color:#24314f}
     .ku .pager button{min-width:34px;height:34px;border-radius:8px;border:1px solid #24314f;background:#121a2f;color:var(--text);cursor:pointer}
-    .ku .pager button.on{background:${hsl(n)};color:#0b1020;border:none;font-weight:700}
-    .ku .steps{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ku .steps .s{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#18233d;border:1px solid #24314f;font-size:12px}
-    .ku .steps .s.on{background:${hsl(n)};color:#0b1020;border:none;font-weight:700}
-    .ku .drawer{position:absolute;right:0;top:0;bottom:0;width:min(280px,80%);background:#121a2f;border-left:1px solid #24314f;padding:18px;transform:translateX(105%);transition:.25s}
+    .ku .pager button.on{background:var(--c);color:#0b1020;border:none;font-weight:700}
+    .ku .steps{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ku .steps .s{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#18233d;border:1px solid #24314f;font-size:12px;transition:.25s}
+    .ku .steps .s.on{background:var(--c);color:#0b1020;border:none;font-weight:700}
+    .ku .drawer{position:absolute;right:0;top:0;bottom:0;width:min(280px,80%);background:#121a2f;border-left:1px solid #24314f;padding:18px;transform:translateX(105%);transition:.28s cubic-bezier(.2,.8,.2,1);z-index:6}
     .ku .drawer.open{transform:none}
+    .ku .acc details{background:#18233d;border:1px solid #24314f;border-radius:12px;padding:4px 12px;margin-bottom:8px;transition:.2s}
+    .ku .acc details[open]{border-color:var(--c)}
+    .ku .acc summary{cursor:pointer;padding:10px 4px;font-weight:600;list-style:none}
+    .ku .modal-b{position:absolute;inset:0;background:rgba(5,8,16,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:.25s;z-index:8}
+    .ku .modal-b.on{opacity:1;pointer-events:auto}
+    .ku .modal-p{width:min(340px,90%);background:#18233d;border:1px solid #24314f;border-radius:16px;padding:18px;transform:translateY(12px) scale(.96);transition:.25s}
+    .ku .modal-b.on .modal-p{transform:none}
+    .ku .car{overflow:hidden;border-radius:14px;border:1px solid #24314f}
+    .ku .car-t{display:flex;transition:transform .4s}
+    .ku .car-t .sl{min-width:100%;height:140px;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff}
+    .ku .btn-m{position:relative;overflow:hidden;padding:10px 18px;border:0;border-radius:10px;background:var(--c);color:#0b1020;font-weight:700;cursor:pointer}
+    .ku .btn-m .r{position:absolute;border-radius:50%;background:#fff8;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
+    @keyframes rip{to{transform:scale(14);opacity:0}}
+    .ku .sheet{position:absolute;left:0;right:0;bottom:0;background:#121a2f;border-top:1px solid #24314f;border-radius:16px 16px 0 0;padding:12px 16px 24px;transform:translateY(110%);transition:.3s;z-index:7}
+    .ku .sheet.open{transform:none}
+    .ku .handle{width:42px;height:4px;border-radius:4px;background:#24314f;margin:0 auto 12px}
+    .ku .tabs{display:flex;gap:4px;position:relative;border-bottom:1px solid #24314f;margin-bottom:12px}
+    .ku .tabs button{background:0;border:0;color:var(--muted);padding:10px 14px;cursor:pointer}
+    .ku .tabs button.on{color:var(--text)}
+    .ku .tabs .ind{position:absolute;bottom:-1px;height:2px;background:var(--c);transition:left .25s,width .25s}
+    .ku .tip{position:relative;display:inline-block}
+    .ku .tip .bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:#0d1426;border:1px solid #24314f;padding:6px 10px;border-radius:8px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s}
+    .ku .tip:hover .bubble{opacity:1;transform:translateX(-50%) translateY(0)}
+    .ku .skel .b{height:12px;border-radius:8px;background:linear-gradient(90deg,#18233d 25%,#24314f 37%,#18233d 63%);background-size:400% 100%;animation:sh 1.3s ease infinite;margin-bottom:8px}
+    .ku .skel .b.lg{height:80px}.ku .skel .av{width:40px;height:40px;border-radius:50%}
+    @keyframes sh{to{background-position:-100% 0}}
+    .ku .tree details{margin-left:12px}
+    .ku .tree summary{cursor:pointer;padding:4px 0}
+    .ku .fab{position:absolute;right:20px;bottom:20px;width:56px;height:56px;border-radius:50%;background:var(--c);color:#0b1020;border:0;font-size:28px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:4}
+    .ku .fab-menu{position:absolute;right:20px;bottom:88px;display:flex;flex-direction:column;gap:8px;opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:4}
+    .ku .fab-menu.on{opacity:1;pointer-events:auto;transform:none}
+    .ku .fab-menu button{border:0;border-radius:999px;padding:8px 14px;background:#18233d;color:var(--text);cursor:pointer;border:1px solid #24314f}
+    .ku .avatars{display:flex}
+    .ku .avatars span{width:36px;height:36px;border-radius:50%;border:2px solid #0b1020;margin-left:-10px;background:var(--c);display:grid;place-items:center;font-size:12px;font-weight:700;color:#0b1020}
+    .ku .avatars span:first-child{margin-left:0}
+    .ku table{width:100%;border-collapse:collapse;font-size:13px}
+    .ku th,.ku td{padding:8px 10px;border-bottom:1px solid #24314f;text-align:left}
+    .ku th{cursor:pointer;color:var(--muted)}
+    .ku tr{transition:background .2s}
+    .ku tr:hover{background:#18233d}
+    .ku .otp{display:flex;gap:8px}.ku .otp input{width:40px;height:44px;text-align:center;font-size:18px;font-weight:700}
+    .ku .drop{position:relative;display:inline-block}
+    .ku .drop .menu{position:absolute;top:calc(100% + 6px);left:0;min-width:160px;background:#121a2f;border:1px solid #24314f;border-radius:10px;padding:6px;display:none;z-index:5;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+    .ku .drop.open .menu{display:block;animation:pop .2s}
+    .ku .drop .menu button{display:block;width:100%;text-align:left;background:0;border:0;color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
+    .ku .drop .menu button:hover{background:#18233d}
+    .ku .tl{border-left:2px solid #24314f;margin-left:12px;padding-left:16px}
+    .ku .tl .e{position:relative;padding-bottom:16px}
+    .ku .tl .e::before{content:'';position:absolute;left:-21px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--c)}
   `);
-  const root = document.createElement('div'); root.className = 'ku'; stage.appendChild(root);
+  const root = document.createElement('div');
+  root.className = 'ku';
+  stage.appendChild(root);
   const title = id;
-  if (id.startsWith('input')) {
-    const kinds = ['text','switch','range','seg','tags','stars','step','search','prog','toast'];
-    const k = kinds[(n-1)%10];
+
+  const wireSeg = (rootEl) => {
+    const seg = rootEl.querySelector('.seg');
+    if (!seg) return;
+    const pill = document.createElement('div'); pill.className = 'pill'; seg.prepend(pill);
+    const place = (btn) => {
+      const r = seg.getBoundingClientRect(); const b = btn.getBoundingClientRect();
+      pill.style.left = `${b.left - r.left}px`; pill.style.width = `${b.width}px`;
+    };
+    const buttons = [...seg.querySelectorAll('button')];
+    buttons.forEach((b) => b.onclick = () => { buttons.forEach((x) => x.classList.remove('on')); b.classList.add('on'); place(b); });
+    setTimeout(() => place(seg.querySelector('button.on') || buttons[0]), 30);
+  };
+
+  if (kind === 'input') {
+    const kinds = ['text','switch','range','seg','tags','stars','step','search','prog','toast','pass','otp'];
+    const k = kinds[(n-1)%kinds.length];
     if (k==='text') root.innerHTML = `<h3>${title}</h3><div class="row"><input type="text" placeholder="输入点什么…"></div>`;
     else if (k==='switch') { root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw" data-sw><i></i></div><span>启用通知</span></div>`; root.querySelector('[data-sw]').onclick = (e)=>e.currentTarget.classList.toggle('on'); }
-    else if (k==='range') root.innerHTML = `<h3>${title}</h3><div class="row"><input type="range" min="0" max="100" value="40" style="width:220px"><b data-v>40</b></div>`, root.querySelector('input').oninput = (e)=> root.querySelector('[data-v]').textContent = e.target.value;
-    else if (k==='seg') { root.innerHTML = `<h3>${title}</h3><div class="seg">${['日','周','月'].map((t,i)=>`<button class="${i===0?'on':''}">${t}</button>`).join('')}</div>`; root.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{root.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}); }
-    else if (k==='tags') root.innerHTML = `<h3>${title}</h3><div class="tags">${['React','Rust','Vite','Axum'].map(t=>`<span class="tag">${t} ×</span>`).join('')}</div><div class="row" style="margin-top:10px"><input type="text" placeholder="添加标签后回车"><button class="btn">Add</button></div>`;
+    else if (k==='range') { root.innerHTML = `<h3>${title}</h3><div class="row"><input type="range" min="0" max="100" value="40" style="width:220px"><b data-v>40</b></div>`; root.querySelector('input').oninput = (e)=> root.querySelector('[data-v]').textContent = e.target.value; }
+    else if (k==='seg') { root.innerHTML = `<h3>${title}</h3><div class="seg">${['日','周','月'].map((t,i)=>`<button class="${i===0?'on':''}">${t}</button>`).join('')}</div>`; wireSeg(root); }
+    else if (k==='tags') root.innerHTML = `<h3>${title}</h3><div class="tags">${['React','Rust','Vite','Axum'].map(t=>`<span class="tag">${t} ×</span>`).join('')}</div>`;
     else if (k==='stars') { root.innerHTML = `<h3>${title}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<span data-i="${i}">★</span>`).join('')}</div>`; const paint=(v)=>root.querySelectorAll('.stars span').forEach(s=>s.classList.toggle('on', +s.dataset.i<=v)); root.querySelectorAll('.stars span').forEach(s=>s.onclick=()=>paint(+s.dataset.i)); paint(3); }
     else if (k==='step') { let v=1; root.innerHTML = `<h3>${title}</h3><div class="step"><button data-m>-</button><b data-v>1</b><button data-p>+</button></div>`; const el=root.querySelector('[data-v]'); root.querySelector('[data-m]').onclick=()=>{v=Math.max(0,v-1);el.textContent=v}; root.querySelector('[data-p]').onclick=()=>{v++;el.textContent=v}; }
     else if (k==='search') root.innerHTML = `<h3>${title}</h3><div class="row"><input type="search" placeholder="搜索 demos…"><button class="btn">Search</button></div>`;
-    else if (k==='prog') { root.innerHTML = `<h3>${title}</h3><div class="prog"><i data-p></i></div><div class="row"><button class="btn" data-go>Animate</button></div>`; root.querySelector('[data-go]').onclick=()=>{const p=root.querySelector('[data-p]');p.style.transition='width 1s';p.style.width=(20+Math.random()*75)+'%';}; }
+    else if (k==='prog') { root.innerHTML = `<h3>${title}</h3><div class="prog"><i data-p></i></div><div class="row"><button class="btn" data-go>Animate</button></div>`; root.querySelector('[data-go]').onclick=()=>{const p=root.querySelector('[data-p]');p.style.width=(20+Math.random()*75)+'%';}; }
+    else if (k==='pass') { root.innerHTML = `<h3>${title}</h3><div class="row"><input type="password" data-pw placeholder="密码"><button class="btn" data-tog>显示</button></div>`; root.querySelector('[data-tog]').onclick=()=>{const i=root.querySelector('[data-pw]');i.type=i.type==='password'?'text':'password';}; }
+    else if (k==='otp') { root.innerHTML = `<h3>${title}</h3><div class="otp">${[0,1,2,3,4,5].map(()=>`<input maxlength="1">`).join('')}</div>`; const inputs=[...root.querySelectorAll('.otp input')]; inputs.forEach((inp,i)=>{inp.oninput=()=>{if(inp.value&&i<inputs.length-1)inputs[i+1].focus();};}); }
     else root.innerHTML = `<h3>${title}</h3><div class="toast">已保存设置 · Just now</div>`;
-  } else {
-    const kinds = ['side','tabs','crumb','pager','steps','pills','drawer','cmd'];
-    const k = kinds[(n-1)%8];
-    if (k==='tabs' || k==='side' || k==='pills') {
+  } else if (kind === 'nav') {
+    const kinds = ['side','tabs','crumb','pager','steps','pills','drawer','cmd','bottom','anchor'];
+    const k = kinds[(n-1)%kinds.length];
+    if (k==='tabs' || k==='side' || k==='pills' || k==='bottom' || k==='anchor') {
       root.innerHTML = `<h3>${title}</h3><div class="nav">${['Overview','Demos','Settings','Docs'].map((t,i)=>`<a href="#" class="${i===0?'on':''}">${t}</a>`).join('')}</div>`;
       root.querySelectorAll('.nav a').forEach(a=>a.onclick=(e)=>{e.preventDefault();root.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');});
     } else if (k==='crumb') root.innerHTML = `<h3>${title}</h3><div class="row" style="color:var(--muted)">Home / CSS / <b style="color:var(--text)">Filters</b></div>`;
@@ -57,6 +132,106 @@ export function mount(host, opts = {}) {
     else if (k==='steps') root.innerHTML = `<h3>${title}</h3><div class="steps"><div class="s on">1</div>—<div class="s on">2</div>—<div class="s">3</div>—<div class="s">4</div></div>`;
     else if (k==='drawer') { root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开抽屉</button><div class="drawer" data-d><h3>Drawer</h3><p style="color:var(--muted)">侧滑面板示例</p><button class="btn" data-close>关闭</button></div>`; const d=root.querySelector('[data-d]'); root.querySelector('[data-open]').onclick=()=>d.classList.add('open'); root.querySelector('[data-close]').onclick=()=>d.classList.remove('open'); }
     else root.innerHTML = `<h3>${title}</h3><div class="row"><input type="search" placeholder="> 输入命令" style="min-width:min(420px,100%)"></div><div class="tags"><span class="tag">go home</span><span class="tag">open demo</span><span class="tag">toggle theme</span></div>`;
+  } else if (kind === 'acc') {
+    root.innerHTML = `<h3>${title}</h3><div class="acc">${['什么是 Reality？','如何刷新订阅？','绿云换 IP 收费吗？'].map((t,i)=>`<details ${i===0?'open':''}><summary>${t}</summary><p style="color:var(--muted);font-size:13px;padding:0 4px 10px">Accordion body ${i+1} with CSS transition.</p></details>`).join('')}</div>`;
+  } else if (kind === 'mod') {
+    root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开对话框</button>
+      <div class="modal-b" data-m><div class="modal-p"><h3 style="margin:0 0 8px">${['确认','表单','全屏','抽屉式','焦点','堆叠'][(n-1)%6]}</h3>
+      <p style="color:var(--muted);font-size:13px">Modal enter/exit demo.</p>
+      ${n===2?'<div class="row"><input type="text" placeholder="名称"></div>':''}
+      <div class="row"><button class="btn" data-close>关闭</button><button class="btn-m">确认</button></div></div></div>`;
+    const m = root.querySelector('[data-m]');
+    root.querySelector('[data-open]').onclick = () => m.classList.add('on');
+    root.querySelector('[data-close]').onclick = () => m.classList.remove('on');
+    m.onclick = (e) => { if (e.target === m) m.classList.remove('on'); };
+  } else if (kind === 'car') {
+    root.innerHTML = `<h3>${title}</h3><div class="car"><div class="car-t" data-t>${[1,2,3,4].map(i=>`<div class="sl" style="background:${hsl(n+i)}">${i}</div>`).join('')}</div></div>
+      <div class="row"><button class="btn" data-p>‹</button><span data-d>••••</span><button class="btn" data-n>›</button></div>`;
+    let idx = 0; const t = root.querySelector('[data-t]');
+    const go = (d) => { idx = (idx + d + 4) % 4; t.style.transform = `translateX(-${idx*100}%)`; root.querySelector('[data-d]').textContent = '••••'.split('').map((x,i)=>i===idx?'●':'•').join(''); };
+    root.querySelector('[data-p]').onclick = () => go(-1);
+    root.querySelector('[data-n]').onclick = () => go(1);
+  } else if (kind === 'toast') {
+    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-go>弹出 Toast</button></div><div class="toast-stack" data-s></div>`;
+    const kinds = ['成功 ✓','错误 ✕','信息 i','上传中…','已撤销','多条堆叠'];
+    root.querySelector('[data-go]').onclick = () => {
+      const s = root.querySelector('[data-s]');
+      const el = document.createElement('div'); el.className = 'toast'; el.textContent = kinds[(n-1)%kinds.length];
+      s.appendChild(el); setTimeout(() => el.remove(), 2400);
+    };
+  } else if (kind === 'drop') {
+    root.innerHTML = `<h3>${title}</h3><div class="drop" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu"><button>新建</button><button>打开</button><button>导出</button><button>删除</button></div></div>`;
+    const d = root.querySelector('[data-d]');
+    root.querySelector('[data-t]').onclick = () => d.classList.toggle('open');
+  } else if (kind === 'tip') {
+    const places = ['上','下','左','右','富文本','延迟'];
+    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="tip"><button class="btn">悬停我</button><div class="bubble">Tooltip · ${places[(n-1)%6]}</div></div></div>`;
+  } else if (kind === 'skel') {
+    root.innerHTML = `<h3>${title}</h3><div class="skel">${n%2?`<div class="b lg"></div><div class="b"></div><div class="b" style="width:50%"></div>`:`<div class="row"><div class="b av"></div><div style="flex:1"><div class="b"></div><div class="b" style="width:40%"></div></div></div><div class="b"></div><div class="b"></div>`}</div>`;
+  } else if (kind === 'btn') {
+    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn-m" data-b>${['涟漪','加载中','成功','磁性','抖动','渐变边','图标→','按压'][(n-1)%8]}</button></div>`;
+    const b = root.querySelector('[data-b]');
+    b.onclick = (e) => {
+      if (n === 1 || n === 6) {
+        const r = b.getBoundingClientRect(); const s = document.createElement('span'); s.className = 'r';
+        const size = Math.max(r.width, r.height);
+        s.style.width = s.style.height = size + 'px';
+        s.style.left = (e.clientX - r.left - size/2) + 'px'; s.style.top = (e.clientY - r.top - size/2) + 'px';
+        b.appendChild(s); setTimeout(() => s.remove(), 550);
+      }
+      if (n === 2) { b.textContent = '…'; setTimeout(() => b.textContent = '完成', 800); }
+      if (n === 3) { b.textContent = '✓ 成功'; }
+      if (n === 5) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = 'pop .35s'; }
+    };
+  } else if (kind === 'switch') {
+    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw" data-sw><i></i></div><span>Spring switch</span></div>`;
+    root.querySelector('[data-sw]').onclick = (e) => e.currentTarget.classList.toggle('on');
+  } else if (kind === 'sheet') {
+    root.innerHTML = `<h3>${title}</h3><button class="btn" data-o>打开底栏</button><div class="sheet" data-s><div class="handle"></div><h3 style="margin:0 0 8px">Bottom sheet</h3><p style="color:var(--muted);font-size:13px">拖拽句柄语义 / 关闭按钮</p><button class="btn" data-c>关闭</button></div>`;
+    const s = root.querySelector('[data-s]');
+    root.querySelector('[data-o]').onclick = () => s.classList.add('open');
+    root.querySelector('[data-c]').onclick = () => s.classList.remove('open');
+  } else if (kind === 'tabs') {
+    root.innerHTML = `<h3>${title}</h3><div class="tabs" data-tabs>${['一','二','三','四'].map((t,i)=>`<button class="${i===0?'on':''}">${t}</button>`).join('')}<div class="ind"></div></div><div data-p style="color:var(--muted)">面板内容 A</div>`;
+    const tabs = root.querySelector('[data-tabs]');
+    const ind = tabs.querySelector('.ind');
+    const place = (btn) => { const r = tabs.getBoundingClientRect(); const b = btn.getBoundingClientRect(); ind.style.left = (b.left-r.left)+'px'; ind.style.width = b.width+'px'; };
+    tabs.querySelectorAll('button').forEach((b,i) => b.onclick = () => {
+      tabs.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); place(b);
+      root.querySelector('[data-p]').textContent = '面板内容 ' + 'ABCD'[i];
+    });
+    setTimeout(() => place(tabs.querySelector('button.on')), 30);
+  } else if (kind === 'timeline') {
+    root.innerHTML = `<h3>${title}</h3><div class="tl">${['下单','出库','运输中','派送','签收'].map((t,i)=>`<div class="e"><b>${t}</b><div style="color:var(--muted);font-size:12px">Step ${i+1}</div></div>`).join('')}</div>`;
+  } else if (kind === 'tree') {
+    root.innerHTML = `<h3>${title}</h3><div class="tree"><details open><summary>src</summary><details open><summary>demos</summary><div style="margin-left:16px;color:var(--muted)">kit-css.js</div><div style="margin-left:16px;color:var(--muted)">kit-ui.js</div></details><details><summary>components</summary><div style="margin-left:16px;color:var(--muted)">DemoHost.tsx</div></details></details></div>`;
+  } else if (kind === 'fab') {
+    root.innerHTML = `<h3>${title}</h3><p style="color:var(--muted)">右下角 FAB</p><div class="fab-menu" data-m><button>编辑</button><button>分享</button><button>上传</button></div><button class="fab" data-f>+</button>`;
+    root.querySelector('[data-f]').onclick = () => root.querySelector('[data-m]').classList.toggle('on');
+  } else if (kind === 'chip') {
+    root.innerHTML = `<h3>${title}</h3><div class="tags">${['全部','CSS','Canvas','SVG','UI'].map((t,i)=>`<span class="tag ${i===0?'on':''}">${t}</span>`).join('')}</div>`;
+    root.querySelectorAll('.tag').forEach(t => t.onclick = () => { root.querySelectorAll('.tag').forEach(x=>x.classList.remove('on')); t.classList.add('on'); });
+  } else if (kind === 'table') {
+    const rows = [['cube','Three','basics'],['pulse-1','CSS','pulse'],['network','Canvas','particles'],['draw','SVG','stroke']];
+    root.innerHTML = `<h3>${title}</h3><table><thead><tr><th data-k="0">Slug</th><th data-k="1">Cat</th><th data-k="2">Tag</th></tr></thead><tbody data-b>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>`;
+    let asc = true;
+    root.querySelectorAll('th').forEach(th => th.onclick = () => {
+      const k = +th.dataset.k; asc = !asc;
+      rows.sort((a,b) => asc ? a[k].localeCompare(b[k]) : b[k].localeCompare(a[k]));
+      root.querySelector('[data-b]').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    });
+  } else if (kind === 'avatar') {
+    root.innerHTML = `<h3>${title}</h3><div class="avatars">${['A','B','C','D','+3'].map((t,i)=>`<span style="background:${hsl(n+i)}">${t}</span>`).join('')}</div>`;
+  } else if (kind === 'stepper') {
+    root.innerHTML = `<h3>${title}</h3><div class="steps" data-s>${[1,2,3,4].map(i=>`<div class="s ${i<=1?'on':''}">${i}</div>${i<4?'—':''}`).join('')}</div><div class="row"><button class="btn" data-n>下一步</button></div>`;
+    let step = 1;
+    root.querySelector('[data-n]').onclick = () => {
+      step = Math.min(4, step + 1);
+      root.querySelectorAll('.steps .s').forEach((s,i) => s.classList.toggle('on', i < step));
+    };
+  } else {
+    root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
   }
-  return () => { rm(); host.innerHTML=''; };
+
+  return () => { rm(); host.innerHTML = ''; };
 }
