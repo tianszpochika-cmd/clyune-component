@@ -150,7 +150,13 @@ function mountLegacy(host, opts = {}) {
     else if (k==='drawer') { root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开抽屉</button><div class="drawer" data-d><h3>Drawer</h3><p style="color:var(--muted)">侧滑面板示例</p><button class="btn" data-close>关闭</button></div>`; const d=root.querySelector('[data-d]'); root.querySelector('[data-open]').onclick=()=>d.classList.add('open'); root.querySelector('[data-close]').onclick=()=>d.classList.remove('open'); }
     else root.innerHTML = `<h3>${title}</h3><div class="row"><input type="search" placeholder="> 输入命令" style="min-width:min(420px,100%)"></div><div class="tags"><span class="tag">go home</span><span class="tag">open demo</span><span class="tag">toggle theme</span></div>`;
   } else if (kind === 'acc') {
-    root.innerHTML = `<h3>${title}</h3><div class="acc">${['什么是 Reality？','如何刷新订阅？','绿云换 IP 收费吗？'].map((t,i)=>`<details ${i===0?'open':''}><summary>${t}</summary><p style="color:var(--muted);font-size:13px;padding:0 4px 10px">Accordion body ${i+1} with CSS transition.</p></details>`).join('')}</div>`;
+    const mode = (n-1)%6;
+    const items = mode===5
+      ? ['如何开始？','支持哪些平台？','如何取消订阅？','数据存在哪里？']
+      : ['什么是 Reality？','如何刷新订阅？','绿云换 IP 收费吗？'];
+    const multi = mode===1 || mode===5;
+    const card = mode===4 || mode===2;
+    root.innerHTML = `<h3>${title}</h3><div class="acc" style="${card?'display:grid;gap:10px':''}">${items.map((t,i)=>`<details ${(!multi && i===0) || (multi && i<2)?'open':''} style="${card?'background:#121a2f;border:1px solid #24314f;border-radius:14px;padding:8px 12px':''}"><summary>${mode===3?'✦ ':''}${t}</summary><p style="color:var(--muted);font-size:13px;padding:0 4px 10px">${mode===2?'嵌套示例 · ':''}Accordion body ${i+1}${mode===4?' · 卡片风格':''}。</p>${mode===2 && i===0?'<details style="margin:6px 0 8px 12px"><summary>子项 A</summary><p style="color:var(--muted);font-size:12px;padding:0 4px 8px">Nested panel</p></details>':''}</details>`).join('')}</div>`;
   } else if (kind === 'mod') {
     root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开对话框</button>
       <div class="modal-b" data-m><div class="modal-p"><h3 style="margin:0 0 8px">${['确认','表单','全屏','抽屉式','焦点','堆叠'][(n-1)%6]}</h3>
@@ -169,15 +175,25 @@ function mountLegacy(host, opts = {}) {
     root.querySelector('[data-p]').onclick = () => go(-1);
     root.querySelector('[data-n]').onclick = () => go(1);
   } else if (kind === 'toast') {
-    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-go>弹出 Toast</button></div><div class="toast-stack" data-s></div>`;
     const kinds = ['成功 ✓','错误 ✕','信息 i','上传中…','已撤销','多条堆叠'];
+    const label = kinds[(n-1)%kinds.length];
+    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-go>弹出 Toast</button><span style="color:var(--muted);font-size:12px">预设：${label}</span></div><div class="toast-stack" data-s><div class="toast">${label}</div></div>`;
     root.querySelector('[data-go]').onclick = () => {
       const s = root.querySelector('[data-s]');
-      const el = document.createElement('div'); el.className = 'toast'; el.textContent = kinds[(n-1)%kinds.length];
+      const el = document.createElement('div'); el.className = 'toast'; el.textContent = label;
       s.appendChild(el); setTimeout(() => el.remove(), 2400);
     };
   } else if (kind === 'drop') {
-    root.innerHTML = `<h3>${title}</h3><div class="drop" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu"><button>新建</button><button>打开</button><button>导出</button><button>删除</button></div></div>`;
+    const menus = [
+      ['新建','打开','导出','删除'],
+      ['复制','粘贴','剪切'],
+      ['分享到…','生成链接','嵌入代码'],
+      ['按名称','按时间','按大小'],
+      ['账户','账单','退出'],
+      ['浅色','深色','跟随系统'],
+    ];
+    const items = menus[(n-1)%menus.length];
+    root.innerHTML = `<h3>${title}</h3><div class="drop open" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu">${items.map(x=>`<button>${x}</button>`).join('')}</div></div>`;
     const d = root.querySelector('[data-d]');
     root.querySelector('[data-t]').onclick = () => d.classList.toggle('open');
   } else if (kind === 'tip') {
@@ -201,7 +217,9 @@ function mountLegacy(host, opts = {}) {
       if (n === 5) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = 'pop .35s'; }
     };
   } else if (kind === 'switch') {
-    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw" data-sw><i></i></div><span>Spring switch</span></div>`;
+    const labels = ['通知','深色模式','自动播放','省流','同步','开发者模式'];
+    const on = n%2===0;
+    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw ${on?'on':''}" data-sw><i></i></div><span>${labels[(n-1)%labels.length]}</span></div>`;
     root.querySelector('[data-sw]').onclick = (e) => e.currentTarget.classList.toggle('on');
   } else if (kind === 'sheet') {
     root.innerHTML = `<h3>${title}</h3><button class="btn" data-o>打开底栏</button><div class="sheet" data-s><div class="handle"></div><h3 style="margin:0 0 8px">Bottom sheet</h3><p style="color:var(--muted);font-size:13px">拖拽句柄语义 / 关闭按钮</p><button class="btn" data-c>关闭</button></div>`;
@@ -223,8 +241,19 @@ function mountLegacy(host, opts = {}) {
   } else if (kind === 'tree') {
     root.innerHTML = `<h3>${title}</h3><div class="tree"><details open><summary>src</summary><details open><summary>demos</summary><div style="margin-left:16px;color:var(--muted)">kit-css.js</div><div style="margin-left:16px;color:var(--muted)">kit-ui.js</div></details><details><summary>components</summary><div style="margin-left:16px;color:var(--muted)">DemoHost.tsx</div></details></details></div>`;
   } else if (kind === 'fab') {
-    root.innerHTML = `<h3>${title}</h3><p style="color:var(--muted)">右下角 FAB</p><div class="fab-menu" data-m><button>编辑</button><button>分享</button><button>上传</button></div><button class="fab" data-f>+</button>`;
-    root.querySelector('[data-f]').onclick = () => root.querySelector('[data-m]').classList.toggle('on');
+    const menus = [
+      ['编辑','分享','上传'],
+      ['拍照','相册'],
+      ['新建文档','新建表格','新建幻灯'],
+      ['点赞','收藏','转发','举报'],
+      ['语音','视频','屏幕共享'],
+      ['仅主按钮'],
+    ];
+    const items = menus[(n-1)%menus.length];
+    const single = items.length===1 && items[0]==='仅主按钮';
+    root.innerHTML = `<h3>${title}</h3><p style="color:var(--muted)">右下角 FAB · ${['单按钮展开','双项','三项文档','社交','通话','仅主按钮'][(n-1)%6]}</p>${single?'':`<div class="fab-menu on" data-m>${items.map(x=>`<button type="button">${x}</button>`).join('')}</div>`}<button class="fab" data-f type="button">${single?'★':'+'}</button>`;
+    const menu = root.querySelector('[data-m]');
+    root.querySelector('[data-f]').onclick = () => menu?.classList.toggle('on');
   } else if (kind === 'chip') {
     root.innerHTML = `<h3>${title}</h3><div class="tags">${['全部','CSS','Canvas','SVG','UI'].map((t,i)=>`<span class="tag ${i===0?'on':''}">${t}</span>`).join('')}</div>`;
     root.querySelectorAll('.tag').forEach(t => t.onclick = () => { root.querySelectorAll('.tag').forEach(x=>x.classList.remove('on')); t.classList.add('on'); });

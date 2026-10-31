@@ -119,7 +119,7 @@ export function mount(host, opts = {}) {
     .k-cross:before{inset:0 40%}.k-cross:after{inset:40% 0;animation-delay:.3s}
     @keyframes kc{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.15)}}
     .k-dual{width:56px;height:56px;border:3px solid transparent;border-top-color:var(--c);border-bottom-color:#22d3ee;border-radius:50%;animation:kl calc(.8s / var(--spd)) linear infinite}
-    .k-tri{width:0;height:0;border-left:18px solid transparent;border-right:18px solid transparent;border-bottom:30px solid var(--c);animation:kt calc(1.2s / var(--spd)) linear infinite;transform-origin:50% 70%}
+    .k-tri{width:0;height:0;border-left:calc(22px * var(--sz)) solid transparent;border-right:calc(22px * var(--sz)) solid transparent;border-bottom:calc(38px * var(--sz)) solid var(--c);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--c) 55%,transparent));animation:kt calc(1.2s / var(--spd)) linear infinite;transform-origin:50% 70%}
     @keyframes kt{to{transform:rotate(360deg)}}
     .k-arc{width:64px;height:64px;border-radius:50%;background:conic-gradient(var(--c) 0 120deg,transparent 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 6px),#000 0);mask:radial-gradient(farthest-side,#0000 calc(100% - 6px),#000 0);animation:kl calc(1s / var(--spd)) linear infinite}
     .hover-lift:hover{transform:translateY(-8px);box-shadow:0 16px 32px -12px rgba(129,140,248,.55);border-color:var(--c)}
@@ -265,7 +265,7 @@ export function mount(host, opts = {}) {
     'polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)',
     'polygon(0 0,100% 0,100% 70%,0 100%)',
     'polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)',
-    'polygon(0 20%,100% 0,100% 80%,0 100%)', 'polygon(0 0,100% 0,0 100%)', 'circle(0% at 50% 50%)',
+    'polygon(0 20%,100% 0,100% 80%,0 100%)', 'polygon(0 0,100% 0,0 100%)', 'circle(14% at 50% 50%)',
     'polygon(40% 0,60% 0,60% 40%,100% 40%,100% 60%,60% 60%,60% 100%,40% 100%,40% 60%,0 60%,0 40%,40% 40%)',
     'inset(10% 20% round 40px)',
   ];
