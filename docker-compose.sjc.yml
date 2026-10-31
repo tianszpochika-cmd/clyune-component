@@ -1,0 +1,58 @@
+# GreenCloud SJC production: Postgres internal + Axum on 127.0.0.1 only.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-clyune}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-clyune_component}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command:
+      - postgres
+      - -c
+      - shared_buffers=128MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - maintenance_work_mem=64MB
+      - -c
+      - effective_cache_size=256MB
+      - -c
+      - max_connections=50
+    mem_limit: ${POSTGRES_MEM_LIMIT:-512m}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.deploy
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-clyune}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-clyune_component}
+      PORT: "8080"
+      RUST_LOG: clyune_component=info,tower_http=info,sqlx=warn
+      REGISTRY_PATH: /app/data/registry.json
+      STATIC_DIR: /app/frontend/dist
+    ports:
+      - "127.0.0.1:${API_PORT:-18088}:8080"
+    mem_limit: ${API_MEM_LIMIT:-256m}
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+
+networks:
+  internal:
+    driver: bridge
