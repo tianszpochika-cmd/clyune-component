@@ -1,9 +1,11 @@
 import { addStyle } from '../lib/canvas.js';
-export function mount(host) {
+import { readLiveControls } from './kits/_shared.js';
+export function mount(host, opts = {}) {
+  const ctrl = opts._controls || {};
   const supports = CSS.supports('animation-timeline: view()');
   const rm = addStyle(`
   .cs { position:absolute; inset:0; overflow:auto; scroll-timeline:--cs y; }
-  .cs-progress { position:sticky; top:0; height:4px; z-index:3; background:linear-gradient(90deg,#818cf8,#22d3ee); transform-origin:0 50%; transform:scaleX(0); }
+  .cs-progress { position:sticky; top:0; height:4px; z-index:3; background:linear-gradient(90deg,var(--c, #818cf8),#22d3ee); transform-origin:0 50%; transform:scaleX(0); }
   .cs-intro { min-height:70%; display:grid; place-items:center; text-align:center; padding:40px 20px; color:var(--muted); }
   .cs-intro h3 { color:var(--text); font-size:26px; margin:0 0 8px; }
   .cs-list { max-width:620px; margin:0 auto; padding:0 18px 60vh; display:grid; gap:22px; }
@@ -32,5 +34,12 @@ export function mount(host) {
     onScroll = () => { bar.style.transform = `scaleX(${root.scrollTop / Math.max(1, root.scrollHeight - root.clientHeight)})`; };
     root.addEventListener('scroll', onScroll, { passive: true });
   }
-  return () => { io && io.disconnect(); rm(); host.innerHTML = ''; };
+  const rootEl = host.firstElementChild || host;
+  const sync = setInterval(() => {
+    const L = readLiveControls([host, host.parentElement, rootEl], ctrl);
+    rootEl.style.setProperty('--c', L.color);
+    rootEl.style.setProperty('--spd', String(L.speed));
+    rootEl.style.setProperty('--sz', String(L.size));
+  }, 80);
+  return () => { clearInterval(sync);  io && io.disconnect(); rm(); host.innerHTML = ''; };
 }

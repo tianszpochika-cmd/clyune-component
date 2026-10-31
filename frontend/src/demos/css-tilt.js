@@ -1,5 +1,7 @@
 import { addStyle } from '../lib/canvas.js';
-export function mount(host) {
+import { readLiveControls } from './kits/_shared.js';
+export function mount(host, opts = {}) {
+  const ctrl = opts._controls || {};
   const rm = addStyle(`
   .ct { position:absolute; inset:0; overflow:auto; display:flex; flex-wrap:wrap; gap:40px; align-items:center; justify-content:center; padding:30px 16px; }
   .ct-col { display:flex; flex-direction:column; align-items:center; gap:10px; color:var(--muted); font-size:12px; }
@@ -39,5 +41,12 @@ export function mount(host) {
   const leave = () => { inner.style.transform = ''; };
   tilt.addEventListener('pointermove', move); tilt.addEventListener('pointerleave', leave);
   flip.addEventListener('click', () => flip.classList.toggle('on'));
-  return () => { rm(); host.innerHTML = ''; };
+  const rootEl = host.firstElementChild || host;
+  const sync = setInterval(() => {
+    const L = readLiveControls([host, host.parentElement, rootEl], ctrl);
+    rootEl.style.setProperty('--c', L.color);
+    rootEl.style.setProperty('--spd', String(L.speed));
+    rootEl.style.setProperty('--sz', String(L.size));
+  }, 80);
+  return () => { clearInterval(sync);  rm(); host.innerHTML = ''; };
 }

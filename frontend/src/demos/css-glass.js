@@ -1,5 +1,7 @@
 import { addStyle } from '../lib/canvas.js';
-export function mount(host) {
+import { readLiveControls } from './kits/_shared.js';
+export function mount(host, opts = {}) {
+  const ctrl = opts._controls || {};
   const rm = addStyle(`
   .cg { position:absolute; inset:0; overflow:hidden; background:#0b1020; --blur:16px; --alpha:.12; }
   .cg-blob { position:absolute; border-radius:50%; filter:blur(4px); animation:cg-move 14s ease-in-out infinite alternate; }
@@ -16,7 +18,7 @@ export function mount(host) {
   .cg-chip { display:inline-block; padding:4px 10px; border-radius:999px; background:rgba(255,255,255,.18); font-size:11px; margin-right:6px; }
   .cg-num { font-size:34px; font-weight:800; }
   .cg-row { display:flex; justify-content:space-between; align-items:center; }
-  .cg-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#f472b6,#818cf8); border:2px solid rgba(255,255,255,.6); }
+  .cg-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#f472b6,var(--c, #818cf8)); border:2px solid rgba(255,255,255,.6); }
   `);
   host.innerHTML = `<div class="cg" id="cg">
     <div class="cg-blob cg-b1"></div><div class="cg-blob cg-b2"></div><div class="cg-blob cg-b3"></div>
@@ -32,5 +34,12 @@ export function mount(host) {
   const root = host.querySelector('#cg');
   host.querySelector('#cgBlur').addEventListener('input', (e) => root.style.setProperty('--blur', e.target.value + 'px'));
   host.querySelector('#cgAlpha').addEventListener('input', (e) => root.style.setProperty('--alpha', e.target.value / 100));
-  return () => { rm(); host.innerHTML = ''; };
+  const rootEl = host.firstElementChild || host;
+  const sync = setInterval(() => {
+    const L = readLiveControls([host, host.parentElement, rootEl], ctrl);
+    rootEl.style.setProperty('--c', L.color);
+    rootEl.style.setProperty('--spd', String(L.speed));
+    rootEl.style.setProperty('--sz', String(L.size));
+  }, 80);
+  return () => { clearInterval(sync);  rm(); host.innerHTML = ''; };
 }

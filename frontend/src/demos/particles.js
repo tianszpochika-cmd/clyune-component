@@ -1,6 +1,9 @@
 import * as THREE from 'three';
+import { readLiveControls, colorToRgb } from './kits/_shared.js';
 
-export async function mountParticles(host) {
+export async function mountParticles(host, opts = {}) {
+  const ctrl = opts._controls || {};
+  const live = () => readLiveControls([host, host.parentElement], ctrl);
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x060a14);
   const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
@@ -8,7 +11,8 @@ export async function mountParticles(host) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   host.appendChild(renderer.domElement);
 
-  const COUNT = 8000;
+  const L0 = live();
+  const COUNT = Math.max(500, Math.min(12000, Math.round((L0.count || 40) * 100)));
   const positions = new Float32Array(COUNT * 3);
   const velocities = new Float32Array(COUNT * 3);
   for (let i = 0; i < COUNT; i++) {
@@ -50,12 +54,17 @@ export async function mountParticles(host) {
 
   const tick = () => {
     if (!alive) return;
+    const L = live();
+    const spd = L.speed;
+    const [cr, cg, cb] = colorToRgb(L.color);
+    mat.color.setRGB(cr, cg, cb);
+    mat.size = 0.035 * L.size;
     const pos = geo.attributes.position.array;
     for (let i = 0; i < COUNT; i++) {
       const ix = i * 3;
-      pos[ix] += velocities[ix] + mouse.x * 0.002;
-      pos[ix + 1] += velocities[ix + 1] + mouse.y * 0.002;
-      pos[ix + 2] += velocities[ix + 2];
+      pos[ix] += (velocities[ix] + mouse.x * 0.002) * spd;
+      pos[ix + 1] += (velocities[ix + 1] + mouse.y * 0.002) * spd;
+      pos[ix + 2] += velocities[ix + 2] * spd;
       if (Math.abs(pos[ix]) > 5) velocities[ix] *= -1;
       if (Math.abs(pos[ix + 1]) > 3) velocities[ix + 1] *= -1;
       if (Math.abs(pos[ix + 2]) > 4) velocities[ix + 2] *= -1;

@@ -16,12 +16,13 @@ export function withControls(host, opts, {
   mountLegacy,
   liveKeys = ['color', 'speed', 'size', 'count', 'blur'],
   remountKeys = ['count'],
+  presets: presetsOverride,
 }) {
   const parsed = parseVariant(opts.variant || fallbackVariant, fallbackVariant);
   let family = parsed.family;
   const presetKey = `${kitKey}:${opts.variant || family}`;
   const presetKey2 = `${kitKey}:${family}`;
-  let presets = FAMILY_PRESETS[presetKey] || FAMILY_PRESETS[presetKey2];
+  let presets = presetsOverride || FAMILY_PRESETS[presetKey] || FAMILY_PRESETS[presetKey2];
 
   if (!presets && FAMILY_PRESETS[`${kitKey}:${parsed.raw}`]) {
     family = parsed.raw;
@@ -106,4 +107,33 @@ export function withControls(host, opts, {
     try { innerDispose?.(); } catch (_) {}
     ui.destroy();
   };
+}
+
+
+/**
+ * Wrap a legacy mount(host) that has no panel, adding DemoControls.
+ * Color/speed/size applied as CSS vars; count (and optional remountKeys) remount.
+ * Inner mount receives opts._controls; CSS demos can rely on --c/--spd/--sz on stage.
+ */
+export function wrapLegacyMount(host, opts = {}, {
+  title = 'Demo',
+  presets = ['默认'],
+  params,
+  actions = [{ key: 'reset', label: '重置' }],
+  remountKeys = ['count'],
+  liveKeys = ['color', 'speed', 'size', 'count', 'blur'],
+  mountInner,
+} = {}) {
+  return withControls(host, { ...opts, variant: opts.variant || opts.slug || 'legacy-1' }, {
+    kitKey: 'legacy',
+    title,
+    fallbackVariant: 'legacy-1',
+    params: params || defaultParams({ color: true, speed: true, size: true, count: true }),
+    actions,
+    remountKeys,
+    liveKeys,
+    presets,
+    mapVariant: () => opts.variant || opts.slug || 'legacy-1',
+    mountLegacy: (box, o) => mountInner(box, o),
+  });
 }
