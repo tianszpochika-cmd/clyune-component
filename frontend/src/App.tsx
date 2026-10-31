@@ -37,13 +37,19 @@ function Sidebar({ open, onClose, filter, setFilter }: {
     ? loc.pathname.slice(0, -1)
     : loc.pathname || '/';
   const q = filter.trim().toLowerCase();
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  /** Accordion: only one category open; null = all collapsed. */
+  const [openKey, setOpenKey] = useState<string | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const key = categories.find((c) => r === `/${c.key}` || r.startsWith(`/${c.key}/`))?.key;
-    if (key) setExpanded((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+    const key = categories.find((c) => r === `/${c.key}` || r.startsWith(`/${c.key}/`))?.key ?? null;
+    // Auto-expand the active route's category (does not lock it open).
+    if (key) setOpenKey(key);
   }, [r]);
+
+  const toggleGroup = (key: string) => {
+    setOpenKey((prev) => (prev === key ? null : key));
+  };
 
   const filtered = useMemo(() => {
     if (!q) return categories;
@@ -99,36 +105,36 @@ function Sidebar({ open, onClose, filter, setFilter }: {
           <div className="nav-section-label">演示库</div>
           {filtered.map((c) => {
             const routeActive = r === `/${c.key}` || r.startsWith(`/${c.key}/`);
-            const groupOpen = !!q || !!expanded[c.key] || routeActive;
+            // Search keeps matches open; otherwise pure accordion via openKey (collapse always works).
+            const groupOpen = !!q || openKey === c.key;
             return (
               <div key={c.key} className={`nav-group${groupOpen ? ' open' : ''}${routeActive ? ' route-active' : ''}`}>
                 <div className="nav-item-row">
-                  <Link
-                    to={`/${c.key}`}
-                    className={`nav-item${routeActive ? ' active' : ''}`}
-                    title={c.intro}
-                    onClick={() => setExpanded((prev) => ({ ...prev, [c.key]: true }))}
+                  <button
+                    type="button"
+                    className={`nav-item nav-item-toggle${routeActive ? ' active' : ''}${groupOpen ? ' expanded' : ''}`}
+                    title={groupOpen ? `折叠 ${c.name}` : `展开 ${c.name}`}
+                    aria-expanded={groupOpen}
+                    onClick={() => toggleGroup(c.key)}
                   >
                     <span className="icon">{c.icon}</span>
                     <span className="nav-label">{c.name}</span>
                     <em className="count">{c.demos.length}</em>
+                    {!q && (
+                      <span className={`nav-chevron-inline${groupOpen ? ' open' : ''}`} aria-hidden>▾</span>
+                    )}
+                  </button>
+                  <Link
+                    to={`/${c.key}`}
+                    className="nav-cat-link"
+                    title={`打开 ${c.name} 目录`}
+                    aria-label={`打开 ${c.name} 目录`}
+                    onClick={(e) => { e.stopPropagation(); setOpenKey(c.key); }}
+                  >
+                    目录
                   </Link>
-                  {!q && (
-                    <button
-                      type="button"
-                      className={`nav-chevron${groupOpen ? ' open' : ''}`}
-                      aria-label={groupOpen ? '折叠' : '展开'}
-                      aria-expanded={groupOpen}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setExpanded((prev) => ({ ...prev, [c.key]: !groupOpen }));
-                      }}
-                    >
-                      <span aria-hidden>▾</span>
-                    </button>
-                  )}
                 </div>
-                <div className="nav-children" role="group" aria-label={c.name}>
+                <div className={`nav-children${groupOpen ? ' open' : ''}`} role="group" aria-label={c.name} hidden={!groupOpen}>
                   {c.demos.slice(0, q ? 80 : 48).map((d) => {
                     const path = `/${c.key}/${d.slug}`;
                     const on = r === path;
