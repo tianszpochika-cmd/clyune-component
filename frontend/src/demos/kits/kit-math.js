@@ -99,7 +99,7 @@ const FAMILY_CONTROLS = {
   determinant: { color: true, speed: false, size: { label: '缩放' }, count: { label: '阴影线密度', min: 2, max: 24, step: 1, value: 8, buttons: true } },
   eigen: { color: true, speed: { label: '测试向量转速' }, size: { label: '缩放' }, count: false },
   venn: { color: true, speed: false, size: { label: '圆半径' }, count: false },
-  combinatorics: { color: true, speed: false, size: { label: '选取 k' }, count: { label: '元素 n', min: 3, max: 10, step: 1, value: 6, buttons: true } },
+  combinatorics: { color: true, speed: false, size: { label: '选取 k', min: 0, max: 10, step: 1, value: 3, buttons: true }, count: { label: '元素 n', min: 3, max: 10, step: 1, value: 6, buttons: true } },
   sequence: { color: true, speed: { label: '推进速度' }, size: { label: '初值 a₂ / 公比 r' }, count: { label: '项数', min: 5, max: 20, step: 1, value: 10, buttons: true } },
   'shortest-path': { color: true, speed: { label: '推进速度' }, size: { label: '节点大小' }, count: false, extras: [{ key: 'showW', type: 'toggle', label: '显示边权', value: true }] },
   modular: { color: true, speed: { label: '自动计数' }, size: { label: '钟面大小' }, count: { label: '模 m', min: 4, max: 16, step: 1, value: 7, buttons: true } },
@@ -303,6 +303,10 @@ function mountLegacy(host, opts = {}) {
     if (family === 'similar-tri') {
       if (ix.drag) { if (Number.isFinite(ix.u)) push({ simT: Math.round(Math.max(0.15, Math.min(0.85, ix.u)) * 100) / 100 }); }
       else if (L.simT != null) ix.u = Number(L.simT);
+    }
+    if (family === 'combinatorics' && ix.drag && ix.sc != null) {
+      const N = Math.min(10, Math.max(3, Math.round(n)));
+      push({ size: Math.min(N, Math.max(0, Math.round(ix.sc * N))) });
     }
     drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix);
     const vals = OUT;
@@ -1298,24 +1302,26 @@ function drawVenn(ctx, w, h, tint, tt, sz, style, ix) {
 function drawCombinatorics(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '排列组合  C(n,k)/P(n,k) · 点击圆点', 16, 22);
   const N = Math.min(10, Math.max(3, Math.round(n)));
-  const K = ix.sc != null ? Math.min(N, Math.max(0, Math.round(ix.sc * N))) : Math.min(N, Math.max(1, Math.round(1 + sz * 3)));
+  // size slider is k itself (0..10); scrub writes it back
+  let K = Math.min(N, Math.max(0, Math.round(Number(ix._live?.size ?? 3))));
+  if (ix.drag && ix.sc != null) K = Math.min(N, Math.max(0, Math.round(ix.sc * N)));
   const fact = (x) => { let r = 1; for (let i = 2; i <= x; i++) r *= i; return r; };
-  const C = fact(N) / (fact(K) * fact(N - K));
-  const P = fact(N) / fact(N - K);
+  const C = fact(N) / (fact(K) * fact(N - K) || 1);
+  const P = fact(N) / (fact(N - K) || 1);
   const x0 = w * 0.12, gap = Math.min(52, (w * 0.76) / N);
   for (let i = 0; i < N; i++) {
     const x = x0 + i * gap, y = h * 0.4;
     const on = i < K;
     ctx.fillStyle = on ? tint : '#334155';
-    ctx.beginPath(); ctx.arc(x, y, 12 + 4 * Math.min(1, sz), 0, TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, y, 14, 0, TAU); ctx.fill();
     ctx.fillStyle = '#e2e8f0'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
     ctx.fillText(String(i + 1), x, y + 4);
   }
   ctx.fillStyle = '#e2e8f0'; ctx.font = '600 16px ui-sans-serif'; ctx.textAlign = 'left';
   ctx.fillText(`C(${N},${K})=${C}   P(${N},${K})=${P}`, x0, h * 0.62);
   OUT = { ...OUT, N, K, C, P, fk: fact(K) };
-  scrubBar(ctx, w, h, K / N, '拖动画布 → k');
-  caption(ctx, `count→n 尺寸→k`, 16, h - 16);
+  scrubBar(ctx, w, h, N ? K / N : 0, '拖动画布 → k');
+  caption(ctx, `右侧改 n / k · 拖动画布改 k`, 16, h - 16);
 }
 function drawSequence(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '递推数列', 16, 22);

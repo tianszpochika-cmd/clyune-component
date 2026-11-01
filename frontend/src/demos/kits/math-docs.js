@@ -267,7 +267,7 @@ export const MATH_DOCS = {
     rows: (v) => [['n', String(v.N)], ['k', String(v.K)], ['C(n,k)', String(v.C)], ['P(n,k)', String(v.P)], ['k!', String(v.fk)], ['P / C', String(v.C ? v.P / v.C : '—')]],
     formula: F(`C(n,k) = ${frac('n!', 'k!(n−k)!')}`) + F(`P(n,k) = ${frac('n!', '(n−k)!')} = C(n,k)·k!`),
     explain: '组合只管“选哪些”，排列还管“顺序”。每个组合有 k! 种排法，所以 P = C × k!。',
-    params: [['拖动画布', '选取个数 k'], ['数量', '元素总数 n'], ['尺寸', '默认 k'], ...COMMON],
+    params: [['拖动画布', '选取个数 k'], ['数量', '元素总数 n'], ['选取 k', '右侧滑条设定 k'], ['颜色', '已选圆点颜色']],
     example: (v) => `<ol><li>C(${v.N},${v.K}) = ${v.N}! / (${v.K}!·${v.N - v.K}!) = ${n(v.C, 0)}</li><li>P = C × ${v.K}! = ${n(v.C, 0)} × ${v.fk} = ${n(v.P, 0)}</li></ol>`,
   },
   sequence: {
