@@ -69,7 +69,8 @@ async function setControl(page, c) {
       return { ok: true, v: el.checked };
     }
     if (c.type === 'color') {
-      const next = (el.value || '#818cf8').toLowerCase() === '#818cf8' ? '#f472b6' : '#22d3ee';
+      const cur = (el.value || '#818cf8').toLowerCase();
+      const next = cur === '#f472b6' ? '#22d3ee' : '#f472b6';
       desc.set.call(el, next);
       el.dispatchEvent(new Event('input', { bubbles: true }));
       el.dispatchEvent(new Event('change', { bubbles: true }));

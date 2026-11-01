@@ -2,6 +2,35 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
 import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
+import { createInfoPanel, alignDocParams, fmt, F } from './kits/info-panel.js';
+
+export const PARAMS_SPEC = {
+  color: { label: '轨道线颜色', value: '#818cf8' },
+  speed: { label: '时间流速', min: 0.1, max: 3, step: 0.1, value: 1 },
+  size: { label: '整体缩放', min: 0.5, max: 1.6, step: 0.05, value: 1 },
+  count: { label: '行星数', min: 1, max: 8, step: 1, value: 8, buttons: true },
+  remountKeys: ['count'],
+};
+const EARTH_N = 3.5 * Math.pow(3.7, -1.5);
+const SS_DOC = {
+  title: '太阳系 · 开普勒轨道',
+  rows: (v) => [
+    ['模式', v.mode === 'helix' ? '螺旋前进（太阳在动）' : '日心（太阳静止）'],
+    ['聚焦', v.focus || '太阳', 'focus'],
+    ['已过 地球年', fmt(v.years ?? 0, 2)],
+    ['半长轴 a', v.a != null ? fmt(v.a, 1) : '—'],
+    ['偏心率 e', v.e != null ? fmt(v.e, 3) : '—'],
+    ['当前日距 r', v.r != null ? fmt(v.r, 2) : '—'],
+    ['公转周期 T', v.T != null ? `${fmt(v.T, 1)} s（${fmt(v.Ty, 2)} 地球年）` : '—', null, 'wide'],
+    ['T²/a³', v.k != null ? fmt(v.k, 3) : '—'],
+    ['行星数', String(v.n ?? 0)],
+  ],
+  formula: () => F('r(θ) = a(1 − e²) / (1 + e·cosθ)') + F('dθ/dt = n · (1 + e·cosθ)² / (1 − e²)^1.5') + F('开普勒第三定律：T² ∝ a³（n = 3.5·a^−1.5）'),
+  explain: '<p>每颗行星沿<b>椭圆</b>轨道绕太阳转，太阳在椭圆的一个焦点上。偏心率 e 越大椭圆越扁（水星 e≈0.21 最明显）。</p><p>行星离太阳近时跑得快、远时跑得慢（开普勒第二定律：相同时间扫过相同面积），所以角速度公式里带着 (1+e·cosθ)²。</p><p>离太阳越远，公转周期越长：周期的平方与半长轴的立方成正比，所以面板里的 <b>T²/a³</b> 对每颗行星几乎都一样。</p><p>切到“螺旋前进”模式，太阳本身也在银河中前进，行星轨迹被拉成螺旋线。</p>',
+  params: [['轨道线颜色', '轨道椭圆线的色调'], ['时间流速', '模拟时间倍率，越大公转越快'], ['整体缩放', '整个太阳系的缩放（含相机距离）'], ['行星数', '从水星起显示前 N 颗行星（会重建场景）']],
+  example: (v) => (v.a != null ? `<ol><li>${v.focus}：a = ${fmt(v.a, 1)}，T = 2π/n = ${fmt(v.T, 1)} 秒</li><li>T² / a³ = ${fmt(v.T, 1)}² / ${fmt(v.a, 1)}³ = ${fmt(v.k, 3)}（≈ (2π/3.5)² ≈ 3.223）</li><li>当前日距 r = ${fmt(v.r, 2)}，近日点 a(1−e) = ${fmt(v.a * (1 - v.e), 2)}，远日点 a(1+e) = ${fmt(v.a * (1 + v.e), 2)}</li></ol>` : '<p>点击一颗行星（或上方按钮）聚焦它，这里会算出它的开普勒参数。</p>'),
+  tip: '点行星聚焦、双击空白回到太阳；拖动旋转，滚轮/双指缩放。',
+};
 
 /* ------------------------------------------------------------------ data */
 const DEG = Math.PI / 180;
@@ -512,8 +541,10 @@ const CSS = `
 `;
 
 /* ------------------------------------------------------------------ mount */
-export async function mountSolarSystem(host, opts = {}) {
+export async function mountSolarSystem(outerHost, opts = {}) {
   const ctrl = opts._controls || {};
+  const info = createInfoPanel(outerHost, { doc: alignDocParams(SS_DOC, PARAMS_SPEC) });
+  const host = info.canvasBox;
   const live = () => readLiveControls([host, host.parentElement], ctrl);
   const styleName = String(ctrl.styleName || '');
   let mode = /螺旋|helix/i.test(styleName) ? 'helix' : 'helio';
@@ -531,7 +562,6 @@ export async function mountSolarSystem(host, opts = {}) {
   else if (outerOnly) list = PLANETS.slice(4);
   else {
     let cnt = Math.round(Number(ctrl.count ?? L0.count ?? 8));
-    if (cnt > 8) cnt = Math.round(cnt / 5);
     cnt = Math.max(1, Math.min(8, cnt || 8));
     list = PLANETS.slice(0, cnt);
   }
@@ -543,7 +573,7 @@ export async function mountSolarSystem(host, opts = {}) {
   };
 
   /* renderer / scene */
-  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true });
   renderer.setClearColor(0x02030a, 1);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
@@ -886,9 +916,12 @@ export async function mountSolarSystem(host, opts = {}) {
   renderer.domElement.addEventListener('dblclick', onDbl);
 
   /* resize */
+  let lastW = 0, lastH = 0;
   const resize = () => {
     const w = host.clientWidth || host.parentElement?.clientWidth || 640;
     const h = host.clientHeight || host.parentElement?.clientHeight || 420;
+    if (w === lastW && h === lastH) return;
+    lastW = w; lastH = h;
     camera.aspect = w / Math.max(1, h);
     camera.fov = camera.aspect < 1 ? Math.min(80, (2 * Math.atan(Math.tan(25 * DEG) / camera.aspect)) / DEG) : 50;
     camera.updateProjectionMatrix();
@@ -1048,6 +1081,19 @@ export async function mountSolarSystem(host, opts = {}) {
     moonLines.forEach((l) => { l.visible = showTrails; });
 
     renderer.render(scene, camera);
+    const fb = focus != null ? bodies[focus] : null;
+    const iv = { mode, n: bodies.length, years: (simT * EARTH_N) / (2 * Math.PI), focus: fb ? fb.p.name : null };
+    if (fb) {
+      const T = (2 * Math.PI) / fb.n;
+      Object.assign(iv, { a: fb.p.a, e: fb.p.e, r: orbitR(fb.p.a, fb.p.e, fb.th), T, Ty: (T * EARTH_N) / (2 * Math.PI), k: (T * T) / fb.p.a ** 3 });
+    }
+    offs.subVectors(camera.position, controls.target);
+    const az = Math.atan2(offs.x, offs.z), pol = Math.acos(Math.max(-1, Math.min(1, offs.y / Math.max(1e-6, offs.length()))));
+    info.update(iv, {
+      ix: `${az.toFixed(2)},${pol.toFixed(2)},${offs.length().toFixed(1)}|${focus}|${mode}`,
+      handle: `${Math.round(lastW / 2)},${Math.round(lastH * 0.62)}`,
+      ctl: [['视角 方位/俯仰', `${fmt(az / DEG, 0)}° / ${fmt(pol / DEG, 0)}°`], ['相机距离', fmt(offs.length(), 1)]],
+    });
   };
   requestAnimationFrame(tick);
 
@@ -1071,5 +1117,7 @@ export async function mountSolarSystem(host, opts = {}) {
     renderer.dispose();
     try { renderer.forceContextLoss(); } catch (_) { /* ignore */ }
     host.innerHTML = '';
+    info.destroy();
+    outerHost.innerHTML = '';
   };
 }
