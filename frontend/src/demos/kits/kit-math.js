@@ -922,7 +922,7 @@ function drawParametric(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '参数方程 · 李萨如', 16, 22);
   const ox = w * 0.5 + ix.panX * 10, oy = h * 0.52, sc = 60 * sz * ix.zoom;
   axes(ctx, ox, oy, w * 0.4, h * 0.38);
-  const b = Math.max(1, (n % 5) || (2 + style % 3));
+  const b = Math.max(1, Math.min(8, Math.round(n)));
   ctx.strokeStyle = tint; ctx.lineWidth = 2; ctx.beginPath();
   const T = tt * 1.5;
   for (let i = 0; i <= 400; i++) {
@@ -945,11 +945,11 @@ function drawPolar(ctx, w, h, tint, tt, sz, n, style, ix) {
   const ox = w * 0.5, oy = h * 0.52;
   ctx.strokeStyle = '#1e293b';
   for (let r = 30; r <= 140 * sz * ix.zoom; r += 30) { ctx.beginPath(); ctx.arc(ox, oy, r, 0, TAU); ctx.stroke(); }
-  const k = Math.max(2, (n % 7) || (2 + style % 5));
+  const k = Math.max(2, Math.min(8, Math.round(n)));
   const a = 80 * sz * ix.zoom;
   ctx.strokeStyle = tint; ctx.lineWidth = 2.2; ctx.beginPath();
   const fullTh = TAU * (k % 2 === 0 ? 2 : 1);
-  const maxTh = ix.sc != null ? Math.max(0.02, ix.sc) * fullTh : Math.min(tt * 1.3, fullTh);
+  const maxTh = ix.sc != null ? Math.max(0.02, ix.sc) * fullTh : Math.min((tt * 1.3) % (fullTh + 1), fullTh); // redraw in a loop with a short hold
   for (let i = 0; i <= 500; i++) {
     const th = (i / 500) * maxTh;
     const r = a * Math.cos(k * th);
@@ -1119,7 +1119,7 @@ function drawTaylor(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '泰勒展开  sin x', 16, 22);
   const { ox, oy, s } = plotFrame(ctx, w, h, ix, sz, tint);
   plotFn(ctx, ox, oy, s, s, -6, 6, Math.sin, '#64748b', 1.5);
-  const terms = Math.min(10, Math.max(1, (n % 11) || (2 + style)));
+  const terms = Math.min(10, Math.max(1, Math.round(n)));
   const fact = (k) => { let r = 1; for (let i = 2; i <= k; i++) r *= i; return r; };
   const taylor = (x) => {
     let sum = 0;
