@@ -1,3 +1,4 @@
+import { auditCats } from './audit-cats.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
@@ -173,7 +174,7 @@ async function auditOne(browser, cat, slug, mobile) {
 
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] });
 const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
-const jobs = [...MATH.map((s) => ['math', s]), ...CONVERT.map((s) => ['convert', s])].filter(([c, s]) => !only || only.includes(s) || only.includes(`${c}/${s}`));
+const jobs = Object.entries(auditCats({ math: MATH, convert: CONVERT })).flatMap(([c, l]) => l.map((s) => [c, s])).filter(([c, s]) => !only || only.includes(s) || only.includes(`${c}/${s}`));
 const modes = process.env.MODE === 'd' ? [false] : process.env.MODE === 'm' ? [true] : [false, true];
 let total = 0, failed = 0;
 const queue = [];

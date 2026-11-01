@@ -137,7 +137,8 @@ export async function mountDemo(
   const meta = LEGACY_META[mod] || { title: mod, color: true, speed: true, size: true, count: true };
   const { wrapLegacyMount } = await import('./demos/kits/withControls.js');
   const { defaultParams, paramsFromSpec } = await import('./demos/kits/_shared.js');
-  const spec = (meta as { paramsSpec?: Record<string, unknown> }).paramsSpec || {
+  const modSpec = (m as { PARAMS_SPEC?: Record<string, unknown> }).PARAMS_SPEC;
+  const spec = modSpec || (meta as { paramsSpec?: Record<string, unknown> }).paramsSpec || {
     color: meta.color !== false,
     speed: meta.speed !== false,
     size: meta.size !== false,
@@ -147,7 +148,7 @@ export async function mountDemo(
     title: meta.title,
     presets: meta.presets || ['默认'],
     params: paramsFromSpec(spec),
-    remountKeys: meta.remountKeys || (meta.count ? ['count'] : []),
+    remountKeys: (modSpec?.remountKeys as string[] | undefined) || meta.remountKeys || (meta.count ? ['count'] : []),
     mountInner: (box: HTMLElement, o: { variant?: string; slug?: string; _controls?: Record<string, unknown> }) =>
       mount(box, o),
   });

@@ -1,3 +1,4 @@
+import { auditCats } from './audit-cats.mjs';
 // Motion health audit: flicker / freeze / jank / canvas clear-resize, desktop + 390.
 // Usage: BASE=... ONLY=slug,slug MODE=d|m node motion-audit.mjs
 import { chromium } from 'playwright';
@@ -10,7 +11,7 @@ const DUR = Number(process.env.DUR || 6000);
 const FPS = 30;
 const MATH = ['pythagoras','similar-tri','circle-angles','area-volume','coord-geo','conics','linear','quadratic','exp-log','power','piecewise','parametric','polar','trig-waves','unit-circle','trig-id','law-sine','limit','derivative','integral','taylor','vectors','matrix-2d','determinant','eigen','venn','combinatorics','sequence','shortest-path','modular','binomial','normal','clt'];
 const CONVERT = ['temperature','timezone','mass','length','area-volume','radix','speed','pressure','energy'];
-const CATS = process.env.CATS ? JSON.parse(process.env.CATS) : { math: MATH, convert: CONVERT };
+const CATS = auditCats({ math: MATH, convert: CONVERT });
 
 // injected before page scripts: rAF frame-time recorder + canvas resize/clear watcher
 const INIT = () => {

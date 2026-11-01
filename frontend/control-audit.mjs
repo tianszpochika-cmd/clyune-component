@@ -1,3 +1,4 @@
+import { auditCats } from './audit-cats.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
@@ -196,8 +197,7 @@ async function redirectCheck(browser) {
 const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] });
 const jobs = [];
 for (const mobile of [false, true]) {
-  for (const slug of MATH) jobs.push(['math', slug, mobile]);
-  for (const slug of CONVERT) jobs.push(['convert', slug, mobile]);
+  for (const [c, l] of Object.entries(auditCats({ math: MATH, convert: CONVERT }))) for (const slug of l) jobs.push([c, slug, mobile]);
 }
 
 const results = [];
