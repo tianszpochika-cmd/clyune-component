@@ -84,7 +84,7 @@ export function createThreeStage(host, opts = {}, {
   resize();
 
   const frames = [];
-  let raf = 0, alive = true, last = -1, sim = 0, wall = 0;
+  let raf = 0, alive = true, last = -1, sim = 0, wall = 0, slowN = 0, dprScale = 1;
   const api = {
     THREE, scene, camera, renderer, controls, view, info, get,
     get size() { return [W, H]; },
@@ -98,6 +98,9 @@ export function createThreeStage(host, opts = {}, {
     if (!W || !H) resize();
     const dtw = last < 0 ? 0 : Math.min(0.05, Math.max(0, (now - last) / 1000));
     last = now;
+    // adaptive resolution: weak GPUs / software GL drop render scale instead of stuttering
+    if (dtw > 0) { slowN = dtw > 0.034 ? slowN + 1 : Math.max(0, slowN - 1); }
+    if (slowN > 20 && dprScale > 0.55) { dprScale = Math.max(0.5, dprScale * 0.75); slowN = 0; renderer.setPixelRatio(maxDpr(2) * dprScale); renderer.setSize(W, H, false); }
     const C = get();
     const spd = Number.isFinite(C.speed) ? C.speed : 1;
     sim += dtw * spd; wall += dtw;

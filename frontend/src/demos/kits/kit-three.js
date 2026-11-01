@@ -71,7 +71,7 @@ const FAM = {
       const geo = new THREE.TorusGeometry(1, r, 32, 96);
       const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial()); S.scene.add(m);
       return ({ t, C }) => {
-        const s = Number(C.size || 1); m.scale.setScalar(s); m.rotation.set(0.9 + 0.15 * Math.sin(t * 0.4), W * t, 0);
+        const s = Number(C.size || 1); m.scale.setScalar(s); m.rotation.order = 'YXZ'; m.rotation.set(-0.55 + 0.12 * Math.sin(t * 0.4), 0.85 * Math.sin(W * t), 0);
         m.material.color.set(C.color || '#818cf8'); m.material.metalness = Number(C.metal ?? 0.35); m.material.roughness = Number(C.rough ?? 0.35);
         const RR = s, rr = r * s;
         return { th: W * t, Rr: RR, r: rr, A: 4 * Math.PI ** 2 * RR * rr, V: 2 * Math.PI ** 2 * RR * rr * rr, tris: triCount(geo) };
@@ -96,7 +96,7 @@ const FAM = {
       const geo = new THREE.SphereGeometry(1, seg, seg);
       const mat = new THREE.PointsMaterial({ size: 0.035, sizeAttenuation: true, transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending });
       const p = new THREE.Points(geo, mat); S.scene.add(p);
-      const core = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 32), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false }));
+      const core = new THREE.Mesh(new THREE.SphereGeometry(0.7, 32, 32), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.38, blending: THREE.AdditiveBlending, depthWrite: false }));
       S.scene.add(core);
       return ({ t, C }) => {
         core.material.color.set(C.color || '#a5b4fc'); core.scale.setScalar(1 + 0.5 * Number(C.breath ?? 0.08) * Math.cos(1.5 * t));
@@ -287,7 +287,7 @@ const FAM = {
   pillar: {
     spec: { color: { label: '光柱颜色', value: '#22d3ee' }, speed: spin, size: { label: '粗细', min: 0.4, max: 1.8, step: 0.05, value: 1 }, count: false, extras: [R('h', '高度 h', 1, 3.4, 0.1, 2.4), R('glow', '发光强度', 0, 2, 0.05, 0.6)] },
     presets: { 细柱: { size: 0.55 }, 粗柱: { size: 1.6 }, 高: { h: 3.2 }, 矮: { h: 1.3 }, 快转: { speed: 2 }, 慢转: { speed: 0.45 } },
-    radius: 1.8, target: [0, 0.2, 0],
+    radius: 1.55, target: [0, 0.2, 0],
     doc: {
       title: '光柱 · 圆台体积',
       rows: (v) => [...spinRows(v), ['顶半径 r₁', fmt(v.r1 ?? 0, 3)], ['底半径 r₂', fmt(v.r2 ?? 0, 3)], ['高度 h', fmt(v.h ?? 0)], ['体积 V', fmt(v.V ?? 0, 3)], ['发光', fmt(v.glow ?? 0)]],
@@ -298,17 +298,17 @@ const FAM = {
       tip: '拖动环绕；把发光强度调高再调低，对比自发光效果。',
     },
     build(S) {
-      const geo = new THREE.CylinderGeometry(0.15, 0.35, 1, 32, 1, true);
+      const geo = new THREE.CylinderGeometry(0.25, 0.55, 1, 40, 1, true);
       const mat = new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.85, side: THREE.DoubleSide, roughness: 0.3 });
       const m = new THREE.Mesh(geo, mat); S.scene.add(m);
-      const disc = new THREE.Mesh(new THREE.RingGeometry(0.4, 0.9, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.35, side: THREE.DoubleSide }));
+      const disc = new THREE.Mesh(new THREE.RingGeometry(0.62, 1.3, 64), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.35, side: THREE.DoubleSide }));
       disc.rotation.x = -Math.PI / 2; S.scene.add(disc);
       return ({ t, C }) => {
         const s = Number(C.size || 1), h = Number(C.h ?? 2.4), glow = Number(C.glow ?? 0.6);
         m.scale.set(s, h, s); m.position.y = h / 2 - 1; m.rotation.y = W * t; disc.position.y = -1;
         mat.color.set(C.color || '#22d3ee'); mat.emissive.set(C.color || '#22d3ee'); mat.emissiveIntensity = glow;
         disc.material.color.set(C.color || '#22d3ee'); disc.scale.setScalar(s * (1 + 0.12 * Math.sin(2 * t)));
-        const r1 = 0.15 * s, r2 = 0.35 * s;
+        const r1 = 0.25 * s, r2 = 0.55 * s;
         return { th: W * t, r1, r2, h, V: (Math.PI * h * (r1 * r1 + r1 * r2 + r2 * r2)) / 3, glow };
       };
     },
@@ -367,8 +367,8 @@ const FAM = {
   },
   'orbit-moons': {
     spec: { color: { label: '行星颜色', value: '#818cf8' }, speed: { label: '公转速度', min: 0, max: 3, step: 0.1, value: 1 }, size: { label: '行星半径', min: 0.25, max: 0.7, step: 0.05, value: 0.45 }, count: { label: '卫星数', min: 1, max: 6, step: 1, value: 3, buttons: true }, extras: [R('dist', '最内轨道 r₁', 0.8, 1.6, 0.05, 1.0)], remountKeys: [] },
-    presets: { 双星: { count: 2 }, 三星: { count: 3 }, 近: { dist: 0.85 }, 远: { dist: 1.5 }, 快: { speed: 2 }, 慢: { speed: 0.45 } },
-    radius: 2.6,
+    presets: { 三星: { count: 3 }, 双星: { count: 2 }, 近: { dist: 0.85 }, 远: { dist: 1.5 }, 快: { speed: 2 }, 慢: { speed: 0.45 } },
+    radius: 1.95, camDir: [0, 0.85, 1],
     doc: {
       title: '卫星轨道 · 开普勒第三定律',
       rows: (v) => [['卫星数', String(v.n ?? 0)], ['r₁ / T₁', `${fmt(v.r1 ?? 0)} / ${v.T1 ? fmt(v.T1, 1) + 's' : '∞'}`], ['最外 rₙ / Tₙ', `${fmt(v.rn ?? 0)} / ${v.Tn ? fmt(v.Tn, 1) + 's' : '∞'}`], ['T²/r³（应恒定）', v.k ? fmt(v.k, 2) : '—'], ['1 号卫星角 θ₁', deg(v.a1 ?? 0), 'a1'], ['行星半径', fmt(v.R ?? 0)]],
@@ -381,9 +381,9 @@ const FAM = {
     build(S) {
       const planetMat = new THREE.MeshStandardMaterial({ roughness: 0.4, metalness: 0.2 });
       const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 40), planetMat); S.scene.add(planet);
-      const moons = [], rings = [];
+      const moons = [], rings = []; let lastFit = '';
       for (let i = 0; i < 6; i++) {
-        const m = new THREE.Mesh(new THREE.SphereGeometry(0.09 + 0.02 * (i % 3), 20, 20), new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(0.08 + i * 0.13, 0.6, 0.65) }));
+        const m = new THREE.Mesh(new THREE.SphereGeometry(0.12 + 0.03 * (i % 3), 20, 20), new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(0.08 + i * 0.13, 0.6, 0.65) }));
         const pivot = new THREE.Group(); pivot.rotation.x = 0.12 * Math.sin(i * 1.7); pivot.add(m); S.scene.add(pivot); moons.push({ m, pivot, a0: i * 2.1 });
         const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(Array.from({ length: 96 }, (_, k) => new THREE.Vector3(Math.cos((k / 96) * Math.PI * 2), 0, Math.sin((k / 96) * Math.PI * 2)))), new THREE.LineBasicMaterial({ color: 0x334155 }));
         pivot.add(ring); rings.push(ring);
@@ -393,7 +393,9 @@ const FAM = {
         planet.scale.setScalar(R0); planetMat.color.set(C.color || '#818cf8'); planet.rotation.y = 0.3 * t;
         let a1 = 0;
         moons.forEach((o, i) => { const vis = i < n; o.pivot.visible = vis; const r = r1 * (1 + 0.35 * i); const a = o.a0 + 1.2 * t * r ** -1.5; if (i === 0) a1 = a; o.m.position.set(Math.cos(a) * r, 0, Math.sin(a) * r); rings[i].scale.setScalar(r); });
-        const rn = r1 * (1 + 0.35 * (n - 1)); const w0 = 1.2 * C.speed;
+        const rn = r1 * (1 + 0.35 * (n - 1)); const fitKey = n + ':' + r1;
+        if (fitKey !== lastFit) { lastFit = fitKey; S.setFitRadius(Math.max(1.2, rn + 0.25)); }
+        const w0 = 1.2 * C.speed;
         const T1 = w0 ? (2 * Math.PI) / (w0 * r1 ** -1.5) : 0, Tn = w0 ? (2 * Math.PI) / (w0 * rn ** -1.5) : 0;
         return { n, r1, rn, T1, Tn, k: T1 ? T1 ** 2 / r1 ** 3 : 0, a1, R: R0 };
       };
@@ -420,7 +422,7 @@ export function mount(host, opts = {}) {
 
 function mountFamily(fam, host, opts) {
   const F0 = FAM[fam];
-  const S = createThreeStage(host, opts, { doc: F0.doc, spec: F0.spec, radius: F0.radius || 1.5, fill: F0.fill || 0.66, target: F0.target || [0, 0, 0], camDir: [0, 0.38, 1] });
+  const S = createThreeStage(host, opts, { doc: F0.doc, spec: F0.spec, radius: F0.radius || 1.5, fill: F0.fill || 0.66, target: F0.target || [0, 0, 0], camDir: F0.camDir || [0, 0.38, 1] });
   addLights(S.scene, { amb: 0.5, key: 1.15, fill: 0.45 });
   const step = F0.build(S, S.get());
   S.onFrame(({ t, C }) => ({ w: W * C.speed, ...(step({ t, C }) || {}) }));
