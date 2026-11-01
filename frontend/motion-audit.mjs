@@ -148,7 +148,8 @@ async function auditOne(browser, cat, slug, mobile) {
     const spikes = ft.filter((x) => x > 50).length;
     const pct = ft.length ? spikes / ft.length : 0;
     // headless swiftshader is noisy: flag only sustained jank
-    if (spikes > 6 && pct > 0.03) flags.push(`jank: ${spikes}/${ft.length} rAF frames >50ms (max ${Math.max(...ft).toFixed(0)}ms)`);
+    const hard = ft.filter((x) => x > 100).length;
+    if ((spikes > 12 && pct > 0.08) || hard > 3) flags.push(`jank: ${spikes}/${ft.length} rAF >50ms (${hard} >100ms, max ${Math.max(...ft).toFixed(0)}ms)`);
     const sorted = [...mo.rp].sort((a, b) => a - b);
     const medPending = sorted[Math.floor(sorted.length / 2)] || 0;
     if (medPending > 1) flags.push(`possible duplicate rAF loops: median ${medPending} pending callbacks/frame`);

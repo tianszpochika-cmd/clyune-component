@@ -97,7 +97,8 @@ async function auditOne(browser, cat, slug, mobile) {
       const sx = box.x + hx, sy = box.y + hy;
       const r1 = await rowsText(page);
       await page.mouse.move(sx, sy); await page.mouse.down();
-      for (let i = 1; i <= 8; i++) { await page.mouse.move(sx + i * 7, sy - i * 3.5); await page.waitForTimeout(30); }
+      for (let i = 1; i <= 6; i++) { await page.mouse.move(sx - i * 18, sy + i * 2); await page.waitForTimeout(35); }
+      for (let i = 1; i <= 10; i++) { await page.mouse.move(sx - 108 + i * 22, sy - i * 2); await page.waitForTimeout(35); }
       const mid = await rowsText(page);
       await page.mouse.up();
       await page.waitForTimeout(250);

@@ -196,6 +196,8 @@ function mountLegacy(host, opts = {}) {
     for (const hit of hits) {
       const d = Math.hypot(p.x - hit.x, p.y - hit.y);
       if (d <= (hit.r || 14)) {
+        // node/mod hits are handled below (select + scrub); don't swallow as a dead drag key
+        if (hit.key === 'node' || hit.key === 'mod') { if (d < bd) { bd = d; best = hit; } continue; }
         ix.drag = { key: hit.key, dx: p.x - hit.x, dy: p.y - hit.y };
         canvas.setPointerCapture?.(e.pointerId);
         e.preventDefault();
@@ -212,15 +214,24 @@ function mountLegacy(host, opts = {}) {
       return;
     }
     if (family === 'shortest-path' || family === 'modular') {
-      // click nearest node
+      // click nearest node; keep scrubbing so a drag from the handle also advances progress
       let nb = null, nd = 1e9;
       for (const hit of hits) {
         const d = Math.hypot(p.x - hit.x, p.y - hit.y);
         if (d < nd) { nd = d; nb = hit; }
       }
-      if (nb && nd < 28) {
+      const soft = Math.max(40, Math.min(w, h) * 0.12);
+      if (nb && nd < soft) {
         ix.node = nb.idx ?? 0; ix.nodeSet = true;
         if (family === 'modular') ix.sc = null;
+        else {
+          const path = [0, 2, 3, 4, 6];
+          let pi = path.indexOf(ix.node);
+          if (pi < 0) pi = Math.round((ix.sc ?? 0) * (path.length - 1));
+          ix.sc = pi / Math.max(1, path.length - 1);
+          ix.drag = { key: 'scrub', x0: p.x, sc0: ix.sc };
+          canvas.setPointerCapture?.(e.pointerId);
+        }
         e.preventDefault();
         return;
       }
@@ -509,7 +520,11 @@ function applyDrag(family, ix, p, w, h, L) {
     return;
   }
   if (d.key === 'scrub') {
-    ix.sc = Math.min(1, Math.max(0, (p.x - w * 0.06) / Math.max(1, w * 0.88)));
+    if (Number.isFinite(d.x0) && Number.isFinite(d.sc0)) {
+      ix.sc = Math.min(1, Math.max(0, d.sc0 + (p.x - d.x0) / Math.max(1, w * 0.55)));
+    } else {
+      ix.sc = Math.min(1, Math.max(0, (p.x - w * 0.06) / Math.max(1, w * 0.88)));
+    }
     if (family === 'shortest-path') { ix.node = [0, 2, 3, 4, 6][Math.round(ix.sc * 4)]; ix.nodeSet = true; }
     if (family === 'modular') ix.node = null;
     return;
