@@ -1015,11 +1015,12 @@ function drawTrigId(ctx, w, h, tint, tt, sz, style, ix) {
   if (!ix.drag && !ix.thSet) ix.theta = (ix.theta + (tt - ix._lastTt2) * 0.8) % TAU;
   ix._lastTt2 = tt;
   const cx = w * 0.72, cy = h * 0.5, R = 55 * sz;
-  ctx.strokeStyle = '#475569'; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = tint; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
   const th = ix.theta;
   const px = cx + Math.cos(th) * R, py = cy - Math.sin(th) * R;
-  fillPoly(ctx, [[cx, cy], [px, cy], [px, py]], rgba('#22d3ee', 0.25), '#22d3ee');
-  ctx.strokeStyle = tint; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
+  fillPoly(ctx, [[cx, cy], [px, cy], [px, py]], rgba(tint, 0.28), tint);
+  ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py); ctx.stroke();
+  ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(px, py, 5, 0, TAU); ctx.fill();
   OUT = { ...OUT, th, s: Math.sin(th), c: Math.cos(th) };
   OUT._pts.sin = [px, (py + cy) / 2]; OUT._pts.cos = [(px + cx) / 2, cy];
   caption(ctx, `黄线恒为1 · 尺寸改圆 · 拖点改角`, 16, h - 16);
