@@ -1,6 +1,6 @@
-import { makeCanvas, loop, bar, defaultParams, readLiveControls, localPoint } from './_shared.js';
+import { makeCanvas, loop, bar, defaultParams, paramsFromSpec, readLiveControls, localPoint } from './_shared.js';
 import { withControls } from './withControls.js';
-import { createInfoPanel } from './info-panel.js';
+import { createInfoPanel, alignDocParams } from './info-panel.js';
 import { MATH_DOCS } from './math-docs.js';
 
 /** per-frame readout values written by the active draw function (synchronous, so safe to share) */
@@ -58,16 +58,68 @@ const PRESET_DEFAULTS = {
   '大': { size: 1.6 }, '小': { size: 0.65 }, '快': { speed: 2 }, '慢': { speed: 0.4 }, '动': { speed: 1.5 },
 };
 
+
+/**
+ * Per-family DemoControls: only knobs that change canvas or live math readout.
+ * extras = demo-specific meaningful controls (preferred over generic count/size).
+ */
+const FAMILY_CONTROLS = {
+  pythagoras: {
+    color: true, speed: false, size: false, count: false,
+    extras: [
+      { key: 'sideA', type: 'range', label: '直角边 a', min: 4, max: 18, step: 0.1, value: 10.5 },
+      { key: 'sideB', type: 'range', label: '直角边 b', min: 4, max: 18, step: 0.1, value: 10 },
+      { key: 'showSq', type: 'toggle', label: '三边正方形', value: true },
+    ],
+  },
+  'similar-tri': {
+    color: true, speed: false, size: false, count: false,
+    extras: [{ key: 'simT', type: 'range', label: '相似比 t', min: 0.15, max: 0.85, step: 0.01, value: 0.35 }],
+  },
+  'circle-angles': { color: true, speed: { label: '旋转速度' }, size: { label: '圆半径' }, count: false },
+  'area-volume': { color: true, speed: false, size: { label: '尺度' }, count: { label: '分层数', min: 3, max: 24, step: 1, value: 8, buttons: true } },
+  'coord-geo': { color: true, speed: false, size: { label: '坐标缩放' }, count: { label: '等分点数', min: 2, max: 40, step: 1, value: 10, buttons: true } },
+  conics: { color: true, speed: false, size: { label: '缩放' }, count: { label: '曲线类型', min: 1, max: 6, step: 1, value: 3, buttons: true } },
+  linear: { color: true, speed: { label: '截距摆动' }, size: { label: '斜率 |k|' }, count: { label: '取样点', min: 3, max: 40, step: 1, value: 12, buttons: true } },
+  quadratic: { color: true, speed: { label: '顶点漂移' }, size: { label: '|a| 大小' }, count: false },
+  'exp-log': { color: true, speed: false, size: { label: '底数相关' }, count: { label: '取样点', min: 3, max: 40, step: 1, value: 12, buttons: true } },
+  power: { color: true, speed: false, size: { label: '缩放' }, count: { label: '曲线条数', min: 1, max: 6, step: 1, value: 3, buttons: true } },
+  piecewise: { color: true, speed: { label: '动点速度' }, size: { label: '中段系数' }, count: { label: '分段数', min: 2, max: 8, step: 1, value: 3, buttons: true } },
+  parametric: { color: true, speed: { label: '绘制速度' }, size: { label: '图形大小' }, count: { label: '频率比 b', min: 1, max: 6, step: 1, value: 2, buttons: true } },
+  polar: { color: true, speed: { label: '绘制速度' }, size: { label: '大小' }, count: { label: '花瓣 k', min: 2, max: 8, step: 1, value: 3, buttons: true } },
+  'unit-circle': { color: true, speed: { label: '旋转速度' }, size: { label: '圆半径' }, count: false },
+  'trig-id': { color: true, speed: { label: '旋转速度' }, size: { label: '大小' }, count: false },
+  'law-sine': { color: true, speed: { label: '旋转' }, size: { label: '外接圆' }, count: false },
+  limit: { color: true, speed: { label: '逼近节奏' }, size: { label: '缩放' }, count: { label: '取样点数', min: 3, max: 36, step: 1, value: 12, buttons: true } },
+  derivative: { color: true, speed: { label: '割线动画' }, size: { label: '缩放' }, count: false },
+  integral: { color: true, speed: false, size: { label: '缩放' }, count: { label: '矩形数 N', min: 3, max: 48, step: 1, value: 12, buttons: true } },
+  taylor: { color: true, speed: false, size: { label: '缩放' }, count: { label: '展开项数', min: 1, max: 10, step: 1, value: 4, buttons: true } },
+  vectors: { color: true, speed: false, size: { label: '缩放' }, count: false },
+  'matrix-2d': { color: true, speed: { label: '旋转速度' }, size: { label: '缩放' }, count: false },
+  determinant: { color: true, speed: false, size: { label: '缩放' }, count: { label: '阴影线密度', min: 2, max: 24, step: 1, value: 8, buttons: true } },
+  eigen: { color: true, speed: { label: '测试向量转速' }, size: { label: '缩放' }, count: false },
+  venn: { color: true, speed: false, size: { label: '圆半径' }, count: false },
+  combinatorics: { color: true, speed: false, size: { label: '选取 k' }, count: { label: '元素 n', min: 3, max: 10, step: 1, value: 6, buttons: true } },
+  sequence: { color: true, speed: { label: '推进速度' }, size: { label: '初值 a₂ / 公比 r' }, count: { label: '项数', min: 5, max: 20, step: 1, value: 10, buttons: true } },
+  'shortest-path': { color: true, speed: { label: '推进速度' }, size: { label: '节点大小' }, count: false, extras: [{ key: 'showW', type: 'toggle', label: '显示边权', value: true }] },
+  modular: { color: true, speed: { label: '自动计数' }, size: { label: '钟面大小' }, count: { label: '模 m', min: 4, max: 16, step: 1, value: 7, buttons: true } },
+  binomial: { color: true, speed: { label: 'p 摆动' }, size: { label: '成功概率 p' }, count: { label: '试验次数 n', min: 3, max: 30, step: 1, value: 10, buttons: true } },
+  normal: { color: true, speed: { label: 'μ 漂移' }, size: { label: 'σ 宽度' }, count: false },
+  clt: { color: true, speed: { label: '重抽样' }, size: false, count: { label: '每组样本', min: 2, max: 30, step: 1, value: 8, buttons: true } },
+};
+
 export function mount(host, opts = {}) {
   const parsed = String(opts.variant || 'pythagoras').replace(/-\d+$/, '');
   const fam = FAMILIES.includes(parsed) ? parsed : 'pythagoras';
+  const spec = FAMILY_CONTROLS[fam] || { color: true, speed: false, size: true, count: false };
   return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-math',
     title: fam,
     fallbackVariant: fam,
-    params: defaultParams({ color: true, speed: true, size: true, count: true }),
+    params: paramsFromSpec(spec),
     mapVariant: (family, n) => `${family}-${n}`,
-    remountKeys: ['count'],
+    remountKeys: spec.remountKeys || [],
+    liveKeys: ['color', 'speed', 'size', 'count', 'blur'],
     presetDefaults: PRESET_DEFAULTS,
     mountLegacy,
   });
@@ -102,14 +154,22 @@ function mountLegacy(host, opts = {}) {
   ];
   const live = () => {
     const L = readLiveControls(roots(), ctrl);
+    const stageEl = host.closest?.('.kit-stage') || host.parentElement;
+    const cur = (typeof stageEl?.__getControls === 'function' ? stageEl.__getControls() : null) || ctrl;
+    const extra = {};
+    for (const [k, v] of Object.entries(cur)) {
+      if (['color', 'speed', 'size', 'count', 'blur', 'style', 'styleName', 'easing'].includes(k)) continue;
+      extra[k] = v;
+    }
     return {
       ...L,
-      style: Number.isFinite(ctrl.style) ? ctrl.style : 0,
-      styleName: ctrl.styleName || '',
+      ...extra,
+      style: Number.isFinite(cur.style) ? cur.style : (Number.isFinite(ctrl.style) ? ctrl.style : 0),
+      styleName: cur.styleName || ctrl.styleName || '',
     };
   };
   const info = createInfoPanel(stage, {
-    doc: MATH_DOCS[family] || MATH_DOCS.pythagoras,
+    doc: alignDocParams(MATH_DOCS[family] || MATH_DOCS.pythagoras, FAMILY_CONTROLS[family] || {}),
     onHover: (k) => { ix.hl = k; },
   });
   const { canvas, ctx, state, dispose } = makeCanvas(info.canvasBox);
@@ -211,6 +271,28 @@ function mountLegacy(host, opts = {}) {
     ctx.fillStyle = '#060a14';
     ctx.fillRect(0, 0, w, h);
     OUT = { _pts: {} };
+    ix._live = L;
+    // a slider moved -> it takes over from any earlier canvas scrub, so the knob is never silently ignored
+    const knobSig = ['size', 'count', ...Object.keys(L).filter((k) => !['color', 'speed', 'size', 'count', 'style', 'styleName', 'sideA', 'sideB', 'simT'].includes(k))].map((k) => L[k]).join('|');
+    if (ix._knobSig != null && knobSig !== ix._knobSig && !ix.drag) { ix.sc = null; }
+    ix._knobSig = knobSig;
+    // two-way binding: slider -> figure when idle; dragging the figure writes back into the slider
+    const stageEl = host.closest?.('.kit-stage') || host.parentElement;
+    const push = (patch) => { if (typeof stageEl?.__setControls === 'function') stageEl.__setControls(patch); };
+    if (family === 'pythagoras') {
+      const k = 10 * Math.min(1, h / 440);
+      const cl = (v) => Math.round(Math.max(4, Math.min(18, v)) * 10) / 10;
+      if (ix.drag) {
+        if (ix._a != null && ix._b != null) push({ sideA: cl(ix._a / k), sideB: cl(ix._b / k) });
+      } else {
+        if (L.sideA != null) ix._a = Number(L.sideA) * k;
+        if (L.sideB != null) ix._b = Number(L.sideB) * k;
+      }
+    }
+    if (family === 'similar-tri') {
+      if (ix.drag) { if (Number.isFinite(ix.u)) push({ simT: Math.round(Math.max(0.15, Math.min(0.85, ix.u)) * 100) / 100 }); }
+      else if (L.simT != null) ix.u = Number(L.simT);
+    }
     drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix);
     const vals = OUT;
     // interaction affordance
@@ -223,7 +305,6 @@ function mountLegacy(host, opts = {}) {
       ix: ixSig(ix),
       handle: `${Math.round(hp.x)},${Math.round(hp.y)}`,
       dbg: `size=${sz.toFixed(2)} speed=${spd.toFixed(2)} count=${n} preset=${L.styleName || L.style || 0}`,
-      ctl: [['控件', `尺寸 ×${sz.toFixed(2)} · 速度 ×${spd.toFixed(2)} · 数量 ${n}`, null, 'wide']],
     });
   });
   return () => {
@@ -532,28 +613,33 @@ function drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix) {
 
 /* ── 几何 ────────────────────────────────────────────── */
 function drawPythagoras(ctx, w, h, tint, tt, sz, style, ix) {
-  title(ctx, '勾股定理  a² + b² = c²  · 拖动直角边端点', 16, 22);
+  title(ctx, '勾股定理  a² + b² = c²  · 拖动直角边端点或右侧滑条', 16, 22);
   const ratios = [[3, 4], [1, 1], [2, 5], [5, 2], [4, 3], [3, 4]][style % 6];
   const kf = Math.min(1, h / 440);
-  let a = ix._a ?? (55 + 50 * sz * (ratios[0] / 3)) * kf;
-  let b = ix._b ?? (40 + 45 * sz * (ratios[1] / 3)) * kf;
+  let a = ix._a ?? (55 + 50 * (ratios[0] / 3)) * kf;
+  let b = ix._b ?? (40 + 45 * (ratios[1] / 3)) * kf;
   ix._a = a; ix._b = b;
   const c = Math.hypot(a, b);
   const ox = w * 0.3, oy = h * 0.6;
   fillPoly(ctx, [[ox, oy], [ox + a, oy], [ox, oy - b]], rgba(tint, 0.2), tint);
-  const pulse = 0.5 + 0.5 * Math.sin(tt * 1.2);
-  fillPoly(ctx, [[ox, oy], [ox + a, oy], [ox + a, oy + a], [ox, oy + a]], rgba('#22d3ee', 0.2 + 0.12 * pulse), '#22d3ee');
-  labelAt(ctx, `a²`, ox + a / 2, oy + a / 2 + 4, '#67e8f9');
-  fillPoly(ctx, [[ox, oy], [ox, oy - b], [ox - b, oy - b], [ox - b, oy]], rgba('#f472b6', 0.2 + 0.12 * pulse), '#f472b6');
-  labelAt(ctx, `b²`, ox - b / 2, oy - b / 2 + 4, '#f9a8d4');
-  const ang = Math.atan2(-b, a);
-  ctx.save(); ctx.translate(ox + a, oy); ctx.rotate(ang);
-  fillPoly(ctx, [[0, 0], [-c, 0], [-c, -c], [0, -c]], rgba('#fbbf24', 0.22 + 0.12 * pulse), '#fbbf24');
-  labelAt(ctx, `c²`, -c / 2, -c / 2 + 4, '#fde68a');
-  ctx.restore();
-  OUT = { ...OUT, a: a / 10, b: b / 10, c: c / 10 };
+  const showSq = ix._live?.showSq !== false && ix._live?.showSq !== 0 && ix._live?.showSq !== '0';
+  if (showSq) {
+    fillPoly(ctx, [[ox, oy], [ox + a, oy], [ox + a, oy + a], [ox, oy + a]], rgba('#22d3ee', 0.28), '#22d3ee');
+    labelAt(ctx, `a²`, ox + a / 2, oy + a / 2 + 4, '#67e8f9');
+    fillPoly(ctx, [[ox, oy], [ox, oy - b], [ox - b, oy - b], [ox - b, oy]], rgba('#f472b6', 0.28), '#f472b6');
+    labelAt(ctx, `b²`, ox - b / 2, oy - b / 2 + 4, '#f9a8d4');
+    const ang = Math.atan2(-b, a);
+    ctx.save(); ctx.translate(ox + a, oy); ctx.rotate(ang);
+    fillPoly(ctx, [[0, 0], [-c, 0], [-c, -c], [0, -c]], rgba('#fbbf24', 0.3), '#fbbf24');
+    labelAt(ctx, `c²`, -c / 2, -c / 2 + 4, '#fde68a');
+    ctx.restore();
+  } else {
+    ctx.strokeStyle = tint; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox + a, oy); ctx.lineTo(ox, oy - b); ctx.closePath(); ctx.stroke();
+  }
+  OUT = { ...OUT, a: a / 10, b: b / 10, c: c / 10, showSq: !!showSq };
   OUT._pts.A = [ox + a, oy]; OUT._pts.B = [ox, oy - b]; OUT._pts.C = [ox + a / 2, oy - b / 2];
-  caption(ctx, `a=${(a / 10).toFixed(1)} b=${(b / 10).toFixed(1)} c=${(c / 10).toFixed(1)} · 尺寸/预设改比例 · 拖黄点`, 16, h - 16);
+  caption(ctx, `a=${(a / 10).toFixed(1)} b=${(b / 10).toFixed(1)} c=${(c / 10).toFixed(1)} · 右侧调 a/b · 拖黄点`, 16, h - 16);
 }
 
 function drawSimilar(ctx, w, h, tint, tt, sz, style, ix) {
@@ -791,7 +877,7 @@ function drawPower(ctx, w, h, tint, tt, sz, n, style, ix) {
   const { ox, oy, s } = plotFrame(ctx, w, h, ix, sz, tint);
   const exps = [1, 2, 3, 0.5, -1];
   const colors = [tint, '#f472b6', '#22d3ee', '#fbbf24', '#a78bfa'];
-  const showN = Math.min(exps.length, Math.max(1, (n % 6) || Math.min(5, style + 1)));
+  const showN = Math.min(exps.length, Math.max(1, Math.round(n)));
   for (let i = 0; i < showN; i++) {
     const p = exps[i];
     plotFn(ctx, ox, oy, s, s, p < 0 ? 0.2 : -2.2, 2.2, (x) => {
@@ -809,7 +895,7 @@ function drawPower(ctx, w, h, tint, tt, sz, n, style, ix) {
 function drawPiecewise(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '分段函数', 16, 22);
   const { ox, oy, s } = plotFrame(ctx, w, h, ix, sz, tint);
-  const segs = Math.min(6, Math.max(2, Math.round(n / 8)));
+  const segs = Math.min(8, Math.max(2, Math.round(n)));
   const xs = [];
   for (let i = 0; i <= segs; i++) xs.push(-4 + 8 * (i / segs));
   for (let i = 0; i < segs; i++) {
@@ -1062,7 +1148,7 @@ function drawVectors(ctx, w, h, tint, tt, sz, n, style, ix) {
     ix.ax = t[0]; ix.ay = t[1]; ix.bx = t[2]; ix.by = t[3];
     ix._locked = style;
   }
-  const ghosts = Math.min(12, Math.max(1, Math.round(n / 4)));
+  const ghosts = 3;
   for (let i = 1; i <= ghosts; i++) {
     const u = i / (ghosts + 1);
     ctx.globalAlpha = 0.18 + 0.25 * (1 - u);
@@ -1181,21 +1267,21 @@ function drawVenn(ctx, w, h, tint, tt, sz, style, ix) {
   ctx.fillStyle = rgba('#22d3ee', 0.28); ctx.beginPath(); ctx.arc(cx1, cy, r, 0, TAU); ctx.fill();
   ctx.fillStyle = rgba('#f472b6', 0.28); ctx.beginPath(); ctx.arc(cx2, cy, r, 0, TAU); ctx.fill();
   ctx.save(); ctx.beginPath(); ctx.arc(cx1, cy, r, 0, TAU); ctx.clip();
-  ctx.fillStyle = rgba('#fbbf24', 0.4 + 0.25 * Math.sin(tt * 2));
+  ctx.fillStyle = rgba(tint, 0.55);
   ctx.beginPath(); ctx.arc(cx2, cy, r, 0, TAU); ctx.fill(); ctx.restore();
   ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx1, cy, r, 0, TAU); ctx.stroke();
   ctx.strokeStyle = '#f472b6'; ctx.beginPath(); ctx.arc(cx2, cy, r, 0, TAU); ctx.stroke();
-  labelAt(ctx, 'A∩B', (cx1 + cx2) / 2, cy + 4, '#fde68a');
+  labelAt(ctx, 'A∩B', (cx1 + cx2) / 2, cy + 4, '#f8fafc');
   const dN = (cx2 - cx1) / r;
   const inter = dN >= 2 ? 0 : 2 * Math.acos(dN / 2) - (dN / 2) * Math.sqrt(4 - dN * dN);
   OUT = { ...OUT, d: dN, area: Math.PI, inter, union: 2 * Math.PI - inter };
   OUT._pts.AB = [(cx1 + cx2) / 2, cy]; OUT._pts.A = [cx1 - r * 0.5, cy]; OUT._pts.B = [cx2 + r * 0.5, cy];
   scrubBar(ctx, w, h, ix.sc ?? (sep - 0.005) / 0.3, '拖动画布 → 圆心距');
-  caption(ctx, `预设改两圆间距 · 尺寸改半径 · 速度改交集闪烁`, 16, h - 16);
+  caption(ctx, `拖动改圆心距 · 右侧改半径和交集颜色`, 16, h - 16);
 }
 function drawCombinatorics(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '排列组合  C(n,k)/P(n,k) · 点击圆点', 16, 22);
-  const N = Math.min(10, Math.max(3, n % 11 || (3 + style)));
+  const N = Math.min(10, Math.max(3, Math.round(n)));
   const K = ix.sc != null ? Math.min(N, Math.max(0, Math.round(ix.sc * N))) : Math.min(N, Math.max(1, Math.round(1 + sz * 3)));
   const fact = (x) => { let r = 1; for (let i = 2; i <= x; i++) r *= i; return r; };
   const C = fact(N) / (fact(K) * fact(N - K));
@@ -1219,7 +1305,8 @@ function drawSequence(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '递推数列', 16, 22);
   const N = Math.min(18, Math.max(5, n));
   const mode = style % 2;
-  const seq = mode === 0 ? [1, 1] : [1];
+  const a2 = Math.max(1, Math.round(1 + (sz - 1) * 3));
+  const seq = mode === 0 ? [1, a2] : [1];
   if (mode === 0) while (seq.length < N) seq.push(seq.at(-1) + seq.at(-2));
   else { const r = 1.2 + 0.25 * sz; while (seq.length < N) seq.push(seq.at(-1) * r); }
   const maxV = Math.max(...seq);
@@ -1232,9 +1319,9 @@ function drawSequence(ctx, w, h, tint, tt, sz, n, style, ix) {
     ctx.fillStyle = rgba(tint, 0.45 + 0.45 * (i / N));
     ctx.fillRect(x0 + i * barW + 2, y0 - bh * pulse, barW - 4, bh * pulse);
   });
-  OUT = { ...OUT, mode, N, hi, val: seq[hi], prev: hi > 0 ? seq[hi - 1] : NaN, prev2: hi > 1 ? seq[hi - 2] : NaN, sum: seq.slice(0, hi + 1).reduce((x, y) => x + y, 0), r: mode ? 1.2 + 0.25 * sz : NaN };
+  OUT = { ...OUT, mode, N, hi, val: seq[hi], prev: hi > 0 ? seq[hi - 1] : NaN, prev2: hi > 1 ? seq[hi - 2] : NaN, sum: seq.slice(0, hi + 1).reduce((x, y) => x + y, 0), r: mode ? 1.2 + 0.25 * sz : NaN, a2 };
   scrubBar(ctx, w, h, hi / Math.max(1, N - 1), '拖动画布 → 第 i 项');
-  caption(ctx, mode === 0 ? `斐波那契 n=${N}` : `等比 n=${N} · 预设切类型`, 16, h - 16);
+  caption(ctx, mode === 0 ? `广义斐波那契 a₁=1, a₂=${a2}, n=${N}` : `等比 n=${N} · 预设切类型`, 16, h - 16);
 }
 function drawShortest(ctx, w, h, tint, tt, sz, n, style, ix) {
   title(ctx, '最短路 · 点击节点高亮路径前缀', 16, 22);
@@ -1255,7 +1342,7 @@ function drawShortest(ctx, w, h, tint, tt, sz, n, style, ix) {
       && Math.abs(path.indexOf(a) - path.indexOf(b)) === 1;
     ctx.strokeStyle = onPath ? tint : '#334155'; ctx.lineWidth = onPath ? 3 : 1.5;
     ctx.beginPath(); ctx.moveTo(nodes[a][0], nodes[a][1]); ctx.lineTo(nodes[b][0], nodes[b][1]); ctx.stroke();
-    if (n > 6) {
+    if (ix._live?.showW !== false && ix._live?.showW !== 0) {
       ctx.fillStyle = '#64748b'; ctx.font = '10px sans-serif'; ctx.textAlign = 'center';
       ctx.fillText(String(wt), (nodes[a][0] + nodes[b][0]) / 2, (nodes[a][1] + nodes[b][1]) / 2 - 4);
     }

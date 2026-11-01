@@ -1,6 +1,6 @@
-import { makeCanvas, loop, bar, defaultParams, readLiveControls, localPoint } from './_shared.js';
+import { makeCanvas, loop, bar, defaultParams, paramsFromSpec, readLiveControls, localPoint } from './_shared.js';
 import { withControls } from './withControls.js';
-import { createInfoPanel } from './info-panel.js';
+import { createInfoPanel, alignDocParams } from './info-panel.js';
 import { CONVERT_DOCS } from './convert-docs.js';
 
 let OUT = {};
@@ -24,16 +24,32 @@ const PRESET_DEFAULTS = {
   '小能': { size: 0.35 }, '家用': { size: 0.9 }, '工业': { size: 1.8 },
 };
 
+
+/** Per-family knobs — hide globals the draw path ignores. */
+const FAMILY_CONTROLS = {
+  temperature: { color: true, speed: { label: '微摆动' }, size: { label: '温度（无拖动时）' }, count: false },
+  timezone: { color: true, speed: { label: '时间流速' }, size: false, count: { label: '城市数量', min: 3, max: 8, step: 1, value: 6, buttons: true } },
+  mass: { color: true, speed: false, size: { label: '质量（无拖动时）' }, count: false },
+  length: { color: true, speed: false, size: { label: '基准长度' }, count: { label: '显示行数', min: 2, max: 24, step: 1, value: 8, buttons: true } },
+  'area-volume': { color: true, speed: false, size: { label: '数值倍率' }, count: { label: '面积/体积', min: 1, max: 4, step: 1, value: 2, buttons: true } },
+  radix: { color: true, speed: { label: '自动递增' }, size: { label: '初值偏向' }, count: { label: '位宽档', min: 1, max: 12, step: 1, value: 4, buttons: true } },
+  speed: { color: true, speed: false, size: { label: '速度（无拖动时）' }, count: false },
+  pressure: { color: true, speed: false, size: { label: '压强（无拖动时）' }, count: false },
+  energy: { color: true, speed: false, size: { label: '能量倍率' }, count: { label: '显示项数', min: 1, max: 24, step: 1, value: 8, buttons: true } },
+};
+
 export function mount(host, opts = {}) {
   const parsed = String(opts.variant || 'temperature').replace(/-\d+$/, '');
   const fam = FAMILIES.includes(parsed) ? parsed : 'temperature';
+  const spec = FAMILY_CONTROLS[fam] || { color: true, speed: false, size: true, count: false };
   return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-convert',
     title: fam,
     fallbackVariant: fam,
-    params: defaultParams({ color: true, speed: true, size: true, count: true }),
+    params: paramsFromSpec(spec),
     mapVariant: (family, n) => `${family}-${n}`,
-    remountKeys: ['count'],
+    remountKeys: spec.remountKeys || [],
+    liveKeys: ['color', 'speed', 'size', 'count', 'blur'],
     presetDefaults: PRESET_DEFAULTS,
     mountLegacy,
   });
@@ -68,9 +84,21 @@ function mountLegacy(host, opts = {}) {
   ];
   const live = () => {
     const L = readLiveControls(roots(), ctrl);
-    return { ...L, style: Number.isFinite(ctrl.style) ? ctrl.style : 0, styleName: ctrl.styleName || '' };
+    const stageEl = host.closest?.('.kit-stage') || host.parentElement;
+    const cur = (typeof stageEl?.__getControls === 'function' ? stageEl.__getControls() : null) || ctrl;
+    const extra = {};
+    for (const [k, v] of Object.entries(cur)) {
+      if (['color', 'speed', 'size', 'count', 'blur', 'style', 'styleName', 'easing'].includes(k)) continue;
+      extra[k] = v;
+    }
+    return {
+      ...L,
+      ...extra,
+      style: Number.isFinite(cur.style) ? cur.style : (Number.isFinite(ctrl.style) ? ctrl.style : 0),
+      styleName: cur.styleName || ctrl.styleName || '',
+    };
   };
-  const info = createInfoPanel(stage, { doc: CONVERT_DOCS[family] || CONVERT_DOCS.temperature });
+  const info = createInfoPanel(stage, { doc: alignDocParams(CONVERT_DOCS[family] || CONVERT_DOCS.temperature, FAMILY_CONTROLS[family] || {}) });
   const { canvas, ctx, state, dispose } = makeCanvas(info.canvasBox);
   const ix = { drag: null, t: 0.5, val: 0 };
   const radixMax = () => { const L = live(); const bits = Math.min(16, Math.max(4, Math.round(L.count) + 4)); return (1 << bits) - 1; };
@@ -133,6 +161,9 @@ function mountLegacy(host, opts = {}) {
     ctx.fillRect(0, 0, w, h);
     // blend slider with size for stronger visible coupling
     const mix = ix.drag || ix.t !== 0.5 ? ix.t : (sz - 0.5) / 1.5;
+    const knobSig = String(L.size);
+    if (ix._knobSig != null && knobSig !== ix._knobSig && !ix.drag) { ix._user = false; ix._seeded = false; ix._moved = false; ix.t = 0.5; }
+    ix._knobSig = knobSig;
     OUT = {};
     drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix, mix);
     const vals = OUT;
@@ -141,7 +172,6 @@ function mountLegacy(host, opts = {}) {
       ix: JSON.stringify({ t: Math.round(ix.t * 1000) / 1000, user: !!ix._user, val: ix._user ? ix.val : undefined, moved: !!ix._moved }),
       handle: `${Math.round(w * 0.5)},${Math.round(h - 27)}`,
       dbg: `size=${sz.toFixed(2)} speed=${spd.toFixed(2)} count=${n} preset=${L.styleName || L.style || 0} slider=${mix.toFixed(3)}`,
-      ctl: [['控件', `尺寸 ×${sz.toFixed(2)} · 速度 ×${spd.toFixed(2)} · 数量 ${n}`, null, 'wide']],
     });
   });
   return () => {
@@ -248,7 +278,7 @@ const CITIES = [
 ];
 function drawTimezone(ctx, w, h, tint, tt, sz, n, L, ix) {
   title(ctx, '世界时差 · 速度驱动时间', 16, 22);
-  const show = Math.min(CITIES.length, Math.max(3, Math.round(3 + sz * 5)));
+  const show = Math.min(CITIES.length, Math.max(3, Math.round(n)));
   const utcH = ix._moved ? Math.min(23.99, ix.t * 24) : (8 + tt * 0.4 + (L.style || 0) * 2) % 24;
   card(ctx, 16, 48, w - 32, 56, tint);
   ctx.fillStyle = tint; ctx.font = '600 12px sans-serif'; ctx.fillText('UTC', 28, 70);

@@ -325,13 +325,15 @@ export function parseVariant(variant, fallback = 'demo') {
 
 export function defaultParams({ color = true, speed = true, size = false, count = false, blur = false, easing = false } = {}) {
   const params = [];
-  if (color) params.push({ key: 'color', type: 'color', label: '颜色', value: '#818cf8' });
-  if (speed) params.push({ key: 'speed', type: 'range', label: '速度', min: 0.3, max: 2.5, step: 0.1, value: 1 });
-  if (size) params.push({ key: 'size', type: 'range', label: '尺寸', min: 0.5, max: 2, step: 0.1, value: 1 });
-  if (count) params.push({ key: 'count', type: 'range', label: '数量', min: 1, max: 200, step: 1, value: 40, buttons: true });
-  if (blur) params.push({ key: 'blur', type: 'range', label: '模糊', min: 0, max: 20, step: 1, value: 0 });
-  if (easing) {
-    params.push({
+  const on = (flag) => flag === true || (flag && typeof flag === 'object');
+  const merge = (base, flag) => (flag && typeof flag === 'object' ? { ...base, ...flag } : base);
+  if (on(color)) params.push(merge({ key: 'color', type: 'color', label: '颜色', value: '#818cf8' }, color));
+  if (on(speed)) params.push(merge({ key: 'speed', type: 'range', label: '速度', min: 0.3, max: 2.5, step: 0.1, value: 1 }, speed));
+  if (on(size)) params.push(merge({ key: 'size', type: 'range', label: '尺寸', min: 0.5, max: 2, step: 0.1, value: 1 }, size));
+  if (on(count)) params.push(merge({ key: 'count', type: 'range', label: '数量', min: 1, max: 200, step: 1, value: 40, buttons: true }, count));
+  if (on(blur)) params.push(merge({ key: 'blur', type: 'range', label: '模糊', min: 0, max: 20, step: 1, value: 0 }, blur));
+  if (on(easing)) {
+    params.push(merge({
       key: 'easing', type: 'select', label: '缓动', value: 'ease',
       options: [
         { label: 'linear', value: 'linear' },
@@ -342,9 +344,15 @@ export function defaultParams({ color = true, speed = true, size = false, count 
         { label: 'back', value: 'cubic-bezier(.34,1.56,.64,1)' },
         { label: 'steps', value: 'steps(5)' },
       ],
-    });
+    }, easing));
   }
   return params;
+}
+
+/** Build param list from a family control declaration: { color, speed, size, count, extras?, remountKeys? }. */
+export function paramsFromSpec(spec = {}) {
+  const { extras = [], remountKeys, ...flags } = spec;
+  return [...defaultParams(flags), ...extras];
 }
 
 function clone(o) {

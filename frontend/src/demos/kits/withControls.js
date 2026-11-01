@@ -96,6 +96,7 @@ export function withControls(host, opts, {
       ui.wrap,
       ...ui.stage.querySelectorAll('.kit-inner, .kit-css, .ks, .ku, .ck, .kf, .kg, [data-kit-root], canvas'),
     ];
+    const known = new Set(['color', 'speed', 'size', 'count', 'blur', 'style', 'styleName', 'easing']);
     for (const el of targets) {
       if (!el || !el.style) continue;
       if (liveKeys.includes('color') && state.color) el.style.setProperty('--c', state.color);
@@ -103,6 +104,13 @@ export function withControls(host, opts, {
       if (liveKeys.includes('size') && state.size != null) el.style.setProperty('--sz', String(state.size));
       if (liveKeys.includes('count') && state.count != null) el.style.setProperty('--count', String(state.count));
       if (liveKeys.includes('blur') && state.blur != null) el.style.setProperty('--blur', String(state.blur));
+      for (const p of paramDefs) {
+        if (known.has(p.key)) continue;
+        const v = state[p.key];
+        if (v == null) continue;
+        if (typeof v === 'boolean') el.style.setProperty(`--p-${p.key}`, v ? '1' : '0');
+        else el.style.setProperty(`--p-${p.key}`, String(v));
+      }
     }
   }
 
@@ -148,6 +156,8 @@ export function withControls(host, opts, {
     }
   }
 
+  ui.stage.__getControls = () => ui.get();
+  ui.stage.__setControls = (patch) => ui.set(patch);
   remount(ui.get());
   return () => {
     try { innerDispose?.(); } catch (_) {}

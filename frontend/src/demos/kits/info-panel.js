@@ -227,3 +227,23 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
 export const F = (s) => `<div class="mip-f">${s}</div>`;
 export const frac = (a, b) => `<span style="display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;line-height:1.15"><span style="border-bottom:1px solid currentColor;padding:0 3px">${a}</span><span style="padding:0 3px">${b}</span></span>`;
 export const sq = (s) => `√<span style="border-top:1px solid currentColor;padding:0 2px">${s}</span>`;
+
+/** Rewrite a doc's generic 速度/尺寸/数量/颜色 param names to the knob labels a demo really shows; drop hidden knobs. */
+export function alignDocParams(doc, spec = {}) {
+  if (!doc || !doc.params) return doc;
+  const lab = (k, dflt) => { const f = spec[k]; if (!f) return null; return (typeof f === 'object' && f.label) || dflt; };
+  const MAP = { '速度': lab('speed', '速度'), '尺寸': lab('size', '尺寸'), '数量': lab('count', '数量'), '颜色': lab('color', '颜色') };
+  const fix = (list) => {
+    const seen = new Set(); const out = [];
+    for (const [name, desc] of list || []) {
+      const parts = String(name).split(/\s*\/\s*/).map((p) => (p in MAP ? MAP[p] : p)).filter(Boolean);
+      if (!parts.length) continue;
+      const nm = parts.join(' / ');
+      if (seen.has(nm)) continue;
+      seen.add(nm); out.push([nm, desc]);
+    }
+    return out;
+  };
+  const p = doc.params;
+  return { ...doc, params: typeof p === 'function' ? (v) => fix(p(v)) : fix(p) };
+}

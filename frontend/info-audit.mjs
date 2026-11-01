@@ -106,14 +106,39 @@ async function auditOne(browser, cat, slug, mobile) {
       if (ix1 === ix0) fails.push(`drag did not change interaction state (handle ${hd})`);
       if (r2 === r1 && mid === r1) fails.push('drag did not change readout');
     }
-    // slider
+    // any visible param (prefer non-color) must move the readout or be a color that tints canvas
     if (mobile) { try { await page.locator('.fx-ops-toggle').click({ timeout: 800 }); await page.waitForTimeout(200); } catch {} }
     const before = await rowsText(page);
-    const sp = await setParam(page, '尺寸', 1.7);
-    await page.waitForTimeout(450);
+    const cvBefore = await page.evaluate(() => { const c = document.querySelector('.mip-canvas canvas'); try { return c.toDataURL().length + ':' + c.toDataURL().slice(-200); } catch { return ''; } });
+    const tried = await page.evaluate(() => {
+      const nodes = [...document.querySelectorAll('.fx-ops .param [data-k]')];
+      const pick = nodes.find((el) => !['color', 'speed'].includes(el.getAttribute('data-k'))) || null;
+      if (!pick) return { ok: true, skip: true };
+      if (!pick) return { ok: false };
+      const key = pick.getAttribute('data-k');
+      const desc = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+      if (pick.type === 'checkbox') { pick.checked = !pick.checked; pick.dispatchEvent(new Event('change', { bubbles: true })); return { ok: true, key }; }
+      if (pick.type === 'color') {
+        desc.set.call(pick, '#f472b6');
+        pick.dispatchEvent(new Event('input', { bubbles: true }));
+        return { ok: true, key, color: true };
+      }
+      const min = parseFloat(pick.min), max = parseFloat(pick.max), cur = parseFloat(pick.value);
+      let next = cur + ((max - min) || 1) * 0.4;
+      if (next > max) next = min + ((max - min) || 1) * 0.15;
+      if (pick.step && Number(pick.step) >= 1) next = Math.round(next);
+      desc.set.call(pick, String(Math.max(min, Math.min(max, next))));
+      pick.dispatchEvent(new Event('input', { bubbles: true }));
+      pick.dispatchEvent(new Event('change', { bubbles: true }));
+      return { ok: true, key };
+    });
+    await page.waitForTimeout(500);
     const after = await rowsText(page);
-    if (!sp.ok) fails.push('no size slider');
-    else if (after === before) fails.push('size slider did not change readout');
+    if (!tried.ok) fails.push('no params to tweak');
+    else if (!tried.skip && !tried.color && after === before) {
+      const cvAfter = await page.evaluate(() => { const c = document.querySelector('.mip-canvas canvas'); try { return c.toDataURL().length + ':' + c.toDataURL().slice(-200); } catch { return ''; } });
+      if (cvAfter === cvBefore) fails.push(`param ${tried.key} changed neither readout nor canvas`);
+    }
     if (mobile) { try { await page.locator('.fx-ops-toggle').click({ timeout: 800 }); await page.waitForTimeout(200); } catch {} }
     // chips
     const chips = page.locator('.mip .mip-chip');

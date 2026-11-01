@@ -68,9 +68,20 @@ const LEGACY_META: Record<string, {
   presets?: string[];
   color?: boolean; speed?: boolean; size?: boolean; count?: boolean;
   remountKeys?: string[];
+  paramsSpec?: Record<string, unknown>;
 }> = {
   'solar-system': { title: '太阳系轨道', size: true, speed: true, color: true, count: true, presets: ['日心模式', '螺旋前进', '内太阳系', '外行星', '隐藏轨迹', '快进', '慢速'], remountKeys: ['count'] },
-  'trig-waves': { title: '三角函数', size: true, speed: true, color: true, count: true, presets: ['sin+cos', '仅sin', '仅cos', '含tan', '相位波', '快速', '慢速'], remountKeys: ['count'] },
+  'trig-waves': {
+    title: '三角函数',
+    presets: ['sin+cos', '仅sin', '仅cos', '含tan', '相位波', '快速', '慢速'],
+    remountKeys: ['count'],
+    paramsSpec: {
+      color: true,
+      speed: { label: '旋转速度' },
+      size: { label: '振幅 A' },
+      count: { label: '频率 f', min: 1, max: 8, step: 1, value: 4, buttons: true },
+    },
+  },
   'cube': { title: '旋转方块', size: true, speed: true, color: true, count: false },
   'orbit': { title: '轨道', size: true, speed: true, color: true, count: true },
   'particles': { title: '粒子', size: true, speed: true, color: true, count: true },
@@ -125,16 +136,17 @@ export async function mountDemo(
 
   const meta = LEGACY_META[mod] || { title: mod, color: true, speed: true, size: true, count: true };
   const { wrapLegacyMount } = await import('./demos/kits/withControls.js');
-  const { defaultParams } = await import('./demos/kits/_shared.js');
+  const { defaultParams, paramsFromSpec } = await import('./demos/kits/_shared.js');
+  const spec = (meta as { paramsSpec?: Record<string, unknown> }).paramsSpec || {
+    color: meta.color !== false,
+    speed: meta.speed !== false,
+    size: meta.size !== false,
+    count: meta.count === true,
+  };
   return (wrapLegacyMount as Function)(host, opts || {}, {
     title: meta.title,
     presets: meta.presets || ['默认'],
-    params: defaultParams({
-      color: meta.color !== false,
-      speed: meta.speed !== false,
-      size: meta.size !== false,
-      count: meta.count === true,
-    }),
+    params: paramsFromSpec(spec),
     remountKeys: meta.remountKeys || (meta.count ? ['count'] : []),
     mountInner: (box: HTMLElement, o: { variant?: string; slug?: string; _controls?: Record<string, unknown> }) =>
       mount(box, o),

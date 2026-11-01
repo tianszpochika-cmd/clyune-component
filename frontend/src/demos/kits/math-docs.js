@@ -12,12 +12,12 @@ const COMMON = [
 export const MATH_DOCS = {
   pythagoras: {
     title: '勾股定理',
-    tip: '拖动两个黄色端点改变直角边 a、b',
+    tip: '拖黄点或右侧 a/b 滑条；可开关三边正方形',
     rows: (v) => [['直角边 a', fmt(v.a), 'A'], ['直角边 b', fmt(v.b), 'B'], ['斜边 c', fmt(v.c), 'C'],
       ['a² + b²', fmt(v.a * v.a + v.b * v.b)], ['c²', fmt(v.c * v.c)], ['a : b : c', `${fmt(v.a / v.c, 3)} : ${fmt(v.b / v.c, 3)} : 1`, null, 'wide']],
     formula: F(`a² + b² = c²`) + F(`c = ${sq('a² + b²')}`),
     explain: '直角三角形两条直角边的平方和等于斜边的平方。图中青色正方形面积为 a²、粉色为 b²、黄色为 c²：无论怎么拖动，青 + 粉 的面积总等于黄色。',
-    params: [['黄点 A / B', '拖动改变直角边 a、b 的长度'], ['尺寸', '未拖动前的默认边长比例'], ['预设', '3-4-5、等腰直角、瘦长等经典比例'], ['数量', '重挂载的随机种子'], ...COMMON],
+    params: [['黄点 A / B', '拖动改变直角边 a、b 的长度'], ['直角边 a / b', '右侧滑条精确设定边长'], ['三边正方形', '显示/隐藏 a² b² c² 正方形'], ['预设', '3-4-5、等腰直角、瘦长等经典比例'], ['颜色', '三角形强调色']],
     example: (v) => `<ol><li>a = ${n(v.a)}，b = ${n(v.b)}</li><li>a² + b² = ${n(v.a * v.a)} + ${n(v.b * v.b)} = ${n(v.a * v.a + v.b * v.b)}</li><li>c = √${n(v.a * v.a + v.b * v.b)} = ${n(v.c)}</li></ol>`,
   },
   'similar-tri': {
@@ -26,7 +26,7 @@ export const MATH_DOCS = {
     rows: (v) => [['截点位置 t', fmt(v.t), 'u'], ['相似比 k', fmt(v.k, 3), 'Q'], ['|AB|', fmt(v.AB)], ['|PQ|', fmt(v.PQ)], ['面积比 k²', fmt(v.k * v.k, 3)], ['周长比', fmt(v.k, 3)]],
     formula: F(`△CPQ ∼ △CAB`) + F(`k = ${frac('PQ', 'AB')} = ${frac('CP', 'CA')} = 1 − t`) + F('面积比 = k²'),
     explain: '平行于一边的直线截出的小三角形与原三角形相似（AA 判定：公共角 C + 同位角相等）。对应边成比例，面积比是相似比的平方。',
-    params: [['黄点 P', '在 AC 上的位置 t，决定截线高度'], ['尺寸 / 预设', '默认截点与比例'], ...COMMON],
+    params: [['黄点 P', '在 AC 上的位置 t，决定截线高度'], ['相似比 t', '右侧滑条设定截点'], ['预设', '初始相似比'], ['颜色', '强调色']],
     example: (v) => `<ol><li>t = ${n(v.t)} ⇒ k = 1 − t = ${n(v.k, 3)}</li><li>PQ = k·AB = ${n(v.k, 3)} × ${n(v.AB)} = ${n(v.k * v.AB)}（实测 ${n(v.PQ)}）</li><li>面积比 = k² = ${n(v.k * v.k, 3)}</li></ol>`,
   },
   'circle-angles': {
@@ -118,7 +118,7 @@ export const MATH_DOCS = {
     rows: (v) => [['探针 x', fmt(v.xp), 'probe'], ['f(x)', fmt(v.yp)], ['所在段', `第 ${v.piece} 段`], ['动点 x', fmt(v.cursor), 'cursor'], ['动点 y', fmt(v.yv)], ['分段数', String(v.segs)]],
     formula: (v) => F(`f(x) = { −x − 1, x < −1；${fmt(v.q)}x², −1 ≤ x ≤ 1；2 − x/${v.d}, x > 1 }`),
     explain: '不同区间用不同表达式。黄点是分段端点，注意在 x = ±1 处是否连续（左右极限是否相等）。',
-    params: [['拖动画布', '平移'], ['数量', '颜色分段数'], ['尺寸', '中段系数'], ['预设', '右段斜率'], ...COMMON],
+    params: [['拖动画布', '平移'], ['数量', '函数分成几段（2–8）'], ['尺寸', '中段系数'], ['预设', '右段斜率'], ...COMMON],
     example: (v) => `<ol><li>x = ${n(v.xp)} 落在第 ${v.piece} 段</li><li>f(x) = ${n(v.yp)}</li></ol>`,
   },
   parametric: {
@@ -215,7 +215,7 @@ export const MATH_DOCS = {
     },
     formula: F('a · b = a<sub>x</sub>b<sub>x</sub> + a<sub>y</sub>b<sub>y</sub> = |a||b|cos θ') + F('a × b = a<sub>x</sub>b<sub>y</sub> − a<sub>y</sub>b<sub>x</sub>'),
     explain: '点积衡量方向一致程度（垂直时为 0）；二维叉积是平行四边形的有向面积（逆时针为正）。黄色箭头是 a + b（平行四边形法则）。',
-    params: [['青 / 粉终点', '拖动 a、b'], ['数量', '辅助刻度箭头'], ['尺寸', '缩放'], ['预设', '正交/钝角等初始'], ...COMMON],
+    params: [['青 / 粉终点', '拖动 a、b'], ['尺寸', '缩放'], ['预设', '正交/钝角等初始'], ...COMMON],
     example: (v) => `<ol><li>a·b = ${n(v.ax)}×${n(v.bx)} + ${n(v.ay)}×${n(v.by)} = ${n(v.dot)}</li><li>a×b = ${n(v.ax)}×${n(v.by)} − ${n(v.ay)}×${n(v.bx)} = ${n(v.cross)}</li></ol>`,
   },
   'matrix-2d': {
@@ -258,7 +258,7 @@ export const MATH_DOCS = {
     rows: (v) => [['圆心距 d/r', fmt(v.d, 3)], ['|A| = |B|', fmt(v.area, 3), 'A'], ['|A ∩ B|', fmt(v.inter, 3), 'AB'], ['|A ∪ B|', fmt(v.union, 3), 'B'], ['交集占比', `${fmt((100 * v.inter) / v.area, 1)}%`], ['Jaccard', fmt(v.inter / v.union, 3)]],
     formula: F('|A ∪ B| = |A| + |B| − |A ∩ B|') + F('（面积以 r = 1 计）'),
     explain: '容斥原理：直接把两个集合相加会把交集算两次，所以要减去一次。两圆分开时交集为 0，重合时并集 = 单个集合。',
-    params: [['拖动画布', '圆心距'], ['尺寸', '半径（显示）'], ['预设', '初始间距'], ['速度', '交集闪烁'], ...COMMON.slice(0, 1)],
+    params: [['拖动画布', '圆心距'], ['尺寸', '两圆半径'], ['预设', '初始间距'], ['颜色', '交集 A∩B 填充色']],
     example: (v) => `<ol><li>|A| + |B| = ${n(2 * v.area, 3)}</li><li>减去 |A∩B| = ${n(v.inter, 3)}</li><li>|A∪B| = ${n(v.union, 3)}</li></ol>`,
   },
   combinatorics: {
@@ -276,7 +276,7 @@ export const MATH_DOCS = {
     rows: (v) => [['类型', v.mode ? '等比' : '斐波那契'], ['项数 N', String(v.N)], ['第 i 项', String(v.hi + 1), 'hi'], ['aᵢ', fmt(v.val, 2)], ['aᵢ / aᵢ₋₁', fmt(v.val / v.prev, 4)], ['前 i 项和', fmt(v.sum, 2)]],
     formula: (v) => v.mode ? F('aₙ = a₁·rⁿ⁻¹') + F(`r = ${fmt(v.r, 3)}`) : F('aₙ = aₙ₋₁ + aₙ₋₂，a₁ = a₂ = 1') + F('aₙ/aₙ₋₁ → φ ≈ 1.618'),
     explain: (v) => v.mode ? '每项都是前一项乘公比 r，柱高指数增长。' : '每项等于前两项之和；相邻项比值逐渐逼近黄金比 φ。',
-    params: [['拖动画布', '选中的项'], ['数量', '项数'], ['预设', '斐波那契 / 等比'], ['尺寸', '等比公比'], ...COMMON],
+    params: [['拖动画布', '选中的项'], ['数量', '项数'], ['预设', '斐波那契 / 等比'], ['尺寸', '斐波那契模式改初值 a₂；等比模式改公比 r'], ...COMMON],
     example: (v) => v.mode ? `<ol><li>a${v.hi + 1} = a${v.hi} × r = ${n(v.prev)} × ${n(v.r, 3)} = ${n(v.val)}</li></ol>` : `<ol><li>a${v.hi + 1} = a${v.hi} + a${v.hi - 1} = ${n(v.prev, 0)} + ${n(v.prev2, 0)} = ${n(v.val, 0)}</li><li>比值 ${n(v.val / v.prev, 4)}（φ ≈ 1.6180）</li></ol>`,
   },
   'shortest-path': {
@@ -289,7 +289,7 @@ export const MATH_DOCS = {
     },
     formula: F('d[v] = min(d[v], d[u] + w(u,v))') + F('每次取未确定的最小 d[u] 扩展'),
     explain: 'Dijkstra 从起点 A 出发，像水波一样按距离由近到远确定每个点的最短距离。边权非负时结果最优。',
-    params: [['点击节点', '查看到该点的最短距离'], ['拖动画布', '沿最短路推进'], ['数量', '>6 时显示边权'], ['尺寸', '节点大小'], ...COMMON],
+    params: [['点击节点', '查看到该点的最短距离'], ['拖动画布', '沿最短路推进'], ['显示边权', '开关边上的权重数字'], ['尺寸', '节点大小'], ...COMMON],
     example: (v) => `<ul>${(v.dist || []).map((d, i) => `<li>d(${String.fromCharCode(65 + i)}) = ${n(d, 0)}</li>`).join('')}</ul>`,
   },
   modular: {

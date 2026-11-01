@@ -68,9 +68,9 @@ export async function mountTrigWaves(host, opts = {}) {
   const speedMult = /快速/.test(styleName) ? 2.2 : /慢速/.test(styleName) ? 0.4 : 1;
   let freq;
   {
-    let c = Number(ctrl.count ?? live().count ?? 40);
-    freq = c > 8 ? c / 40 : c;
-    freq = Math.max(0.25, Math.min(4, freq || 1));
+    // DemoControls "频率 f" is count 1..8 → frequency in [0.25, 2]
+    let c = Number(ctrl.count ?? live().count ?? 4);
+    freq = Math.max(0.25, Math.min(4, (Number.isFinite(c) ? c : 4) / 4));
   }
   let paused = false;
 
@@ -478,7 +478,6 @@ export async function mountTrigWaves(host, opts = {}) {
     info.update({ th, theta, freq, phase, A: szLive, s: Math.sin(freq * theta + phase), c: Math.cos(freq * theta + phase), t: tvNow, show: { ...show }, paused, dragging }, {
       ix: JSON.stringify({ dragTh: dragTh == null ? undefined : Math.round(dragTh * 1000) / 1000, phase: Math.round(phase * 1000) / 1000, fns: Object.keys(show).filter((k) => show[k]).join(',') }),
       handle: `${Math.round((prj.x * 0.5 + 0.5) * cw)},${Math.round((-prj.y * 0.5 + 0.5) * chh)}`,
-      ctl: [['控件', `尺寸 ×${szLive.toFixed(2)} · 速度 ×${spd.toFixed(2)}`, null, 'wide']],
       dbg: `size=${szLive.toFixed(2)} speed=${spd.toFixed(2)} freq=${freq.toFixed(2)} preset=${styleName || '-'}`,
     });
     labs[0].v.set(X0 - 0.3, A, 0);

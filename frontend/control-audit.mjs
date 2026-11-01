@@ -87,7 +87,7 @@ async function auditOne(browser, cat, slug, mobile) {
     const drift = delta(s0, s1);
 
     // COLOR
-    const col = await setParam(page, '颜色', '#ff2244');
+    const col = await setParam(page, 'color', '#ff2244');
     await page.waitForTimeout(350);
     const sCol = await canvasSig(page);
     const vCol = await cssVars(page);
@@ -95,36 +95,38 @@ async function auditOne(browser, cat, slug, mobile) {
     if (vCol.c && vCol.c.toLowerCase() !== '#ff2244') fails.push(`color-var:${vCol.c}`);
     if (delta(s1, sCol) < Math.max(1.8, drift * 0.9) && Math.abs((sCol?.r || 0) - (s1?.r || 0)) < 1.5) fails.push('color-visual');
 
-    // SIZE
-    await setParam(page, '尺寸', '0.5');
-    await page.waitForTimeout(280);
-    const z0 = await canvasSig(page);
-    await setParam(page, '尺寸', '2');
-    await page.waitForTimeout(350);
-    const z1 = await canvasSig(page);
-    const vz = await cssVars(page);
-    if (vz.sz !== '2' && vz.sz !== '2.0') fails.push(`size-var:${vz.sz}`);
-    if (delta(z0, z1) < Math.max(1.2, drift * 0.8) && z0?.h === z1?.h) fails.push('size-visual');
-
-    // SPEED (CSS var must update; visual optional if demo uses tt)
-    await setParam(page, '速度', '2.5');
-    await page.waitForTimeout(200);
-    const vs = await cssVars(page);
-    if (vs.spd !== '2.5' && vs.spd !== '2.50') fails.push(`speed-var:${vs.spd}`);
-
-    // COUNT
-    await setParam(page, '数量', '5');
-    await page.waitForTimeout(450);
-    const c0 = await canvasSig(page);
-    const vc0 = await cssVars(page);
-    await setParam(page, '数量', '48');
-    await page.waitForTimeout(550);
-    const c1 = await canvasSig(page);
-    const vc1 = await cssVars(page);
-    if (vc1.count !== '48') fails.push(`count-var:${vc1.count}`);
-    // trig-waves remounts on count but visual may be subtle; require var + (visual or remount side-effect)
-    if (slug !== 'trig-waves' && delta(c0, c1) < 0.8 && c0?.h === c1?.h) fails.push('count-visual');
-    if (slug === 'trig-waves' && vc0.count === vc1.count) fails.push('count-var-stuck');
+    // Only test knobs this demo actually exposes (per-demo knob specs); values come from each input's own range.
+    const rng = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.fx-ops input[type=range][data-k]')].map((i) => [i.dataset.k, [+i.min, +i.max]])));
+    const num = (x) => parseFloat(x);
+    if (rng.size) {
+      const [lo, hi] = rng.size;
+      await setParam(page, 'size', String(lo)); await page.waitForTimeout(280);
+      const z0 = await canvasSig(page);
+      await setParam(page, 'size', String(hi)); await page.waitForTimeout(350);
+      const z1 = await canvasSig(page);
+      const vz = await cssVars(page);
+      if (Math.abs(num(vz.sz) - hi) > 1e-6) fails.push(`size-var:${vz.sz}`);
+      if (delta(z0, z1) < Math.max(1.2, drift * 0.8) && z0?.h === z1?.h) fails.push('size-visual');
+    }
+    if (rng.speed) {
+      const v = Math.min(rng.speed[1], 2.5);
+      await setParam(page, 'speed', String(v)); await page.waitForTimeout(200);
+      const vs = await cssVars(page);
+      if (Math.abs(num(vs.spd) - v) > 1e-6) fails.push(`speed-var:${vs.spd}`);
+    }
+    if (rng.count) {
+      const [lo, hi] = rng.count;
+      await setParam(page, 'count', String(lo)); await page.waitForTimeout(450);
+      const c0 = await canvasSig(page); const vc0 = await cssVars(page);
+      await setParam(page, 'count', String(hi)); await page.waitForTimeout(550);
+      const c1 = await canvasSig(page); const vc1 = await cssVars(page);
+      if (Math.abs(num(vc1.count) - hi) > 1e-6) fails.push(`count-var:${vc1.count}`);
+      if (slug !== 'trig-waves' && delta(c0, c1) < 0.8 && c0?.h === c1?.h) fails.push('count-visual');
+      if (slug === 'trig-waves' && vc0.count === vc1.count) fails.push('count-var-stuck');
+    }
+    // generic labels must not leak back
+    const generic = await page.evaluate(() => [...document.querySelectorAll('.fx-ops .param')].map((p) => (p.querySelector('label,span')?.textContent || '').trim()).filter((t) => /^(速度|尺寸|数量)$/.test(t)));
+    if (generic.length) fails.push('generic knob label: ' + generic.join(','));
 
     // PRESET
     const btns = page.locator('.preset-btn');

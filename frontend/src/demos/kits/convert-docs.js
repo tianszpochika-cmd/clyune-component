@@ -22,7 +22,7 @@ export const CONVERT_DOCS = {
     rows: (v) => [['UTC', hm(v.utcH)], ...(v.cities || []).map((c) => [`${c.name} (UTC${c.offset >= 0 ? '+' : ''}${c.offset})`, `${hm(c.local)}${c.local < 6 || c.local >= 19 ? ' 🌙' : ''}`])],
     formula: F('本地时间 = UTC + 时区偏移（mod 24）') + F('两地时差 = 偏移₁ − 偏移₂'),
     explain: '地球每小时自转 15°，全球按经度划分时区。UTC 是基准时间；向东每个时区 +1 小时。示例未考虑夏令时。',
-    params: [SLIDER, ['尺寸', '显示城市数'], ['速度', '自动走时快慢'], ['预设', '亚洲 / 欧美 / 多城'], ['颜色', '强调色']],
+    params: [SLIDER, ['数量', '显示城市数（3–8）'], ['速度', '自动走时快慢'], ['预设', '亚洲 / 欧美 / 多城'], ['颜色', '强调色']],
     example: (v) => { const c = (v.cities || [])[0] || { name: '—', offset: 0, local: 0 }; return `<ol><li>UTC = ${hm(v.utcH)}</li><li>${c.name}：${hm(v.utcH)} + ${c.offset} h = ${hm(c.local)}</li></ol>`; },
   },
   mass: {
