@@ -25,7 +25,7 @@ function mountLegacy(host, opts = {}) {
   const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
   const c = ctrl.color || hsl(n);
   const rm = addStyle(`
-    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);/* --c inherited */}
+    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);display:flex;flex-direction:column;box-sizing:border-box;/* --c inherited */}
     .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted,#93a0c0)}
     .ku .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
     .ku input[type=text],.ku input[type=search],.ku input[type=password]{background:#0d1426;border:1px solid #24314f;border-radius:10px;padding:10px 12px;color:var(--text);min-width:200px}
@@ -62,9 +62,22 @@ function mountLegacy(host, opts = {}) {
     .ku .modal-b.on{opacity:1;pointer-events:auto}
     .ku .modal-p{width:min(340px,90%);background:#18233d;border:1px solid #24314f;border-radius:16px;padding:18px;transform:translateY(12px) scale(.96);transition:.25s}
     .ku .modal-b.on .modal-p{transform:none}
-    .ku .car{overflow:hidden;border-radius:14px;border:1px solid #24314f}
-    .ku .car-t{display:flex;transition:transform .4s}
-    .ku .car-t .sl{min-width:100%;height:140px;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff}
+    .ku .car{overflow:hidden;border-radius:14px;border:1px solid #24314f;width:100%;max-width:720px;flex:1 1 auto;min-height:280px;display:flex;flex-direction:column}
+    .ku .car-t{display:flex;transition:transform .45s cubic-bezier(.22,.7,.25,1);height:100%;min-height:280px}
+    .ku .car-t.vert{flex-direction:column}
+    .ku .car-t .sl{min-width:100%;min-height:280px;height:100%;display:grid;place-items:center;font-weight:800;font-size:clamp(28px,5vw,48px);color:#fff;flex:none}
+    .ku .car-t.vert .sl{min-width:100%;width:100%;min-height:100%}
+    .ku .car-t.multi .sl{min-width:42%;margin-right:12px;border-radius:12px}
+    .ku .car.fade{position:relative}
+    .ku .car.fade .car-t{display:grid;height:100%}
+    .ku .car.fade .sl{grid-area:1/1;opacity:0;transition:opacity .45s;min-height:280px}
+    .ku .car.fade .sl.on{opacity:1}
+    .ku .fill{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;box-sizing:border-box}
+    .ku .fill > h3{margin:0;align-self:stretch}
+    .ku .car-ctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+    .ku .thumbs{display:flex;gap:8px;justify-content:center}
+    .ku .thumbs button{width:44px;height:32px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0;opacity:.55}
+    .ku .thumbs button.on{border-color:#fff;opacity:1}
     .ku .btn-m{position:relative;overflow:hidden;padding:10px 18px;border:0;border-radius:10px;background:var(--c);color:#0b1020;font-weight:700;cursor:pointer}
     .ku .btn-m .r{position:absolute;border-radius:50%;background:#fff8;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
     @keyframes rip{to{transform:scale(14);opacity:0}}
@@ -168,16 +181,57 @@ function mountLegacy(host, opts = {}) {
     root.querySelector('[data-close]').onclick = () => m.classList.remove('on');
     m.onclick = (e) => { if (e.target === m) m.classList.remove('on'); };
   } else if (kind === 'car') {
-    root.innerHTML = `<h3>${title}</h3><div class="car"><div class="car-t" data-t>${[1,2,3,4].map(i=>`<div class="sl" style="background:${hsl(n+i)}">${i}</div>`).join('')}</div></div>
-      <div class="row"><button class="btn" data-p>‹</button><span data-d>••••</span><button class="btn" data-n>›</button></div>`;
-    let idx = 0; const t = root.querySelector('[data-t]');
-    const go = (d) => { idx = (idx + d + 4) % 4; t.style.transform = `translateX(-${idx*100}%)`; root.querySelector('[data-d]').textContent = '••••'.split('').map((x,i)=>i===idx?'●':'•').join(''); };
+    const mode = (n - 1) % 6; // 0 dots 1 thumbs 2 auto 3 multi 4 fade 5 vertical
+    const fades = mode === 4;
+    const vert = mode === 5;
+    const multi = mode === 3;
+    const slides = [1, 2, 3, 4].map((i) => `<div class="sl${fades && i === 1 ? ' on' : ''}" data-i="${i-1}" style="background:${hsl(n + i)}">${i}</div>`).join('');
+    root.innerHTML = `<div class="fill"><h3>${title}</h3>
+      <div class="car${fades ? ' fade' : ''}" data-car><div class="car-t${vert ? ' vert' : ''}${multi ? ' multi' : ''}" data-t>${slides}</div></div>
+      <div class="car-ctrl">
+        <button class="btn" data-p>‹</button>
+        ${mode === 1 ? `<div class="thumbs" data-th>${[1,2,3,4].map((i)=>`<button data-i="${i-1}" class="${i===1?'on':''}" style="background:${hsl(n+i)}"></button>`).join('')}</div>` : `<span data-d>• ● • •</span>`}
+        <button class="btn" data-n>›</button>
+      </div></div>`;
+    let idx = 0;
+    const t = root.querySelector('[data-t]');
+    const car = root.querySelector('[data-car]');
+    const paint = () => {
+      if (fades) {
+        t.querySelectorAll('.sl').forEach((el, i) => el.classList.toggle('on', i === idx));
+      } else if (vert) {
+        t.style.transform = `translateY(-${idx * 100}%)`;
+      } else if (multi) {
+        t.style.transform = `translateX(-${idx * 42}%)`;
+      } else {
+        t.style.transform = `translateX(-${idx * 100}%)`;
+      }
+      const d = root.querySelector('[data-d]');
+      if (d) d.textContent = [0,1,2,3].map((i) => (i === idx ? '●' : '•')).join(' ');
+      root.querySelectorAll('[data-th] button').forEach((b) => b.classList.toggle('on', +b.dataset.i === idx));
+    };
+    const go = (d) => { idx = (idx + d + 4) % 4; paint(); };
     root.querySelector('[data-p]').onclick = () => go(-1);
     root.querySelector('[data-n]').onclick = () => go(1);
+    root.querySelectorAll('[data-th] button').forEach((b) => b.onclick = () => { idx = +b.dataset.i; paint(); });
+    let timer = null;
+    if (mode === 2) { timer = setInterval(() => go(1), 2200); }
+    // size the carousel to ~half the stage
+    const fit = () => {
+      const h = Math.max(280, Math.min(420, Math.round((stage.clientHeight || 480) * 0.52)));
+      car.style.minHeight = h + 'px';
+      t.style.minHeight = h + 'px';
+      t.querySelectorAll('.sl').forEach((el) => { el.style.minHeight = h + 'px'; if (vert) el.style.height = h + 'px'; });
+    };
+    fit();
+    const ro = new ResizeObserver(fit); ro.observe(stage);
+    const prevDestroy = host.__kuDestroy;
+    host.__kuDestroy = () => { if (timer) clearInterval(timer); ro.disconnect(); prevDestroy?.(); };
+    paint();
   } else if (kind === 'toast') {
     const kinds = ['成功 ✓','错误 ✕','信息 i','上传中…','已撤销','多条堆叠'];
     const label = kinds[(n-1)%kinds.length];
-    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-go>弹出 Toast</button><span style="color:var(--muted);font-size:12px">预设：${label}</span></div><div class="toast-stack" data-s><div class="toast">${label}</div></div>`;
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><button class="btn" data-go>弹出 Toast</button><span style="color:var(--muted);font-size:12px">预设：${label}</span></div><div class="toast-stack" data-s><div class="toast">${label}</div></div></div>`;
     root.querySelector('[data-go]').onclick = () => {
       const s = root.querySelector('[data-s]');
       const el = document.createElement('div'); el.className = 'toast'; el.textContent = label;
@@ -193,16 +247,16 @@ function mountLegacy(host, opts = {}) {
       ['浅色','深色','跟随系统'],
     ];
     const items = menus[(n-1)%menus.length];
-    root.innerHTML = `<h3>${title}</h3><div class="drop open" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu">${items.map(x=>`<button>${x}</button>`).join('')}</div></div>`;
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="drop open" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu">${items.map(x=>`<button>${x}</button>`).join('')}</div></div></div>`;
     const d = root.querySelector('[data-d]');
     root.querySelector('[data-t]').onclick = () => d.classList.toggle('open');
   } else if (kind === 'tip') {
     const places = ['上','下','左','右','富文本','延迟'];
-    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="tip"><button class="btn">悬停我</button><div class="bubble">Tooltip · ${places[(n-1)%6]}</div></div></div>`;
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><div class="tip"><button class="btn">悬停我</button><div class="bubble">Tooltip · ${places[(n-1)%6]}</div></div></div></div>`;
   } else if (kind === 'skel') {
     root.innerHTML = `<h3>${title}</h3><div class="skel">${n%2?`<div class="b lg"></div><div class="b"></div><div class="b" style="width:50%"></div>`:`<div class="row"><div class="b av"></div><div style="flex:1"><div class="b"></div><div class="b" style="width:40%"></div></div></div><div class="b"></div><div class="b"></div>`}</div>`;
   } else if (kind === 'btn') {
-    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn-m" data-b>${['涟漪','加载中','成功','磁性','抖动','渐变边','图标→','按压'][(n-1)%8]}</button></div>`;
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><button class="btn-m" data-b>${['涟漪','加载中','成功','磁性','抖动','渐变边','图标→','按压'][(n-1)%8]}</button></div></div>`;
     const b = root.querySelector('[data-b]');
     b.onclick = (e) => {
       if (n === 1 || n === 6) {
@@ -318,15 +372,15 @@ function mountLegacy(host, opts = {}) {
     const paint = (n) => { stars.querySelectorAll('span').forEach((s) => s.classList.toggle('on', +s.dataset.s <= n)); lab.textContent = `${n} / 5`; };
     stars.querySelectorAll('span').forEach((s) => s.onclick = () => paint(+s.dataset.s));
   } else if (kind === 'empty') {
-    root.innerHTML = `<h3>${title}</h3><div style="text-align:center;padding:28px;border:1px dashed #24314f;border-radius:16px;max-width:360px">
-      <div style="font-size:42px;margin-bottom:8px">📭</div>
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div style="text-align:center;padding:36px 28px;border:1px dashed #24314f;border-radius:16px;max-width:420px;width:min(420px,92%)">
+      <div style="font-size:56px;margin-bottom:10px">📭</div>
       <b>暂无数据</b>
       <p style="color:var(--muted);font-size:13px;margin:8px 0 14px">创建或筛选后这里会显示结果</p>
-      <button class="btn">新建一条</button></div>`;
+      <button class="btn">新建一条</button></div></div>`;
   } else if (kind === 'banner') {
-    root.innerHTML = `<h3>${title}</h3><div data-ban style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--c) 22%,#18233d);border:1px solid var(--c);width:min(480px,95%)">
-      <span style="flex:1;font-size:13px">系统将于今晚 23:00 维护，请提前保存。</span>
-      <button class="btn" data-x style="padding:4px 10px">关闭</button></div>`;
+    root.innerHTML = `<div class="fill"><h3>${title}</h3><div data-ban style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:12px;background:color-mix(in srgb,var(--c) 22%,#18233d);border:1px solid var(--c);width:min(560px,95%)">
+      <span style="flex:1;font-size:14px">系统将于今晚 23:00 维护，请提前保存。</span>
+      <button class="btn" data-x style="padding:4px 10px">关闭</button></div></div>`;
     root.querySelector('[data-x]').onclick = () => { root.querySelector('[data-ban]').style.display='none'; };
   } else {
     root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
@@ -337,6 +391,6 @@ function mountLegacy(host, opts = {}) {
     root.style.setProperty('--c', L.color);
     stage.style.setProperty('--c', L.color);
   }, 80);
-  return () => { clearInterval(sync); rm(); host.innerHTML = ''; };
+  return () => { clearInterval(sync); try { host.__kuDestroy?.(); } catch {} host.__kuDestroy = null; rm(); host.innerHTML = ''; };
 }
 

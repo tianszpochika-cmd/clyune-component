@@ -192,9 +192,9 @@ export function mount(host, opts = {}) {
     .modal-panel{width:min(320px,86%);background:#18233d;border:1px solid #24314f;border-radius:16px;padding:20px;transform:scale(.9);transition:.3s}
     .modal-back.on .modal-panel{transform:none}
     .modal-back.blur-bg{backdrop-filter:blur(8px)}
-    .car{width:min(400px,92%);overflow:hidden;border-radius:14px;border:1px solid #24314f;position:relative}
-    .car-track{display:flex;transition:transform .45s ease}
-    .car-track .slide{min-width:100%;height:160px;display:grid;place-items:center;font-weight:800;font-size:28px;color:#fff}
+    .car{width:min(640px,94%);overflow:hidden;border-radius:14px;border:1px solid #24314f;position:relative;min-height:clamp(280px,48vh,400px)}
+    .car-track{display:flex;transition:transform .45s ease;height:100%;min-height:clamp(280px,48vh,400px)}
+    .car-track .slide{min-width:100%;min-height:clamp(280px,48vh,400px);height:100%;display:grid;place-items:center;font-weight:800;font-size:clamp(28px,5vw,44px);color:#fff}
     .neon-t{font-size:calc(42px * var(--sz));font-weight:900;color:#fff;text-shadow:0 0 6px var(--c),0 0 18px var(--c),0 0 36px var(--c);animation:neonBreath calc(2s / var(--spd)) ease-in-out infinite}
     @keyframes neonBreath{50%{filter:brightness(1.25)}}
     .liquid-btn{padding:14px 28px;border:0;border-radius:999px;background:var(--c);color:#0b1020;font-weight:800;cursor:pointer;transition:border-radius .35s,transform .2s}
