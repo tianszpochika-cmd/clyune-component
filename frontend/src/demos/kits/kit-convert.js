@@ -1,5 +1,9 @@
 import { makeCanvas, loop, bar, defaultParams, readLiveControls, localPoint } from './_shared.js';
 import { withControls } from './withControls.js';
+import { createInfoPanel } from './info-panel.js';
+import { CONVERT_DOCS } from './convert-docs.js';
+
+let OUT = {};
 
 const FAMILIES = [
   'temperature', 'timezone', 'mass', 'length', 'area-volume',
@@ -66,8 +70,10 @@ function mountLegacy(host, opts = {}) {
     const L = readLiveControls(roots(), ctrl);
     return { ...L, style: Number.isFinite(ctrl.style) ? ctrl.style : 0, styleName: ctrl.styleName || '' };
   };
-  const { canvas, ctx, state, dispose } = makeCanvas(stage);
+  const info = createInfoPanel(stage, { doc: CONVERT_DOCS[family] || CONVERT_DOCS.temperature });
+  const { canvas, ctx, state, dispose } = makeCanvas(info.canvasBox);
   const ix = { drag: null, t: 0.5, val: 0 };
+  const radixMax = () => { const L = live(); const bits = Math.min(16, Math.max(4, Math.round(L.count) + 4)); return (1 << bits) - 1; };
 
   const onDown = (e) => {
     const p = localPoint(canvas, e);
@@ -76,6 +82,8 @@ function mountLegacy(host, opts = {}) {
     if (p.y > h - 40 && p.y < h - 10) {
       ix.drag = { key: 'slider' };
       ix.t = Math.min(1, Math.max(0, (p.x - 16) / Math.max(1, w - 32)));
+      ix._moved = true;
+      if (family === 'radix') { ix._user = true; ix.val = Math.round(ix.t * radixMax()); }
       canvas.setPointerCapture?.(e.pointerId);
       e.preventDefault();
     }
@@ -83,15 +91,12 @@ function mountLegacy(host, opts = {}) {
       const L = live();
       const bits = Math.min(16, Math.max(4, Math.round(L.count) + 4));
       const maxVal = (1 << Math.min(bits, 16)) - 1;
-      const by = 40 + 4 * 42 + 22;
-      const bw = Math.min(28, (w - 40) / bits - 4);
+      const { bw, by: by0 } = radixGeom(w, h, bits);
+      const by = by0 + 10;
       for (let i = 0; i < bits; i++) {
         const x = 16 + i * (bw + 4);
         if (p.x >= x && p.x <= x + bw && p.y >= by && p.y <= by + bw * 1.2) {
-          if (!ix._user) {
-            const sz = L.size > 0 ? L.size : 1;
-            ix.val = Math.floor((0.05 + 0.9 * sz) * maxVal) & maxVal;
-          }
+          if (!ix._user) ix.val = (Number(ix.shown) || 0) & maxVal;
           ix._user = true;
           ix.val = (Number(ix.val) || 0) ^ (1 << (bits - 1 - i));
           e.preventDefault();
@@ -104,7 +109,10 @@ function mountLegacy(host, opts = {}) {
     if (!ix.drag) return;
     const p = localPoint(canvas, e);
     const { w } = state;
-    if (ix.drag.key === 'slider') ix.t = Math.min(1, Math.max(0, (p.x - 16) / Math.max(1, w - 32)));
+    if (ix.drag.key === 'slider') {
+      ix.t = Math.min(1, Math.max(0, (p.x - 16) / Math.max(1, w - 32)));
+      if (family === 'radix') ix.val = Math.round(ix.t * radixMax());
+    }
   };
   const onUp = () => { ix.drag = null; };
   canvas.addEventListener('pointerdown', onDown);
@@ -125,7 +133,16 @@ function mountLegacy(host, opts = {}) {
     ctx.fillRect(0, 0, w, h);
     // blend slider with size for stronger visible coupling
     const mix = ix.drag || ix.t !== 0.5 ? ix.t : (sz - 0.5) / 1.5;
+    OUT = {};
     drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix, mix);
+    const vals = OUT;
+    vals.L = { size: sz, speed: spd, count: n, style: L.style || 0 };
+    info.update(vals, {
+      ix: JSON.stringify({ t: Math.round(ix.t * 1000) / 1000, user: !!ix._user, val: ix._user ? ix.val : undefined, moved: !!ix._moved }),
+      handle: `${Math.round(w * 0.5)},${Math.round(h - 27)}`,
+      dbg: `size=${sz.toFixed(2)} speed=${spd.toFixed(2)} count=${n} preset=${L.styleName || L.style || 0} slider=${mix.toFixed(3)}`,
+      ctl: [['控件', `尺寸 ×${sz.toFixed(2)} · 速度 ×${spd.toFixed(2)} · 数量 ${n}`, null, 'wide']],
+    });
   });
   return () => {
     stop();
@@ -133,7 +150,7 @@ function mountLegacy(host, opts = {}) {
     canvas.removeEventListener('pointermove', onMove);
     canvas.removeEventListener('pointerup', onUp);
     canvas.removeEventListener('pointercancel', onUp);
-    dispose(); host.innerHTML = '';
+    dispose(); info.destroy(); host.innerHTML = '';
   };
 }
 
@@ -183,7 +200,7 @@ function sliderBar(ctx, w, h, t, tint, label) {
 function drawFamily(ctx, family, w, h, tint, tt, sz, n, L, ix, mix) {
   switch (family) {
     case 'temperature': return drawTemp(ctx, w, h, tint, tt, sz, L, mix);
-    case 'timezone': return drawTimezone(ctx, w, h, tint, tt, sz, n, L);
+    case 'timezone': return drawTimezone(ctx, w, h, tint, tt, sz, n, L, ix);
     case 'mass': return drawMass(ctx, w, h, tint, tt, sz, mix);
     case 'length': return drawLength(ctx, w, h, tint, tt, sz, n, mix);
     case 'area-volume': return drawAreaVol(ctx, w, h, tint, tt, sz, n, L, mix);
@@ -206,6 +223,7 @@ function drawTemp(ctx, w, h, tint, tt, sz, L, mix) {
   units.forEach((u, i) => valueCard(ctx, 16 + i * (cardW + gap), 40, cardW, cardH, u[0], u[1].toFixed(1), u[2], tint, u[3]));
   drawThermo(ctx, w * 0.28, h * 0.42, 18, h * 0.38, (c + 30) / 130, '#22d3ee', '°C', -30, 100);
   drawThermo(ctx, w * 0.55, h * 0.42, 18, h * 0.38, (f + 22) / 212, '#f472b6', '°F', -22, 190);
+  OUT = { c, f, k, r };
   sliderBar(ctx, w, h, Math.min(1, Math.max(0, (c + 30) / 130)), tint, `拖动/尺寸 → ${c.toFixed(1)}°C · 预设冰点/沸点 · 颜色改强调色`);
 }
 function drawThermo(ctx, x, y, tw, th, frac, color, label, min, max) {
@@ -228,10 +246,10 @@ const CITIES = [
   { name: '伦敦', offset: 0, color: '#34d399' }, { name: '纽约', offset: -5, color: '#60a5fa' },
   { name: '洛杉矶', offset: -8, color: '#fb7185' }, { name: '悉尼', offset: 11, color: '#c084fc' },
 ];
-function drawTimezone(ctx, w, h, tint, tt, sz, n, L) {
+function drawTimezone(ctx, w, h, tint, tt, sz, n, L, ix) {
   title(ctx, '世界时差 · 速度驱动时间', 16, 22);
   const show = Math.min(CITIES.length, Math.max(3, Math.round(3 + sz * 5)));
-  const utcH = (8 + tt * 0.4 + (L.style || 0) * 2) % 24;
+  const utcH = ix._moved ? Math.min(23.99, ix.t * 24) : (8 + tt * 0.4 + (L.style || 0) * 2) % 24;
   card(ctx, 16, 48, w - 32, 56, tint);
   ctx.fillStyle = tint; ctx.font = '600 12px sans-serif'; ctx.fillText('UTC', 28, 70);
   const uh = Math.floor(utcH), um = Math.floor((utcH % 1) * 60);
@@ -241,7 +259,7 @@ function drawTimezone(ctx, w, h, tint, tt, sz, n, L) {
   ctx.fillStyle = rgba(tint, 0.75); roundRect(ctx, w * 0.35, 66, w * 0.55 * (utcH / 24), 20, 6); ctx.fill();
   const cols = Math.min(4, show), rows = Math.ceil(show / cols), gap = 10;
   const cw = (w - 32 - gap * (cols - 1)) / cols;
-  const ch = Math.min(78, (h - 130 - gap * (rows - 1)) / rows);
+  const ch = Math.max(30, Math.min(78, (h - 170 - gap * (rows - 1)) / rows));
   for (let i = 0; i < show; i++) {
     const c = CITIES[i]; const col = i % cols, row = Math.floor(i / cols);
     const x = 16 + col * (cw + gap), y = 120 + row * (ch + gap);
@@ -256,7 +274,8 @@ function drawTimezone(ctx, w, h, tint, tt, sz, n, L) {
     ctx.fillStyle = '#94a3b8'; ctx.font = '10px sans-serif';
     ctx.fillText(`UTC${c.offset >= 0 ? '+' : ''}${c.offset} ${night ? '夜' : '昼'}`, x + 10, y + ch - 10);
   }
-  caption(ctx, `显示 ${show} 城 · 尺寸改城市数 · 预设亚洲/欧美`, 16, h - 14);
+  OUT = { utcH, cities: CITIES.slice(0, show).map((c) => ({ name: c.name, offset: c.offset, local: (utcH + c.offset + 24) % 24 })) };
+  sliderBar(ctx, w, h, utcH / 24, tint, `拖底栏设定 UTC 时间 · 显示 ${show} 城 · 尺寸改城市数`);
 }
 
 function drawMass(ctx, w, h, tint, tt, sz, mix) {
@@ -271,6 +290,7 @@ function drawMass(ctx, w, h, tint, tt, sz, mix) {
     const col = i % cols, row = Math.floor(i / cols);
     valueCard(ctx, 16 + col * (cw + gap), 44 + row * (ch + gap), cw, ch, r[0], r[1] >= 100 ? r[1].toFixed(0) : r[1].toFixed(2), r[2], tint, r[3]);
   });
+  OUT = { kg };
   sliderBar(ctx, w, h, Math.min(1, kg / 80), tint, `基准 ${kg.toFixed(2)} kg`);
 }
 
@@ -297,6 +317,7 @@ function drawLength(ctx, w, h, tint, tt, sz, n, mix) {
     ctx.fillStyle = rgba(tint, 0.35 + (i % 3) * 0.15);
     ctx.fillRect(16 + i * 10, h - 52, 8, 8);
   }
+  OUT = { m, show };
   sliderBar(ctx, w, h, mix, tint, `显示 ${show} 单位 · count改行数 · 基准 ≈ ${m.toFixed(1)} m`);
 }
 
@@ -311,6 +332,7 @@ function drawAreaVol(ctx, w, h, tint, tt, sz, n, L, mix) {
     });
     const s = 20 + 50 * Math.min(1, Math.sqrt(m2) / 90);
     ctx.strokeStyle = tint; ctx.lineWidth = 2; ctx.strokeRect(w * 0.5 - s / 2, h - 100, s, s);
+    OUT = { mode, m2 };
     sliderBar(ctx, w, h, mix, tint, `面积模式 · ${m2.toFixed(1)} m²`);
   } else {
     const liters = 0.2 + 120 * mix * sz;
@@ -318,17 +340,23 @@ function drawAreaVol(ctx, w, h, tint, tt, sz, n, L, mix) {
     items.forEach((it, i) => {
       valueCard(ctx, 16 + (i % 2) * ((w - 42) / 2 + 10), 44 + Math.floor(i / 2) * 100, (w - 42) / 2, 88, it[0], it[1] >= 100 ? it[1].toFixed(1) : it[1].toFixed(3), it[2], tint, it[3]);
     });
+    OUT = { mode, liters };
     sliderBar(ctx, w, h, mix, tint, `体积模式 · ${liters.toFixed(2)} L`);
   }
 }
 
+/** radix layout: cards compress on short canvases so the bit row never touches the bottom slider */
+function radixGeom(w, h, bits) {
+  const bw = Math.min(28, (w - 40) / bits - 4);
+  const step = Math.max(32, Math.min(42, (h - 40 - 22 - bw * 1.2 - 50) / 4));
+  return { bw, step, by: 40 + 4 * step + 12 };
+}
 function drawRadix(ctx, w, h, tint, tt, sz, n, L, ix) {
   title(ctx, '进制转换 · 点击比特翻转', 16, 22);
   const bits = Math.min(16, Math.max(4, Math.round(n) + 4));
   const maxVal = (1 << Math.min(bits, 16)) - 1;
   // size picks mid value; speed animates; click XOR bits
   if (!ix._seeded) { ix.val = Math.floor(((0.15 + 0.7 * sz) * maxVal)) & maxVal; ix._seeded = true; }
-  if (!ix.drag) ix.val = (ix.val + Math.floor(tt * 2) - Math.floor((tt - 0.016) * 2)) & maxVal;
   // stabilize: only auto-increment when speed high via fractional
   const val = (ix.val ^ 0) & maxVal;
   // Actually better: base from size, XOR user flips, plus animated offset from speed
@@ -338,6 +366,7 @@ function drawRadix(ctx, w, h, tint, tt, sz, n, L, ix) {
   // Prefer explicit ix.val if user clicked; else animate
   const shown = (ix._user ? ix.val : ((base + Math.floor(tt * 3)) & maxVal)) >>> 0;
   const use = shown & maxVal;
+  ix.shown = use;
   const bin = use.toString(2).padStart(bits, '0');
   const cards = [
     ['十进制 DEC', String(use), '#fbbf24'],
@@ -345,13 +374,18 @@ function drawRadix(ctx, w, h, tint, tt, sz, n, L, ix) {
     ['八进制 OCT', use.toString(8), '#f472b6'],
     ['十六进制 HEX', '0x' + use.toString(16).toUpperCase(), '#a78bfa'],
   ];
+  const { bw, step, by } = radixGeom(w, h, bits);
   cards.forEach((c, i) => {
-    const y = 40 + i * 42; card(ctx, 16, y, w - 32, 36, c[2]);
-    ctx.fillStyle = c[2]; ctx.font = '600 11px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(c[0], 28, y + 14);
-    ctx.fillStyle = '#f8fafc'; ctx.font = '700 16px ui-monospace,monospace'; ctx.fillText(c[1], 28, y + 30);
+    const y = 40 + i * step; card(ctx, 16, y, w - 32, step - 6, c[2]);
+    if (step >= 40) {
+      ctx.fillStyle = c[2]; ctx.font = '600 11px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(c[0], 28, y + 14);
+      ctx.fillStyle = '#f8fafc'; ctx.font = '700 16px ui-monospace,monospace'; ctx.fillText(c[1], 28, y + step - 12);
+    } else { // compact: label left, value right on one line
+      const my = y + (step - 6) / 2 + 5;
+      ctx.fillStyle = c[2]; ctx.font = '600 11px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(c[0], 28, my);
+      ctx.fillStyle = '#f8fafc'; ctx.font = '700 15px ui-monospace,monospace'; ctx.textAlign = 'right'; ctx.fillText(c[1], w - 28, my); ctx.textAlign = 'left';
+    }
   });
-  const by = 40 + 4 * 42 + 12;
-  const bw = Math.min(28, (w - 40) / bits - 4);
   ctx.fillStyle = '#94a3b8'; ctx.font = '11px sans-serif'; ctx.fillText(`位宽 ${bits} bit · 点击翻转`, 16, by);
   for (let i = 0; i < bits; i++) {
     const bit = bin[i] === '1';
@@ -365,7 +399,8 @@ function drawRadix(ctx, w, h, tint, tt, sz, n, L, ix) {
   }
   // wire click flips into ix
   // (handler already XOR; mark user)
-  caption(ctx, `尺寸定基准 · 速度递增 · count 位宽`, 16, h - 14);
+  OUT = { use, bits, bin, user: !!ix._user };
+  sliderBar(ctx, w, h, use / maxVal, tint, ix._user ? `手动值 ${use} · 拖底栏/点比特修改` : `自动递增 · 拖底栏或点比特接管 · count 位宽`);
 }
 
 function drawSpeed(ctx, w, h, tint, tt, sz, mix) {
@@ -383,6 +418,7 @@ function drawSpeed(ctx, w, h, tint, tt, sz, mix) {
   const ang = Math.PI + Math.PI * frac;
   ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang) * (R - 8), cy + Math.sin(ang) * (R - 8)); ctx.stroke();
+  OUT = { kmh };
   sliderBar(ctx, w, h, mix, tint, `${kmh.toFixed(0)} km/h`);
 }
 
@@ -397,6 +433,7 @@ function drawPressure(ctx, w, h, tint, tt, sz, mix) {
   ctx.fillStyle = '#1e293b'; roundRect(ctx, px, py, 80, ph, 6); ctx.fill();
   ctx.fillStyle = rgba(tint, 0.65); ctx.fillRect(px + 4, py + ph - 4 - (ph - 8) * fill, 72, (ph - 8) * fill);
   ctx.fillStyle = '#94a3b8'; roundRect(ctx, px + 10, py - 12, 60, 12, 3); ctx.fill();
+  OUT = { bar };
   sliderBar(ctx, w, h, mix, tint, `${bar.toFixed(2)} bar`);
 }
 
@@ -425,6 +462,7 @@ function drawEnergy(ctx, w, h, tint, tt, sz, n, mix) {
   ctx.strokeStyle = '#475569'; ctx.lineWidth = 2; roundRect(ctx, bx, by, 90, 36, 6); ctx.stroke();
   ctx.fillStyle = '#475569'; ctx.fillRect(bx + 90, by + 10, 8, 16);
   ctx.fillStyle = rgba(tint, 0.75); roundRect(ctx, bx + 3, by + 3, 84 * mix, 30, 4); ctx.fill();
+  OUT = { J, show };
   sliderBar(ctx, w, h, mix, tint, `卡片 ${show} · 格点 ${cells} · ${fmt(J)} J`);
 }
 

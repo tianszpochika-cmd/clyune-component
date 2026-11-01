@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
 import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
+import { createInfoPanel } from './kits/info-panel.js';
+import { MATH_DOCS } from './kits/math-docs.js';
 
 const TAU = Math.PI * 2;
 const COLORS = { sin: 0x22d3ee, cos: 0xf472b6, tan: 0xfbbf24 };
@@ -17,7 +19,7 @@ const CSS = `
 .tg-row button.on[data-act]{background:rgba(129,140,248,.35);color:#fff}
 .tg-row label{display:flex;align-items:center;gap:6px;color:#94a3b8;padding:0 6px}
 .tg-row input[type=range]{width:110px;accent-color:#818cf8}
-.tg-read{pointer-events:none;background:rgba(8,12,24,.66);border:1px solid rgba(148,163,184,.22);border-radius:8px;padding:6px 9px;color:#e2e8f0;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;width:max-content}
+.tg-read{display:none!important;pointer-events:none;background:rgba(8,12,24,.66);border:1px solid rgba(148,163,184,.22);border-radius:8px;padding:6px 9px;color:#e2e8f0;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;width:max-content}
 .tg-read b{font-weight:600}
 .tg-read .s{color:#22d3ee}.tg-read .c{color:#f472b6}.tg-read .t{color:#fbbf24}
 .tg-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
@@ -73,17 +75,20 @@ export async function mountTrigWaves(host, opts = {}) {
   let paused = false;
 
   if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+  let hl = null;
+  const info = createInfoPanel(host, { doc: MATH_DOCS['trig-waves'], onHover: (k) => { hl = k; } });
+  const view = info.canvasBox;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true, alpha: false });
   renderer.setClearColor(0x060a14, 1);
   renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;touch-action:none';
-  host.appendChild(renderer.domElement);
+  view.appendChild(renderer.domElement);
   const style = document.createElement('style');
   style.textContent = CSS;
-  host.appendChild(style);
+  view.appendChild(style);
   const labelsEl = document.createElement('div');
   labelsEl.className = 'tg-labels';
-  host.appendChild(labelsEl);
+  view.appendChild(labelsEl);
 
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-10, 10, 6, -6, 0.1, 200);
@@ -227,7 +232,7 @@ export async function mountTrigWaves(host, opts = {}) {
       <label>相位 φ <input type="range" min="0" max="360" step="1" data-phase aria-label="相位"><em data-pv style="font-style:normal;color:#e2e8f0;min-width:36px">0°</em></label>
     </div>
     <div class="tg-read" data-read></div>`;
-  host.appendChild(ui);
+  view.appendChild(ui);
   const readEl = ui.querySelector('[data-read]');
   const phaseInput = ui.querySelector('[data-phase]');
   const phaseVal = ui.querySelector('[data-pv]');
@@ -268,8 +273,8 @@ export async function mountTrigWaves(host, opts = {}) {
   /* orthographic fit: always keep unit circle + full wave strip in frame */
   let fitDist = 18;
   const resize = () => {
-    const w = host.clientWidth || host.parentElement?.clientWidth || 640;
-    const h = host.clientHeight || host.parentElement?.clientHeight || 420;
+    const w = view.clientWidth || host.clientWidth || 640;
+    const h = view.clientHeight || host.clientHeight || 420;
     const aspect = w / Math.max(1, h);
     renderer.setPixelRatio(maxDpr(2));
     renderer.setSize(w, h, false);
@@ -291,10 +296,50 @@ export async function mountTrigWaves(host, opts = {}) {
   camera.position.copy(controls.target).addScaledVector(tiltDir, fitDist);
   resize();
   const ro = new ResizeObserver(resize);
-  ro.observe(host);
+  ro.observe(view);
+
+  /* drag the point on the unit circle (capture phase on the view so OrbitControls doesn't rotate) */
+  let theta = 0.6;
+  let dragTh = null; // last θ set by dragging (debug signature)
+  let dragging = false;
+  const ray = new THREE.Raycaster();
+  const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  const hitLocal = (e) => {
+    const r = renderer.domElement.getBoundingClientRect();
+    const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const q = new THREE.Vector3();
+    if (!ray.ray.intersectPlane(plane, q)) return null;
+    return q.divideScalar(world.scale.x || 1);
+  };
+  const setThetaFrom = (q) => {
+    let a = Math.atan2(q.y, q.x - CX);
+    if (a < 0) a += TAU;
+    theta = Math.floor(theta / TAU) * TAU + a;
+    dragTh = a;
+  };
+  const onDragDown = (e) => {
+    if (e.target !== renderer.domElement) return;
+    const q = hitLocal(e);
+    if (!q) return;
+    const dr = Math.hypot(q.x - CX, q.y);
+    const th0 = theta % TAU;
+    const dp = Math.hypot(q.x - (CX + Math.cos(th0) * R), q.y - Math.sin(th0) * R);
+    if (dp < 0.9 || Math.abs(dr - R) < 0.55) {
+      dragging = true; controls.enabled = false;
+      setThetaFrom(q);
+      renderer.domElement.setPointerCapture?.(e.pointerId);
+      e.stopPropagation(); e.preventDefault();
+    }
+  };
+  const onDragMove = (e) => { if (!dragging) return; const q = hitLocal(e); if (q) setThetaFrom(q); e.stopPropagation(); };
+  const onDragUp = () => { if (dragging) { dragging = false; controls.enabled = true; } };
+  view.addEventListener('pointerdown', onDragDown, true);
+  view.addEventListener('pointermove', onDragMove, true);
+  view.addEventListener('pointerup', onDragUp, true);
+  view.addEventListener('pointercancel', onDragUp, true);
 
   /* loop */
-  let theta = 0.6;
   let alive = true;
   let last = performance.now();
   const P = new THREE.Vector3();
@@ -326,7 +371,7 @@ export async function mountTrigWaves(host, opts = {}) {
     // uniform world scale so size slider is unmistakable in screenshots / audits
     const uni = Math.max(0.45, Math.min(1.85, 0.55 + 0.45 * szLive));
     world.scale.setScalar(uni);
-    if (!paused) theta = (theta + dt * 0.9 * spd) % (TAU * 1000);
+    if (!paused && !dragging) theta = (theta + dt * 0.9 * spd) % (TAU * 1000);
     const [cr, cg, cb] = colorToRgb(L.color);
     circle.material.color.setRGB(cr, cg, cb);
     disk.material.color.setRGB(cr, cg, cb);
@@ -425,6 +470,17 @@ export async function mountTrigWaves(host, opts = {}) {
       (show.sin ? `<br><span class="s">sin</span> = ${Math.sin(freq * theta + phase).toFixed(3)}` : '') +
       (show.cos ? `<br><span class="c">cos</span> = ${Math.cos(freq * theta + phase).toFixed(3)}` : '') +
       (show.tan ? `<br><span class="t">tan</span> = ${Math.abs(tvNow) > 99 ? '∞' : tvNow.toFixed(3)}` : '');
+    // shared info panel
+    const hlScale = (o, k) => { if (o) o.scale.setScalar(hl === k ? 1.8 + 0.3 * Math.sin(now / 90) : 1); };
+    hlScale(pDot, 'P'); hlScale(sinHead, 'sin'); hlScale(cosHead, 'cos'); hlScale(tanHead, 'tan');
+    prj.copy(P).multiplyScalar(world.scale.x).project(camera);
+    const cw = renderer.domElement.clientWidth, chh = renderer.domElement.clientHeight;
+    info.update({ th, theta, freq, phase, A: szLive, s: Math.sin(freq * theta + phase), c: Math.cos(freq * theta + phase), t: tvNow, show: { ...show }, paused, dragging }, {
+      ix: JSON.stringify({ dragTh: dragTh == null ? undefined : Math.round(dragTh * 1000) / 1000, phase: Math.round(phase * 1000) / 1000, fns: Object.keys(show).filter((k) => show[k]).join(',') }),
+      handle: `${Math.round((prj.x * 0.5 + 0.5) * cw)},${Math.round((-prj.y * 0.5 + 0.5) * chh)}`,
+      ctl: [['控件', `尺寸 ×${szLive.toFixed(2)} · 速度 ×${spd.toFixed(2)}`, null, 'wide']],
+      dbg: `size=${szLive.toFixed(2)} speed=${spd.toFixed(2)} freq=${freq.toFixed(2)} preset=${styleName || '-'}`,
+    });
     labs[0].v.set(X0 - 0.3, A, 0);
     labs[1].v.set(X0 - 0.4, -A, 0);
     for (const l of labs) if (l.el !== thetaLab && !xTickEls.includes(l.el)) place(l.el, l.v, 0, -7);
@@ -447,6 +503,11 @@ export async function mountTrigWaves(host, opts = {}) {
   return () => {
     alive = false;
     ro.disconnect();
+    view.removeEventListener('pointerdown', onDragDown, true);
+    view.removeEventListener('pointermove', onDragMove, true);
+    view.removeEventListener('pointerup', onDragUp, true);
+    view.removeEventListener('pointercancel', onDragUp, true);
+    info.destroy();
     controls.dispose();
     const seen = new Set();
     scene.traverse((o) => {
