@@ -85,6 +85,7 @@ function uiFam(d) {
         chip(ctx, W, H, C);
         const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), spd: num(C.speed, 0.9), col: C.color || '#818cf8' };
         const r = d.draw(ctx, W, H, t * k.spd, C, P, k) || {};
+        { const bx = ((t * 0.25) % 1) * (W + 80) - 80; ctx.fillStyle = hsla(hueOf(k.col), 70, 62, 0.55); rrect(ctx, Math.max(0, bx), H - 4, Math.min(80, W - Math.max(0, bx)), 3, 1.5); ctx.fill(); }
         return { mode: r.mode || d.title, n: String(r.n ?? k.n), cell: r.cell || '（移到组件上）', colorHex: String(C.color || '').toLowerCase(), hx: r.hx ?? W / 2, hy: r.hy ?? H / 2 };
       };
     },
