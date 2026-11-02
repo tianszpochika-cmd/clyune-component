@@ -254,9 +254,9 @@ export const categories: Category[] = [
     intro: '原生 WebGL 全屏片元着色器：程序化噪声、等离子与光线步进，全部在 GPU 实时计算。',
     tech: ['WebGL 1', 'GLSL', 'fragment shader', 'raymarching'],
     demos: [
-      { slug: 'noise', title: '噪声流体背景', hint: '移动指针扰动', desc: 'FBM 分形噪声 + 域扭曲的流动背景。', tag: 'noise', mod: 'webgl-shader', fn: 'mountNoise' },
-      { slug: 'plasma', title: '等离子 Plasma', hint: '经典 demoscene 效果', desc: '多重正弦叠加的彩色等离子。', tag: 'plasma', mod: 'webgl-shader', fn: 'mountPlasma' },
-      { slug: 'raymarch', title: '光线步进 Metaballs', hint: '移动指针旋转视角', desc: 'SDF 光线步进的融合球体与光照。', tag: 'sdf', mod: 'webgl-shader', fn: 'mountRaymarch' },
+      { slug: 'noise', title: '噪声流体背景', hint: '移动指针扰动', desc: 'FBM 分形噪声 + 域扭曲的流动背景。', tag: 'noise', mod: 'kit-webgl', fn: 'mount', variant: 'noise' },
+      { slug: 'plasma', title: '等离子 Plasma', hint: '经典 demoscene 效果', desc: '多重正弦叠加的彩色等离子。', tag: 'plasma', mod: 'kit-webgl', fn: 'mount', variant: 'plasma' },
+      { slug: 'raymarch', title: '光线步进 Metaballs', hint: '移动指针旋转视角', desc: 'SDF 光线步进的融合球体与光照。', tag: 'sdf', mod: 'kit-webgl', fn: 'mount', variant: 'raymarch' },
       { slug: 'voronoi', title: 'Voronoi', hint: '细胞噪声', desc: 'Voronoi 着色', tag: 'shader', mod: 'kit-webgl', fn: 'mount', variant: 'voronoi', presets: ['经典', '高对比', '柔边', '动核', '冷', '暖'] },
       { slug: 'warp', title: '域扭曲', hint: '噪声扭曲', desc: '域扭曲着色', tag: 'shader', mod: 'kit-webgl', fn: 'mount', variant: 'warp', presets: ['轻扭曲', '重扭曲', '快', '慢', '细噪', '粗噪'] },
       { slug: 'spiral', title: '螺旋', hint: '极坐标螺旋', desc: '螺旋着色', tag: 'shader', mod: 'kit-webgl', fn: 'mount', variant: 'spiral', presets: ['紧', '松', '快转', '慢转', '多臂', '单臂'] },
