@@ -192,12 +192,12 @@ FAM['grad'] = {
 
       const n = clamp(Math.round(num(C.count, 4)), 2, 6), sz = num(C.size, 1), spd = num(C.speed, 0.9), ang = num(C.angle, 120) * Math.PI / 180;
       const pad = 8; const x0 = pad, y0 = pad + 4, w = W - pad * 2, h = H - pad * 2 - 12;
-      const shift = (t * spd * 0.25) % 1;
+      const shift = (t * spd * 0.12) % 1;
       // backdrop keeps luminance stable across knob sweeps (avoids interact flicker spikes)
       ctx.fillStyle = hsla(hueOf(C.color), 45, 28, 1); rrect(ctx, x0, y0, w, h, 18 * sz); ctx.fill();
       const g = ctx.createLinearGradient(x0, y0, x0 + Math.cos(ang) * w, y0 + Math.sin(ang) * h);
       const stops = [];
-      for (let i = 0; i <= n; i++) stops.push([(i / n + shift) % 1, pastel(C, i, n, 0.92)]);
+      for (let i = 0; i <= n; i++) stops.push([(i / n + shift) % 1, hsla(hueOf(C.color) + i * (40 / Math.max(1, n)), 55, 42 + (i % 2) * 8, 0.95)]);
       stops.sort((a, b) => a[0] - b[0]);
       if (stops[0][0] > 0.001) stops.unshift([0, stops[0][1]]);
       if (stops[stops.length - 1][0] < 0.999) stops.push([1, stops[stops.length - 1][1]]);
@@ -307,11 +307,18 @@ FAM['stagger'] = {
       for (let i = 0; i < n; i++) {
         const local = clamp((cycle - i * delay) / 0.55, 0, 1);
         const e = easeFn('ease-out', local); const y = mt + i * (rowH + gap);
-        const sc = scaleIn ? 0.9 + 0.1 * e : 1;
+        const sc = scaleIn ? (0.55 + 0.45 * e) : 1;
         // floor alpha so rows never fully vanish (luminance spike on remount-like sweeps)
-        ctx.globalAlpha = 0.35 + 0.65 * e; ctx.fillStyle = pastel(C, i, n, 0.85);
+        ctx.globalAlpha = 0.4 + 0.6 * e; ctx.fillStyle = pastel(C, i, n, 0.85);
         const w = iw * (0.7 + 0.3 * e);
-        rrect(ctx, ml, y + rowH * (1 - sc) / 2, w, rowH * sc, 10); ctx.fill();
+        // when scaleIn off, full-height bars; when on, grow from center — clear pixel delta
+        const bh = scaleIn ? rowH * sc : rowH;
+        const by = scaleIn ? y + (rowH - bh) / 2 : y;
+        rrect(ctx, ml, by, w, bh, 10); ctx.fill();
+        if (scaleIn) {
+          ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1;
+          rrect(ctx, ml, by, w, bh, 10); ctx.stroke();
+        }
         ctx.globalAlpha = 1;
         text(ctx, `Item ${i + 1}`, ml + 12, y + rowH / 2, { size: fsz(W, H, 0.9), col: '#0f172a', bold: true });
         if (P.y >= y && P.y <= y + rowH && P.x >= ml && P.x <= ml + w) hit = i;
@@ -1017,12 +1024,13 @@ FAM['neumorph'] = {
       const soft = style === 3, hard = style === 4, glow = style === 5 || style === 4;
       const base = Math.min(W, H) * 0.22 * (0.75 + sz * 0.35);
       const blur = (soft ? 10 : hard ? 32 : 18) * sz;
+      let cx = W / 2, cy = H / 2, press = inset;
       for (let i = 0; i < nBtn; i++) {
-        const cx = W / 2 + (i - (nBtn - 1) / 2) * (base * 2.2);
-        const cy = H / 2;
+        cx = W / 2 + (i - (nBtn - 1) / 2) * (base * 2.2);
+        cy = H / 2;
         const s = base * (soft ? 1.15 : hard ? 0.85 : 1);
         const rad = soft ? s : hard ? s * 0.12 : s * 0.35;
-        const press = inset || (Math.sin(t * spd * 2 + i) > 0.85);
+        press = inset || (Math.sin(t * spd * 2 + i) > 0.85);
         ctx.save();
         if (!press) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = blur; ctx.shadowOffsetX = 10; ctx.shadowOffsetY = 10; }
         ctx.fillStyle = '#1a2238'; rrect(ctx, cx - s, cy - s, s * 2, s * 2, rad); ctx.fill();
