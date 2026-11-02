@@ -76,9 +76,9 @@ export const categories: Category[] = [
       { slug: 'categoryPie', title: '分类占比', hint: '六类占比', desc: '分类饼图。', tag: 'pie', mod: 'kit-charts', fn: 'mount', variant: 'categoryPie', presets: ['6类', '描边', '环形', '旋转'] },
       { slug: 'weekday', title: '工作日对比', hint: '周一到周日', desc: '工作日柱/线。', tag: 'week', mod: 'kit-charts', fn: 'mount', variant: 'weekday', presets: ['柱', '线', '面积', '分组'] },
       { slug: 'kpi', title: 'KPI 环', hint: '完成率', desc: 'KPI doughnut。', tag: 'kpi', mod: 'kit-charts', fn: 'mount', variant: 'kpi', presets: ['目标', '完成', '双KPI', '粗环'] },
-      { slug: 'spark-canvas', title: 'Canvas 迷你趋势', hint: '自绘 spark', desc: 'Canvas sparkline。', tag: 'canvas', mod: 'kit-chart', fn: 'mount', variant: 'spark', presets: ['细线', '粗线', '面积', '阶梯', '虚线', '双色'] },
-      { slug: 'gauge-canvas', title: 'Canvas 仪表', hint: '自绘 gauge', desc: 'Canvas 仪表盘。', tag: 'canvas', mod: 'kit-chart', fn: 'mount', variant: 'gauge', presets: ['半环', '全环', '粗轨', '细针'] },
-      { slug: 'stack-canvas', title: 'Canvas 堆叠', hint: '自绘 stack', desc: 'Canvas 堆叠图。', tag: 'canvas', mod: 'kit-chart', fn: 'mount', variant: 'stack', presets: ['柱', '面积', '横向', '百分比'] },
+      { slug: 'spark-canvas', title: 'Canvas 迷你趋势', hint: '自绘 spark', desc: 'Canvas sparkline。', tag: 'canvas', mod: 'kit-charts', fn: 'mount', variant: 'spark-canvas', presets: ['细线', '粗线', '面积', '阶梯', '虚线', '双色'] },
+      { slug: 'gauge-canvas', title: 'Canvas 仪表', hint: '自绘 gauge', desc: 'Canvas 仪表盘。', tag: 'canvas', mod: 'kit-charts', fn: 'mount', variant: 'gauge-canvas', presets: ['半环', '全环', '粗轨', '细针'] },
+      { slug: 'stack-canvas', title: 'Canvas 堆叠', hint: '自绘 stack', desc: 'Canvas 堆叠图。', tag: 'canvas', mod: 'kit-charts', fn: 'mount', variant: 'stack-canvas', presets: ['柱', '面积', '横向', '百分比'] },
     ],
   },
   {
