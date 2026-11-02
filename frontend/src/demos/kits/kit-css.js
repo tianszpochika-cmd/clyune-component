@@ -221,7 +221,9 @@ FAM['ease'] = {
       const names = ['linear','ease','ease-in','ease-out','back','bounce','steps','ease-in-out'];
       const ei = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), loop = on(C.loop);
       const name = names[ei];
-      let u = (t * spd * 0.35) % 2; if (!loop) u = Math.min(u, 1); if (u > 1) u = 2 - u;
+      let u;
+      if (loop) { u = (t * spd * 0.45) % 2; if (u > 1) u = 2 - u; }
+      else { u = Math.min(t * spd * 0.45, 1); }
       const e = easeFn(name, clamp(u, 0, 1));
       const ml = 40, mr = 40, trackY = H * 0.32, trackW = W - ml - mr;
       ctx.strokeStyle = '#24314f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(ml, trackY); ctx.lineTo(ml + trackW, trackY); ctx.stroke();
@@ -964,7 +966,7 @@ FAM['keyseq'] = {
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), loop = on(C.loop);
       const names = ['行走循环','加载变形','颜色节拍','路径感位移','缩放呼吸组合','旋转+位移','闪烁摩斯','多段叙事'];
-      let u = (t * spd * 0.4) % (loop ? 1 : 1.01); if (!loop) u = Math.min(u, 1);
+      let u = loop ? ((t * spd * 0.4) % 1) : Math.min(t * spd * 0.4, 1);
       const cx = W / 2, cy = H / 2; const s = Math.min(W, H) * 0.12 * sz;
       let x = cx, y = cy, sc = 1, rot = 0, a = 1;
       if (style === 0) { x = cx + Math.sin(u * TAU) * W * 0.28; y = cy + Math.abs(Math.sin(u * TAU * 2)) * -20; }
