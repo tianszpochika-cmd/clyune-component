@@ -352,8 +352,12 @@ FAM['flip'] = {
         const c0 = a % cols, r0 = (a / cols) | 0, c1 = b % cols, r1 = (b / cols) | 0;
         const x = ml + (c0 + (c1 - c0) * blend) * (cw + gap);
         const y = mt + (r0 + (r1 - r0) * blend) * (ch + gap);
+        // Last slot ghost (dashed) — shows where FLIP is heading; shuffle changes targets visibly
+        const tx = ml + c1 * (cw + gap), ty = mt + r1 * (ch + gap);
+        ctx.save(); ctx.setLineDash([5, 4]); ctx.strokeStyle = pastel(C, i, n, 0.7); ctx.lineWidth = 1.5;
+        rrect(ctx, tx + 3, ty + 3, cw - 6, ch - 6, rad); ctx.stroke(); ctx.restore();
         ctx.fillStyle = pastel(C, i, n); rrect(ctx, x, y, cw, ch, rad); ctx.fill();
-        text(ctx, String(i + 1), x + cw / 2, y + ch / 2, { size: fsz(W, H), col: '#0f172a', align: 'center', bold: true });
+        text(ctx, `${i + 1}→${b + 1}`, x + cw / 2, y + ch / 2, { size: fsz(W, H), col: '#0f172a', align: 'center', bold: true });
         if (P.x >= x && P.x <= x + cw && P.y >= y && P.y <= y + ch) hit = i;
       }
       if (hit != null) tip(ctx, W, H, P.x, P.y, [`格 ${hit + 1}`, 'FLIP 插值中'], C.color);
