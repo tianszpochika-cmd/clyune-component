@@ -156,9 +156,9 @@ const escape = (zx, zy, cx, cy, N) => { let i = 0, x2 = zx * zx, y2 = zy * zy; w
 
 FAM.julia = gFam({ title: 'Julia 集', size: { label: '像素块', min: 2, max: 8, step: 1, value: 3, }, count: { label: '最大迭代', min: 16, max: 200, step: 2, value: 70 },
   extra: R('zoom', '缩放', 0.5, 4, 0.05, 1), sizeDoc: '每个计算格子占几个屏幕像素；越大越粗糙但越快', countDoc: '每个点最多迭代几次；越多细节越丰富', presets: { 粗糙: { size: 7 }, 精细: { size: 2, count: 160 }, 少迭代: { count: 18 }, 放大: { zoom: 3.5 } },
-  explain: 'Julia 集：对复平面上每个点 z 反复做 z ← z² + c，数一数多少步后 |z| 超过 2（「逃逸」）。逃得越慢颜色越亮，永不逃逸的点画成暗色。常数 c 随时间绕圈，指针会微调 c，所以图形不断变形。', formula: 'z_{n+1} = z_n² + c，c = 0.7885·e^{i·0.2t}', formula2: '颜色 ∝ 逃逸步数 n（平滑处理）',
+  explain: 'Julia 集：对复平面上每个点 z 反复做 z ← z² + c，数一数多少步后 |z| 超过 2（「逃逸」）。逃得越慢颜色越亮，永不逃逸的点画成暗色。常数 c 随时间绕圈，指针会微调 c，所以图形不断变形。', formula: 'z_{n+1} = z_n² + c，c 沿主心形线边界移动: c = 0.97·(e^{iθ}/2 − e^{2iθ}/4)', formula2: '颜色 ∝ 逃逸步数 n（平滑处理）',
   draw(ctx, W, H, t, C, P, k) {
-    const a = t * 0.2 + (P.x / W - 0.5) * 0.3, cr = 0.7885 * Math.cos(a), ci = 0.7885 * Math.sin(a) + (P.y / H - 0.5) * 0.05, sc = 3.2 / Math.min(W, H) / k.x, N = k.n;
+    const a = t * 0.2 + (P.x / W - 0.5) * 0.3, q = 0.97 + (P.y / H - 0.5) * 0.06, cr = q * (Math.cos(a) / 2 - Math.cos(2 * a) / 4), ci = q * (Math.sin(a) / 2 - Math.sin(2 * a) / 4), sc = 3.2 / Math.min(W, H) / k.x, N = k.n;
     const Lp = k.lut('j' + k.hue, (u) => [k.hue + u * 120, 0.85, 0.08 + u * 0.62]), In = hsl2rgb(k.hue + 180, 0.5, 0.18);
     k.field(k.s, (x, y, out) => { const v = escape((x - W / 2) * sc, (y - (H + 8) / 2) * sc, cr, ci, N); if (v < 0) { out[0] = In[0]; out[1] = In[1]; out[2] = In[2]; } else setPx(out, Lp, 1 - Math.exp(-v / 9)); });
     const [zx, zy] = fracDoc(W, H, k, P, 0, 0, sc), v = escape(zx, zy, cr, ci, N);
@@ -199,7 +199,7 @@ FAM.gol = gFam({ title: '生命游戏', size: { label: '格子大小', min: 4, m
     for (let i = 0; i < st.age.length; i++) st.age[i] = Math.max(0, st.age[i] - st.dt * 0.6);
     const gx = clamp(Math.floor(P.x / cs), 0, cols - 1), gy = clamp(Math.floor((P.y - 8) / cs), 0, rows - 1);
     ctx.strokeStyle = hsla(k.hue, 90, 80, 0.8); ctx.lineWidth = 1; ctx.strokeRect(gx * cs - cs, 8 + gy * cs - cs, cs * 3, cs * 3);
-    return { mode: `第 ${st.gen} 代 · ${cols}×${rows} 格`, n: `${k.n}%`, cell: `格子 (${gx}, ${gy}) ${st.cur[gy * cols + gx] ? '活' : '死'}，全场活细胞 ${alive} 个` };
+    return { mode: `第 ${st.gen} 代 · ${cols}×${rows} 格 · 拖影${k.x ? '开' : '关'}`, n: `${k.n}%`, cell: `格子 (${gx}, ${gy}) ${st.cur[gy * cols + gx] ? '活' : '死'}，全场活细胞 ${alive} 个` };
   } });
 
 FAM.voronoi = gFam({ title: 'Voronoi 图', size: { label: '边线宽度', min: 0, max: 8, step: 0.5, value: 2 }, count: { label: '种子数', min: 3, max: 60, step: 1, value: 18 },
@@ -301,7 +301,7 @@ FAM.walk = gFam({ title: '随机游走', size: { label: '步长', min: 2, max: 1
       for (let j = 1; j < w.tr.length; j++) { if (w.tr[j][2]) continue; ctx.strokeStyle = hsla(c, 85, 60, (j / w.tr.length) * 0.9); ctx.beginPath(); ctx.moveTo(w.tr[j - 1][0], w.tr[j - 1][1]); ctx.lineTo(w.tr[j][0], w.tr[j][1]); ctx.stroke(); }
       k.dot(w.x, w.y, 3, hsla(c, 90, 75), 1); md += Math.hypot(w.x - w.sx, w.y - w.sy); });
     const avgN = st.w.reduce((a, w) => a + w.n, 0) / st.w.length;
-    return { mode: `已走 ${Math.round(avgN)} 步`, cell: `平均离起点 ${Math.round(md / st.w.length)}px，√n·步长 ≈ ${Math.round(Math.sqrt(avgN) * k.s)}px` };
+    return { mode: `已走 ${Math.round(avgN)} 步 · 尾迹 ${L} 步`, cell: `平均离起点 ${Math.round(md / st.w.length)}px，√n·步长 ≈ ${Math.round(Math.sqrt(avgN) * k.s)}px` };
   } });
 
 const LSYS = {};
@@ -413,7 +413,7 @@ FAM.subdiv = gFam({ title: '递归细分', size: { label: '分隔线宽', min: 1
       if (w > h) { const a = w * r; go(x, y, a, h, d + 1, id * 2); go(x + a, y, w - a, h, d + 1, id * 2 + 1); } else { const a = h * r; go(x, y, w, a, d + 1, id * 2); go(x, y + a, w, h - a, d + 1, id * 2 + 1); }
     };
     go(0, 8, W, H - 8, 0, 1);
-    return { mode: `${leaves} 个矩形`, cell: hit ? `指针所在矩形 ${Math.round(hit[0])}×${Math.round(hit[1])}px` : '指针在画布外' };
+    return { mode: `${leaves} 个矩形 · 填色 ${Math.round(k.x * 100)}%`, cell: hit ? `指针所在矩形 ${Math.round(hit[0])}×${Math.round(hit[1])}px` : '指针在画布外' };
   } });
 
 FAM.contour = gFam({ title: '等高线', size: { label: '线宽', min: 0.5, max: 4, step: 0.1, value: 1.4 }, count: { label: '等高线数', min: 3, max: 30, step: 1, value: 12 },
@@ -432,7 +432,7 @@ FAM.inkdrop = gFam({ title: '墨滴扩散', size: { label: '最大半径', min: 
   extra: R('rings', '环数', 1, 8, 1, 4), color: '#0ea5e9', presets: { 单滴: { count: 1 }, 多滴: { count: 14 }, 小滴: { size: 34 }, 大滴: { size: 210 }, 多环: { rings: 8 } },
   explain: '墨滴：一滴墨落入水中会向外扩散，半径增长越来越慢（约 ∝ √时间），颜色一圈圈分层，边缘因水流轻微抖动，最后淡去。每隔一会儿就有新墨滴落下，其中一部分落在指针处。', formula: '半径 r(τ) = 最大半径 · √(τ / 寿命)', formula2: '边缘抖动 = r · 0.05 · noise(角度, t)',
   draw(ctx, W, H, t, C, P, k, st) {
-    const life = 7, per = life / k.n; st.drops = st.drops || []; st.next = st.next ?? 0;
+    const life = 7, per = life / k.n; st.drops = st.drops || []; st.next = st.next ?? t - life * 0.8;
     if (t < st.next - per * 2) st.next = t;
     while (t >= st.next) { const i = Math.round(st.next * 100); const atP = st.drops.length % 3 === 0; st.drops.push({ t0: st.next, x: atP ? P.x : hh(i, 1) * W, y: atP ? P.y : 8 + hh(i, 2) * (H - 8), h: hh(i, 3) * 60 - 30 }); st.next += per; }
     st.drops = st.drops.filter((d) => t - d.t0 < life); let layers = 0;
@@ -464,9 +464,9 @@ FAM.pixelsort = gFam({ title: '像素排序', size: { label: '像素块', min: 2
   extra: R('thresh', '亮度阈值', 0.05, 0.9, 0.01, 0.4), color: '#f97316', sizeDoc: '每个格子占几个屏幕像素', countDoc: '一次最多把多少个连续像素一起排序', extraDoc: '只有比阈值亮的像素才参与排序', presets: { 粗块: { size: 8 }, 短段: { count: 6 }, 长段: { count: 160 }, 低阈值: { thresh: 0.08 }, 高阈值: { thresh: 0.85 } },
   explain: '像素排序（Glitch 艺术）：逐行扫描图片，把亮度超过阈值的连续一段像素按亮度从暗到亮重新排列，就会出现被「拉丝」的效果。源图是流动的噪声色彩；指针所在的几行不限长度，拉丝最长。', formula: '段 = 连续满足 亮度 > 阈值 的像素', formula2: '段内按亮度升序排序（长度 ≤ 段长上限）',
   draw(ctx, W, H, t, C, P, k) {
-    const res = k.s, Lp = k.lut('p' + k.hue, (u) => [k.hue - 40 + u * 120, 0.85, 0.05 + u * 0.7]), py = Math.floor((P.y - 8) / res); let sorted = 0;
+    const res = k.s, Lp = k.lut('p' + k.hue, (u) => [k.hue - 50 + u * 110, 0.85, 0.04 + u * 0.56]), py = Math.floor((P.y - 8) / res); let sorted = 0;
     k.raw(res, (D, fw, fh) => { const row = new Float32Array(fw);
-      for (let y = 0; y < fh; y++) { for (let x = 0; x < fw; x++) row[x] = clamp(fbm(x * res * 0.006 + t * 0.1, y * res * 0.012, t * 0.15, 3) * 1.7 - 0.35, 0, 1);
+      for (let y = 0; y < fh; y++) { for (let x = 0; x < fw; x++) row[x] = clamp(fbm(x * res * 0.006 + t * 0.1, y * res * 0.012, t * 0.15, 3) * 2.2 - 0.65, 0, 1);
         const cap = Math.abs(y - py) < 4 ? fw : Math.round(k.n);
         let x = 0; while (x < fw) { if (row[x] <= k.x) { x++; continue; } let e = x; while (e < fw && row[e] > k.x && e - x < cap) e++; const seg = Array.from(row.subarray(x, e)).sort((a, b) => a - b); for (let i = 0; i < seg.length; i++) row[x + i] = seg[i]; if (Math.abs(y - py) < 1) sorted += e - x; x = e; }
         for (let x2 = 0; x2 < fw; x2++) { const i = Math.round(row[x2] * 255) * 3, o = (y * fw + x2) * 4; D[o] = Lp[i]; D[o + 1] = Lp[i + 1]; D[o + 2] = Lp[i + 2]; } } });
