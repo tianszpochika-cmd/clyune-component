@@ -224,6 +224,22 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
 }
 
 /* tiny formula helpers */
+/** Phones: lift an in-canvas control overlay into its own row above the canvas so it never covers it. */
+export function dockControls(ui, canvasBox) {
+  try {
+    if (!(window.matchMedia && window.matchMedia('(max-width: 860px)').matches)) return false;
+    const layout = canvasBox.parentElement; if (!layout) return false;
+    ui.classList.add('mip-dock'); layout.insertBefore(ui, canvasBox);
+    if (!document.getElementById('mip-dock-css')) {
+      const st = document.createElement('style'); st.id = 'mip-dock-css';
+      st.textContent = '.mip-layout>.mip-dock{flex-direction:row!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none;touch-action:pan-x;position:relative!important;inset:auto!important;left:auto!important;top:auto!important;right:auto!important;width:auto!important;max-width:none!important;flex:0 0 auto;padding:4px 6px;gap:4px;pointer-events:auto;background:#0b1222;border-bottom:1px solid rgba(148,163,184,.16)}'
+        + '.mip-dock::-webkit-scrollbar{display:none}.mip-dock>*{width:auto!important;max-width:none!important;flex:0 0 auto!important;flex-wrap:nowrap!important}'
+        + '.mip-dock button{flex:0 0 auto!important;white-space:nowrap}.mip-dock .ss-hint{display:none}';
+      document.head.appendChild(st);
+    }
+    return true;
+  } catch (_) { return false; }
+}
 export const F = (s) => `<div class="mip-f">${s}</div>`;
 export const frac = (a, b) => `<span style="display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-size:.9em;line-height:1.15"><span style="border-bottom:1px solid currentColor;padding:0 3px">${a}</span><span style="padding:0 3px">${b}</span></span>`;
 export const sq = (s) => `√<span style="border-top:1px solid currentColor;padding:0 2px">${s}</span>`;

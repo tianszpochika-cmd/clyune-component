@@ -280,6 +280,9 @@ export function bar(host, title, controlsHtml = '') {
       mini.className = 'fx-bar nested-actions';
       mini.innerHTML = controlsHtml;
       host.appendChild(mini);
+      // action strip sits above the canvas in its own row — never over it
+      stage.classList.add('nested-stage');
+      stage.style.top = 'var(--nested-bar-h, 44px)';
     }
     host.appendChild(stage);
     return { wrap: host, stage, bar: null };

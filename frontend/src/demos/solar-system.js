@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
 import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
-import { createInfoPanel, alignDocParams, fmt, F } from './kits/info-panel.js';
+import { createInfoPanel, alignDocParams, fmt, F, dockControls } from './kits/info-panel.js';
 
 export const PARAMS_SPEC = {
   color: { label: '轨道线颜色', value: '#818cf8' },
@@ -772,6 +772,7 @@ export async function mountSolarSystem(outerHost, opts = {}) {
     </div>
     <div class="ss-hint" data-hint>滚轮/滑条缩放 · 点击行星聚焦</div>`;
   host.appendChild(ui);
+  dockControls(ui, host);
   const slider = ui.querySelector('[data-zoom]');
   const hint = ui.querySelector('[data-hint]');
 

@@ -1307,3 +1307,16 @@ body.sidebar-open {
   .fx-ops, .fx-root:not(.ops-collapsed) .fx-ops { max-height: min(40%, 320px); }
   .fx-root:not(.ops-collapsed) .mip-narrow .mip { max-height: 32%; }
 }
+/* in-stage action strips (Regenerate / Burst / Shuffle / Replay…) get their own row above the canvas */
+.kit-stage .fx-bar.nested-actions,
+.fx-bar.nested-actions {
+  position: absolute; top: 0; left: 0; right: 0; bottom: auto; height: var(--nested-bar-h, 44px);
+  max-width: none; width: auto; margin: 0; padding: 0 8px; box-sizing: border-box;
+  display: flex; flex-wrap: nowrap; align-items: center; justify-content: flex-end; gap: 6px;
+  overflow-x: auto; background: rgba(13, 20, 38, .92); border: 0; border-bottom: 1px solid var(--border);
+}
+.fx-bar.nested-actions .btn { min-height: 32px; padding: 5px 12px; flex: 0 0 auto; }
+@media (max-width: 860px) and (max-height: 720px) {
+  .mip-layout.mip-narrow .mip { max-height: 38%; }
+  .fx-root:not(.ops-collapsed) .mip-layout.mip-narrow .mip { max-height: 28%; }
+}

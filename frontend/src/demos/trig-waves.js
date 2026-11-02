@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
 import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
-import { createInfoPanel } from './kits/info-panel.js';
+import { createInfoPanel, dockControls } from './kits/info-panel.js';
 import { MATH_DOCS } from './kits/math-docs.js';
 
 const TAU = Math.PI * 2;
@@ -233,6 +233,7 @@ export async function mountTrigWaves(host, opts = {}) {
     </div>
     <div class="tg-read" data-read></div>`;
   view.appendChild(ui);
+  dockControls(ui, view);
   const readEl = ui.querySelector('[data-read]');
   const phaseInput = ui.querySelector('[data-phase]');
   const phaseVal = ui.querySelector('[data-pv]');
