@@ -297,20 +297,20 @@ FAM.walk = gFam({ title: '随机游走', size: { label: '步长', min: 2, max: 1
       if (w.tr.length > L) w.tr.splice(0, w.tr.length - L);
     }
     let md = 0;
-    st.w.forEach((w, i) => { const c = k.hue + (i / Math.max(1, k.n)) * 80 - 40; ctx.lineWidth = 1.4;
-      for (let j = 1; j < w.tr.length; j++) { if (w.tr[j][2]) continue; ctx.strokeStyle = hsla(c, 85, 60, (j / w.tr.length) * 0.9); ctx.beginPath(); ctx.moveTo(w.tr[j - 1][0], w.tr[j - 1][1]); ctx.lineTo(w.tr[j][0], w.tr[j][1]); ctx.stroke(); }
+    st.w.forEach((w, i) => { const c = k.hue + (i / Math.max(1, k.n)) * 80 - 40; ctx.lineWidth = 1.4; const tl = w.tr.length, B = 6;
+      for (let b = 0; b < B; b++) { const j0 = Math.max(1, Math.floor(tl * b / B)), j1 = Math.floor(tl * (b + 1) / B); ctx.strokeStyle = hsla(c, 85, 60, ((b + 1) / B) * 0.9); ctx.beginPath(); for (let j = j0; j < j1 + (b < B - 1 ? 1 : 0) && j < tl; j++) { if (w.tr[j][2]) continue; ctx.moveTo(w.tr[j - 1][0], w.tr[j - 1][1]); ctx.lineTo(w.tr[j][0], w.tr[j][1]); } ctx.stroke(); }
       k.dot(w.x, w.y, 3, hsla(c, 90, 75), 1); md += Math.hypot(w.x - w.sx, w.y - w.sy); });
     const avgN = st.w.reduce((a, w) => a + w.n, 0) / st.w.length;
     return { mode: `已走 ${Math.round(avgN)} 步 · 尾迹 ${L} 步`, cell: `平均离起点 ${Math.round(md / st.w.length)}px，√n·步长 ≈ ${Math.round(Math.sqrt(avgN) * k.s)}px` };
   } });
 
 const LSYS = {};
-const lsys = (n) => { if (!LSYS[n]) { let s = 'F'; for (let i = 0; i < n; i++) s = s.replace(/F/g, 'FF+[+F-F-F]-[-F+F+F]'); LSYS[n] = s; } return LSYS[n]; };
+const lsys = (n) => { if (!LSYS[n]) { let s = 'F'; for (let i = 0; i < n; i++) s = s.replace(/F/g, 'FF+[+F-F-F]-[-F+F+F]'); LSYS[n] = { s, segs: (s.match(/F/g) || []).length }; } return LSYS[n]; };
 FAM.lsystem = gFam({ title: 'L-System 植物', size: { label: '线宽', min: 0.3, max: 4, step: 0.1, value: 1.1 }, count: { label: '迭代次数', min: 1, max: 5, step: 1, value: 4 },
   extra: R('angle', '转角', 10, 45, 0.5, 22.5), color: '#4ade80', countDoc: '把规则替换几次；每多一次线段约 ×8', presets: { 幼苗: { count: 2 }, 繁茂: { count: 5 }, 窄叶: { angle: 12 }, 宽叶: { angle: 40 }, 粗干: { size: 3.5 } },
   explain: 'L-System：从字符串 "F" 开始，按规则把每个 F 替换成一串更长的指令，反复几次；然后让「海龟」照着画：F 前进画线，+/− 转弯，[ ] 记住/回到分叉点。植物会从根部慢慢生长，风让枝条摇摆。', formula: '规则: F → FF+[+F−F−F]−[−F+F+F]', formula2: '+ / − : 转动 ±转角，[ ] : 压栈/出栈',
   draw(ctx, W, H, t, C, P, k) {
-    const s = lsys(k.n), segs = (s.match(/F/g) || []).length, len = (H - 8) * 0.9 / Math.pow(2.35, k.n), aR = k.x * Math.PI / 180, ph = fract(t / 12), grow = Math.min(1, ph * 1.6), fade = ph > 0.9 ? 1 - (ph - 0.9) * 10 : 1, lim = Math.floor(segs * smooth(grow));
+    const { s, segs } = lsys(k.n), len = (H - 8) * 0.9 / Math.pow(2.35, k.n), aR = k.x * Math.PI / 180, ph = fract(t / 12), grow = Math.min(1, ph * 1.6), fade = ph > 0.9 ? 1 - (ph - 0.9) * 10 : 1, lim = Math.floor(segs * smooth(grow));
     const lean = (P.x / W - 0.5) * 0.25; let x = W / 2, y = H - 4, a = 0, d = 0, drawn = 0; const stack = [];
     ctx.lineWidth = k.s; ctx.lineCap = 'round'; ctx.globalAlpha = fade; ctx.strokeStyle = hsla(k.hue, 70, 55); ctx.beginPath();
     for (let i = 0; i < s.length && drawn < lim; i++) { const ch = s[i];
@@ -326,8 +326,8 @@ FAM.interfere = gFam({ title: '波的干涉', size: { label: '波长', min: 8, m
   draw(ctx, W, H, t, C, P, k) {
     const n = k.n, sx = [], sy = []; for (let i = 0; i < n; i++) { const a = t * 0.15 + (i / n) * TAU; sx.push(i === 0 ? P.x : W / 2 + Math.cos(a) * W * 0.3); sy.push(i === 0 ? P.y : (H + 8) / 2 + Math.sin(a) * (H - 8) * 0.3); }
     const kw = TAU / k.s, dc = k.x / 100, Lp = k.lut('i' + k.hue, (u) => [k.hue + (u - 0.5) * 60, 0.8, 0.04 + u * 0.7]);
-    const hAt = (x, y) => { let h = 0; for (let i = 0; i < n; i++) { const r = Math.hypot(x - sx[i], y - sy[i]); h += Math.cos(r * kw - t * 3) / (1 + dc * r); } return h / n; };
-    k.field(3, (x, y, out) => setPx(out, Lp, 0.5 + hAt(x, y) * 0.5));
+    const hAt = (x, y) => { let h = 0; for (let i = 0; i < n; i++) { const dx = x - sx[i], dy = y - sy[i], r = Math.sqrt(dx * dx + dy * dy); h += Math.cos(r * kw - t * 3) / (1 + dc * r); } return h / n; };
+    k.field(W * (H - 8) > 120000 ? 5 : 4, (x, y, out) => setPx(out, Lp, 0.5 + hAt(x, y) * 0.5));
     for (let i = 0; i < n; i++) k.dot(sx[i], sy[i], 3, '#ffffff', 0.9);
     const h = hAt(P.x + 20, P.y);
     return { cell: `指针右侧 20px 处振幅 ${fmt(h, 2)}（${h > 0.3 ? '加强' : h < -0.3 ? '反相' : '接近抵消'}）` };
