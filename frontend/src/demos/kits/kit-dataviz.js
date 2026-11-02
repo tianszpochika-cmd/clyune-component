@@ -202,7 +202,7 @@ FAM.sankey = {
       if (dt > 0) for (const l of links) if (Math.random() < (l.v / tot) * 14 * dt * 8) parts.push({ l, s: 0, o: (Math.random() - 0.5) * 0.8 });
       parts = parts.filter((p) => (p.s += dt * 0.45) < 1);
       for (const p of parts) { const [x, y] = bez(p.l, p.s); ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.beginPath(); ctx.arc(x, y + p.o * p.l.w, 1.8, 0, TAU); ctx.fill(); }
-      for (const d of nodes) { ctx.fillStyle = d === hn ? '#fff' : d.c === 0 ? pal(C, d.i, n, mono) : '#cbd5e1'; rrect(ctx, d.x, d.y, nw, d.h, 2); ctx.fill(); const left = d.c < 2; text(ctx, d.name, left && d.c === 0 ? d.x - 6 : d.c === 2 ? d.x + nw + 6 : d.x + nw + 6, d.y + d.h / 2, { size: fs, col: '#cbd5e1', align: d.c === 0 ? 'right' : 'left' }); }
+      for (const d of nodes) { ctx.fillStyle = d === hn ? '#fff' : pal(C, d.c === 0 ? d.i : d.i + d.c, n, mono, d.c === 0 ? 1 : 0.85); rrect(ctx, d.x, d.y, nw, d.h, 2); ctx.fill(); const left = d.c < 2; text(ctx, d.name, left && d.c === 0 ? d.x - 6 : d.c === 2 ? d.x + nw + 6 : d.x + nw + 6, d.y + d.h / 2, { size: fs, col: '#cbd5e1', align: d.c === 0 ? 'right' : 'left' }); }
       ['来源', '页面', '去向'].forEach((s, c) => text(ctx, s, colX[c] + nw / 2, fs * 1, { size: fs, col: '#64748b', align: 'center', bold: true }));
       let hov = '—', hv = 0, io = '—';
       if (hl) { hov = `${hl.a.name} → ${hl.b.name}`; hv = hl.v; io = `${big(hl.b.in)} / ${big(hl.b.out)}`; } else if (hn) { hov = `节点 ${hn.name}`; hv = hn.c === 0 ? hn.out : hn.in; io = `${big(hn.in)} / ${big(hn.out)}`; }
@@ -813,6 +813,7 @@ FAM.graph = {
     S.onDown((P) => { const q = toW(P); drag = pickNode(nodes, q); if (drag) drag.fix = true; });
     S.onUp(() => { if (drag) drag.fix = false; drag = null; });
     return ({ ctx, W, H, dt, t, C, P }) => {
+      { const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.6); g.addColorStop(0, hsla(hueOf(C.color), 70, 50, 0.16)); g.addColorStop(1, hsla(hueOf(C.color), 70, 50, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
       S.clear();
       const per = clamp(Math.round(num(C.count, 4)), 1, 5), cr = on(C.cross), sz = num(C.size, 1);
       const k2 = `${per}|${cr}`; if (k2 !== key) {
