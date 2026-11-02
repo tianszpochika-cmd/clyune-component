@@ -276,7 +276,7 @@ FAM.terrain = gFam({ title: '噪声地形', size: { label: '起伏高度', min: 
     for (let r = 0; r < n; r++) {
       const f = r / (n - 1), y0 = top + (bot - top) * f, z = r * 0.12 - t * 0.3, amp = k.s * (0.4 + 0.6 * f);
       ctx.beginPath(); ctx.moveTo(0, H);
-      for (let x = 0; x <= W; x += 6) { const bump = Math.exp(-((x - P.x) ** 2 + (y0 - P.y) ** 2) / 4000); const h = fbm(x * sc, z, 0, 3) * 1.6 - 0.5 + bump * 0.8, yy = y0 - Math.max(0, h) * amp; ctx.lineTo(x, yy); if (Math.abs(x - P.x) < 3 && Math.abs(y0 - P.y) < (bot - top) / n) ph = h; }
+      const dyP = (y0 - P.y) ** 2, stp = Math.max(8, W / 90); for (let x = 0; x <= W + stp; x += stp) { const e2 = (x - P.x) ** 2 + dyP, bump = e2 < 36000 ? Math.exp(-e2 / 4000) : 0; const h = fbm(x * sc, z, 0, 2) * 1.6 - 0.5 + bump * 0.8, yy = y0 - Math.max(0, h) * amp; ctx.lineTo(x, yy); if (Math.abs(x - P.x) <= stp / 2 && Math.abs(y0 - P.y) < (bot - top) / n) ph = h; }
       ctx.lineTo(W, H); ctx.closePath(); ctx.fillStyle = '#060a14'; ctx.fill();
       ctx.strokeStyle = hsla(k.hue + f * 40, 80, 35 + f * 35, 0.5 + 0.5 * f); ctx.lineWidth = 1.3; ctx.stroke();
     }
