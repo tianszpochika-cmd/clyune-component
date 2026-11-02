@@ -304,7 +304,7 @@ FAM.path = gFam({ title: '路径跟随', count: NC('路径点数', 3, 8, 5), ext
     return { mode: `motionPath · ${n} 点 · curviness ${fmt(k.x, 2)} · 物体 ${Math.round(k.s)}%`, cell };
   } });
 
-FAM['spin-out'] = gFam({ title: '旋转出场', count: NC('方块数', 1, 6, 3), extra: R('turns', '旋转圈数', 0.25, 3, 0.25, 1), size: SZ('方块大小', 20, 100, 60), color: '#fb7185',
+FAM['spin-out'] = gFam({ title: '旋转出场', count: NC('方块数', 1, 6, 3), extra: R('turns', '旋转圈数', 0.25, 3, 0.25, 1), size: SZ('方块大小', 20, 100, 60), color: '#f59e0b',
   countDoc: '一起旋转出场的方块数量', extraDoc: '出场时转几圈（1 圈 = 360°）', sizeDoc: '方块大小（占每个格子的百分比）',
   presets: { 单个: { count: 1 }, 六个: { count: 6 }, 四分之一圈: { turns: 0.25 }, 三圈: { turns: 3 }, 大方块: { size: 100 } },
   explain: '旋转出场：方块一边旋转一边缩小、变透明直到消失（ease: power3.in，越转越快），然后从很小的状态用 back.out 弹回原大小——back 缓动会先稍微超过目标再回来，所以入场有一点「弹」的感觉。每个方块比前一个晚 0.1 秒。虚线框是方块的原始大小。',
@@ -334,7 +334,7 @@ FAM.elastic = gFam({ title: '弹性缩放', count: NC('元素数', 1, 6, 3), ext
     return { mode: `ease: "elastic.out(${fmt(k.x, 2)}, 0.3)" · 元素 ${Math.round(k.s)}%`, cell };
   } });
 
-FAM.colorflash = gFam({ title: '颜色闪烁', count: NC('关键色数', 2, 6, 3), extra: R('hold', '每色持续', 0.2, 1.5, 0.01, 0.7), size: SZ('色块大小', 20, 100, 60), color: '#ef4444',
+FAM.colorflash = gFam({ title: '颜色闪烁', count: NC('关键色数', 2, 6, 3), extra: R('hold', '每色持续', 0.2, 1.5, 0.01, 0.7), size: SZ('色块大小', 20, 100, 60), color: '#22d3ee',
   countDoc: '颜色动画里依次切换的关键颜色数量（由主色在色环上均匀取色）', extraDoc: '每个关键色停留多久（秒），越短闪得越快', sizeDoc: '中间色块的大小',
   presets: { 双色: { count: 2 }, 六色: { count: 6 }, 快闪: { hold: 0.2 }, 慢变: { hold: 1.5 }, 大色块: { size: 100 } },
   explain: '颜色闪烁：GSAP 可以直接对颜色做补间——它会把颜色拆成红、绿、蓝三个数字，分别从旧值平滑过渡到新值。这里把几个关键色排成一个循环的时间轴（下方色条），每个颜色先用 70% 的时间渐变过去，再停留一会儿。白色三角是当前播放位置。',
