@@ -303,7 +303,10 @@ FAM['stagger'] = {
       // stable mid-tone stage so count/gap sweeps don't flash dark↔bright
       ctx.fillStyle = '#121a2e'; rrect(ctx, 10, 10, W - 20, H - 20, 14); ctx.fill();
       const rowH = (ih - gap * (n - 1)) / n; let hit = null;
-      const cycle = (t * spd * 0.35) % (1.5 + 12 * delay); // period independent of count → no jump on count sweep
+      const cycle = (t * spd * 0.35) % (1.5 + 12 * delay);
+      // delay timeline: tick per item at i×delay (visible even when paused)
+      ctx.fillStyle = 'rgba(148,163,184,.5)';
+      for (let i = 0; i < n; i++) { const tx = 24 + (i * delay) / (12 * 0.35) * (W - 48); ctx.fillRect(Math.min(W - 26, tx), 14, 3, 8); } // period independent of count → no jump on count sweep
       for (let i = 0; i < n; i++) {
         const local = clamp((cycle - i * delay) / 0.55, 0, 1);
         const e = easeFn('ease-out', local); const y = mt + i * (rowH + gap);
@@ -346,6 +349,7 @@ FAM['flip'] = {
       const ml = 20, mt = 28, iw = W - 40, ih = H - 48, gap = 10;
       const cw = (iw - gap * (cols - 1)) / cols, ch = (ih - gap * (rows - 1)) / rows;
       const phase = Math.floor(t * spd * 0.4); const blend = easeFn('ease-in-out', (t * spd * 0.4) % 1);
+      ctx.strokeStyle = C.color || '#818cf8'; ctx.lineWidth = 4; rrect(ctx, 8, 14, W - 16, H - 22, 12); ctx.stroke();
       let hit = null;
       for (let i = 0; i < n; i++) {
         const a = i, b = shuffle ? (i * 7 + phase * 3) % n : (i + phase) % n;
@@ -863,7 +867,7 @@ FAM['liquid'] = {
       const R = Math.min(W, H) * 0.22 * sz;
       if (style === 1 || style === 0 || style === 3 || style === 5) {
         for (let i = 0; i <= 32; i++) {
-          const a = i / 32 * TAU; const wob = 1 + morph * 0.2 * Math.sin(a * 3 + t * spd * 3);
+          const a = i / 32 * TAU; const lobes = Math.max(2, Math.round(6 / Math.max(0.3, visc))); const wob = 1 + (0.08 + 0.3 / Math.max(0.3, visc)) * (0.5 + morph) * Math.sin(a * lobes + t * spd * 3 / visc);
           const x = cx + Math.cos(a) * R * wob + (over ? (P.x - cx) * 0.08 : 0);
           const y = cy + Math.sin(a) * R * wob * (style === 0 ? 0.7 : 1) + (over ? (P.y - cy) * 0.08 : 0);
           i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
@@ -875,7 +879,7 @@ FAM['liquid'] = {
       } else {
         rrect(ctx, cx - R * 1.4, cy - R * 0.6, R * 2.8, R * 1.2, 16); ctx.fill();
         ctx.beginPath(); ctx.moveTo(cx - R * 1.4, cy + R * 0.6);
-        for (let x = cx - R * 1.4; x <= cx + R * 1.4; x += 8) ctx.lineTo(x, cy + R * 0.6 + Math.sin(x * 0.08 + t * spd * 4) * 12 * morph);
+        for (let x = cx - R * 1.4; x <= cx + R * 1.4; x += 8) ctx.lineTo(x, cy + R * 0.6 + Math.sin(x * 0.08 / visc + t * spd * 4 / visc) * (6 + 14 / visc) * (0.5 + morph));
         ctx.lineTo(cx + R * 1.4, cy + R * 1.2); ctx.lineTo(cx - R * 1.4, cy + R * 1.2); ctx.fill();
       }
       text(ctx, names[style], cx, cy, { size: fsz(W, H), col: '#0b1020', align: 'center', bold: true });
