@@ -282,7 +282,7 @@ FAM.comet = pFam({ title: '彗星', size: { label: '彗星大小', min: 1, max: 
   draw(ctx, W, H, t, C, P, k) {
     for (let s = 0; s < 70; s++) k.dot(hh(s, 9) * W, 8 + hh(s, 10) * H, 0.8, '#cbd5e1', 0.3 + 0.2 * Math.sin(t + s));
     const pos = (i, tt) => { const a = fract(hh(i, 1) + tt * (0.15 + hh(i, 2) * 0.15)); return [(hh(i, 3) * 1.2 - 0.1) * W + a * W * 0.6 - W * 0.3 + (P.x - W / 2) * 0.1, 8 - 40 + a * (H + 80)]; };
-    for (let i = 0; i < k.n; i++) { const seg = 24; for (let j = seg; j >= 0; j--) { const tt = t - j * k.tail * 0.08, a0 = fract(hh(i, 1) + t * (0.15 + hh(i, 2) * 0.15)), aj = a0 - j * k.tail * 0.08 * (0.15 + hh(i, 2) * 0.15); if (aj < 0) continue;
+    for (let i = 0; i < k.n; i++) { const seg = 24; for (let j = seg; j >= 0; j--) { const tt = t - j * k.x * 0.08, a0 = fract(hh(i, 1) + t * (0.15 + hh(i, 2) * 0.15)), aj = a0 - j * k.x * 0.08 * (0.15 + hh(i, 2) * 0.15); if (aj < 0) continue;
         const [x, y] = pos(i, tt), f = 1 - j / seg; k.dot(x, y, k.s * (0.25 + 0.75 * f), j === 0 ? '#ffffff' : hsla(k.hue + j * 3, 90, 65), f * 0.9); }
       const [hx, hy] = pos(i, t); k.glow(hx, hy, k.s * 0.8, k.col, 0.8); }
   } });
