@@ -450,7 +450,7 @@ FAM['part-audio'] = {
   presets: { 默认: {}, 少: { count: 200 }, 多: { count: 1800, size: 0.7 }, 大点: { size: 2.6 }, 爆发: { gain: 2.6, grav: 0.1 }, 平稳: { gain: 0.5, trail: false } },
   doc: {
     title: '粒子随音 · 声音的能量驱动粒子',
-    rows: (v) => [['正在播放', `${v.chord} 和弦 · 第 ${v.beat} 拍`], ['低频 / 中频 / 高频 能量', v.bands, 'bands'], ['总音量 RMS', fmt(v.rms, 3), 'rms'], ['频谱质心（"亮度"）', hz(v.cen), 'cen'], ['本帧发射', `${v.emit} 个`], ['存活 / 上限', `${v.alive} / ${v.cap}`], ['发射点 (x, y)', v.pos, 'pos']],
+    rows: (v) => [['正在播放', `${v.chord} 和弦 · 第 ${v.beat} 拍`], ['低频 / 中频 / 高频 能量', v.bands, 'bands'], ['总音量 RMS', fmt(v.rms, 3), 'rms'], ['频谱质心（"亮度"）', hz(v.cen), 'cen'], ['本帧发射', `${v.emit} 个`], ['存活 / 上限', `${v.alive} / ${v.cap}`], ['重力 / 按音色变色', `${fmt(v.grav, 2)} / ${yes(v.hue)}`], ['发射点 (x, y)', v.pos, 'pos']],
     formula: () => F('发射数 ∝ RMS × 灵敏度　　RMS = √(Σx² / N)') + F('初速度 ∝ 低频能量（鼓点越重，喷得越远）') + F('颜色 ∝ 频谱质心 = Σ f·|X(f)| / Σ |X(f)|'),
     explain: '<p>这是音乐可视化里最常见的玩法：把声音拆成几个"数字"，再让这些数字控制画面。</p><p><b>RMS</b>（均方根）代表整体有多响——越响喷出的粒子越多；<b>低频能量</b>（鼓和贝斯）决定喷射速度，所以每次底鼓"咚"一下就会爆开一团；<b>频谱质心</b>表示声音的"亮度"，高音多时质心高，粒子偏向另一种颜色。</p><p>按住并拖动可以移动发射点。</p>',
     params: [['粒子颜色', '粒子基础颜色'], ['音乐播放速度', '演示音乐的快慢'], ['粒子大小', '粒子半径倍数'], ['最多粒子数', '同时存在的粒子上限'], ['灵敏度', '能量 → 粒子数/速度的放大倍数'], ['重力', '粒子下落的快慢'], ['拖尾', '保留上一帧的残影'], ['按音色变色', '用频谱质心改变色相']],
@@ -480,7 +480,7 @@ FAM['part-audio'] = {
       // meters
       const mw = fs * 0.9, mh = Math.min(H * 0.35, fs * 9), mx = fs, my = H - fs - mh;
       [['低', lo / tot], ['中', mi / tot], ['高', hi / tot]].forEach(([n, v], i) => { ctx.fillStyle = 'rgba(148,163,184,.15)'; ctx.fillRect(mx + i * mw * 1.6, my, mw, mh); ctx.fillStyle = hsla(hue + i * 40, 85, 60); ctx.fillRect(mx + i * mw * 1.6, my + mh * (1 - v), mw, mh * v); text(ctx, n, mx + i * mw * 1.6 + mw / 2, my + mh + fs * 0.6, { size: fs * 0.75, col: '#94a3b8', align: 'center' }); });
-      return { chord: M.chord, beat: (Math.floor(M.b) % 4) + 1, bands: `${pct(lo / tot)} / ${pct(mi / tot)} / ${pct(hi / tot)}`, rms: R, cen, emit, alive: st.ps.length, cap, pos: `${Math.round(ex)}, ${Math.round(ey)}`, bass, hs, hx: ex, hy: ey, ix: `e${Math.round(ex / 8)},${Math.round(ey / 8)}` };
+      return { chord: M.chord, beat: (Math.floor(M.b) % 4) + 1, bands: `${pct(lo / tot)} / ${pct(mi / tot)} / ${pct(hi / tot)}`, rms: R, cen, emit, alive: st.ps.length, cap, pos: `${Math.round(ex)}, ${Math.round(ey)}`, grav: gv, hue: on(C.hue), bass, hs, hx: ex, hy: ey, ix: `e${Math.round(ex / 8)},${Math.round(ey / 8)}` };
     };
   },
 };
@@ -542,7 +542,7 @@ FAM.polar = {
   presets: { 默认: {}, 密采样: { count: 256 }, 疏采样: { count: 32 }, 大半径: { size: 1.2 }, 单色: { rainbow: false }, 高门限: { floor: -45 } },
   doc: {
     title: '极坐标频谱 · 角度是频率，半径是响度',
-    rows: (v) => [['正在播放', `${v.chord} 和弦`], ['采样点数 / 门限', `${v.n} / ${v.fl} dB`], ['悬停角度', `${fmt(v.deg, 0)}°`, 'deg'], ['对应频率', `${hz(v.f)}（${noteOf(v.f)}）`, 'f'], ['该处电平', db(v.l), 'l'], ['半径 r', `${fmt(v.r, 1)} px`], ['最响频率', `${hz(v.fpk)}（${noteOf(v.fpk)}）`]],
+    rows: (v) => [['正在播放', `${v.chord} 和弦`], ['采样点数 / 门限', `${v.n} / ${v.fl} dB`], ['悬停角度', `${fmt(v.deg, 0)}°`, 'deg'], ['对应频率', `${hz(v.f)}（${noteOf(v.f)}）`, 'f'], ['该处电平', db(v.l), 'l'], ['半径 r', `${fmt(v.r, 1)} px`], ["旋转速度", fmt(v.rot, 2)], ['最响频率', `${hz(v.fpk)}（${noteOf(v.fpk)}）`]],
     formula: () => F('角度 θ = 2π × log(f / 40) / log(7600 / 40)　（对数频率绕一圈）') + F('半径 r = R × (L − 门限) / (0 − 门限)') + F('点 = (cx + r·cos θ, cy + r·sin θ)'),
     explain: '<p>把普通的"频谱曲线"从直角坐标换成<b>极坐标</b>：沿着圆周走一圈就是从 40 Hz 到 7600 Hz（按倍数均匀分布），离圆心越远表示这个频率越响。</p><p>音乐里的低音、和弦、旋律会在不同角度鼓出"花瓣"；每换一个和弦，花瓣的位置就跳一下。<b>门限</b>以下的声音当成 0，避免一圈细碎的噪声。</p>',
     params: [['起始色相', '颜色起点'], ['音乐播放速度', '演示音乐快慢'], ['外圈半径', '最大半径相对画布'], ['采样点数', '一圈取多少个频率点'], ['底噪门限 dB', '低于它的电平记为 0'], ['旋转速度', '整个图形缓慢旋转'], ['彩虹色', '按角度变化颜色'], ['填充', '花瓣内部填色']],
@@ -571,7 +571,7 @@ FAM.polar = {
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, 4, 0, TAU); ctx.fill();
       text(ctx, M.chord, cx, cy, { size: fs * 1.5, col: 'rgba(226,232,240,.75)', align: 'center', bold: true });
       tip(ctx, W, H, P.x, P.y, [`${hz(f)} · ${noteOf(f)}`, `电平 ${db(L)}`], C.color);
-      return { chord: M.chord, n: N, fl, deg: (th * 180) / Math.PI, f, l: L, r, fpk, hx, hy, ix: `p${Math.round((th / TAU) * N)}` };
+      return { chord: M.chord, n: N, fl, rot: num(C.rot, 0.15), deg: (th * 180) / Math.PI, f, l: L, r, fpk, hx, hy, ix: `p${Math.round((th / TAU) * N)}` };
     };
   },
 };
@@ -630,7 +630,7 @@ FAM.beat = {
   presets: { 默认: {}, 大脉: { size: 1.8 }, 小脉: { size: 0.6 }, 快歌: { count: 160 }, 慢歌: { count: 76 }, 迟钝: { sens: 2.2 } },
   doc: {
     title: '节拍检测 · 能量突然变大就是"一拍"',
-    rows: (v) => [['设定 BPM / 测得 BPM', `${v.bpm} / ${v.est ? fmt(v.est, 0) : '计算中'}`, 'est'], ['当前能量 E', fmt(v.e, 3), 'e'], ['局部平均 Ē × C', `${fmt(v.avg, 3)} × ${fmt(v.sens, 2)} = ${fmt(v.avg * v.sens, 3)}`], ['是否判为节拍', v.on ? '是 ✓' : '否'], ['悬停时刻', v.hov, 'hov'], ['该时刻 E / 阈值', v.hv, 'hv'], ['最近检出间隔', v.iv]],
+    rows: (v) => [['设定 BPM / 测得 BPM', `${v.bpm} / ${v.est ? fmt(v.est, 0) : '计算中'}`, 'est'], ['当前能量 E', fmt(v.e, 3), 'e'], ['局部平均 Ē × C', `${fmt(v.avg, 3)} × ${fmt(v.sens, 2)} = ${fmt(v.avg * v.sens, 3)}`], ['是否判为节拍', v.on ? '是 ✓' : '否'], ['节拍环 / 只看低频', `${yes(v.ring)} / ${yes(v.low)}`], ['悬停时刻', v.hov, 'hov'], ['该时刻 E / 阈值', v.hv, 'hv'], ['最近检出间隔', v.iv]],
     formula: () => F('能量 E(t) = 低频段功率之和（约 40–150 Hz）') + F('阈值 = C × Ē　（Ē = 过去一段时间的平均能量）') + F('E > 阈值 且 是局部峰 → 判为一拍；BPM = 60 / 平均间隔'),
     explain: '<p>音乐软件跟着节奏闪光，靠的是<b>节拍检测</b>。最朴素的办法：持续计算低频（底鼓所在频段）的<b>能量</b>，再和"最近一段时间的平均能量"比较——如果此刻突然比平均高出 C 倍，就认为来了一拍。</p><p>下方曲线是能量随时间的变化，虚线是阈值 C×Ē，红点是被判为节拍的时刻。把相邻两拍的时间间隔取平均，就能估算 <b>BPM</b>（每分钟拍数）。C 太小会把小鼓、哈特也当成拍；太大又会漏拍。</p>',
     params: [['脉冲颜色', '中心脉冲和曲线颜色'], ['播放速度', '整体时间流速'], ['脉冲大小', '检出节拍时圆圈放大多少'], ['鼓点 BPM', '演示鼓点的真实速度'], ['检测灵敏度 C', '能量要超过平均值多少倍'], ['平均窗口 s', 'Ē 用过去多长时间计算'], ['只看低频（鼓）', '关掉后用全频段能量'], ['节拍环', '每拍从中心扩散一个圆环']],
@@ -674,7 +674,7 @@ FAM.beat = {
       let hov = '（移到曲线上）', hv = '—', ix = '-', hx = cx, hy = cy;
       if (P.y >= pt - fs && P.x >= ml && P.x <= ml + pw) { const i = clamp(Math.round(((P.x - ml) / pw) * (ns - 1)) + wn, wn, ns + wn - 1); hov = `${fmt(t - ts[i], 2)} s 前`; hv = `${fmt(es[i], 3)} / ${fmt(avg(i) * sens, 3)}`; ix = `h${i}`; hx = X(i); hy = Y(es[i]); vline(ctx, X(i), pt, pt + ph); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(hx, hy, 4, 0, TAU); ctx.fill(); tip(ctx, W, H, P.x, P.y, [hov, `E ${fmt(es[i], 3)} · 阈值 ${fmt(avg(i) * sens, 3)}`], C.color); }
       const ivs = beats.length > 1 ? `${fmt(beats[beats.length - 1] - beats[beats.length - 2], 3)} s` : '—';
-      return { bpm, est, e: eNow, avg: aNow, sens, win, on: isOn, hov, hv, iv: ivs, hx, hy, ix };
+      return { bpm, est, ring: on(C.ring), low, e: eNow, avg: aNow, sens, win, on: isOn, hov, hv, iv: ivs, hx, hy, ix };
     };
   },
 };
@@ -687,7 +687,7 @@ FAM.chord = {
   presets: { 默认: {}, 四块: { count: 4, size: 14 }, 十二块: { count: 12, size: 4 }, 七和弦: { sev: true }, 一转位: { inv: 1 }, 低八度: { oct: -1 } },
   doc: {
     title: '和弦板 · 三个音为什么好听',
-    rows: (v) => [['正在响的和弦', v.cur, 'cur'], ['组成音', v.notes, 'notes'], ['频率', v.freqs], ['相对根音的频率比', v.ratio, 'ratio'], ['悬停的和弦板', v.hov, 'hov'], ['转位 / 七音', `${v.inv} / ${v.sev}`], ['和弦进行', v.prog]],
+    rows: (v) => [['正在响的和弦', v.cur, 'cur'], ['组成音', v.notes, 'notes'], ['频率', v.freqs], ['相对根音的频率比', v.ratio, 'ratio'], ['悬停的和弦板', v.hov, 'hov'], ['转位 / 七音 / 脉动', `${v.inv} / ${v.sev} / ${v.pul}`], ['和弦进行', v.prog]],
     formula: () => F('大三和弦 = 根音 + 4 个半音 + 7 个半音　≈ 频率比 4 : 5 : 6') + F('小三和弦 = 根音 + 3 + 7 个半音　≈ 10 : 12 : 15') + F('每升一个半音，频率 × 2^(1/12) ≈ 1.0595'),
     explain: '<p><b>和弦</b>就是同时响起的几个音。最常见的<b>三和弦</b>由根音、三音、五音组成：大三和弦（如 C = do-mi-sol）听起来明亮，小三和弦（如 Am = la-do-mi）听起来柔和、带点忧伤。</p><p>它们好听的原因在频率比：C 大三和弦三个音的频率接近 <b>4:5:6</b>，波形会周期性地对齐，耳朵觉得"融合"。下方的小琴键标出组成音，波形是三个音相加的结果。点任意和弦板就能切换；不碰时会自动按 C–G–Am–F 进行。</p>',
     params: [['和弦板颜色', '板的主色'], ['和弦进行速度', '自动切换的快慢'], ['板间距', '板与板之间的空隙'], ['和弦板数', '显示多少个和弦'], ['转位', '把最低的音移高一个八度'], ['整体八度偏移', '所有音整体升/降一个八度'], ['加七音', '加上第 4 个音，变成七和弦'], ['节拍脉动', '跟着拍子轻微发光']],
@@ -724,7 +724,7 @@ FAM.chord = {
       const hc = hp ? CHORDS[hp.i] : null;
       if (hp) tip(ctx, W, H, P.x, P.y, [`${hc[0]} 和弦`, notes(hp.i).map(nname).join(' · ')], C.color);
       const pr = hp || G[cur] || G[0];
-      return { cur: `${CHORDS[cur][0]}${sev ? '7' : ''}${st.sel >= 0 ? '（手动）' : '（自动进行）'}`, notes: ms.map(nname).join(' · '), freqs: ms.map((m) => fmt(mtof(m), 0)).join(' / ') + ' Hz', ratio: rat, hov: hc ? `${hc[0]}：${notes(hp.i).map(nname).join(' ')}` : '（移到板上）', inv: ['原位', '第一转位', '第二转位'][inv], sev: yes(sev), prog: 'C → G → Am → F', root: nname(ms[0]), f0: mtof(ms[0]), i3: ms[1] - ms[0], hx: pr.x + pr.w / 2, hy: pr.y + pr.h / 2, ix: hp ? `p${hp.i}` : `c${cur}` };
+      return { cur: `${CHORDS[cur][0]}${sev ? '7' : ''}${st.sel >= 0 ? '（手动）' : '（自动进行）'}`, notes: ms.map(nname).join(' · '), freqs: ms.map((m) => fmt(mtof(m), 0)).join(' / ') + ' Hz', ratio: rat, hov: hc ? `${hc[0]}：${notes(hp.i).map(nname).join(' ')}` : '（移到板上）', inv: ['原位', '第一转位', '第二转位'][inv], sev: yes(sev), pul: yes(on(C.pulse)), prog: 'C → G → Am → F', root: nname(ms[0]), f0: mtof(ms[0]), i3: ms[1] - ms[0], hx: pr.x + pr.w / 2, hy: pr.y + pr.h / 2, ix: hp ? `p${hp.i}` : `c${cur}` };
     };
   },
 };
