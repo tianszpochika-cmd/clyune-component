@@ -97,22 +97,59 @@ function lineLike(mode) {
       // stacked area
       if (mode === 'stackedarea') {
         const stack = data[0].map(() => 0);
+        const tops = [];
         for (let s = 0; s < seriesN; s++) {
+          const top = data[s].map((v, i) => stack[i] + v);
+          tops.push(top.slice());
+          if (fill) {
+            ctx.beginPath();
+            for (let i = 0; i < n; i++) {
+              const x = xAt(i), y1 = yAt(top[i]);
+              if (i === 0) ctx.moveTo(x, y1);
+              else {
+                const x0 = xAt(i - 1), y0 = yAt(top[i - 1]);
+                const c = tension * (x - x0);
+                ctx.bezierCurveTo(x0 + c, y0, x - c, y1, x, y1);
+              }
+            }
+            for (let i = n - 1; i >= 0; i--) {
+              const x = xAt(i), y0 = yAt(stack[i]);
+              if (i === n - 1) ctx.lineTo(x, y0);
+              else {
+                const x1 = xAt(i + 1), y1 = yAt(stack[i + 1]);
+                const c = tension * (x1 - x);
+                ctx.bezierCurveTo(x1 - c, y1, x + c, y0, x, y0);
+              }
+            }
+            ctx.closePath(); ctx.fillStyle = pal(C, s, seriesN, 0.5); ctx.fill();
+          }
+          // top stroke
           ctx.beginPath();
-          for (let i = 0; i < n; i++) { const y0 = yAt(stack[i]); const y1 = yAt(stack[i] + data[s][i]); const x = xAt(i); i ? ctx.lineTo(x, y1) : ctx.moveTo(x, y1); stack[i] += data[s][i]; }
-          for (let i = n - 1; i >= 0; i--) { stack[i] -= data[s][i]; ctx.lineTo(xAt(i), yAt(stack[i])); stack[i] += data[s][i]; }
-          ctx.closePath(); ctx.fillStyle = pal(C, s, seriesN, 0.55); ctx.fill();
+          for (let i = 0; i < n; i++) {
+            const x = xAt(i), y = yAt(top[i]);
+            if (i === 0) ctx.moveTo(x, y);
+            else {
+              const x0 = xAt(i - 1), y0 = yAt(top[i - 1]);
+              const c = tension * (x - x0);
+              ctx.bezierCurveTo(x0 + c, y0, x - c, y, x, y);
+            }
+          }
+          ctx.strokeStyle = pal(C, s, seriesN); ctx.lineWidth = lw; ctx.stroke();
+          for (let i = 0; i < n; i++) stack[i] = top[i];
         }
       } else if (mode === 'areaRange') {
-        const lo = data[0].map((v, i) => v * 0.7); const hi = data[0];
-        ctx.beginPath(); for (let i = 0; i < n; i++) { const x = xAt(i); i ? ctx.lineTo(x, yAt(hi[i])) : ctx.moveTo(x, yAt(hi[i])); }
-        for (let i = n - 1; i >= 0; i--) ctx.lineTo(xAt(i), yAt(lo[i]));
-        ctx.closePath(); ctx.fillStyle = pal(C, 0, 3, 0.35); ctx.fill();
+        const lo = data[0].map((v) => v * 0.7); const hi = data[0];
+        if (fill) {
+          ctx.beginPath(); for (let i = 0; i < n; i++) { const x = xAt(i); i ? ctx.lineTo(x, yAt(hi[i])) : ctx.moveTo(x, yAt(hi[i])); }
+          for (let i = n - 1; i >= 0; i--) ctx.lineTo(xAt(i), yAt(lo[i]));
+          ctx.closePath(); ctx.fillStyle = pal(C, 0, 3, 0.35); ctx.fill();
+        }
         path(hi, false); ctx.strokeStyle = C.color || '#818cf8'; ctx.lineWidth = lw; ctx.stroke();
+        path(lo, false); ctx.strokeStyle = pal(C, 1, 3); ctx.lineWidth = Math.max(1, lw * 0.75); ctx.stroke();
       } else {
         for (let s = 0; s < seriesN; s++) {
           const ds = data[s];
-          if (fill || mode === 'area' || mode === 'sparkline') {
+          if (fill) {
             path(ds, mode === 'stepline'); ctx.lineTo(xAt(n - 1), box.mt + box.ih); ctx.lineTo(xAt(0), box.mt + box.ih); ctx.closePath();
             ctx.fillStyle = pal(C, s, seriesN, 0.28); ctx.fill();
           }
@@ -425,7 +462,7 @@ FAM['stepline'] = {
   spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(),
     size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
     count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
-    extras: [R('ten','曲线张力',0,1,0.05,0), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+    extras: [T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '填充': { fill: true }, '粗线': { size: 3.5 }, '多点': { count: 16 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
   doc: { title: '阶梯折线', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>阶梯线在下一个点之前保持水平，适合费率档位这类「突然跳变」的数据。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("stepline"),
@@ -673,7 +710,7 @@ FAM['polar'] = {
   spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(),
     size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
     count: { label: '瓣数', min: 3, max: 9, step: 1, value: 6 },
-    extras: [R('hole','内径',0,0.2,0.01,0), T('leg','图例',true)], remountKeys: [] },
+    extras: [T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '标准': { count: 6 }, '多瓣': { count: 8 }, '少瓣': { count: 4 }, '慢': { speed: 0.25 }, '快': { speed: 1.5 } },
   doc: { title: '极坐标面积', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>每瓣半径表示数值，角度均分，像雷达的「饼」版本。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("polar"),
@@ -681,7 +718,6 @@ FAM['polar'] = {
 
 FAM['gauge'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
     extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '半环': { hole: 0.72 }, '粗轨': { hole: 0.58 }, '细针感': { hole: 0.8 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
   doc: { title: '仪表盘', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>半圆轨道上的进度，像汽车时速表，适合单一 KPI。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
@@ -690,7 +726,6 @@ FAM['gauge'] = {
 
 FAM['progress'] = {
   spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
-    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
     extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '单环': { hole: 0.7 }, '粗': { hole: 0.55 }, '细': { hole: 0.8 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
   doc: { title: '进度环', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>完整圆环表示 0~100% 完成度。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
@@ -699,7 +734,6 @@ FAM['progress'] = {
 
 FAM['kpi'] = {
   spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
-    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
     extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '目标': { hole: 0.65 }, '完成感': { speed: 1.2 }, '粗环': { hole: 0.55 }, '慢': { speed: 0.3 }, '快': { speed: 1.9 } },
   doc: { title: 'KPI 环', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>中间显示百分比文案的 KPI 环，看板常用。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
@@ -708,7 +742,6 @@ FAM['kpi'] = {
 
 FAM['gauge-canvas'] = {
   spec: { color: { label: '主色', value: '#f59e0b' }, speed: SPD(),
-    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
     extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '半环': { hole: 0.72 }, '粗轨': { hole: 0.58 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 }, '细': { hole: 0.8 } },
   doc: { title: '仪表盘画布', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>画布实现的仪表盘，与 Chart.js 版对照。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
