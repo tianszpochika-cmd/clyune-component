@@ -1,396 +1,650 @@
-import { addStyle, makeCanvas, loop, localPoint, bar, panel, hsl, rand, defaultParams, parseVariant, readLiveControls } from './_shared.js';
+/**
+ * kit-ui — UI component patterns as interactive canvas labs.
+ * Knobs drive real geometry/pixels; LIVE .mip readout; beginner Chinese docs.
+ * /ui/car carousel fills the full stage. No in-canvas control overlays (mobile-safe).
+ */
 import { withControls } from './withControls.js';
-import { FAMILY_PRESETS } from './presets.js';
+import { paramsFromSpec } from './_shared.js';
+import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
+import { F } from './info-panel.js';
 
-const TITLES={input:'输入控件',nav:'导航样式',acc:'手风琴组件',mod:'对话框',car:'走马灯组件',toast:'Toast',drop:'下拉',tip:'提示',skel:'加载占位',btn:'按钮动效',switch:'开关弹簧',sheet:'底栏/浮层',tabs:'Tabs 动效',timeline:'时间线',tree:'树形',fab:'FAB',chip:'芯片/标签',table:'表格交互',avatar:'头像组',stepper:'步骤条动效',kanban:'看板',colorpick:'取色器',notify:'通知中心',command:'命令面板',pagination:'分页器',breadcrumb:'面包屑',rating:'评分星',empty:'空状态',banner:'顶栏横幅'};
+const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
+const T = (key, label, value) => ({ key, type: 'toggle', label, value });
+const SPD = (label = '动画速度', max = 2.5) => ({ label, min: 0, max, step: 0.05, value: 0.9 });
+const num = (x, d) => (Number.isFinite(Number(x)) ? Number(x) : d);
+const on = (x) => x === true || x === 'true' || x === 1 || x === '1';
+const yes = (x) => (on(x) ? '开' : '关');
+const hsla = (h, s, l, a = 1) => `hsla(${((h % 360) + 360) % 360},${s}%,${l}%,${a})`;
+const fsz = (W, H, k = 1) => clamp(Math.min(W, H) / 28, 10, 14) * k;
+const text = (ctx, s, x, y, o = {}) => {
+  const { size = 12, col = '#cbd5e1', align = 'left', base = 'middle', bold = false } = o;
+  ctx.font = `${bold ? '600 ' : ''}${size}px ui-sans-serif,system-ui,"PingFang SC","Microsoft YaHei",sans-serif`;
+  ctx.fillStyle = col; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillText(String(s), x, y);
+};
+const rrect = (ctx, x, y, w, h, r) => {
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+};
+const tip = (ctx, W, H, x, y, lines, accent = '#818cf8') => {
+  if (!lines?.length) return;
+  const s = fsz(W, H, 0.9); ctx.font = `${s}px ui-sans-serif,system-ui,"PingFang SC",sans-serif`;
+  const w = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 16, h = lines.length * (s + 5) + 10;
+  let bx = x + 12, by = y + 12; if (bx + w > W - 4) bx = x - w - 12; if (by + h > H - 4) by = y - h - 12;
+  bx = clamp(bx, 4, Math.max(4, W - w - 4)); by = clamp(by, 4, Math.max(4, H - h - 4));
+  ctx.fillStyle = 'rgba(8,13,26,.92)'; rrect(ctx, bx, by, w, h, 7); ctx.fill();
+  ctx.strokeStyle = accent; ctx.lineWidth = 1.2; ctx.stroke();
+  lines.forEach((l, i) => text(ctx, l, bx + 8, by + 5 + (s + 5) * i + s / 2 + 1, { size: s, col: i ? '#cbd5e1' : '#f8fafc', bold: !i }));
+};
+const chip = (ctx, W, H, C) => {
+  ctx.fillStyle = C.color || '#818cf8';
+  rrect(ctx, 0, 0, W, 8, 0); ctx.fill();
+  rrect(ctx, W - 48, H - 48, 38, 38, 9); ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; rrect(ctx, W - 48, H - 48, 38, 38, 9); ctx.stroke();
+};
+const pastel = (C, i, n = 8, a = 1) => hsla(hueOf(C.color || '#818cf8') + i * (300 / Math.max(1, n)), 72, 58, a);
+const easeFn = (name, t) => {
+  t = clamp(t, 0, 1);
+  switch (name) {
+    case 'linear': return t;
+    case 'ease-in': return t * t;
+    case 'ease-out': return 1 - (1 - t) * (1 - t);
+    case 'ease-in-out': return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    case 'back': { const c = 1.7; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+    case 'bounce': return t < 0.5 ? 4 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    case 'steps': return Math.floor(t * 5) / 5;
+    default: return t * t * (3 - 2 * t); // ease
+  }
+};
+
+export const FAM = {};
+const inR = (P, x, y, w, h) => P.x >= x && P.x <= x + w && P.y >= y && P.y <= y + h;
+const btnBox = (ctx, x, y, w, h, r, fill, label, W, H, col = '#0b1020') => { ctx.fillStyle = fill; rrect(ctx, x, y, w, h, r); ctx.fill(); if (label) text(ctx, label, x + w / 2, y + h / 2, { size: fsz(W, H, 0.9), col, align: 'center', bold: true }); };
+const line = (ctx, x0, y0, x1, y1, col, lw = 2) => { ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); };
+const caret = (ctx, x, y, t, col) => { if (Math.sin(t * 6) > 0) { ctx.fillStyle = col; ctx.fillRect(x, y - 9, 2, 18); } };
+
+/** uiFam: shared doc/spec wrapper so every family has LIVE rows, formula, Chinese docs, example ≥10 chars. */
+function uiFam(d) {
+  const spec = { color: { label: '主色', value: d.color || '#818cf8' }, speed: SPD(d.spdLabel || '动画速度'), size: d.size, count: d.count, extras: d.extras || [], remountKeys: [] };
+  return {
+    spec,
+    presets: { 默认: {}, ...(d.presets || {}) },
+    doc: {
+      title: d.title,
+      rows: (v) => [['模式', v.mode], ['数量', v.n], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]],
+      formula: () => F(d.formula || 'progress = ease(fract(t × 速度))') + (d.formula2 ? F(d.formula2) : ''),
+      explain: `<p>${d.explain}</p>`,
+      params: [['主色', '组件强调色（按钮、选中态、高亮）'], [spec.speed.label, '过渡/循环动画快慢'], [d.size.label, d.sizeDoc || '组件几何尺寸'], [d.count.label, d.countDoc || '元素个数或样式档']].concat((d.extras || []).map((e) => [e.label, d.extraDoc || '额外开关/强度'])),
+      example: (v) => `<ol><li>当前：${v.mode}，共 ${v.n} 项</li><li>悬停位置：${v.cell}</li><li>主色 ${v.colorHex}，拖滑条观察变化</li></ol>`,
+      tip: d.tip || '移动指针悬停组件看读数；拖动右侧滑条立即改变外观。',
+    },
+    build(S) {
+      return ({ ctx, W, H, t, C, P }) => {
+        S.clear();
+        ctx.fillStyle = '#0a1020'; ctx.fillRect(0, 8, W, H);
+        chip(ctx, W, H, C);
+        const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), spd: num(C.speed, 0.9), col: C.color || '#818cf8' };
+        const r = d.draw(ctx, W, H, t * k.spd, C, P, k) || {};
+        return { mode: r.mode || d.title, n: String(r.n ?? k.n), cell: r.cell || '（移到组件上）', colorHex: String(C.color || '').toLowerCase(), hx: r.hx ?? W / 2, hy: r.hy ?? H / 2 };
+      };
+    },
+  };
+}
+
+FAM.buttons = uiFam({ title: '按钮合集', size: { label: '按钮高度', min: 28, max: 64, step: 1, value: 42 }, count: { label: '按钮数', min: 2, max: 8, step: 1, value: 4 },
+  extras: [T('pill', '胶囊圆角', true)], presets: { 少: { count: 2 }, 多: { count: 8 }, 大: { size: 60 }, 方角: { pill: false } },
+  explain: '常见按钮：实心、描边、幽灵、渐变。悬停上浮+发光，按下缩小，对应 CSS :hover / :active 过渡。', formula: 'hover: translateY(−2px)，shadow 扩散', formula2: 'active: scale(0.96)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), h = k.s, cols = Math.min(n, W < 500 ? 2 : 4), rows = Math.ceil(n / cols);
+    const gw = (W - 40) / cols, gh = Math.min(h * 2, (H - 40) / rows), r = on(C.pill) ? h / 2 : 6; let cell = null;
+    const kinds = ['实心', '描边', '幽灵', '渐变', '危险', '成功', '图标', '加载'];
+    for (let i = 0; i < n; i++) {
+      const bw = gw - 18, x = 20 + (i % cols) * gw + 9, y0 = 24 + ((i / cols) | 0) * gh + (gh - h) / 2;
+      const hov = inR(P, x, y0, bw, h), lift = hov ? -3 : Math.sin(t * 2 + i) * 1.2, y = y0 + lift;
+      if (hov) { cell = kinds[i]; ctx.save(); ctx.shadowColor = k.col; ctx.shadowBlur = 18; }
+      if (i % 4 === 0) btnBox(ctx, x, y, bw, h, r, k.col, kinds[i], W, H);
+      else if (i % 4 === 1) { ctx.strokeStyle = k.col; ctx.lineWidth = 2; rrect(ctx, x, y, bw, h, r); ctx.stroke(); text(ctx, kinds[i], x + bw / 2, y + h / 2, { size: fsz(W, H, 0.9), col: k.col, align: 'center', bold: true }); }
+      else if (i % 4 === 2) { ctx.fillStyle = hsla(hueOf(k.col), 60, 60, 0.15); rrect(ctx, x, y, bw, h, r); ctx.fill(); text(ctx, kinds[i], x + bw / 2, y + h / 2, { size: fsz(W, H, 0.9), col: '#e2e8f0', align: 'center' }); }
+      else { const g = ctx.createLinearGradient(x, 0, x + bw, 0); g.addColorStop(0, k.col); g.addColorStop(1, pastel(C, 3)); btnBox(ctx, x, y, bw, h, r, g, kinds[i], W, H); }
+      if (hov) ctx.restore();
+    }
+    return { mode: on(C.pill) ? '胶囊' : '方角', cell: cell || '（移到按钮上）' };
+  } });
+
+FAM.cards = uiFam({ title: '卡片与弹窗', size: { label: '卡片圆角', min: 0, max: 28, step: 1, value: 14 }, count: { label: '卡片数', min: 1, max: 6, step: 1, value: 3 },
+  extras: [T('modal', '显示弹窗', true)], presets: { 单卡: { count: 1 }, 多卡: { count: 6 }, 直角: { size: 0 }, 无弹窗: { modal: false } },
+  explain: '卡片悬停上浮；点击后出现模态弹窗与半透明遮罩，弹窗缩放淡入。', formula: 'modal: scale 0.9→1, opacity 0→1', formula2: 'backdrop: rgba(0,0,0,.5)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 6), cols = Math.min(n, W < 500 ? 2 : 3), rows = Math.ceil(n / cols), gw = (W - 32) / cols, gh = (H - 40) / rows; let cell = null;
+    for (let i = 0; i < n; i++) {
+      const x = 16 + (i % cols) * gw + 6, y = 24 + ((i / cols) | 0) * gh + 6, w = gw - 12, h = gh - 12, hov = inR(P, x, y, w, h);
+      const lift = hov ? -4 : 0; if (hov) cell = `卡片 ${i + 1}`;
+      ctx.fillStyle = '#141d33'; rrect(ctx, x, y + lift, w, h, k.s); ctx.fill();
+      ctx.fillStyle = pastel(C, i, n, 0.8); rrect(ctx, x, y + lift, w, Math.min(h * 0.45, 80), k.s); ctx.fill();
+      text(ctx, `Card ${i + 1}`, x + 12, y + lift + Math.min(h * 0.45, 80) + 18, { size: fsz(W, H), col: '#e2e8f0', bold: true });
+    }
+    if (on(C.modal)) {
+      const a = 0.5 + 0.5 * Math.sin(t * 1.2); const sc = 0.92 + 0.08 * a;
+      ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(0, 8, W, H);
+      const mw = Math.min(W * 0.7, 340) * sc, mh = Math.min(H * 0.5, 180) * sc;
+      ctx.fillStyle = '#18233d'; rrect(ctx, (W - mw) / 2, (H - mh) / 2, mw, mh, k.s); ctx.fill();
+      ctx.strokeStyle = k.col; ctx.lineWidth = 2; ctx.stroke();
+      text(ctx, '确认操作？', W / 2, H / 2 - mh * 0.2, { size: fsz(W, H, 1.1), col: '#f8fafc', align: 'center', bold: true });
+      btnBox(ctx, W / 2 - 50, H / 2 + mh * 0.1, 100, 30, 8, k.col, '确定', W, H);
+    }
+    return { mode: on(C.modal) ? '弹窗打开' : '仅卡片', cell: cell || '（移到卡片上）' };
+  } });
+
+FAM.input = uiFam({ title: '输入控件', size: { label: '输入框高度', min: 30, max: 60, step: 1, value: 40 }, count: { label: '字段数', min: 1, max: 5, step: 1, value: 3 },
+  extras: [T('err', '校验报错', false)], presets: { 单字段: { count: 1 }, 表单: { count: 5 }, 报错: { err: true }, 大号: { size: 56 } },
+  explain: '文本框聚焦时边框变主色并出现光晕；校验失败显示红框与提示。光标闪烁模拟输入。', formula: 'focus: border = 主色, ring 3px', formula2: 'error: border = #ef4444',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 5), h = k.s, gap = Math.min(24, (H - 40 - n * h) / Math.max(1, n)), w = Math.min(W - 48, 420), x = (W - w) / 2; let cell = null;
+    const labels = ['用户名', '邮箱', '密码', '手机号', '备注'], vals = ['clyune', 'hi@clyune.com', '••••••', '138 0000 0000', '…'];
+    const total = n * (h + 18 + gap), y0 = Math.max(20, (H - total) / 2);
+    const focus = Math.floor(t * 0.5) % n;
+    for (let i = 0; i < n; i++) {
+      const y = y0 + i * (h + 18 + gap) + 16, hov = inR(P, x, y, w, h), f = hov || (!P.user && i === focus), err = on(C.err) && i === n - 1;
+      text(ctx, labels[i], x, y - 9, { size: fsz(W, H, 0.85), col: '#94a3b8' });
+      if (f && !err) { ctx.strokeStyle = hsla(hueOf(k.col), 80, 65, 0.3); ctx.lineWidth = 6; rrect(ctx, x, y, w, h, 10); ctx.stroke(); }
+      ctx.fillStyle = '#0d1426'; rrect(ctx, x, y, w, h, 10); ctx.fill();
+      ctx.strokeStyle = err ? '#ef4444' : f ? k.col : '#24314f'; ctx.lineWidth = 1.5; rrect(ctx, x, y, w, h, 10); ctx.stroke();
+      const v = f ? vals[i].slice(0, 1 + Math.floor((t * 3) % vals[i].length)) : vals[i];
+      text(ctx, v, x + 12, y + h / 2, { size: fsz(W, H), col: '#e2e8f0' });
+      if (f) { ctx.font = `${fsz(W, H)}px ui-sans-serif`; caret(ctx, x + 14 + ctx.measureText(v).width, y + h / 2, t, k.col); }
+      if (err) text(ctx, '格式不正确', x + w, y + h + 10, { size: fsz(W, H, 0.8), col: '#ef4444', align: 'right' });
+      if (hov) cell = labels[i];
+    }
+    return { mode: on(C.err) ? '含报错' : '正常', cell: cell || '（移到输入框）' };
+  } });
+
+FAM.nav = uiFam({ title: '导航样式', size: { label: '导航栏高度', min: 36, max: 72, step: 1, value: 48 }, count: { label: '菜单项', min: 2, max: 7, step: 1, value: 5 },
+  extras: [T('under', '下划线指示', true)], presets: { 少: { count: 3 }, 多: { count: 7 }, 胶囊: { under: false }, 高栏: { size: 70 } },
+  explain: '顶部导航：当前项用滑动指示器（下划线或胶囊）标出，指示器在项间平滑移动。', formula: 'indicator.x = lerp(x_prev, x_target, ease)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 7), h = k.s, items = ['首页', '组件', '文档', '案例', '博客', '关于', '登录'];
+    ctx.fillStyle = '#121a2f'; rrect(ctx, 16, 24, W - 32, h, 12); ctx.fill();
+    const iw = (W - 48) / n; let hovI = -1;
+    for (let i = 0; i < n; i++) if (inR(P, 24 + i * iw, 24, iw, h)) hovI = i;
+    const auto = (t * 0.5) % n, cur = hovI >= 0 ? hovI : auto; const fi = Math.floor(cur), fr = easeFn('ease-in-out', cur - fi);
+    const ix = 24 + (fi + (hovI >= 0 ? 0 : fr)) * iw;
+    if (on(C.under)) { ctx.fillStyle = k.col; rrect(ctx, ix + iw * 0.2, 24 + h - 5, iw * 0.6, 3, 2); ctx.fill(); }
+    else { ctx.fillStyle = hsla(hueOf(k.col), 70, 60, 0.3); rrect(ctx, ix + 4, 28, iw - 8, h - 8, (h - 8) / 2); ctx.fill(); }
+    for (let i = 0; i < n; i++) text(ctx, items[i], 24 + i * iw + iw / 2, 24 + h / 2, { size: fsz(W, H), col: Math.round(cur) % n === i ? '#f8fafc' : '#94a3b8', align: 'center', bold: Math.round(cur) % n === i });
+    // page body skeleton fills the stage below
+    for (let r = 0; r < 4; r++) { ctx.fillStyle = '#141d33'; rrect(ctx, 16, 40 + h + r * ((H - h - 60) / 4), W - 32, (H - h - 60) / 4 - 10, 10); ctx.fill(); }
+    return { mode: on(C.under) ? '下划线' : '胶囊', cell: hovI >= 0 ? items[hovI] : '（移到菜单项）' };
+  } });
+
+FAM.acc = uiFam({ title: '手风琴组件', size: { label: '标题高度', min: 32, max: 60, step: 1, value: 42 }, count: { label: '面板数', min: 2, max: 6, step: 1, value: 4 },
+  extras: [T('multi', '允许多开', false)], presets: { 少: { count: 2 }, 多: { count: 6 }, 多开: { multi: true }, 高: { size: 58 } },
+  explain: '手风琴：点击标题展开内容，高度平滑过渡；单开模式下展开一个会收起其它。', formula: 'height: 0 → 内容高度（ease-out）', formula2: '箭头 rotate(0 → 90°)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 6), hh = k.s, x = 20, w = W - 40; const open = Math.floor(t * 0.4) % n;
+    const avail = H - 36 - n * (hh + 6); const bodyH = Math.max(30, on(C.multi) ? avail / 2 : avail);
+    let y = 22, cell = null;
+    for (let i = 0; i < n; i++) {
+      const isOpen = on(C.multi) ? (i === open || i === (open + 1) % n) : i === open;
+      const ph = isOpen ? easeFn('ease-out', Math.min(1, ((t * 0.4) % 1) * 3)) : 0;
+      const hov = inR(P, x, y, w, hh); if (hov) cell = `面板 ${i + 1}`;
+      ctx.fillStyle = isOpen ? '#1b2642' : '#141d33'; rrect(ctx, x, y, w, hh, 10); ctx.fill();
+      if (isOpen) { ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; rrect(ctx, x, y, w, hh, 10); ctx.stroke(); }
+      text(ctx, `第 ${i + 1} 节`, x + 14, y + hh / 2, { size: fsz(W, H), col: '#e2e8f0', bold: true });
+      ctx.save(); ctx.translate(x + w - 20, y + hh / 2); ctx.rotate(isOpen ? Math.PI / 2 * Math.max(ph, 0.999) : 0); text(ctx, '›', 0, 0, { size: fsz(W, H, 1.4), col: k.col, align: 'center' }); ctx.restore();
+      y += hh + 4;
+      if (isOpen) { const bh = bodyH * Math.max(ph, 0.15); ctx.fillStyle = '#0f1729'; rrect(ctx, x + 6, y, w - 12, bh, 8); ctx.fill();
+        for (let l = 0; l < 3 && 14 + l * 18 < bh; l++) { ctx.fillStyle = '#24314f'; rrect(ctx, x + 18, y + 10 + l * 18, (w - 50) * (0.9 - l * 0.2), 8, 4); ctx.fill(); }
+        y += bh + 4; }
+      y += 2;
+    }
+    return { mode: on(C.multi) ? '多开' : '单开', cell: cell || '（移到标题）' };
+  } });
+
+FAM.mod = uiFam({ title: '对话框', size: { label: '对话框宽度', min: 0.4, max: 0.9, step: 0.01, value: 0.6 }, count: { label: '进场方式', min: 0, max: 3, step: 1, value: 0 },
+  extras: [R('dim', '遮罩深度', 0, 0.85, 0.01, 0.5)], presets: { 缩放: { count: 0 }, 下滑: { count: 1 }, 淡入: { count: 2 }, 弹跳: { count: 3 } },
+  explain: '模态对话框：遮罩压暗背景，对话框以缩放/下滑/淡入/弹跳方式进场，循环演示开合。', formula: 'open(t)=ease(t)，scale=0.9+0.1·open', formula2: '遮罩 α = 遮罩深度 × open',
+  draw(ctx, W, H, t, C, P, k) {
+    const style = clamp(k.n, 0, 3), names = ['缩放', '下滑', '淡入', '弹跳'];
+    for (let i = 0; i < 6; i++) { ctx.fillStyle = '#141d33'; rrect(ctx, 16 + (i % 3) * (W - 32) / 3 + 4, 24 + ((i / 3) | 0) * (H - 40) / 2, (W - 32) / 3 - 8, (H - 40) / 2 - 8, 10); ctx.fill(); }
+    const cyc = (t * 0.35) % 1, o = cyc < 0.7 ? Math.min(1, cyc / 0.25) : Math.max(0, 1 - (cyc - 0.7) / 0.3);
+    const e = style === 3 ? easeFn('back', o) : easeFn('ease-out', o);
+    ctx.fillStyle = `rgba(0,0,0,${num(C.dim, 0.5) * o})`; ctx.fillRect(0, 8, W, H);
+    const mw = W * k.s, mh = Math.min(H * 0.55, 220); let x = (W - mw) / 2, y = (H - mh) / 2, sc = 1, a = 1;
+    if (style === 0 || style === 3) sc = 0.85 + 0.15 * e; if (style === 1) y -= (1 - e) * 60; if (style === 2) a = e; else a = Math.min(1, o * 2);
+    ctx.save(); ctx.globalAlpha = a; ctx.translate(W / 2, y + mh / 2); ctx.scale(sc, sc); ctx.translate(-W / 2, -(y + mh / 2));
+    ctx.fillStyle = '#18233d'; rrect(ctx, x, y, mw, mh, 14); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 2; ctx.stroke();
+    text(ctx, '删除这个项目？', x + 18, y + 30, { size: fsz(W, H, 1.1), col: '#f8fafc', bold: true });
+    text(ctx, '此操作不可撤销。', x + 18, y + 58, { size: fsz(W, H, 0.9), col: '#94a3b8' });
+    btnBox(ctx, x + mw - 200, y + mh - 50, 84, 32, 8, '#24314f', '取消', W, H, '#e2e8f0'); btnBox(ctx, x + mw - 104, y + mh - 50, 84, 32, 8, k.col, '删除', W, H);
+    ctx.restore();
+    return { mode: names[style], cell: inR(P, x, y, mw, mh) ? '对话框' : '遮罩' };
+  } });
+
+FAM.car = uiFam({ title: '走马灯组件', size: { label: '卡片圆角', min: 0, max: 32, step: 1, value: 16 }, count: { label: '页数', min: 2, max: 8, step: 1, value: 5 },
+  extras: [T('dots', '指示点', true)], presets: { 少: { count: 3 }, 多: { count: 8 }, 直角: { size: 0 }, 无点: { dots: false } },
+  explain: '走马灯：幻灯片铺满整个舞台，按缓动横向切换，底部指示点显示当前页。悬停暂停。', formula: 'offset = −(index + ease(frac)) × 舞台宽', formula2: '指示点宽度：当前页拉长',
+  tip: '悬停幻灯片暂停；页数滑条改变总页数和指示点。',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), pad = 6, x0 = pad, y0 = 8 + pad, w = W - pad * 2, h = H - 8 - pad * 2;
+    const hov = P.user && inR(P, x0, y0, w, h);
+    const cyc = (t * 0.3) % n, idx = Math.floor(cyc), fr = hov ? 0 : easeFn('ease-in-out', clamp((cyc - idx - 0.7) / 0.3, 0, 1));
+    ctx.save(); rrect(ctx, x0, y0, w, h, k.s); ctx.clip();
+    for (let j = -1; j <= 1; j++) {
+      const i = ((idx + j) % n + n) % n, x = x0 + (j - fr) * w;
+      const g = ctx.createLinearGradient(x, y0, x + w, y0 + h); g.addColorStop(0, pastel(C, i, n)); g.addColorStop(1, pastel(C, i + 2, n, 0.75));
+      ctx.fillStyle = g; ctx.fillRect(x, y0, w + 1, h);
+      text(ctx, `Slide ${i + 1}`, x + w / 2, y0 + h / 2, { size: fsz(W, H, 2.2), col: '#0b1020', align: 'center', bold: true });
+    }
+    ctx.restore();
+    if (on(C.dots)) { const cur = Math.round(idx + fr) % n; let dx = W / 2 - (n * 16 + 14) / 2;
+      for (let i = 0; i < n; i++) { const dw = i === cur ? 28 : 10; ctx.fillStyle = i === cur ? '#fff' : 'rgba(255,255,255,.5)'; rrect(ctx, dx, H - pad - 22, dw, 10, 5); ctx.fill(); dx += dw + 6; } }
+    return { mode: hov ? '暂停' : '自动播放', cell: hov ? `第 ${idx + 1} 页` : '（悬停暂停）' };
+  } });
+
+FAM.toast = uiFam({ title: 'Toast', size: { label: '消息宽度', min: 180, max: 380, step: 2, value: 280 }, count: { label: '堆叠数', min: 1, max: 5, step: 1, value: 3 },
+  extras: [T('bottom', '底部弹出', false)], presets: { 单条: { count: 1 }, 堆叠: { count: 5 }, 底部: { bottom: true }, 宽: { size: 360 } },
+  explain: 'Toast 轻提示：新消息从角落滑入，旧消息依次下移并淡出，几秒后自动消失。', formula: 'y_i = 起点 + i × (高 + 间距)', formula2: '进场: translateX(110%→0)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 5), w = Math.min(k.s, W - 32), h = 52, bottom = on(C.bottom), kinds = [['成功', '#22c55e'], ['提示', k.col], ['警告', '#f59e0b'], ['错误', '#ef4444'], ['同步', '#22d3ee']];
+    for (let i = 0; i < 5; i++) { ctx.fillStyle = '#121a2f'; rrect(ctx, 16, 24 + i * (H - 40) / 5, W * 0.45, (H - 40) / 5 - 8, 8); ctx.fill(); }
+    const fr = (t * 0.5) % 1, slide = easeFn('back', Math.min(1, fr * 3)); let cell = null;
+    for (let i = 0; i < n; i++) {
+      const x = W - w - 16 + (i === 0 ? (1 - slide) * (w + 20) : 0), y = bottom ? H - 16 - h - i * (h + 8) : 24 + i * (h + 8);
+      ctx.globalAlpha = i === n - 1 ? 1 - fr * 0.6 : 1;
+      ctx.fillStyle = '#18233d'; rrect(ctx, x, y, w, h, 10); ctx.fill(); const [lab, c] = kinds[i % 5];
+      ctx.fillStyle = c; rrect(ctx, x, y, 5, h, 3); ctx.fill(); text(ctx, lab, x + 16, y + 18, { size: fsz(W, H), col: c, bold: true });
+      text(ctx, '保存于 ' + (12 + i) + ':0' + i, x + 16, y + 36, { size: fsz(W, H, 0.85), col: '#94a3b8' });
+      ctx.globalAlpha = 1; if (inR(P, x, y, w, h)) cell = lab;
+    }
+    return { mode: bottom ? '右下角' : '右上角', cell: cell || '（移到消息）' };
+  } });
+
+FAM.drop = uiFam({ title: '下拉', size: { label: '选项高度', min: 26, max: 48, step: 1, value: 34 }, count: { label: '选项数', min: 2, max: 8, step: 1, value: 5 },
+  extras: [T('search', '带搜索框', false)], presets: { 少: { count: 3 }, 多: { count: 8 }, 搜索: { search: true }, 高: { size: 46 } },
+  explain: '下拉选择：点击后菜单从触发器下方展开（缩放+淡入），悬停项高亮，勾选当前值。', formula: 'menu: scaleY(0.9→1) + opacity', formula2: '高亮行 = 指针所在行',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), rh = k.s, w = Math.min(320, W - 40), x = (W - w) / 2, ty = 24, opts = ['北京', '上海', '广州', '深圳', '杭州', '成都', '西安', '南京'];
+    ctx.fillStyle = '#0d1426'; rrect(ctx, x, ty, w, 40, 10); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
+    const cur = Math.floor(t * 0.6) % n; text(ctx, opts[cur], x + 14, ty + 20, { size: fsz(W, H), col: '#e2e8f0' }); text(ctx, '▾', x + w - 18, ty + 20, { size: fsz(W, H), col: k.col, align: 'center' });
+    let my = ty + 48; const o = easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4));
+    const mh = (on(C.search) ? 40 : 0) + n * rh + 8; ctx.save(); ctx.globalAlpha = o; ctx.translate(0, my); ctx.scale(1, 0.9 + 0.1 * o); ctx.translate(0, -my);
+    ctx.fillStyle = '#18233d'; rrect(ctx, x, my, w, Math.min(mh, H - my - 10), 10); ctx.fill();
+    if (on(C.search)) { ctx.fillStyle = '#0d1426'; rrect(ctx, x + 8, my + 6, w - 16, 28, 7); ctx.fill(); text(ctx, '🔍 搜索城市', x + 16, my + 20, { size: fsz(W, H, 0.85), col: '#64748b' }); my += 40; }
+    let cell = null;
+    for (let i = 0; i < n; i++) { const y = my + 4 + i * rh; if (y + rh > H - 8) break; const hov = inR(P, x, y, w, rh);
+      if (hov || i === cur) { ctx.fillStyle = hov ? hsla(hueOf(k.col), 70, 60, 0.25) : 'rgba(255,255,255,.04)'; rrect(ctx, x + 4, y, w - 8, rh - 2, 6); ctx.fill(); }
+      text(ctx, opts[i], x + 16, y + rh / 2, { size: fsz(W, H), col: '#e2e8f0' }); if (i === cur) text(ctx, '✓', x + w - 20, y + rh / 2, { size: fsz(W, H), col: k.col, align: 'center' }); if (hov) cell = opts[i]; }
+    ctx.restore();
+    return { mode: on(C.search) ? '可搜索' : '普通', cell: cell || '（移到选项）' };
+  } });
+
+FAM.tip = uiFam({ title: '提示', size: { label: '气泡宽度', min: 100, max: 260, step: 2, value: 160 }, count: { label: '目标数', min: 1, max: 6, step: 1, value: 4 },
+  extras: [T('arrow', '显示小箭头', true)], presets: { 单个: { count: 1 }, 多个: { count: 6 }, 无箭头: { arrow: false }, 宽: { size: 240 } },
+  explain: 'Tooltip：悬停目标时在其上方弹出气泡，带小箭头指向目标；离开后淡出。', formula: '气泡.x = 目标中心 − 宽/2（夹在舞台内）', formula2: 'opacity 0→1，translateY(4px→0)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 6), labels = ['保存', '分享', '删除', '设置', '帮助', '收藏'], gw = (W - 40) / n, cy = H * 0.62; let hovI = -1;
+    for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); if (Math.hypot(P.x - cx, P.y - cy) < 26) hovI = i; }
+    const act = hovI >= 0 ? hovI : Math.floor(t * 0.6) % n, ph = hovI >= 0 ? 1 : easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4));
+    for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); ctx.fillStyle = i === act ? k.col : '#24314f'; ctx.beginPath(); ctx.arc(cx, cy, 24, 0, TAU); ctx.fill(); text(ctx, labels[i][0], cx, cy, { size: fsz(W, H), col: i === act ? '#0b1020' : '#cbd5e1', align: 'center', bold: true }); }
+    const cx = 20 + gw * (act + 0.5), bw = k.s, bh = 44, bx = clamp(cx - bw / 2, 8, W - bw - 8), by = cy - 40 - bh - (1 - ph) * 6;
+    ctx.globalAlpha = ph; ctx.fillStyle = '#f8fafc'; rrect(ctx, bx, by, bw, bh, 8); ctx.fill();
+    if (on(C.arrow)) { ctx.beginPath(); ctx.moveTo(cx - 8, by + bh); ctx.lineTo(cx + 8, by + bh); ctx.lineTo(cx, by + bh + 9); ctx.closePath(); ctx.fill(); }
+    text(ctx, `${labels[act]}（Ctrl+${'SHDTJF'[act]}）`, bx + bw / 2, by + bh / 2, { size: fsz(W, H, 0.85), col: '#0b1020', align: 'center', bold: true }); ctx.globalAlpha = 1;
+    ctx.fillStyle = k.col; ctx.fillRect(bx, by, 4, bh);
+    return { mode: on(C.arrow) ? '带箭头' : '无箭头', cell: hovI >= 0 ? labels[hovI] : '（移到图标）' };
+  } });
+
+FAM.skel = uiFam({ title: '加载占位', size: { label: '占位圆角', min: 0, max: 20, step: 1, value: 8 }, count: { label: '列表行数', min: 2, max: 8, step: 1, value: 4 },
+  extras: [T('avatar', '显示头像', true)], presets: { 少: { count: 2 }, 多: { count: 8 }, 无头像: { avatar: false }, 直角: { size: 0 } },
+  explain: '骨架屏：数据加载前先画出灰色轮廓，一道高光从左到右扫过，提示正在加载。', formula: 'shimmer.x = fract(t × 速度) × 宽', formula2: 'gradient: 透明 → 白 15% → 透明',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), rh = (H - 40) / n, sx = ((t * 0.5) % 1.4 - 0.2) * W; let cell = null;
+    for (let i = 0; i < n; i++) { const y = 24 + i * rh, hh = rh - 12; let x = 20;
+      if (on(C.avatar)) { ctx.fillStyle = '#1b2540'; ctx.beginPath(); ctx.arc(x + hh / 2, y + hh / 2, hh / 2, 0, TAU); ctx.fill(); x += hh + 14; }
+      ctx.fillStyle = '#1b2540'; rrect(ctx, x, y + hh * 0.1, (W - x - 30) * 0.7, hh * 0.32, k.s); ctx.fill(); rrect(ctx, x, y + hh * 0.56, (W - x - 30) * (0.9 - (i % 3) * 0.15), hh * 0.3, k.s); ctx.fill();
+      if (inR(P, 20, y, W - 40, hh)) cell = `第 ${i + 1} 行`; }
+    const g = ctx.createLinearGradient(sx - 80, 0, sx + 80, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, hsla(hueOf(k.col), 80, 75, 0.22)); g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, 8, W, H);
+    return { mode: on(C.avatar) ? '列表+头像' : '纯文本', cell: cell || '（移到占位行）' };
+  } });
+
+FAM.btn = uiFam({ title: '按钮动效', size: { label: '按钮宽度', min: 100, max: 260, step: 2, value: 160 }, count: { label: '动效档', min: 0, max: 5, step: 1, value: 0 },
+  extras: [T('ripple', '点击涟漪', true)], presets: { 涟漪: { count: 0 }, 扫光: { count: 1 }, 加载: { count: 2 }, 成功: { count: 3 }, 抖动: { count: 4 }, 呼吸: { count: 5 } },
+  explain: '按钮反馈动效：涟漪、扫光、加载转圈、成功打勾、错误抖动、呼吸发光，循环演示一次点击的完整过程。', formula: 'ripple r = ease(p) × 对角线', formula2: 'shake x = sin(30p)·(1−p)·8',
+  draw(ctx, W, H, t, C, P, k) {
+    const st = clamp(k.n, 0, 5), names = ['涟漪', '扫光', '加载', '成功', '抖动', '呼吸'], bw = k.s, bh = 50, p = (t * 0.6) % 1;
+    let x = (W - bw) / 2, y = (H - bh) / 2; if (st === 4) x += Math.sin(p * 30) * (1 - p) * 8;
+    if (st === 5) { ctx.save(); ctx.shadowColor = k.col; ctx.shadowBlur = 10 + 20 * Math.abs(Math.sin(t * 2)); }
+    btnBox(ctx, x, y, bw, bh, 12, st === 3 && p > 0.4 ? '#22c55e' : k.col, st === 2 ? '' : st === 3 && p > 0.4 ? '✓ 已保存' : '提交', W, H); if (st === 5) ctx.restore();
+    ctx.save(); rrect(ctx, x, y, bw, bh, 12); ctx.clip();
+    if (st === 0 || on(C.ripple)) { const rr = easeFn('ease-out', p) * bw; ctx.fillStyle = `rgba(255,255,255,${0.35 * (1 - p)})`; ctx.beginPath(); ctx.arc(x + bw * 0.35, y + bh / 2, rr, 0, TAU); ctx.fill(); }
+    if (st === 1) { const sx = x - 40 + p * (bw + 80); const g = ctx.createLinearGradient(sx - 30, 0, sx + 30, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,.5)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(x, y, bw, bh); }
+    ctx.restore();
+    if (st === 2) { ctx.strokeStyle = '#0b1020'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x + bw / 2, y + bh / 2, 11, t * 6, t * 6 + 4.5); ctx.stroke(); }
+    return { mode: names[st], cell: inR(P, x, y, bw, bh) ? '按钮' : '（移到按钮）' };
+  } });
+
+FAM.switch = uiFam({ title: '开关弹簧', size: { label: '开关宽度', min: 40, max: 96, step: 1, value: 56 }, count: { label: '开关数', min: 1, max: 6, step: 1, value: 4 },
+  extras: [R('bounce', '弹性过冲', 0, 2, 0.05, 1)], presets: { 单个: { count: 1 }, 一组: { count: 6 }, 无弹性: { bounce: 0 }, 大号: { size: 90 } },
+  explain: '开关切换：圆钮从一端弹到另一端并略微过冲，背景色同步渐变为主色。', formula: 'x = ease_back(p, 过冲) × 行程', formula2: '背景 = mix(灰, 主色, p)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 6), sw = k.s, sh = sw * 0.52, gap = Math.min(70, (H - 40) / n), y0 = (H - (n - 1) * gap) / 2; let cell = null;
+    const labels = ['Wi-Fi', '蓝牙', '定位', '通知', '深色', '自动'];
+    for (let i = 0; i < n; i++) { const y = y0 + i * gap, x = W / 2 + 10; const cyc = (t * 0.4 + i * 0.17) % 2, on1 = cyc < 1;
+      const pr = clamp((cyc % 1) * 3, 0, 1), c = 1.70158 * num(C.bounce, 1), e = pr === 1 ? 1 : 1 + (c + 1) * Math.pow(pr - 1, 3) + c * Math.pow(pr - 1, 2), pos = on1 ? e : 1 - e;
+      ctx.fillStyle = pos > 0.5 ? k.col : '#24314f'; rrect(ctx, x, y - sh / 2, sw, sh, sh / 2); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x + sh / 2 + pos * (sw - sh), y, sh / 2 - 3, 0, TAU); ctx.fill();
+      text(ctx, labels[i], x - 20, y, { size: fsz(W, H), col: '#e2e8f0', align: 'right' }); if (inR(P, x - 100, y - sh / 2, sw + 110, sh)) cell = labels[i]; }
+    return { mode: `过冲 ${fmt(num(C.bounce, 1), 2)}`, cell: cell || '（移到开关）' };
+  } });
+
+FAM.sheet = uiFam({ title: '底栏/浮层', size: { label: '浮层高度', min: 0.3, max: 0.85, step: 0.01, value: 0.55 }, count: { label: '列表项', min: 2, max: 8, step: 1, value: 4 },
+  extras: [T('handle', '拖动把手', true)], presets: { 矮: { size: 0.35 }, 高: { size: 0.8 }, 多项: { count: 8 }, 无把手: { handle: false } },
+  explain: 'Bottom Sheet：底部浮层向上滑出，遮罩压暗页面；顶部有拖动把手，列表项可点。', formula: 'y = H − 高度 × ease(p)', formula2: '遮罩 α = 0.45 × p',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8); for (let i = 0; i < 4; i++) { ctx.fillStyle = '#141d33'; rrect(ctx, 16, 24 + i * (H - 40) / 4, W - 32, (H - 40) / 4 - 10, 10); ctx.fill(); }
+    const cyc = (t * 0.3) % 1, p = cyc < 0.75 ? easeFn('ease-out', Math.min(1, cyc * 4)) : 1 - easeFn('ease-in', (cyc - 0.75) * 4);
+    ctx.fillStyle = `rgba(0,0,0,${0.45 * p})`; ctx.fillRect(0, 8, W, H);
+    const sh = (H - 8) * k.s, y = H - sh * p; ctx.fillStyle = '#18233d'; rrect(ctx, 0, y, W, sh + 20, 18); ctx.fill();
+    ctx.strokeStyle = k.col; ctx.lineWidth = 2; line(ctx, 0, y + 1, W, y + 1, hsla(hueOf(k.col), 70, 60, 0.6));
+    let yy = y + 14; if (on(C.handle)) { ctx.fillStyle = '#64748b'; rrect(ctx, W / 2 - 22, y + 8, 44, 5, 3); ctx.fill(); yy += 10; }
+    const rh = Math.min(44, (sh - 30) / n); let cell = null;
+    for (let i = 0; i < n; i++) { const ry = yy + i * rh; if (ry + rh > H) break; const hov = inR(P, 0, ry, W, rh); if (hov) cell = `选项 ${i + 1}`;
+      if (hov) { ctx.fillStyle = hsla(hueOf(k.col), 70, 60, 0.2); ctx.fillRect(0, ry, W, rh); }
+      ctx.fillStyle = pastel(C, i, n); ctx.beginPath(); ctx.arc(28, ry + rh / 2, 8, 0, TAU); ctx.fill(); text(ctx, `选项 ${i + 1}`, 48, ry + rh / 2, { size: fsz(W, H), col: '#e2e8f0' }); }
+    return { mode: p > 0.95 ? '展开' : '滑动中', cell: cell || '（移到列表项）' };
+  } });
+
+FAM.tabs = uiFam({ title: 'Tabs 动效', size: { label: '标签高度', min: 30, max: 60, step: 1, value: 40 }, count: { label: '标签数', min: 2, max: 6, step: 1, value: 4 },
+  extras: [T('slide', '内容滑动', true)], presets: { 两个: { count: 2 }, 六个: { count: 6 }, 不滑动: { slide: false }, 高: { size: 56 } },
+  explain: 'Tabs：选中块在标签间滑动，下方内容面板随之横向切换或淡入。', formula: 'pill.x = lerp(i, i+1, ease)', formula2: '内容 translateX = −当前 × 宽',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 6), th = k.s, names = ['概览', '数据', '设置', '成员', '日志', '账单'], tw = (W - 40) / n;
+    ctx.fillStyle = '#121a2f'; rrect(ctx, 20, 22, W - 40, th, 10); ctx.fill(); let hovI = -1;
+    for (let i = 0; i < n; i++) if (inR(P, 20 + i * tw, 22, tw, th)) hovI = i;
+    const cyc = (t * 0.4) % n, fi = Math.floor(cyc), fr = easeFn('ease-in-out', clamp((cyc - fi - 0.6) / 0.4, 0, 1)), cur = hovI >= 0 ? hovI : fi + fr;
+    ctx.fillStyle = k.col; rrect(ctx, 22 + cur * tw, 24, tw - 4, th - 4, 8); ctx.fill();
+    for (let i = 0; i < n; i++) text(ctx, names[i], 20 + i * tw + tw / 2, 22 + th / 2, { size: fsz(W, H), col: Math.round(cur) === i ? '#0b1020' : '#cbd5e1', align: 'center', bold: true });
+    const py = 32 + th, ph = H - py - 12; ctx.save(); rrect(ctx, 20, py, W - 40, ph, 12); ctx.clip();
+    const off = on(C.slide) ? cur : Math.round(cur);
+    for (let i = 0; i < n; i++) { const x = 20 + (i - off) * (W - 40); if (x > W || x + W < 0) continue; ctx.fillStyle = '#141d33'; ctx.fillRect(x, py, W - 40, ph);
+      text(ctx, names[i] + ' 面板', x + 20, py + 26, { size: fsz(W, H, 1.1), col: '#f8fafc', bold: true });
+      for (let b = 0; b < 3; b++) { ctx.fillStyle = pastel(C, i + b, n + 3, 0.7); rrect(ctx, x + 20 + b * ((W - 80) / 3), py + 50, (W - 80) / 3 - 10, ph - 70, 10); ctx.fill(); } }
+    ctx.restore();
+    return { mode: on(C.slide) ? '滑动切换' : '直接切换', cell: hovI >= 0 ? names[hovI] : '（移到标签）' };
+  } });
+
+FAM.timeline = uiFam({ title: '时间线', size: { label: '节点半径', min: 4, max: 16, step: 0.5, value: 8 }, count: { label: '事件数', min: 2, max: 8, step: 1, value: 5 },
+  extras: [T('alt', '左右交替', true)], presets: { 少: { count: 3 }, 多: { count: 8 }, 单侧: { alt: false }, 大节点: { size: 14 } },
+  explain: '时间线：竖线串起事件节点，进度依次点亮节点，卡片左右交替排列。', formula: '已完成 = floor(进度 × 事件数)', formula2: '节点 y_i = 顶 + i × 间距',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), r = k.s, cx = on(C.alt) ? W / 2 : 40, gap = (H - 50) / (n - 1 || 1), prog = (t * 0.25) % 1, done = prog * (n - 1); let cell = null;
+    line(ctx, cx, 25, cx, H - 25, '#24314f', 3); line(ctx, cx, 25, cx, 25 + done * gap, k.col, 3);
+    for (let i = 0; i < n; i++) { const y = 25 + i * gap, lit = i <= done; ctx.fillStyle = lit ? k.col : '#24314f'; ctx.beginPath(); ctx.arc(cx, y, r, 0, TAU); ctx.fill();
+      const left = on(C.alt) && i % 2 === 1, cw = on(C.alt) ? W / 2 - 50 : W - 100, ch = Math.min(40, gap - 6), x = left ? cx - 24 - cw : cx + 24;
+      ctx.fillStyle = lit ? '#18233d' : '#121a2f'; rrect(ctx, x, y - ch / 2, cw, ch, 8); ctx.fill();
+      text(ctx, `2026-0${i + 1} · 里程碑 ${i + 1}`, x + 10, y, { size: fsz(W, H, 0.85), col: lit ? '#f8fafc' : '#64748b' }); if (inR(P, x, y - ch / 2, cw, ch)) cell = `里程碑 ${i + 1}`; }
+    return { mode: on(C.alt) ? '交替' : '单侧', cell: cell || '（移到事件）' };
+  } });
+
+FAM.tree = uiFam({ title: '树形', size: { label: '缩进宽度', min: 12, max: 40, step: 1, value: 22 }, count: { label: '展开层级', min: 1, max: 4, step: 1, value: 3 },
+  extras: [T('guide', '层级连线', true)], presets: { 一层: { count: 1 }, 全展开: { count: 4 }, 无连线: { guide: false }, 宽缩进: { size: 36 } },
+  explain: '树形控件：节点可逐级展开，子节点缩进显示，连线标出父子关系；当前选中行高亮。', formula: 'x = 左边距 + 深度 × 缩进', formula2: '可见行 = 深度 ≤ 展开层级',
+  draw(ctx, W, H, t, C, P, k) {
+    const depth = clamp(k.n, 1, 4), ind = k.s, nodes = [];
+    const walk = (d, name) => { nodes.push([d, name]); if (d < depth) for (let i = 0; i < (d === 0 ? 3 : 2); i++) walk(d + 1, `${name}.${i + 1}`); };
+    walk(0, 'src'); const rh = Math.min(28, (H - 30) / nodes.length), sel = Math.floor(t * 1.2) % nodes.length; let cell = null;
+    nodes.forEach(([d, name], i) => { const y = 20 + i * rh, x = 20 + d * ind; const hov = inR(P, 0, y, W, rh);
+      if (i === sel || hov) { ctx.fillStyle = hov ? hsla(hueOf(k.col), 70, 60, 0.25) : hsla(hueOf(k.col), 70, 60, 0.14); ctx.fillRect(10, y, W - 20, rh - 2); }
+      if (on(C.guide) && d > 0) { line(ctx, x - ind + 6, y - rh / 2, x - ind + 6, y + rh / 2, '#334155', 1); line(ctx, x - ind + 6, y + rh / 2 - 1, x - 2, y + rh / 2 - 1, '#334155', 1); }
+      text(ctx, (d < depth ? '▾ ' : '• ') + (d === 0 ? '📁 ' : d < depth ? '📂 ' : '📄 ') + name, x, y + rh / 2, { size: fsz(W, H, 0.9), col: i === sel ? k.col : '#cbd5e1' }); if (hov) cell = name; });
+    return { mode: `展开 ${depth} 层`, n: nodes.length, cell: cell || '（移到节点）' };
+  } });
+
+FAM.fab = uiFam({ title: 'FAB', size: { label: '按钮直径', min: 40, max: 80, step: 1, value: 56 }, count: { label: '子菜单数', min: 2, max: 6, step: 1, value: 4 },
+  extras: [T('arc', '扇形展开', false)], presets: { 少: { count: 2 }, 多: { count: 6 }, 扇形: { arc: true }, 大: { size: 76 } },
+  explain: '悬浮按钮 FAB：主按钮旋转成 ×，子按钮依次弹出（竖排或扇形），带交错延迟。', formula: '子按钮 i 延迟 = i × 0.06s', formula2: '扇形角 θ_i = 90° × i/(n−1)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 6), d = k.s, cx = W - 30 - d / 2, cy = H - 70 - d / 2, cyc = (t * 0.35) % 1, o = cyc < 0.7 ? Math.min(1, cyc * 3) : 1 - (cyc - 0.7) / 0.3;
+    for (let i = 0; i < 6; i++) { ctx.fillStyle = '#141d33'; rrect(ctx, 16, 24 + i * (H - 40) / 6, W * 0.55, (H - 40) / 6 - 8, 8); ctx.fill(); }
+    const icons = ['✎', '⇪', '✉', '★', '⚑', '☎']; let cell = null;
+    for (let i = 0; i < n; i++) { const e = easeFn('back', clamp(o * 1.4 - i * 0.08, 0, 1)), sd = d * 0.72;
+      let x = cx, y = cy - (i + 1) * (sd + 12) * e; if (on(C.arc)) { const a = Math.PI / 2 * (i / (n - 1)); x = cx - Math.sin(a) * (d * 2.2) * e; y = cy - Math.cos(a) * (d * 2.2) * e; }
+      ctx.globalAlpha = e; ctx.fillStyle = pastel(C, i, n); ctx.beginPath(); ctx.arc(x, y, sd / 2, 0, TAU); ctx.fill(); text(ctx, icons[i], x, y, { size: fsz(W, H), col: '#0b1020', align: 'center', bold: true }); ctx.globalAlpha = 1;
+      if (Math.hypot(P.x - x, P.y - y) < sd / 2) cell = icons[i]; }
+    ctx.fillStyle = k.col; ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, TAU); ctx.fill();
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(o * Math.PI / 4); ctx.fillStyle = '#0b1020'; ctx.fillRect(-d * 0.2, -2, d * 0.4, 4); ctx.fillRect(-2, -d * 0.2, 4, d * 0.4); ctx.restore();
+    return { mode: on(C.arc) ? '扇形' : '竖排', cell: cell || (Math.hypot(P.x - cx, P.y - cy) < d / 2 ? '主按钮' : '（移到按钮）') };
+  } });
+
+FAM.chip = uiFam({ title: '芯片/标签', size: { label: '芯片高度', min: 22, max: 44, step: 1, value: 30 }, count: { label: '标签数', min: 3, max: 14, step: 1, value: 8 },
+  extras: [T('close', '可删除 ×', true)], presets: { 少: { count: 4 }, 多: { count: 14 }, 无删除: { close: false }, 大: { size: 42 } },
+  explain: '标签芯片：自动换行排列，选中态填充主色；带 × 的可删除，新标签弹入。', formula: '换行: x + w > 宽 → 下一行', formula2: '选中 = 主色背景',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 3, 14), h = k.s, tags = ['React', 'Vue', 'Svelte', 'Canvas', 'WebGL', 'CSS', 'TypeScript', 'Node', 'Vite', 'Three', 'D3', 'Rust', 'Go', 'AI'];
+    let x = 20, y = 24; const sel = Math.floor(t * 0.8) % n; let cell = null; ctx.font = `${fsz(W, H, 0.9)}px ui-sans-serif`;
+    for (let i = 0; i < n; i++) { const tw = ctx.measureText(tags[i]).width + 24 + (on(C.close) ? 18 : 0); if (x + tw > W - 20) { x = 20; y += h + 10; }
+      const pop = i === n - 1 ? easeFn('back', Math.min(1, ((t * 0.5) % 1) * 3)) : 1, s2 = i === sel;
+      ctx.save(); ctx.translate(x + tw / 2, y + h / 2); ctx.scale(pop, pop); ctx.translate(-(x + tw / 2), -(y + h / 2));
+      ctx.fillStyle = s2 ? k.col : '#18233d'; rrect(ctx, x, y, tw, h, h / 2); ctx.fill(); ctx.strokeStyle = s2 ? k.col : '#24314f'; ctx.lineWidth = 1; ctx.stroke();
+      text(ctx, tags[i], x + 12, y + h / 2, { size: fsz(W, H, 0.9), col: s2 ? '#0b1020' : '#e2e8f0', bold: s2 }); if (on(C.close)) text(ctx, '×', x + tw - 14, y + h / 2, { size: fsz(W, H), col: s2 ? '#0b1020' : '#94a3b8', align: 'center' });
+      ctx.restore(); if (inR(P, x, y, tw, h)) cell = tags[i]; x += tw + 8; }
+    return { mode: on(C.close) ? '可删除' : '只读', cell: cell || '（移到标签）' };
+  } });
+
+FAM.table = uiFam({ title: '表格交互', size: { label: '行高', min: 24, max: 48, step: 1, value: 32 }, count: { label: '行数', min: 3, max: 12, step: 1, value: 6 },
+  extras: [T('zebra', '斑马纹', true)], presets: { 少: { count: 3 }, 多: { count: 12 }, 无斑马: { zebra: false }, 高行: { size: 46 } },
+  explain: '数据表格：表头固定，行悬停高亮，斑马纹提高可读性；排序列的箭头周期翻转。', formula: '行 y_i = 表头 + i × 行高', formula2: '悬停行 = floor((y−表头)/行高)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 3, 12), rh = Math.min(k.s, (H - 70) / n), cols = ['名称', '状态', '数量', '更新'], cw = (W - 40) / 4, x0 = 20, y0 = 22;
+    ctx.fillStyle = '#18233d'; rrect(ctx, x0, y0, W - 40, 34, 8); ctx.fill(); const asc = Math.floor(t * 0.4) % 2 === 0;
+    cols.forEach((c, j) => text(ctx, c + (j === 2 ? (asc ? ' ▲' : ' ▼') : ''), x0 + 12 + j * cw, y0 + 17, { size: fsz(W, H, 0.9), col: j === 2 ? k.col : '#cbd5e1', bold: true }));
+    let cell = null;
+    for (let i = 0; i < n; i++) { const y = y0 + 38 + i * rh, hov = inR(P, x0, y, W - 40, rh), v = asc ? (i + 1) * 13 : (n - i) * 13;
+      if (hov) { ctx.fillStyle = hsla(hueOf(k.col), 70, 60, 0.22); ctx.fillRect(x0, y, W - 40, rh); } else if (on(C.zebra) && i % 2) { ctx.fillStyle = 'rgba(255,255,255,.05)'; ctx.fillRect(x0, y, W - 40, rh); }
+      text(ctx, `项目 ${String.fromCharCode(65 + i)}`, x0 + 12, y + rh / 2, { size: fsz(W, H, 0.85), col: '#e2e8f0' });
+      ctx.fillStyle = i % 3 ? '#22c55e' : '#f59e0b'; ctx.beginPath(); ctx.arc(x0 + cw + 16, y + rh / 2, 4, 0, TAU); ctx.fill(); text(ctx, i % 3 ? '正常' : '待审', x0 + cw + 26, y + rh / 2, { size: fsz(W, H, 0.85), col: '#cbd5e1' });
+      text(ctx, String(v), x0 + 12 + 2 * cw, y + rh / 2, { size: fsz(W, H, 0.85), col: '#e2e8f0' }); text(ctx, `${i + 1} 分钟前`, x0 + 12 + 3 * cw, y + rh / 2, { size: fsz(W, H, 0.8), col: '#94a3b8' });
+      if (hov) cell = `项目 ${String.fromCharCode(65 + i)}`; }
+    return { mode: asc ? '数量升序' : '数量降序', cell: cell || '（移到行）' };
+  } });
+
+FAM.avatar = uiFam({ title: '头像组', size: { label: '头像直径', min: 28, max: 72, step: 1, value: 44 }, count: { label: '人数', min: 2, max: 10, step: 1, value: 6 },
+  extras: [R('overlap', '重叠比例', 0, 0.6, 0.01, 0.3)], presets: { 少: { count: 3 }, 多: { count: 10 }, 不重叠: { overlap: 0 }, 大: { size: 68 } },
+  explain: '头像组：圆形头像相互重叠排成一行，悬停的头像上浮放大；超出显示 +N。在线状态点呼吸。', formula: 'x_i = i × 直径 × (1 − 重叠)', formula2: '超出 5 个显示 +N',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 10), d = k.s, step = d * (1 - num(C.overlap, 0.3)), show = Math.min(n, 5), total = (show - 1) * step + d + (n > 5 ? step : 0), x0 = (W - total) / 2 + d / 2, cy = H / 2; let cell = null;
+    for (let i = 0; i < show; i++) { const x = x0 + i * step, hov = Math.hypot(P.x - x, P.y - cy) < d / 2, lift = hov ? -8 : 0; if (hov) cell = `成员 ${i + 1}`;
+      ctx.fillStyle = '#0a1020'; ctx.beginPath(); ctx.arc(x, cy + lift, d / 2 + 3, 0, TAU); ctx.fill();
+      ctx.fillStyle = pastel(C, i, show); ctx.beginPath(); ctx.arc(x, cy + lift, d / 2, 0, TAU); ctx.fill(); text(ctx, '张王李赵刘'[i], x, cy + lift, { size: d * 0.38, col: '#0b1020', align: 'center', bold: true });
+      if (i % 2 === 0) { ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(x + d * 0.35, cy + lift + d * 0.35, d * 0.1 * (1 + 0.2 * Math.sin(t * 3 + i)), 0, TAU); ctx.fill(); } }
+    if (n > 5) { const x = x0 + show * step; ctx.fillStyle = '#24314f'; ctx.beginPath(); ctx.arc(x, cy, d / 2, 0, TAU); ctx.fill(); text(ctx, `+${n - 5}`, x, cy, { size: d * 0.34, col: k.col, align: 'center', bold: true }); }
+    text(ctx, `${n} 位成员在线协作`, W / 2, cy + d / 2 + 28, { size: fsz(W, H), col: '#94a3b8', align: 'center' });
+    return { mode: `重叠 ${fmt(num(C.overlap, 0.3) * 100, 0)}%`, cell: cell || '（移到头像）' };
+  } });
+
+FAM.stepper = uiFam({ title: '步骤条动效', size: { label: '节点直径', min: 20, max: 48, step: 1, value: 32 }, count: { label: '步骤数', min: 2, max: 7, step: 1, value: 4 },
+  extras: [T('label', '显示步骤名', true)], presets: { 两步: { count: 2 }, 七步: { count: 7 }, 无文字: { label: false }, 大: { size: 46 } },
+  explain: '步骤条：当前步骤之前打勾，连接线随进度填充主色，当前节点外圈脉冲。', formula: '进度线长度 = (当前 + ease(frac)) / (n−1)', formula2: '完成节点显示 ✓',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 7), d = k.s, names = ['账号', '资料', '验证', '支付', '确认', '完成', '反馈'], x0 = 40, x1 = W - 40, cy = H * 0.42, gap = (x1 - x0) / (n - 1);
+    const cyc = (t * 0.35) % n, cur = Math.floor(cyc), fr = easeFn('ease-in-out', clamp((cyc - cur - 0.5) * 2, 0, 1)); let cell = null;
+    line(ctx, x0, cy, x1, cy, '#24314f', 4); line(ctx, x0, cy, x0 + Math.min(n - 1, cur + fr) * gap, cy, k.col, 4);
+    for (let i = 0; i < n; i++) { const x = x0 + i * gap, done = i < cur, now = i === cur;
+      if (now) { ctx.strokeStyle = hsla(hueOf(k.col), 80, 65, 0.5 * (1 - (t % 1))); ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, cy, d / 2 + 4 + (t % 1) * 10, 0, TAU); ctx.stroke(); }
+      ctx.fillStyle = done || now ? k.col : '#18233d'; ctx.beginPath(); ctx.arc(x, cy, d / 2, 0, TAU); ctx.fill(); ctx.strokeStyle = '#24314f'; ctx.lineWidth = 1.5; if (!done && !now) ctx.stroke();
+      text(ctx, done ? '✓' : String(i + 1), x, cy, { size: d * 0.42, col: done || now ? '#0b1020' : '#94a3b8', align: 'center', bold: true });
+      if (on(C.label)) text(ctx, names[i], x, cy + d / 2 + 18, { size: fsz(W, H, 0.85), col: now ? '#f8fafc' : '#94a3b8', align: 'center' });
+      if (Math.hypot(P.x - x, P.y - cy) < d / 2 + 6) cell = names[i]; }
+    ctx.fillStyle = '#141d33'; rrect(ctx, 20, cy + d / 2 + 40, W - 40, H - cy - d / 2 - 56, 12); ctx.fill(); text(ctx, `第 ${cur + 1} 步：${names[cur]}`, 36, cy + d / 2 + 64, { size: fsz(W, H, 1.05), col: '#f8fafc', bold: true });
+    return { mode: `第 ${cur + 1}/${n} 步`, cell: cell || '（移到节点）' };
+  } });
+
+FAM.kanban = uiFam({ title: '看板', size: { label: '卡片高度', min: 28, max: 64, step: 1, value: 42 }, count: { label: '列数', min: 2, max: 5, step: 1, value: 3 },
+  extras: [T('wip', 'WIP 计数', true)], presets: { 两列: { count: 2 }, 五列: { count: 5 }, 无计数: { wip: false }, 高卡: { size: 60 } },
+  explain: '看板：任务卡片在「待办 → 进行中 → 完成」列之间拖动，被拖卡片带阴影漂浮移动。', formula: '拖拽卡 x = lerp(列_a, 列_b, ease)', formula2: '列头显示卡片数（WIP）',
+  draw(ctx, W, H, t, C, P, k) {
+    const nc = clamp(k.n, 2, 5), ch = k.s, names = ['待办', '进行中', '评审', '测试', '完成'], cw = (W - 24) / nc; let cell = null;
+    const cyc = (t * 0.3) % (nc - 1), from = Math.floor(cyc), p = easeFn('ease-in-out', clamp((cyc - from - 0.3) / 0.7, 0, 1));
+    for (let c = 0; c < nc; c++) { const x = 12 + c * cw + 4, w = cw - 8, cnt = 3 - (c % 2);
+      ctx.fillStyle = '#121a2f'; rrect(ctx, x, 20, w, H - 30, 12); ctx.fill(); text(ctx, names[c] + (on(C.wip) ? ` · ${cnt}` : ''), x + 10, 36, { size: fsz(W, H, 0.9), col: '#cbd5e1', bold: true });
+      for (let j = 0; j < cnt; j++) { const y = 52 + j * (ch + 8); if (y + ch > H - 14) break; ctx.fillStyle = '#1b2540'; rrect(ctx, x + 6, y, w - 12, ch, 8); ctx.fill(); ctx.fillStyle = pastel(C, c * 3 + j, 15); ctx.fillRect(x + 6, y, 4, ch);
+        text(ctx, `任务 ${c + 1}-${j + 1}`, x + 16, y + ch / 2, { size: fsz(W, H, 0.85), col: '#e2e8f0' }); if (inR(P, x + 6, y, w - 12, ch)) cell = `任务 ${c + 1}-${j + 1}`; } }
+    const dx = 12 + (from + p) * cw + 10, dy = 52 + 3 * (ch + 8) - Math.sin(p * Math.PI) * 30;
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 16; ctx.fillStyle = k.col; rrect(ctx, dx, Math.min(dy, H - ch - 16), cw - 20, ch, 8); ctx.fill(); ctx.restore();
+    text(ctx, '拖动中…', dx + 12, Math.min(dy, H - ch - 16) + ch / 2, { size: fsz(W, H, 0.85), col: '#0b1020', bold: true });
+    return { mode: `${names[from]} → ${names[from + 1]}`, cell: cell || '（移到卡片）' };
+  } });
+
+FAM.colorpick = uiFam({ title: '取色器', size: { label: '色盘大小', min: 0.5, max: 1, step: 0.01, value: 0.8 }, count: { label: '色板数', min: 3, max: 10, step: 1, value: 6 },
+  extras: [R('light', '明度', 20, 80, 1, 55)], presets: { 少色板: { count: 3 }, 多色板: { count: 10 }, 暗: { light: 30 }, 亮: { light: 75 } },
+  explain: '取色器：色相环 + 预设色板。指针在色环上的角度就是色相（H），明度滑条调 L，右侧实时预览。', formula: 'H = atan2(y−cy, x−cx)', formula2: '颜色 = hsl(H, 80%, 明度)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 3, 10), R0 = Math.min(W * 0.32, H * 0.42) * k.s, cx = Math.max(R0 + 20, W * 0.34), cy = H / 2, L = num(C.light, 55);
+    for (let a = 0; a < 360; a += 3) { ctx.strokeStyle = hsla(a, 80, L); ctx.lineWidth = R0 * 0.28; ctx.beginPath(); ctx.arc(cx, cy, R0 * 0.86, (a - 1.6) * Math.PI / 180, (a + 1.6) * Math.PI / 180); ctx.stroke(); }
+    const dist = Math.hypot(P.x - cx, P.y - cy), onRing = P.user && dist > R0 * 0.7 && dist < R0;
+    const hue = onRing ? ((Math.atan2(P.y - cy, P.x - cx) * 180 / Math.PI) + 360) % 360 : (hueOf(k.col) + t * 20) % 360;
+    const ka = hue * Math.PI / 180; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx + Math.cos(ka) * R0 * 0.86, cy + Math.sin(ka) * R0 * 0.86, 9, 0, TAU); ctx.stroke();
+    ctx.fillStyle = hsla(hue, 80, L); ctx.beginPath(); ctx.arc(cx, cy, R0 * 0.5, 0, TAU); ctx.fill();
+    const px = Math.min(W - 160, cx + R0 + 30), sw = 22;
+    text(ctx, `H ${hue.toFixed(0)}°  L ${L}%`, px, 40, { size: fsz(W, H), col: '#e2e8f0', bold: true });
+    for (let i = 0; i < n; i++) { const x = px + (i % 5) * (sw + 8), y = 60 + ((i / 5) | 0) * (sw + 8); ctx.fillStyle = pastel(C, i, n); rrect(ctx, x, y, sw, sw, 6); ctx.fill(); }
+    return { mode: onRing ? '取色中' : '自动漫游', cell: `hsl(${hue.toFixed(0)}, 80%, ${L}%)` };
+  } });
+
+FAM.notify = uiFam({ title: '通知中心', size: { label: '面板宽度', min: 220, max: 420, step: 2, value: 320 }, count: { label: '通知数', min: 1, max: 7, step: 1, value: 4 },
+  extras: [T('badge', '未读红点', true)], presets: { 少: { count: 1 }, 多: { count: 7 }, 无红点: { badge: false }, 宽: { size: 400 } },
+  explain: '通知中心：铃铛显示未读数并轻摇，面板列出通知，新通知从顶部插入，其余下移。', formula: '铃铛摆角 = sin(20t)·e^(−3p)·15°', formula2: '未读数 = 通知数 − 已读',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 7), pw = Math.min(k.s, W - 30), px = W - pw - 15, p = (t * 0.4) % 1, rh = Math.min(54, (H - 90) / n); let cell = null;
+    const bx = W - 40, by = 34; ctx.save(); ctx.translate(bx, by - 12); ctx.rotate(Math.sin(t * 20) * Math.exp(-3 * p) * 0.26); text(ctx, '🔔', 0, 12, { size: 22, col: '#fff', align: 'center' }); ctx.restore();
+    if (on(C.badge)) { ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(bx + 10, by - 10, 9, 0, TAU); ctx.fill(); text(ctx, String(n), bx + 10, by - 10, { size: 11, col: '#fff', align: 'center', bold: true }); }
+    ctx.fillStyle = '#141d33'; rrect(ctx, px, 60, pw, H - 72, 12); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
+    const ins = easeFn('ease-out', Math.min(1, p * 3)); const msgs = ['新评论', '构建成功', '有人提到你', '部署完成', '订单已发货', '日程提醒', '安全登录'];
+    for (let i = 0; i < n; i++) { const y = 70 + (i - 1 + ins) * rh; if (i === 0) ctx.globalAlpha = ins; if (y < 64 || y + rh > H - 12) { ctx.globalAlpha = 1; continue; }
+      ctx.fillStyle = i === 0 ? hsla(hueOf(k.col), 60, 55, 0.18) : '#18233d'; rrect(ctx, px + 8, y, pw - 16, rh - 6, 8); ctx.fill();
+      ctx.fillStyle = pastel(C, i, n); ctx.beginPath(); ctx.arc(px + 26, y + (rh - 6) / 2, 9, 0, TAU); ctx.fill();
+      text(ctx, msgs[i], px + 44, y + (rh - 6) / 2, { size: fsz(W, H, 0.9), col: '#e2e8f0' }); ctx.globalAlpha = 1; if (inR(P, px + 8, y, pw - 16, rh - 6)) cell = msgs[i]; }
+    return { mode: on(C.badge) ? `未读 ${n}` : '静默', cell: cell || '（移到通知）' };
+  } });
+
+FAM.command = uiFam({ title: '命令面板', size: { label: '面板宽度', min: 0.5, max: 0.95, step: 0.01, value: 0.8 }, count: { label: '结果数', min: 2, max: 8, step: 1, value: 5 },
+  extras: [T('kbd', '快捷键提示', true)], presets: { 少: { count: 2 }, 多: { count: 8 }, 无快捷键: { kbd: false }, 窄: { size: 0.55 } },
+  explain: '命令面板（⌘K）：输入关键字逐字出现，结果列表实时过滤，高亮项上下移动，回车执行。', formula: '匹配 = 名称包含输入', formula2: '高亮 = (t × 速度) mod 结果数',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 8), pw = W * k.s, px = (W - pw) / 2, cmds = ['打开文件', '切换主题', '新建窗口', '查找替换', '格式化文档', '运行测试', '提交代码', '设置'];
+    ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 8, W, H); ctx.fillStyle = '#18233d'; rrect(ctx, px, 24, pw, H - 40, 14); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
+    const q = '打开文件切换', typed = q.slice(0, 1 + Math.floor((t * 2) % q.length)); text(ctx, '› ' + typed, px + 16, 48, { size: fsz(W, H, 1.05), col: '#f8fafc' });
+    ctx.font = `${fsz(W, H, 1.05)}px ui-sans-serif`; caret(ctx, px + 30 + ctx.measureText(typed).width, 48, t, k.col); line(ctx, px, 70, px + pw, 70, '#24314f', 1);
+    const rh = Math.min(38, (H - 100) / n), hi = Math.floor(t * 0.8) % n; let cell = null;
+    for (let i = 0; i < n; i++) { const y = 78 + i * rh, hov = inR(P, px, y, pw, rh); if (hov) cell = cmds[i];
+      if (i === hi || hov) { ctx.fillStyle = hov ? hsla(hueOf(k.col), 70, 60, 0.3) : hsla(hueOf(k.col), 70, 60, 0.18); rrect(ctx, px + 6, y, pw - 12, rh - 4, 8); ctx.fill(); }
+      text(ctx, cmds[i], px + 18, y + rh / 2 - 2, { size: fsz(W, H, 0.9), col: '#e2e8f0' });
+      if (on(C.kbd)) { ctx.fillStyle = '#0d1426'; rrect(ctx, px + pw - 62, y + 6, 46, rh - 16, 5); ctx.fill(); text(ctx, '⌘' + (i + 1), px + pw - 39, y + rh / 2 - 2, { size: fsz(W, H, 0.8), col: '#94a3b8', align: 'center' }); } }
+    return { mode: `输入“${typed}”`, cell: cell || '（移到结果）' };
+  } });
+
+FAM.pagination = uiFam({ title: '分页器', size: { label: '页码尺寸', min: 26, max: 48, step: 1, value: 34 }, count: { label: '总页数', min: 3, max: 20, step: 1, value: 9 },
+  extras: [T('ellipsis', '省略号折叠', true)], presets: { 少页: { count: 3 }, 多页: { count: 20 }, 不折叠: { ellipsis: false }, 大: { size: 46 } },
+  explain: '分页器：当前页高亮块滑动到目标页；页数多时中间折叠成 …，始终显示首尾页。', formula: '显示 = 1, 当前±1, 末页', formula2: '高亮 x = lerp(旧, 新, ease)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 3, 20), s = k.s, cur = Math.floor(t * 0.5) % n + 1; let items = [];
+    if (!on(C.ellipsis) || n <= 7) for (let i = 1; i <= n; i++) items.push(i);
+    else { items = [1]; if (cur > 3) items.push('…'); for (let i = Math.max(2, cur - 1); i <= Math.min(n - 1, cur + 1); i++) items.push(i); if (cur < n - 2) items.push('…'); items.push(n); }
+    items = ['‹', ...items, '›']; const gap = 6, maxW = W - 30, sz = Math.min(s, (maxW - gap * items.length) / items.length), tw = items.length * (sz + gap), x0 = (W - tw) / 2, cy = H * 0.45; let cell = null;
+    items.forEach((it, i) => { const x = x0 + i * (sz + gap), sel = it === cur, hov = inR(P, x, cy - sz / 2, sz, sz);
+      ctx.fillStyle = sel ? k.col : hov ? '#24314f' : '#141d33'; rrect(ctx, x, cy - sz / 2, sz, sz, 8); ctx.fill();
+      text(ctx, String(it), x + sz / 2, cy, { size: Math.min(fsz(W, H), sz * 0.45), col: sel ? '#0b1020' : '#cbd5e1', align: 'center', bold: sel }); if (hov) cell = String(it); });
+    ctx.fillStyle = '#141d33'; rrect(ctx, 20, cy + sz, W - 40, H - cy - sz - 16, 12); ctx.fill();
+    text(ctx, `第 ${cur} / ${n} 页 · 每页 10 条`, W / 2, cy + sz + 30, { size: fsz(W, H), col: '#94a3b8', align: 'center' });
+    for (let r = 0; r < 3; r++) { ctx.fillStyle = pastel(C, cur + r, n + 3, 0.5); rrect(ctx, 36, cy + sz + 50 + r * 24, (W - 72) * (0.5 + 0.15 * r), 14, 6); ctx.fill(); }
+    return { mode: `当前第 ${cur} 页`, cell: cell || '（移到页码）' };
+  } });
+
+FAM.breadcrumb = uiFam({ title: '面包屑', size: { label: '字号', min: 11, max: 22, step: 1, value: 14 }, count: { label: '路径层数', min: 2, max: 7, step: 1, value: 4 },
+  extras: [T('chev', '箭头分隔', true)], presets: { 浅: { count: 2 }, 深: { count: 7 }, 斜杠: { chev: false }, 大字: { size: 20 } },
+  explain: '面包屑：显示当前页面在站点中的层级路径，末级为当前页；新层级从右侧滑入，悬停项加下划线。', formula: '路径 = 首页 › … › 当前', formula2: '分隔符 = › 或 /',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 2, 7), fs = k.s, names = ['首页', '产品', '电子', '手机', '旗舰', '配置', '详情'], cy = H * 0.3, p = easeFn('ease-out', Math.min(1, ((t * 0.4) % 1) * 3)); let x = 24, y = cy, cell = null;
+    ctx.font = `${fs}px ui-sans-serif`; ctx.fillStyle = '#141d33'; rrect(ctx, 12, cy - fs * 1.4, W - 24, fs * 2.8 + (W < 500 ? fs * 2 : 0), 10); ctx.fill();
+    for (let i = 0; i < n; i++) { const last = i === n - 1, w = ctx.measureText(names[i]).width, sep = on(C.chev) ? ' › ' : ' / ', sw = ctx.measureText(sep).width;
+      if (x + w > W - 24) { x = 24; y += fs * 1.8; }
+      const xx = last ? x + (1 - p) * 30 : x; ctx.globalAlpha = last ? p : 1; const hov = inR(P, xx, y - fs, w, fs * 2);
+      text(ctx, names[i], xx, y, { size: fs, col: last ? k.col : hov ? '#f8fafc' : '#94a3b8', bold: last }); if (hov) { line(ctx, xx, y + fs * 0.7, xx + w, y + fs * 0.7, k.col, 1.5); cell = names[i]; }
+      ctx.globalAlpha = 1; x += w; if (!last) { text(ctx, sep, x, y, { size: fs, col: '#475569' }); x += sw; } }
+    ctx.fillStyle = '#121a2f'; rrect(ctx, 12, H * 0.5, W - 24, H * 0.46, 12); ctx.fill(); text(ctx, names[n - 1] + ' 页面内容', 30, H * 0.5 + 28, { size: fsz(W, H, 1.1), col: '#f8fafc', bold: true });
+    return { mode: `${n} 层路径`, cell: cell || '（移到路径）' };
+  } });
+
+FAM.rating = uiFam({ title: '评分', size: { label: '星星大小', min: 16, max: 48, step: 1, value: 32 }, count: { label: '星星数', min: 3, max: 10, step: 1, value: 5 },
+  extras: [T('half', '允许半星', true)], presets: { 三星: { count: 3 }, 十星: { count: 10 }, 整星: { half: false }, 大: { size: 46 } },
+  explain: '评分组件：悬停预览分数（星星依次点亮放大），离开后回到当前分；支持半星。', formula: '分数 = (指针x − 左) / 星宽，按 0.5 取整', formula2: '点亮星 scale 1→1.2',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 3, 10), s = Math.min(k.s, (W - 40) / n - 6), gap = s + 6, x0 = (W - n * gap) / 2, cy = H * 0.42, inRow = inR(P, x0, cy - s, n * gap, s * 2);
+    let score = inRow ? (P.x - x0) / gap : (Math.sin(t * 0.8) * 0.5 + 0.5) * n; score = on(C.half) ? Math.ceil(score * 2) / 2 : Math.ceil(score); score = clamp(score, 0.5, n);
+    const star = (cx, cy2, r) => { ctx.beginPath(); for (let j = 0; j < 10; j++) { const a = -Math.PI / 2 + j * Math.PI / 5, rr = j % 2 ? r * 0.45 : r; ctx.lineTo(cx + Math.cos(a) * rr, cy2 + Math.sin(a) * rr); } ctx.closePath(); };
+    for (let i = 0; i < n; i++) { const cx = x0 + i * gap + gap / 2, fill = clamp(score - i, 0, 1), sc = fill > 0 ? 1 + 0.12 * Math.max(0, Math.sin(t * 4 - i)) : 1;
+      star(cx, cy, s / 2 * sc); ctx.fillStyle = '#24314f'; ctx.fill();
+      if (fill > 0) { ctx.save(); ctx.beginPath(); ctx.rect(cx - s, cy - s, s * fill, s * 2); ctx.clip(); star(cx, cy, s / 2 * sc); ctx.fillStyle = k.col; ctx.fill(); ctx.restore(); } }
+    text(ctx, `${score} / ${n} 分`, W / 2, cy + s + 24, { size: fsz(W, H, 1.2), col: '#f8fafc', align: 'center', bold: true });
+    ctx.fillStyle = '#141d33'; rrect(ctx, 20, cy + s + 50, W - 40, H - cy - s - 64, 12); ctx.fill(); text(ctx, ['很差', '一般', '还行', '不错', '超赞'][Math.min(4, Math.floor(score / n * 4.99))], W / 2, cy + s + 50 + (H - cy - s - 64) / 2, { size: fsz(W, H), col: k.col, align: 'center' });
+    return { mode: on(C.half) ? '半星' : '整星', cell: inRow ? `预览 ${score} 分` : '（移到星星）' };
+  } });
+
+FAM.empty = uiFam({ title: '空状态', size: { label: '插画大小', min: 0.4, max: 1, step: 0.01, value: 0.7 }, count: { label: '插画样式', min: 0, max: 3, step: 1, value: 0 },
+  extras: [T('cta', '显示操作按钮', true)], presets: { 空盒: { count: 0 }, 搜索无果: { count: 1 }, 离线: { count: 2 }, 无消息: { count: 3 }, 无按钮: { cta: false } },
+  explain: '空状态：列表没有数据时，用一幅轻微浮动的插画 + 说明文字 + 引导按钮，告诉用户下一步做什么。', formula: '插画 y = sin(t) × 6px', formula2: '阴影宽 ∝ 1 − 上浮量',
+  draw(ctx, W, H, t, C, P, k) {
+    const st = clamp(k.n, 0, 3), names = ['暂无数据', '没有搜索结果', '网络已断开', '没有新消息'], icons = ['📦', '🔍', '📡', '💬'], R0 = Math.min(W, H) * 0.22 * k.s, cy = H * 0.38, fy = Math.sin(t * 1.5) * 6;
+    ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(W / 2, cy + R0 + 12, R0 * (0.8 - fy / 40), 8, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = hsla(hueOf(k.col), 60, 55, 0.18); ctx.beginPath(); ctx.arc(W / 2, cy + fy, R0, 0, TAU); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 2; ctx.setLineDash([6, 6]); ctx.stroke(); ctx.setLineDash([]);
+    text(ctx, icons[st], W / 2, cy + fy, { size: R0, col: '#fff', align: 'center' });
+    text(ctx, names[st], W / 2, cy + R0 + 40, { size: fsz(W, H, 1.2), col: '#f8fafc', align: 'center', bold: true }); text(ctx, '换个条件试试，或点击下方按钮新建', W / 2, cy + R0 + 64, { size: fsz(W, H, 0.85), col: '#94a3b8', align: 'center' });
+    let cell = null; if (on(C.cta)) { const bw = 140, bx = (W - bw) / 2, by = Math.min(H - 50, cy + R0 + 84); const hov = inR(P, bx, by, bw, 38); btnBox(ctx, bx, by - (hov ? 2 : 0), bw, 38, 10, k.col, '＋ 新建', W, H); if (hov) cell = '新建按钮'; }
+    return { mode: names[st], cell: cell || '（移到按钮）' };
+  } });
+
+FAM.banner = uiFam({ title: '横幅', size: { label: '横幅高度', min: 40, max: 90, step: 1, value: 56 }, count: { label: '横幅数', min: 1, max: 4, step: 1, value: 2 },
+  extras: [T('marquee', '滚动文字', true)], presets: { 单条: { count: 1 }, 多条: { count: 4 }, 静止: { marquee: false }, 高: { size: 84 } },
+  explain: '公告横幅：页面顶部的提示条，从上方滑下；长文字可横向滚动，右侧有关闭按钮。', formula: '滚动 x = −fract(t×速度)×文本宽', formula2: '进场 translateY(−100%→0)',
+  draw(ctx, W, H, t, C, P, k) {
+    const n = clamp(k.n, 1, 4), bh = k.s, kinds = [['公告', k.col], ['警告', '#f59e0b'], ['成功', '#22c55e'], ['错误', '#ef4444']]; let cell = null;
+    const ent = easeFn('ease-out', Math.min(1, ((t * 0.25) % 1) * 4));
+    for (let i = 0; i < n; i++) { const y = 16 + i * (bh + 8) - (i === 0 ? (1 - ent) * (bh + 16) : 0), [lab, c] = kinds[i];
+      ctx.fillStyle = hsla(hueOf(c), 70, 45, 0.3); rrect(ctx, 12, y, W - 24, bh, 10); ctx.fill(); ctx.fillStyle = c; rrect(ctx, 12, y, 6, bh, 3); ctx.fill();
+      ctx.save(); rrect(ctx, 24, y, W - 80, bh, 0); ctx.clip(); const msg = `【${lab}】系统将于今晚 23:00 维护升级，预计 30 分钟，请提前保存工作。　　`;
+      ctx.font = `${fsz(W, H)}px ui-sans-serif`; const mw = ctx.measureText(msg).width, off = on(C.marquee) ? -((t * 40) % mw) : 0;
+      text(ctx, msg, 30 + off, y + bh / 2, { size: fsz(W, H), col: '#f8fafc' }); if (on(C.marquee)) text(ctx, msg, 30 + off + mw, y + bh / 2, { size: fsz(W, H), col: '#f8fafc' }); ctx.restore();
+      text(ctx, '×', W - 36, y + bh / 2, { size: fsz(W, H, 1.2), col: '#cbd5e1', align: 'center' }); if (inR(P, 12, y, W - 24, bh)) cell = lab; }
+    const top = 16 + n * (bh + 8); ctx.fillStyle = '#121a2f'; rrect(ctx, 12, top, W - 24, H - top - 10, 12); ctx.fill();
+    for (let r = 0; r < 4; r++) { ctx.fillStyle = '#1b2540'; rrect(ctx, 28, top + 20 + r * 26, (W - 56) * (0.9 - r * 0.15), 12, 6); ctx.fill(); }
+    return { mode: on(C.marquee) ? '滚动' : '静止', cell: cell || '（移到横幅）' };
+  } });
+
+const FAMILIES = Object.keys(FAM);
+const TITLES = Object.fromEntries(Object.entries(FAM).map(([k, v]) => [k, (v.doc.title || k).split('·')[0].trim()]));
+const LIVE = ['color', 'speed', 'size', 'count', ...new Set(Object.values(FAM).flatMap((f) => f.spec.extras.map((e) => e.key)))];
+
 export function mount(host, opts = {}) {
-  return withControls(host, opts, {
+  const raw = String(opts.variant || 'input');
+  const parsed = FAMILIES.includes(raw) ? raw : raw.replace(/-\d+$/, '');
+  const fam = FAMILIES.includes(parsed) ? parsed : 'input';
+  const F0 = FAM[fam];
+  return withControls(host, { ...opts, variant: opts.variant || fam }, {
     kitKey: 'kit-ui',
-    title: TITLES[parseVariant(opts.variant||'input').family]||'UI',
-    fallbackVariant: 'input',
-    params: defaultParams({color:true,speed:true,size:false}),
-    
-    mountLegacy,
+    title: TITLES[fam] || fam,
+    fallbackVariant: fam,
+    params: paramsFromSpec(F0.spec),
+    remountKeys: F0.spec.remountKeys || [],
+    liveKeys: LIVE,
+    presets: F0.presets ? Object.keys(F0.presets) : undefined,
+    presetDefaults: F0.presets && { ...F0.presets, 默认: { color: F0.spec.color.value, ...(F0.presets['默认'] || {}) } },
+    mapVariant: (family, n) => `${family}-${n}`,
+    mountLegacy: (box, o) => {
+      const S = createCanvasStage(box, o, { doc: F0.doc, spec: F0.spec, bg: '#060a14', auto: true, cursor: 'crosshair' });
+      S.onFrame(F0.build(S));
+      return () => S.destroy();
+    },
   });
 }
-
-
-function mountLegacy(host, opts = {}) {
-  const id = opts.variant || 'input-1';
-  const n = parseInt(String(id).split('-').pop(), 10) || 1;
-  const parts = id.split('-');
-  const kind = parts.slice(0, -1).join('-') || parts[0];
-  const { stage } = bar(host, id);
-  const ctrl = opts._controls || {};
-  const live = () => readLiveControls([host, stage, host.parentElement], ctrl);
-  const c = ctrl.color || hsl(n);
-  const rm = addStyle(`
-    .ku{position:absolute;inset:0;overflow:auto;padding:22px;color:var(--text,#e8eefc);display:flex;flex-direction:column;box-sizing:border-box;/* --c inherited */}
-    .ku h3{margin:0 0 12px;font-size:14px;color:var(--muted,#93a0c0)}
-    .ku .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
-    .ku input[type=text],.ku input[type=search],.ku input[type=password]{background:#0d1426;border:1px solid #24314f;border-radius:10px;padding:10px 12px;color:var(--text);min-width:200px}
-    .ku input:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
-    .ku .sw{width:46px;height:26px;border-radius:999px;background:#24314f;position:relative;cursor:pointer;transition:.25s cubic-bezier(.34,1.56,.64,1)}
-    .ku .sw.on{background:var(--c)} .ku .sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.25s cubic-bezier(.34,1.56,.64,1)}
-    .ku .sw.on i{left:23px}
-    .ku .seg{display:flex;border:1px solid #24314f;border-radius:10px;overflow:hidden;position:relative}
-    .ku .seg button{background:transparent;border:0;color:var(--muted);padding:8px 14px;cursor:pointer;position:relative;z-index:1}
-    .ku .seg button.on{color:var(--text)}
-    .ku .seg .pill{position:absolute;inset:2px auto 2px 2px;width:0;background:color-mix(in srgb,var(--c) 30%,#121a2f);border-radius:8px;transition:left .25s,width .25s}
-    .ku .stars span{cursor:pointer;font-size:22px;opacity:.35;transition:.15s} .ku .stars span.on{opacity:1;color:var(--c)}
-    .ku .step{display:flex;align-items:center;gap:0;border:1px solid #24314f;border-radius:10px;overflow:hidden}
-    .ku .step button{width:34px;height:34px;border:0;background:#18233d;color:var(--text);cursor:pointer}
-    .ku .step b{min-width:40px;text-align:center}
-    .ku .tags{display:flex;flex-wrap:wrap;gap:6px}.ku .tag{background:#18233d;border:1px solid #24314f;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;transition:.2s}
-    .ku .tag.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 20%,#18233d)}
-    .ku .prog{height:10px;background:#0d1426;border-radius:999px;overflow:hidden;width:min(360px,100%)}.ku .prog i{display:block;height:100%;width:40%;background:linear-gradient(90deg,var(--c),#22d3ee);transition:width .6s}
-    .ku .toast{background:#18233d;border:1px solid var(--c);padding:10px 14px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
-    .ku .toast-stack{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;gap:8px;z-index:5}
-    @keyframes pop{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
-    .ku .nav{display:flex;gap:6px;flex-wrap:wrap}.ku .nav a{padding:8px 12px;border-radius:8px;color:var(--muted);text-decoration:none;border:1px solid transparent;transition:.2s}
-    .ku .nav a.on{color:var(--text);background:color-mix(in srgb,var(--c) 18%,transparent);border-color:#24314f}
-    .ku .pager button{min-width:34px;height:34px;border-radius:8px;border:1px solid #24314f;background:#121a2f;color:var(--text);cursor:pointer}
-    .ku .pager button.on{background:var(--c);color:#0b1020;border:none;font-weight:700}
-    .ku .steps{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.ku .steps .s{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#18233d;border:1px solid #24314f;font-size:12px;transition:.25s}
-    .ku .steps .s.on{background:var(--c);color:#0b1020;border:none;font-weight:700}
-    .ku .drawer{position:absolute;right:0;top:0;bottom:0;width:min(280px,80%);background:#121a2f;border-left:1px solid #24314f;padding:18px;transform:translateX(105%);transition:.28s cubic-bezier(.2,.8,.2,1);z-index:6}
-    .ku .drawer.open{transform:none}
-    .ku .acc details{background:#18233d;border:1px solid #24314f;border-radius:12px;padding:4px 12px;margin-bottom:8px;transition:.2s}
-    .ku .acc details[open]{border-color:var(--c)}
-    .ku .acc summary{cursor:pointer;padding:10px 4px;font-weight:600;list-style:none}
-    .ku .modal-b{position:absolute;inset:0;background:rgba(5,8,16,.6);display:grid;place-items:center;opacity:0;pointer-events:none;transition:.25s;z-index:8}
-    .ku .modal-b.on{opacity:1;pointer-events:auto}
-    .ku .modal-p{width:min(340px,90%);background:#18233d;border:1px solid #24314f;border-radius:16px;padding:18px;transform:translateY(12px) scale(.96);transition:.25s}
-    .ku .modal-b.on .modal-p{transform:none}
-    .ku .car{overflow:hidden;border-radius:14px;border:1px solid #24314f;width:100%;max-width:720px;flex:1 1 auto;min-height:280px;display:flex;flex-direction:column}
-    .ku .car-t{display:flex;transition:transform .45s cubic-bezier(.22,.7,.25,1);height:100%;min-height:280px}
-    .ku .car-t.vert{flex-direction:column}
-    .ku .car-t .sl{min-width:100%;min-height:280px;height:100%;display:grid;place-items:center;font-weight:800;font-size:clamp(28px,5vw,48px);color:#fff;flex:none}
-    .ku .car-t.vert .sl{min-width:100%;width:100%;min-height:100%}
-    .ku .car-t.multi .sl{min-width:42%;margin-right:12px;border-radius:12px}
-    .ku .car.fade{position:relative}
-    .ku .car.fade .car-t{display:grid;height:100%}
-    .ku .car.fade .sl{grid-area:1/1;opacity:0;transition:opacity .45s;min-height:280px}
-    .ku .car.fade .sl.on{opacity:1}
-    .ku .fill{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;box-sizing:border-box}
-    .ku .fill > h3{margin:0;align-self:stretch}
-    .ku .car-ctrl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
-    .ku .thumbs{display:flex;gap:8px;justify-content:center}
-    .ku .thumbs button{width:44px;height:32px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0;opacity:.55}
-    .ku .thumbs button.on{border-color:#fff;opacity:1}
-    .ku .btn-m{position:relative;overflow:hidden;padding:10px 18px;border:0;border-radius:10px;background:var(--c);color:#0b1020;font-weight:700;cursor:pointer}
-    .ku .btn-m .r{position:absolute;border-radius:50%;background:#fff8;transform:scale(0);animation:rip .55s ease-out forwards;pointer-events:none}
-    @keyframes rip{to{transform:scale(14);opacity:0}}
-    .ku .sheet{position:absolute;left:0;right:0;bottom:0;background:#121a2f;border-top:1px solid #24314f;border-radius:16px 16px 0 0;padding:12px 16px 24px;transform:translateY(110%);transition:.3s;z-index:7}
-    .ku .sheet.open{transform:none}
-    .ku .handle{width:42px;height:4px;border-radius:4px;background:#24314f;margin:0 auto 12px}
-    .ku .tabs{display:flex;gap:4px;position:relative;border-bottom:1px solid #24314f;margin-bottom:12px}
-    .ku .tabs button{background:0;border:0;color:var(--muted);padding:10px 14px;cursor:pointer}
-    .ku .tabs button.on{color:var(--text)}
-    .ku .tabs .ind{position:absolute;bottom:-1px;height:2px;background:var(--c);transition:left .25s,width .25s}
-    .ku .tip{position:relative;display:inline-block}
-    .ku .tip .bubble{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%) translateY(4px);background:#0d1426;border:1px solid #24314f;padding:6px 10px;border-radius:8px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:.2s}
-    .ku .tip:hover .bubble{opacity:1;transform:translateX(-50%) translateY(0)}
-    .ku .skel .b{height:12px;border-radius:8px;background:linear-gradient(90deg,#18233d 25%,#24314f 37%,#18233d 63%);background-size:400% 100%;animation:sh 1.3s ease infinite;margin-bottom:8px}
-    .ku .skel .b.lg{height:80px}.ku .skel .av{width:40px;height:40px;border-radius:50%}
-    @keyframes sh{to{background-position:-100% 0}}
-    .ku .tree details{margin-left:12px}
-    .ku .tree summary{cursor:pointer;padding:4px 0}
-    .ku .fab{position:absolute;right:20px;bottom:20px;width:56px;height:56px;border-radius:50%;background:var(--c);color:#0b1020;border:0;font-size:28px;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.35);z-index:4}
-    .ku .fab-menu{position:absolute;right:20px;bottom:88px;display:flex;flex-direction:column;gap:8px;opacity:0;pointer-events:none;transform:translateY(10px);transition:.25s;z-index:4}
-    .ku .fab-menu.on{opacity:1;pointer-events:auto;transform:none}
-    .ku .fab-menu button{border:0;border-radius:999px;padding:8px 14px;background:#18233d;color:var(--text);cursor:pointer;border:1px solid #24314f}
-    .ku .avatars{display:flex}
-    .ku .avatars span{width:36px;height:36px;border-radius:50%;border:2px solid #0b1020;margin-left:-10px;background:var(--c);display:grid;place-items:center;font-size:12px;font-weight:700;color:#0b1020}
-    .ku .avatars span:first-child{margin-left:0}
-    .ku table{width:100%;border-collapse:collapse;font-size:13px}
-    .ku th,.ku td{padding:8px 10px;border-bottom:1px solid #24314f;text-align:left}
-    .ku th{cursor:pointer;color:var(--muted)}
-    .ku tr{transition:background .2s}
-    .ku tr:hover{background:#18233d}
-    .ku .otp{display:flex;gap:8px}.ku .otp input{width:40px;height:44px;text-align:center;font-size:18px;font-weight:700}
-    .ku .drop{position:relative;display:inline-block}
-    .ku .drop .menu{position:absolute;top:calc(100% + 6px);left:0;min-width:160px;background:#121a2f;border:1px solid #24314f;border-radius:10px;padding:6px;display:none;z-index:5;box-shadow:0 12px 40px rgba(0,0,0,.4)}
-    .ku .drop.open .menu{display:block;animation:pop .2s}
-    .ku .drop .menu button{display:block;width:100%;text-align:left;background:0;border:0;color:var(--text);padding:8px 10px;border-radius:8px;cursor:pointer}
-    .ku .drop .menu button:hover{background:#18233d}
-    .ku .tl{border-left:2px solid #24314f;margin-left:12px;padding-left:16px}
-    .ku .tl .e{position:relative;padding-bottom:16px}
-    .ku .tl .e::before{content:'';position:absolute;left:-21px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--c)}
-  `);
-  const root = document.createElement('div');
-  root.className = 'ku'; root.style.setProperty('--c', c);
-  stage.appendChild(root);
-  const title = id;
-
-  const wireSeg = (rootEl) => {
-    const seg = rootEl.querySelector('.seg');
-    if (!seg) return;
-    const pill = document.createElement('div'); pill.className = 'pill'; seg.prepend(pill);
-    const place = (btn) => {
-      const r = seg.getBoundingClientRect(); const b = btn.getBoundingClientRect();
-      pill.style.left = `${b.left - r.left}px`; pill.style.width = `${b.width}px`;
-    };
-    const buttons = [...seg.querySelectorAll('button')];
-    buttons.forEach((b) => b.onclick = () => { buttons.forEach((x) => x.classList.remove('on')); b.classList.add('on'); place(b); });
-    setTimeout(() => place(seg.querySelector('button.on') || buttons[0]), 30);
-  };
-
-  if (kind === 'input') {
-    const kinds = ['text','switch','range','seg','tags','stars','step','search','prog','toast','pass','otp'];
-    const k = kinds[(n-1)%kinds.length];
-    if (k==='text') root.innerHTML = `<h3>${title}</h3><div class="row"><input type="text" placeholder="输入点什么…"></div>`;
-    else if (k==='switch') { root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw" data-sw><i></i></div><span>启用通知</span></div>`; root.querySelector('[data-sw]').onclick = (e)=>e.currentTarget.classList.toggle('on'); }
-    else if (k==='range') { root.innerHTML = `<h3>${title}</h3><div class="row"><input type="range" min="0" max="100" value="40" style="width:220px"><b data-v>40</b></div>`; root.querySelector('input').oninput = (e)=> root.querySelector('[data-v]').textContent = e.target.value; }
-    else if (k==='seg') { root.innerHTML = `<h3>${title}</h3><div class="seg">${['日','周','月'].map((t,i)=>`<button class="${i===0?'on':''}">${t}</button>`).join('')}</div>`; wireSeg(root); }
-    else if (k==='tags') root.innerHTML = `<h3>${title}</h3><div class="tags">${['React','Rust','Vite','Axum'].map(t=>`<span class="tag">${t} ×</span>`).join('')}</div>`;
-    else if (k==='stars') { root.innerHTML = `<h3>${title}</h3><div class="stars">${[1,2,3,4,5].map(i=>`<span data-i="${i}">★</span>`).join('')}</div>`; const paint=(v)=>root.querySelectorAll('.stars span').forEach(s=>s.classList.toggle('on', +s.dataset.i<=v)); root.querySelectorAll('.stars span').forEach(s=>s.onclick=()=>paint(+s.dataset.i)); paint(3); }
-    else if (k==='step') { let v=1; root.innerHTML = `<h3>${title}</h3><div class="step"><button data-m>-</button><b data-v>1</b><button data-p>+</button></div>`; const el=root.querySelector('[data-v]'); root.querySelector('[data-m]').onclick=()=>{v=Math.max(0,v-1);el.textContent=v}; root.querySelector('[data-p]').onclick=()=>{v++;el.textContent=v}; }
-    else if (k==='search') root.innerHTML = `<h3>${title}</h3><div class="row"><input type="search" placeholder="搜索 demos…"><button class="btn">Search</button></div>`;
-    else if (k==='prog') { root.innerHTML = `<h3>${title}</h3><div class="prog"><i data-p></i></div><div class="row"><button class="btn" data-go>Animate</button></div>`; root.querySelector('[data-go]').onclick=()=>{const p=root.querySelector('[data-p]');p.style.width=(20+Math.random()*75)+'%';}; }
-    else if (k==='pass') { root.innerHTML = `<h3>${title}</h3><div class="row"><input type="password" data-pw placeholder="密码"><button class="btn" data-tog>显示</button></div>`; root.querySelector('[data-tog]').onclick=()=>{const i=root.querySelector('[data-pw]');i.type=i.type==='password'?'text':'password';}; }
-    else if (k==='otp') { root.innerHTML = `<h3>${title}</h3><div class="otp">${[0,1,2,3,4,5].map(()=>`<input maxlength="1">`).join('')}</div>`; const inputs=[...root.querySelectorAll('.otp input')]; inputs.forEach((inp,i)=>{inp.oninput=()=>{if(inp.value&&i<inputs.length-1)inputs[i+1].focus();};}); }
-    else root.innerHTML = `<h3>${title}</h3><div class="toast">已保存设置 · Just now</div>`;
-  } else if (kind === 'nav') {
-    const kinds = ['side','tabs','crumb','pager','steps','pills','drawer','cmd','bottom','anchor'];
-    const k = kinds[(n-1)%kinds.length];
-    if (k==='tabs' || k==='side' || k==='pills' || k==='bottom' || k==='anchor') {
-      root.innerHTML = `<h3>${title}</h3><div class="nav">${['Overview','Demos','Settings','Docs'].map((t,i)=>`<a href="#" class="${i===0?'on':''}">${t}</a>`).join('')}</div>`;
-      root.querySelectorAll('.nav a').forEach(a=>a.onclick=(e)=>{e.preventDefault();root.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');});
-    } else if (k==='crumb') root.innerHTML = `<h3>${title}</h3><div class="row" style="color:var(--muted)">Home / CSS / <b style="color:var(--text)">Filters</b></div>`;
-    else if (k==='pager') { root.innerHTML = `<h3>${title}</h3><div class="pager row">${[1,2,3,4,5].map(i=>`<button class="${i===2?'on':''}">${i}</button>`).join('')}</div>`; root.querySelectorAll('.pager button').forEach(b=>b.onclick=()=>{root.querySelectorAll('.pager button').forEach(x=>x.classList.remove('on'));b.classList.add('on');}); }
-    else if (k==='steps') root.innerHTML = `<h3>${title}</h3><div class="steps"><div class="s on">1</div>—<div class="s on">2</div>—<div class="s">3</div>—<div class="s">4</div></div>`;
-    else if (k==='drawer') { root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开抽屉</button><div class="drawer" data-d><h3>Drawer</h3><p style="color:var(--muted)">侧滑面板示例</p><button class="btn" data-close>关闭</button></div>`; const d=root.querySelector('[data-d]'); root.querySelector('[data-open]').onclick=()=>d.classList.add('open'); root.querySelector('[data-close]').onclick=()=>d.classList.remove('open'); }
-    else root.innerHTML = `<h3>${title}</h3><div class="row"><input type="search" placeholder="> 输入命令" style="min-width:min(420px,100%)"></div><div class="tags"><span class="tag">go home</span><span class="tag">open demo</span><span class="tag">toggle theme</span></div>`;
-  } else if (kind === 'acc') {
-    const mode = (n-1)%6;
-    const items = mode===5
-      ? ['如何开始？','支持哪些平台？','如何取消订阅？','数据存在哪里？']
-      : ['什么是 Reality？','如何刷新订阅？','绿云换 IP 收费吗？'];
-    const multi = mode===1 || mode===5;
-    const card = mode===4 || mode===2;
-    root.innerHTML = `<h3>${title}</h3><div class="acc" style="${card?'display:grid;gap:10px':''}">${items.map((t,i)=>`<details ${(!multi && i===0) || (multi && i<2)?'open':''} style="${card?'background:#121a2f;border:1px solid #24314f;border-radius:14px;padding:8px 12px':''}"><summary>${mode===3?'✦ ':''}${t}</summary><p style="color:var(--muted);font-size:13px;padding:0 4px 10px">${mode===2?'嵌套示例 · ':''}Accordion body ${i+1}${mode===4?' · 卡片风格':''}。</p>${mode===2 && i===0?'<details style="margin:6px 0 8px 12px"><summary>子项 A</summary><p style="color:var(--muted);font-size:12px;padding:0 4px 8px">Nested panel</p></details>':''}</details>`).join('')}</div>`;
-  } else if (kind === 'mod') {
-    root.innerHTML = `<h3>${title}</h3><button class="btn" data-open>打开对话框</button>
-      <div class="modal-b" data-m><div class="modal-p"><h3 style="margin:0 0 8px">${['确认','表单','全屏','抽屉式','焦点','堆叠'][(n-1)%6]}</h3>
-      <p style="color:var(--muted);font-size:13px">Modal enter/exit demo.</p>
-      ${n===2?'<div class="row"><input type="text" placeholder="名称"></div>':''}
-      <div class="row"><button class="btn" data-close>关闭</button><button class="btn-m">确认</button></div></div></div>`;
-    const m = root.querySelector('[data-m]');
-    root.querySelector('[data-open]').onclick = () => m.classList.add('on');
-    root.querySelector('[data-close]').onclick = () => m.classList.remove('on');
-    m.onclick = (e) => { if (e.target === m) m.classList.remove('on'); };
-  } else if (kind === 'car') {
-    const mode = (n - 1) % 6; // 0 dots 1 thumbs 2 auto 3 multi 4 fade 5 vertical
-    const fades = mode === 4;
-    const vert = mode === 5;
-    const multi = mode === 3;
-    const slides = [1, 2, 3, 4].map((i) => `<div class="sl${fades && i === 1 ? ' on' : ''}" data-i="${i-1}" style="background:${hsl(n + i)}">${i}</div>`).join('');
-    root.innerHTML = `<div class="fill"><h3>${title}</h3>
-      <div class="car${fades ? ' fade' : ''}" data-car><div class="car-t${vert ? ' vert' : ''}${multi ? ' multi' : ''}" data-t>${slides}</div></div>
-      <div class="car-ctrl">
-        <button class="btn" data-p>‹</button>
-        ${mode === 1 ? `<div class="thumbs" data-th>${[1,2,3,4].map((i)=>`<button data-i="${i-1}" class="${i===1?'on':''}" style="background:${hsl(n+i)}"></button>`).join('')}</div>` : `<span data-d>• ● • •</span>`}
-        <button class="btn" data-n>›</button>
-      </div></div>`;
-    let idx = 0;
-    const t = root.querySelector('[data-t]');
-    const car = root.querySelector('[data-car]');
-    const paint = () => {
-      if (fades) {
-        t.querySelectorAll('.sl').forEach((el, i) => el.classList.toggle('on', i === idx));
-      } else if (vert) {
-        t.style.transform = `translateY(-${idx * 100}%)`;
-      } else if (multi) {
-        t.style.transform = `translateX(-${idx * 42}%)`;
-      } else {
-        t.style.transform = `translateX(-${idx * 100}%)`;
-      }
-      const d = root.querySelector('[data-d]');
-      if (d) d.textContent = [0,1,2,3].map((i) => (i === idx ? '●' : '•')).join(' ');
-      root.querySelectorAll('[data-th] button').forEach((b) => b.classList.toggle('on', +b.dataset.i === idx));
-    };
-    const go = (d) => { idx = (idx + d + 4) % 4; paint(); };
-    root.querySelector('[data-p]').onclick = () => go(-1);
-    root.querySelector('[data-n]').onclick = () => go(1);
-    root.querySelectorAll('[data-th] button').forEach((b) => b.onclick = () => { idx = +b.dataset.i; paint(); });
-    let timer = null;
-    if (mode === 2) { timer = setInterval(() => go(1), 2200); }
-    // size the carousel to ~half the stage
-    const fit = () => {
-      const h = Math.max(280, Math.min(420, Math.round((stage.clientHeight || 480) * 0.52)));
-      car.style.minHeight = h + 'px';
-      t.style.minHeight = h + 'px';
-      t.querySelectorAll('.sl').forEach((el) => { el.style.minHeight = h + 'px'; if (vert) el.style.height = h + 'px'; });
-    };
-    fit();
-    const ro = new ResizeObserver(fit); ro.observe(stage);
-    const prevDestroy = host.__kuDestroy;
-    host.__kuDestroy = () => { if (timer) clearInterval(timer); ro.disconnect(); prevDestroy?.(); };
-    paint();
-  } else if (kind === 'toast') {
-    const kinds = ['成功 ✓','错误 ✕','信息 i','上传中…','已撤销','多条堆叠'];
-    const label = kinds[(n-1)%kinds.length];
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><button class="btn" data-go>弹出 Toast</button><span style="color:var(--muted);font-size:12px">预设：${label}</span></div><div class="toast-stack" data-s><div class="toast">${label}</div></div></div>`;
-    root.querySelector('[data-go]').onclick = () => {
-      const s = root.querySelector('[data-s]');
-      const el = document.createElement('div'); el.className = 'toast'; el.textContent = label;
-      s.appendChild(el); setTimeout(() => el.remove(), 2400);
-    };
-  } else if (kind === 'drop') {
-    const menus = [
-      ['新建','打开','导出','删除'],
-      ['复制','粘贴','剪切'],
-      ['分享到…','生成链接','嵌入代码'],
-      ['按名称','按时间','按大小'],
-      ['账户','账单','退出'],
-      ['浅色','深色','跟随系统'],
-    ];
-    const items = menus[(n-1)%menus.length];
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="drop open" data-d><button class="btn" data-t>菜单 ▾</button><div class="menu">${items.map(x=>`<button>${x}</button>`).join('')}</div></div></div>`;
-    const d = root.querySelector('[data-d]');
-    root.querySelector('[data-t]').onclick = () => d.classList.toggle('open');
-  } else if (kind === 'tip') {
-    const places = ['上','下','左','右','富文本','延迟'];
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><div class="tip"><button class="btn">悬停我</button><div class="bubble">Tooltip · ${places[(n-1)%6]}</div></div></div></div>`;
-  } else if (kind === 'skel') {
-    root.innerHTML = `<h3>${title}</h3><div class="skel">${n%2?`<div class="b lg"></div><div class="b"></div><div class="b" style="width:50%"></div>`:`<div class="row"><div class="b av"></div><div style="flex:1"><div class="b"></div><div class="b" style="width:40%"></div></div></div><div class="b"></div><div class="b"></div>`}</div>`;
-  } else if (kind === 'btn') {
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div class="row" style="justify-content:center;margin:0"><button class="btn-m" data-b>${['涟漪','加载中','成功','磁性','抖动','渐变边','图标→','按压'][(n-1)%8]}</button></div></div>`;
-    const b = root.querySelector('[data-b]');
-    b.onclick = (e) => {
-      if (n === 1 || n === 6) {
-        const r = b.getBoundingClientRect(); const s = document.createElement('span'); s.className = 'r';
-        const size = Math.max(r.width, r.height);
-        s.style.width = s.style.height = size + 'px';
-        s.style.left = (e.clientX - r.left - size/2) + 'px'; s.style.top = (e.clientY - r.top - size/2) + 'px';
-        b.appendChild(s); setTimeout(() => s.remove(), 550);
-      }
-      if (n === 2) { b.textContent = '…'; setTimeout(() => b.textContent = '完成', 800); }
-      if (n === 3) { b.textContent = '✓ 成功'; }
-      if (n === 5) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = 'pop .35s'; }
-    };
-  } else if (kind === 'switch') {
-    const labels = ['通知','深色模式','自动播放','省流','同步','开发者模式'];
-    const on = n%2===0;
-    root.innerHTML = `<h3>${title}</h3><div class="row"><div class="sw ${on?'on':''}" data-sw><i></i></div><span>${labels[(n-1)%labels.length]}</span></div>`;
-    root.querySelector('[data-sw]').onclick = (e) => e.currentTarget.classList.toggle('on');
-  } else if (kind === 'sheet') {
-    root.innerHTML = `<h3>${title}</h3><button class="btn" data-o>打开底栏</button><div class="sheet" data-s><div class="handle"></div><h3 style="margin:0 0 8px">Bottom sheet</h3><p style="color:var(--muted);font-size:13px">拖拽句柄语义 / 关闭按钮</p><button class="btn" data-c>关闭</button></div>`;
-    const s = root.querySelector('[data-s]');
-    root.querySelector('[data-o]').onclick = () => s.classList.add('open');
-    root.querySelector('[data-c]').onclick = () => s.classList.remove('open');
-  } else if (kind === 'tabs') {
-    root.innerHTML = `<h3>${title}</h3><div class="tabs" data-tabs>${['一','二','三','四'].map((t,i)=>`<button class="${i===0?'on':''}">${t}</button>`).join('')}<div class="ind"></div></div><div data-p style="color:var(--muted)">面板内容 A</div>`;
-    const tabs = root.querySelector('[data-tabs]');
-    const ind = tabs.querySelector('.ind');
-    const place = (btn) => { const r = tabs.getBoundingClientRect(); const b = btn.getBoundingClientRect(); ind.style.left = (b.left-r.left)+'px'; ind.style.width = b.width+'px'; };
-    tabs.querySelectorAll('button').forEach((b,i) => b.onclick = () => {
-      tabs.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); place(b);
-      root.querySelector('[data-p]').textContent = '面板内容 ' + 'ABCD'[i];
-    });
-    setTimeout(() => place(tabs.querySelector('button.on')), 30);
-  } else if (kind === 'timeline') {
-    root.innerHTML = `<h3>${title}</h3><div class="tl">${['下单','出库','运输中','派送','签收'].map((t,i)=>`<div class="e"><b>${t}</b><div style="color:var(--muted);font-size:12px">Step ${i+1}</div></div>`).join('')}</div>`;
-  } else if (kind === 'tree') {
-    root.innerHTML = `<h3>${title}</h3><div class="tree"><details open><summary>src</summary><details open><summary>demos</summary><div style="margin-left:16px;color:var(--muted)">kit-css.js</div><div style="margin-left:16px;color:var(--muted)">kit-ui.js</div></details><details><summary>components</summary><div style="margin-left:16px;color:var(--muted)">DemoHost.tsx</div></details></details></div>`;
-  } else if (kind === 'fab') {
-    const menus = [
-      ['编辑','分享','上传'],
-      ['拍照','相册'],
-      ['新建文档','新建表格','新建幻灯'],
-      ['点赞','收藏','转发','举报'],
-      ['语音','视频','屏幕共享'],
-      ['仅主按钮'],
-    ];
-    const items = menus[(n-1)%menus.length];
-    const single = items.length===1 && items[0]==='仅主按钮';
-    root.innerHTML = `<h3>${title}</h3><p style="color:var(--muted)">右下角 FAB · ${['单按钮展开','双项','三项文档','社交','通话','仅主按钮'][(n-1)%6]}</p>${single?'':`<div class="fab-menu on" data-m>${items.map(x=>`<button type="button">${x}</button>`).join('')}</div>`}<button class="fab" data-f type="button">${single?'★':'+'}</button>`;
-    const menu = root.querySelector('[data-m]');
-    root.querySelector('[data-f]').onclick = () => menu?.classList.toggle('on');
-  } else if (kind === 'chip') {
-    root.innerHTML = `<h3>${title}</h3><div class="tags">${['全部','CSS','Canvas','SVG','UI'].map((t,i)=>`<span class="tag ${i===0?'on':''}">${t}</span>`).join('')}</div>`;
-    root.querySelectorAll('.tag').forEach(t => t.onclick = () => { root.querySelectorAll('.tag').forEach(x=>x.classList.remove('on')); t.classList.add('on'); });
-  } else if (kind === 'table') {
-    const rows = [['cube','Three','basics'],['pulse-1','CSS','pulse'],['network','Canvas','particles'],['draw','SVG','stroke']];
-    root.innerHTML = `<h3>${title}</h3><table><thead><tr><th data-k="0">Slug</th><th data-k="1">Cat</th><th data-k="2">Tag</th></tr></thead><tbody data-b>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>`;
-    let asc = true;
-    root.querySelectorAll('th').forEach(th => th.onclick = () => {
-      const k = +th.dataset.k; asc = !asc;
-      rows.sort((a,b) => asc ? a[k].localeCompare(b[k]) : b[k].localeCompare(a[k]));
-      root.querySelector('[data-b]').innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
-    });
-  } else if (kind === 'avatar') {
-    root.innerHTML = `<h3>${title}</h3><div class="avatars">${['A','B','C','D','+3'].map((t,i)=>`<span style="background:${hsl(n+i)}">${t}</span>`).join('')}</div>`;
-  } else if (kind === 'stepper') {
-    root.innerHTML = `<h3>${title}</h3><div class="steps" data-s>${[1,2,3,4].map(i=>`<div class="s ${i<=1?'on':''}">${i}</div>${i<4?'—':''}`).join('')}</div><div class="row"><button class="btn" data-n>下一步</button></div>`;
-    let step = 1;
-    root.querySelector('[data-n]').onclick = () => {
-      step = Math.min(4, step + 1);
-      root.querySelectorAll('.steps .s').forEach((s,i) => s.classList.toggle('on', i < step));
-    };
-  } else if (kind === 'kanban') {
-    const cols = ['待办','进行中','评审','完成'];
-    root.innerHTML = `<h3>${title}</h3><div class="row" style="align-items:stretch;overflow:auto">${cols.map((c,i)=>`<div style="min-width:140px;flex:1;background:#121a2f;border:1px solid #24314f;border-radius:12px;padding:10px"><b style="font-size:12px;color:var(--muted)">${c}</b>${[0,1,2].slice(0,3-i||1).map(j=>`<div class="tag on" style="display:block;margin-top:8px;cursor:grab">卡片 ${i+1}-${j+1}</div>`).join('')}</div>`).join('')}</div>`;
-  } else if (kind === 'colorpick') {
-    root.innerHTML = `<h3>${title}</h3><div class="row"><input type="color" data-cp value="${c}"/><code data-hex>${c}</code></div><div class="row">${['#818cf8','#22d3ee','#f472b6','#34d399','#fbbf24','#fb923c'].map(h=>`<button class="btn" data-sw="${h}" style="background:${h};border:0;width:28px;height:28px;border-radius:8px"></button>`).join('')}</div><div data-prev style="margin-top:12px;height:80px;border-radius:12px;border:1px solid #24314f;background:${c}"></div>`;
-    const syncPrev = (v) => { root.querySelector('[data-hex]').textContent = v; root.querySelector('[data-prev]').style.background = v; root.style.setProperty('--c', v); };
-    root.querySelector('[data-cp]').oninput = (e) => syncPrev(e.target.value);
-    root.querySelectorAll('[data-sw]').forEach((b) => b.onclick = () => { root.querySelector('[data-cp]').value = b.dataset.sw; syncPrev(b.dataset.sw); });
-  } else if (kind === 'notify') {
-    root.innerHTML = `<h3>${title}</h3><div class="row"><button class="btn" data-push>推送通知</button><button class="btn" data-clear>清空</button></div><div class="toast-stack" data-stack></div>`;
-    const stack = root.querySelector('[data-stack]');
-    const types = ['信息','成功','警告','错误'];
-    root.querySelector('[data-push]').onclick = () => {
-      const t = document.createElement('div'); t.className = 'toast';
-      t.textContent = types[Math.floor(Math.random()*types.length)] + ' · ' + new Date().toLocaleTimeString();
-      stack.prepend(t); setTimeout(() => t.remove(), 3200);
-    };
-    root.querySelector('[data-clear]').onclick = () => { stack.innerHTML = ''; };
-  } else if (kind === 'command') {
-    root.innerHTML = `<h3>${title}</h3><div style="width:min(420px,95%);background:#121a2f;border:1px solid #24314f;border-radius:14px;overflow:hidden">
-      <input type="search" placeholder="搜索命令…" style="width:100%;box-sizing:border-box;border:0;border-bottom:1px solid #24314f;border-radius:0;padding:12px 14px" data-q/>
-      <div data-list>${['打开文件','切换主题','导出 JSON','新建演示','复制链接','设置'].map((x,i)=>`<div class="tag" style="display:block;margin:0;border-radius:0;border:0;border-bottom:1px solid #1a2440;padding:10px 14px">${x}<span style="float:right;opacity:.45;font-size:11px">⌘${i+1}</span></div>`).join('')}</div></div>`;
-    const list = root.querySelector('[data-list]');
-    root.querySelector('[data-q]').oninput = (e) => {
-      const q = e.target.value.trim();
-      [...list.children].forEach((el) => { el.style.display = !q || el.textContent.includes(q) ? '' : 'none'; });
-    };
-  } else if (kind === 'pagination') {
-    root.innerHTML = `<h3>${title}</h3><div class="row" data-pg>${[1,2,3,'…',8,9].map((x)=>`<button class="btn ${x===1?'on':''}" data-p="${x}" style="${x===1?'border-color:var(--c)':''}">${x}</button>`).join('')}</div>`;
-    root.querySelectorAll('[data-p]').forEach((b) => b.onclick = () => {
-      if (b.dataset.p === '…') return;
-      root.querySelectorAll('[data-p]').forEach((x) => { x.classList.remove('on'); x.style.borderColor=''; });
-      b.classList.add('on'); b.style.borderColor='var(--c)';
-    });
-  } else if (kind === 'breadcrumb') {
-    root.innerHTML = `<h3>${title}</h3><div class="row" style="gap:6px;color:var(--muted);font-size:13px"><a href="#" style="color:var(--c)">首页</a><span>/</span><a href="#" style="color:var(--c)">组件</a><span>/</span><a href="#" style="color:var(--c)">UI</a><span>/</span><b style="color:#e8eefc">当前页</b></div>`;
-  } else if (kind === 'rating') {
-    root.innerHTML = `<h3>${title}</h3><div class="stars" data-stars>${[1,2,3,4,5].map(i=>`<span data-s="${i}">★</span>`).join('')}</div><div style="margin-top:8px;color:var(--muted);font-size:12px" data-lab>0 / 5</div>`;
-    const stars = root.querySelector('[data-stars]');
-    const lab = root.querySelector('[data-lab]');
-    const paint = (n) => { stars.querySelectorAll('span').forEach((s) => s.classList.toggle('on', +s.dataset.s <= n)); lab.textContent = `${n} / 5`; };
-    stars.querySelectorAll('span').forEach((s) => s.onclick = () => paint(+s.dataset.s));
-  } else if (kind === 'empty') {
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div style="text-align:center;padding:36px 28px;border:1px dashed #24314f;border-radius:16px;max-width:420px;width:min(420px,92%)">
-      <div style="font-size:56px;margin-bottom:10px">📭</div>
-      <b>暂无数据</b>
-      <p style="color:var(--muted);font-size:13px;margin:8px 0 14px">创建或筛选后这里会显示结果</p>
-      <button class="btn">新建一条</button></div></div>`;
-  } else if (kind === 'banner') {
-    root.innerHTML = `<div class="fill"><h3>${title}</h3><div data-ban style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:12px;background:color-mix(in srgb,var(--c) 22%,#18233d);border:1px solid var(--c);width:min(560px,95%)">
-      <span style="flex:1;font-size:14px">系统将于今晚 23:00 维护，请提前保存。</span>
-      <button class="btn" data-x style="padding:4px 10px">关闭</button></div></div>`;
-    root.querySelector('[data-x]').onclick = () => { root.querySelector('[data-ban]').style.display='none'; };
-  } else {
-    root.innerHTML = `<h3>${title}</h3><div class="toast">UI demo ${id}</div>`;
-  }
-
-  const sync = setInterval(() => {
-    const L = live();
-    root.style.setProperty('--c', L.color);
-    stage.style.setProperty('--c', L.color);
-  }, 80);
-  return () => { clearInterval(sync); try { host.__kuDestroy?.(); } catch {} host.__kuDestroy = null; rm(); host.innerHTML = ''; };
-}
-
+export default mount;

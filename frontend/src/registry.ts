@@ -86,8 +86,8 @@ export const categories: Category[] = [
     intro: '后台常用基础组件：按钮、卡片与弹层，纯 CSS + 原生 JS。',
     tech: ['CSS', 'Vanilla JS'],
     demos: [
-      { slug: 'buttons', title: 'Buttons', hint: '按钮变体与尺寸', desc: '按钮变体、尺寸与禁用态。', tag: 'actions', mod: 'ui-buttons', fn: 'mountUiButtons' },
-      { slug: 'cards', title: 'Cards + Modal', hint: '卡片与弹层交互', desc: '卡片布局与模态框。', tag: 'overlay', mod: 'ui-cards-modal', fn: 'mountUiCardsModal' },
+      { slug: 'buttons', title: 'Buttons', hint: '按钮变体与尺寸', desc: '按钮变体、尺寸与禁用态。', tag: 'actions', mod: 'kit-ui', fn: 'mount', variant: 'buttons' },
+      { slug: 'cards', title: 'Cards + Modal', hint: '卡片与弹层交互', desc: '卡片布局与模态框。', tag: 'overlay', mod: 'kit-ui', fn: 'mount', variant: 'cards' },
       { slug: 'input', title: '输入控件', hint: '顶部切换控件类型', desc: '表单控件演示。', tag: 'form', mod: 'kit-ui', fn: 'mount', variant: 'input', presets: ['文本框', '开关组', '滑块', '分段', '标签输入', '评分', '步进器', '搜索栏', '进度条', '通知条', '密码可见', 'OTP 格'] },
       { slug: 'nav', title: '导航样式', hint: '顶部切换导航类型', desc: '导航组件。', tag: 'nav', mod: 'kit-ui', fn: 'mount', variant: 'nav', presets: ['侧栏', '顶栏 Tabs', '面包屑', '分页', '步骤条', '胶囊菜单', '抽屉', '命令面板', '底部 Tab', '锚点目录'] },
       { slug: 'acc', title: '手风琴组件', hint: '顶部切换', desc: 'UI Accordion。', tag: 'accordion', mod: 'kit-ui', fn: 'mount', variant: 'acc', presets: ['基础', '多开', '嵌套感', '图标', '卡片', 'FAQ'] },
