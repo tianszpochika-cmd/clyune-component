@@ -353,9 +353,9 @@ export const categories: Category[] = [
     intro: '细节动效提升体验：Lottie 矢量动画、点赞粒子、开关与涟漪反馈。',
     tech: ['lottie-web@5.12', 'CSS', 'Web Animations API'],
     demos: [
-      { slug: 'lottie', title: 'Lottie 动画', hint: '播放 / 暂停 / 调速', desc: 'lottie-web 播放内联 JSON 动画数据。', tag: 'lottie', mod: 'micro', fn: 'mountLottie' },
-      { slug: 'like', title: '点赞与反馈', hint: '点击爱心与按钮', desc: '点赞粒子爆发、收藏、计数滚动。', tag: 'like', mod: 'micro', fn: 'mountLike' },
-      { slug: 'controls', title: '开关与涟漪', hint: '点击各类控件', desc: 'Toggle、Checkbox 描边、Material 涟漪与加载按钮。', tag: 'controls', mod: 'micro', fn: 'mountControls' },
+      { slug: 'lottie', title: 'Lottie 动画', hint: '播放 / 暂停 / 调速', desc: 'lottie-web 播放内联 JSON 动画数据。', tag: 'lottie', mod: 'kit-micro', fn: 'mount', variant: 'lottie' },
+      { slug: 'like', title: '点赞与反馈', hint: '点击爱心与按钮', desc: '点赞粒子爆发、收藏、计数滚动。', tag: 'like', mod: 'kit-micro', fn: 'mount', variant: 'like' },
+      { slug: 'controls', title: '开关与涟漪', hint: '点击各类控件', desc: 'Toggle、Checkbox 描边、Material 涟漪与加载按钮。', tag: 'controls', mod: 'kit-micro', fn: 'mount', variant: 'controls' },
       { slug: 'heart', title: '心跳赞', hint: '点击点赞', desc: '心跳赞', tag: 'micro', mod: 'kit-micro', fn: 'mount', variant: 'heart', presets: ['粉', '红', '大', '小', '带Toast', '静赞'] },
       { slug: 'check', title: '勾选弹跳', hint: '勾选弹跳', desc: '勾选弹跳', tag: 'micro', mod: 'kit-micro', fn: 'mount', variant: 'check', presets: ['方框', '圆框', '快弹', '慢弹', '彩', '单'] },
       { slug: 'send', title: '发送纸飞机', hint: '发送反馈', desc: '发送纸飞机', tag: 'micro', mod: 'kit-micro', fn: 'mount', variant: 'send', presets: ['快反馈', '慢', '成功色', '默认', '大钮', '小钮'] },
