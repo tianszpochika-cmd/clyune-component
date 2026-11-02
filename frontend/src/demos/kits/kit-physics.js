@@ -757,6 +757,7 @@ export function mount(host, opts = {}) {
     params: paramsFromSpec(F0.spec),
     remountKeys: F0.spec.remountKeys || [],
     liveKeys: ['color', 'speed', 'size', 'count'],
+    presets: F0.presets ? Object.keys(F0.presets) : undefined,
     presetDefaults: F0.presets,
     mapVariant: (family, n) => `${family}-${n}`,
     mountLegacy: (box, o) => mountFamily(fam, box, o),
