@@ -209,7 +209,7 @@ FAM.mod = uiFam({ title: '对话框', size: { label: '对话框宽度', min: 0.4
     const cyc = (t * 0.35) % 1, o = cyc < 0.7 ? Math.min(1, cyc / 0.25) : Math.max(0, 1 - (cyc - 0.7) / 0.3);
     const e = style === 3 ? easeFn('back', o) : easeFn('ease-out', o);
     ctx.fillStyle = `rgba(0,0,0,${num(C.dim, 0.5) * o})`; ctx.fillRect(0, 8, W, H);
-    const mw = W * k.s, mh = Math.min(H * 0.55, 220); let x = (W - mw) / 2, y = (H - mh) / 2, sc = 1, a = 1;
+    const mw = W * k.s, mh = Math.min(H * 0.55, 220); let x = (W - mw) / 2, y = [(H - mh) / 2, H * 0.12, (H - mh) / 2 + 20, H - mh - 30][style], sc = 1, a = 1;
     if (style === 0 || style === 3) sc = 0.85 + 0.15 * e; if (style === 1) y -= (1 - e) * 60; if (style === 2) a = e; else a = Math.min(1, o * 2);
     ctx.save(); ctx.globalAlpha = a; ctx.translate(W / 2, y + mh / 2); ctx.scale(sc, sc); ctx.translate(-W / 2, -(y + mh / 2));
     ctx.fillStyle = '#18233d'; rrect(ctx, x, y, mw, mh, 14); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 2; ctx.stroke();
@@ -217,6 +217,9 @@ FAM.mod = uiFam({ title: '对话框', size: { label: '对话框宽度', min: 0.4
     text(ctx, '此操作不可撤销。', x + 18, y + 58, { size: fsz(W, H, 0.9), col: '#94a3b8' });
     btnBox(ctx, x + mw - 200, y + mh - 50, 84, 32, 8, '#24314f', '取消', W, H, '#e2e8f0'); btnBox(ctx, x + mw - 104, y + mh - 50, 84, 32, 8, k.col, '删除', W, H);
     ctx.restore();
+    const lw = 92; ctx.fillStyle = '#0d1426'; rrect(ctx, 14, H - 44, lw + 30, 30, 8); ctx.fill(); ctx.strokeStyle = pastel(C, style, 4); ctx.lineWidth = 2; ctx.stroke();
+    for (let j = 0; j <= style; j++) { ctx.fillStyle = pastel(C, style, 4); ctx.fillRect(22 + j * 7, H - 36, 4, 14); }
+    text(ctx, '进场·' + names[style], 54, H - 29, { size: fsz(W, H, 0.85), col: '#e2e8f0' });
     return { mode: names[style], cell: inR(P, x, y, mw, mh) ? '对话框' : '遮罩' };
   } });
 
@@ -300,6 +303,7 @@ FAM.skel = uiFam({ title: '加载占位', size: { label: '占位圆角', min: 0,
   draw(ctx, W, H, t, C, P, k) {
     const n = clamp(k.n, 2, 8), rh = (H - 40) / n, sx = ((t * 0.5) % 1.4 - 0.2) * W; let cell = null;
     for (let i = 0; i < n; i++) { const y = 24 + i * rh, hh = rh - 12; let x = 20;
+      ctx.strokeStyle = hsla(hueOf(k.col), 60, 60, 0.45); ctx.lineWidth = 2; rrect(ctx, 12, y - 4, W - 24, rh - 4, k.s * 1.5); ctx.stroke();
       if (on(C.avatar)) { ctx.fillStyle = '#1b2540'; ctx.beginPath(); ctx.arc(x + hh / 2, y + hh / 2, hh / 2, 0, TAU); ctx.fill(); x += hh + 14; }
       ctx.fillStyle = '#1b2540'; rrect(ctx, x, y + hh * 0.1, (W - x - 30) * 0.7, hh * 0.32, k.s); ctx.fill(); rrect(ctx, x, y + hh * 0.56, (W - x - 30) * (0.9 - (i % 3) * 0.15), hh * 0.3, k.s); ctx.fill();
       if (inR(P, 20, y, W - 40, hh)) cell = `第 ${i + 1} 行`; }
@@ -436,7 +440,7 @@ FAM.table = uiFam({ title: '表格交互', size: { label: '行高', min: 24, max
   extras: [T('zebra', '斑马纹', true)], presets: { 少: { count: 3 }, 多: { count: 12 }, 无斑马: { zebra: false }, 高行: { size: 46 } },
   explain: '数据表格：表头固定，行悬停高亮，斑马纹提高可读性；排序列的箭头周期翻转。', formula: '行 y_i = 表头 + i × 行高', formula2: '悬停行 = floor((y−表头)/行高)',
   draw(ctx, W, H, t, C, P, k) {
-    const n = clamp(k.n, 3, 12), rh = Math.min(k.s, (H - 70) / n), cols = ['名称', '状态', '数量', '更新'], cw = (W - 40) / 4, x0 = 20, y0 = 22;
+    const n = clamp(k.n, 3, 12), rh = k.s * Math.min(1, (H - 70) / (n * 48)), cols = ['名称', '状态', '数量', '更新'], cw = (W - 40) / 4, x0 = 20, y0 = 22;
     ctx.fillStyle = '#18233d'; rrect(ctx, x0, y0, W - 40, 34, 8); ctx.fill(); const asc = Math.floor(t * 0.4) % 2 === 0;
     cols.forEach((c, j) => text(ctx, c + (j === 2 ? (asc ? ' ▲' : ' ▼') : ''), x0 + 12 + j * cw, y0 + 17, { size: fsz(W, H, 0.9), col: j === 2 ? k.col : '#cbd5e1', bold: true }));
     let cell = null;
