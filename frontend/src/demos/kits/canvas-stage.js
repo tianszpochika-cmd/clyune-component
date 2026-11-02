@@ -134,7 +134,7 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
     sim += dtw * spd; wall += dtw;
     // idle pointer: glide along a Lissajous path when the user has not touched for 6 s
     if (auto && !P.down && (!P.user || wall - P.lastUser > 6)) {
-      const [ax, ay] = idlePath(sim, W, H);
+      const [ax, ay] = (api.autoPath || idlePath)(sim, W, H);
       const k = P.user ? 1 - Math.exp(-dtw * 3) : 1;
       P.x += (ax - P.x) * k; P.y += (ay - P.y) * k;
       if (P.user && Math.hypot(ax - P.x, ay - P.y) < 2) P.user = false;

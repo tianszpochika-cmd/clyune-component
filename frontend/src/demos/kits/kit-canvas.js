@@ -1245,7 +1245,7 @@ FAM.metaballs2d = {
     return ({ ctx, W, H, t, C, P }) => {
       const cols = Math.min(200, Math.max(60, Math.round(W / 4))), rows = Math.max(30, Math.round((cols * H) / W));
       if (!L || L.w !== cols || L.h !== rows) { L = makeLayer(cols, rows, 1); L.img = L.x.createImageData(cols, rows); }
-      const n = clamp(Math.round(num(C.count, 3)), 1, 10), r = Math.min(W, H) * 0.13 * num(C.size, 1), thr = num(C.thr, 1), soft = num(C.soft, 0.2), rb = on(C.rainbow);
+      const n = clamp(Math.round(num(C.count, 3)), 1, 10), r = Math.min(W, H) * 0.19 * num(C.size, 1), thr = num(C.thr, 1), soft = num(C.soft, 0.2), rb = on(C.rainbow);
       bx[0] = P.x; by[0] = P.y;
       for (let i = 1; i < n; i++) { bx[i] = W / 2 + Math.cos(t * (0.5 + i * 0.13) + i * 2.1) * W * 0.3; by[i] = H / 2 + Math.sin(t * (0.7 + i * 0.11) + i) * H * 0.3; }
       const sx = W / cols, r2 = r * r, rgb = hexRgb(C.color || '#f472b6'); const base = hueOf(C.color || '#f472b6'); const d = L.img.data; let cov = 0;
