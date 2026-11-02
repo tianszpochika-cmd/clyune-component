@@ -90,7 +90,7 @@ FAM['pulse'] = {
 
 FAM['loader'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '形体缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式档', min: 0, max: 11, step: 1, value: 0 },
     extras: [T('trail','拖尾',true)], remountKeys: [] },
   presets: { 默认: {}, '环': { count:0 }, '点阵': { count:1 }, '条': { count:2 }, '轨道': { count:5 }, '双环': { count:8 }, '慢': { speed:0.35 } },
@@ -181,7 +181,7 @@ FAM['hover'] = {
 
 FAM['grad'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '色带粗细', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '色带数', min: 2, max: 6, step: 1, value: 4 },
     extras: [R('angle','角度',0,360,1,120)], remountKeys: [] },
   presets: { 默认: {}, '冷色': { color:'#22d3ee' }, '暖色': { color:'#f472b6' }, '霓虹': { color:'#a78bfa', count:5 }, '慢': { speed:0.3 } },
@@ -249,7 +249,7 @@ FAM['ease'] = {
 
 FAM['spring'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '弹体大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式', min: 0, max: 7, step: 1, value: 0 },
     extras: [R('boost','过冲',0.2,1.8,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '弹入': { count:0 }, '过冲缩放': { count:2 }, '左右晃': { count:5 }, '慢': { speed:0.35 } },
@@ -349,7 +349,7 @@ FAM['flip'] = {
 
 FAM['clip'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '形体缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '形状', min: 0, max: 9, step: 1, value: 0 },
     extras: [R('reveal','揭示量',0,1,0.01,0.65)], remountKeys: [] },
   presets: { 默认: {}, '圆': { count:0 }, '菱形': { count:1 }, '星形': { count:4 }, '全显': { reveal:1 } },
@@ -389,7 +389,7 @@ FAM['clip'] = {
 
 FAM['xform3d'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '方块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式', min: 0, max: 9, step: 1, value: 0 },
     extras: [R('persp','透视感',0.2,2,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '立方': { count:0 }, '翻转牌': { count:1 }, '木马': { count:2 }, '慢': { speed:0.35 } },
@@ -422,7 +422,7 @@ FAM['xform3d'] = {
 
 FAM['trans'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '方块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '属性', min: 0, max: 9, step: 1, value: 0 },
     extras: [T('hoverGo','悬停触发',true)], remountKeys: [] },
   presets: { 默认: {}, '颜色': { count:0 }, '宽高': { count:1 }, '透明度': { count:2 }, '圆角': { count:5 } },
@@ -483,7 +483,7 @@ FAM['parallax'] = {
 
 FAM['filter'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '色块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '滤镜', min: 0, max: 7, step: 1, value: 0 },
     extras: [R('amount','强度',0.1,1.5,0.05,0.8)], remountKeys: [] },
   presets: { 默认: {}, '模糊': { count:0 }, '色相': { count:2 }, '霓虹': { count:5 }, '慢': { speed:0.35 } },
@@ -512,7 +512,7 @@ FAM['filter'] = {
 
 FAM['blend'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '色块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '模式', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('follow','跟随指针',true)], remountKeys: [] },
   presets: { 默认: {}, 'screen': { count:0 }, 'multiply': { count:1 }, 'overlay': { count:2 }, 'difference': { count:3 } },
@@ -615,7 +615,7 @@ FAM['progress'] = {
 
 FAM['ripple'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '波纹缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '波数', min: 1, max: 5, step: 1, value: 3 },
     extras: [T('square','方波',false)], remountKeys: [] },
   presets: { 默认: {}, '单波': { count:1 }, '多波': { count:4 }, '方波': { square:true }, '慢': { speed:0.35 } },
@@ -731,7 +731,7 @@ FAM['accordion'] = {
 
 FAM['modal'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '面板缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '进出场', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('blurBg','模糊背景',true)], remountKeys: [] },
   presets: { 默认: {}, '淡入缩放': { count:0 }, '下滑': { count:1 }, '右滑': { count:2 }, '弹跳': { count:4 } },
@@ -760,7 +760,7 @@ FAM['modal'] = {
 
 FAM['reveal'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '边框缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('amount','揭示量',0,1,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '擦除': { count:0 }, '百叶窗': { count:1 }, '圆形': { count:2 }, '对角': { count:3 } },
@@ -827,7 +827,7 @@ FAM['neon'] = {
 
 FAM['liquid'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '液滴大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('visc','黏度',0.2,2,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '按钮': { count:0 }, 'blob': { count:1 }, '水滴': { count:2 }, '波浪': { count:4 } },
@@ -931,7 +931,7 @@ FAM['kenburns'] = {
 
 FAM['shake'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '方块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('amp','幅度',2,28,1,10)], remountKeys: [] },
   presets: { 默认: {}, '左右': { count:0 }, '旋转': { count:2 }, '心跳': { count:4 }, '强震': { amp:22 } },
@@ -960,7 +960,7 @@ FAM['shake'] = {
 
 FAM['keyseq'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '方块大小', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '序列', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('loop','循环',true)], remountKeys: [] },
   presets: { 默认: {}, '行走': { count:0 }, '变形': { count:1 }, '节拍': { count:2 }, '呼吸': { count:4 } },
@@ -1002,20 +1002,28 @@ FAM['neumorph'] = {
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), inset = on(C.inset);
-      const names = ['凸起','凹陷','软','硬','彩光','单'];
+      const names = ['单钮','双钮','三钮','软圆','硬方','彩光排'];
       ctx.fillStyle = '#1a2238'; ctx.fillRect(0, 8, W, H);
-      const cx = W / 2, cy = H / 2, s = Math.min(W, H) * 0.28 * (0.8 + sz * 0.2);
-      const press = inset || style === 1 || (Math.sin(t * spd * 2) > 0.7 && style === 0);
-      const blur = (style === 2 ? 12 : style === 3 ? 28 : 20) * sz;
-      ctx.save();
-      if (!press) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = blur; ctx.shadowOffsetX = 10; ctx.shadowOffsetY = 10; }
-      ctx.fillStyle = '#1a2238'; rrect(ctx, cx - s, cy - s, s * 2, s * 2, s * 0.35); ctx.fill();
-      ctx.shadowColor = style === 4 ? (C.color || '#818cf8') : 'rgba(255,255,255,.08)'; ctx.shadowBlur = blur; ctx.shadowOffsetX = -8; ctx.shadowOffsetY = -8;
-      ctx.fillStyle = '#1a2238'; rrect(ctx, cx - s, cy - s, s * 2, s * 2, s * 0.35); ctx.fill();
-      ctx.restore();
-      if (press) { ctx.fillStyle = 'rgba(0,0,0,.25)'; rrect(ctx, cx - s + 4, cy - s + 4, s * 2 - 8, s * 2 - 8, s * 0.3); ctx.fill(); }
-      ctx.fillStyle = C.color || '#818cf8'; ctx.beginPath(); ctx.arc(cx, cy, s * 0.28, 0, TAU); ctx.fill();
-      text(ctx, press ? 'inset' : 'raised', cx, cy + s * 0.65, { size: fsz(W, H), col: '#94a3b8', align: 'center' });
+      const nBtn = style <= 2 ? style + 1 : (style === 5 ? 4 : 1);
+      const soft = style === 3, hard = style === 4, glow = style === 5 || style === 4;
+      const base = Math.min(W, H) * 0.22 * (0.75 + sz * 0.35);
+      const blur = (soft ? 10 : hard ? 32 : 18) * sz;
+      for (let i = 0; i < nBtn; i++) {
+        const cx = W / 2 + (i - (nBtn - 1) / 2) * (base * 2.2);
+        const cy = H / 2;
+        const s = base * (soft ? 1.15 : hard ? 0.85 : 1);
+        const rad = soft ? s : hard ? s * 0.12 : s * 0.35;
+        const press = inset || (Math.sin(t * spd * 2 + i) > 0.85);
+        ctx.save();
+        if (!press) { ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = blur; ctx.shadowOffsetX = 10; ctx.shadowOffsetY = 10; }
+        ctx.fillStyle = '#1a2238'; rrect(ctx, cx - s, cy - s, s * 2, s * 2, rad); ctx.fill();
+        ctx.shadowColor = glow ? (C.color || '#818cf8') : 'rgba(255,255,255,.08)'; ctx.shadowBlur = blur; ctx.shadowOffsetX = -8; ctx.shadowOffsetY = -8;
+        ctx.fillStyle = '#1a2238'; rrect(ctx, cx - s, cy - s, s * 2, s * 2, rad); ctx.fill();
+        ctx.restore();
+        if (press) { ctx.fillStyle = 'rgba(0,0,0,.28)'; rrect(ctx, cx - s + 4, cy - s + 4, s * 2 - 8, s * 2 - 8, Math.max(2, rad - 4)); ctx.fill(); }
+        ctx.fillStyle = pastel(C, i, nBtn); ctx.beginPath(); ctx.arc(cx, cy, s * 0.28, 0, TAU); ctx.fill();
+        text(ctx, names[style].slice(0, 2), cx, cy + s * 0.72, { size: fsz(W, H, 0.85), col: '#94a3b8', align: 'center' });
+      }
       return { mode: names[style], ph: fmt((t * spd) % 1, 2), cell: press ? '凹陷' : '凸起', colorHex: String(C.color || '').toLowerCase(), hx: cx, hy: cy };
 
   }; },
@@ -1174,7 +1182,7 @@ FAM['spotlight'] = {
 
 FAM['keyframes'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '形体缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '场景', min: 0, max: 3, step: 1, value: 0 },
     extras: [T('shine','流光',true)], remountKeys: [] },
   presets: { 默认: {}, '加载': { count:0 }, '过渡': { count:1 }, '流光字': { count:2 }, '慢': { speed:0.3 } },
@@ -1239,7 +1247,7 @@ FAM['glass'] = {
 
 FAM['tilt'] = {
   spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
-    size: { label: '尺寸', min: 0.5, max: 2, step: 0.05, value: 1 },
+    size: { label: '卡片缩放', min: 0.5, max: 2, step: 0.05, value: 1 },
     count: { label: '卡片', min: 1, max: 3, step: 1, value: 1 },
     extras: [R('maxTilt','最大倾角',0.1,0.8,0.05,0.35), T('glare','光泽',true)], remountKeys: [] },
   presets: { 默认: {}, '单卡': { count:1 }, '双卡': { count:2 }, '强倾': { maxTilt:0.65 }, '慢': { speed:0.3 } },
@@ -1281,7 +1289,7 @@ FAM['scroll'] = {
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 3), n = clamp(Math.round(num(C.size, 6)), 3, 10), spd = num(C.speed, 0.9), view = num(C.view, 0.35);
       const names = ['淡入','滑入','缩放','擦除'];
-      const progress = clamp(view + 0.15 * Math.sin(t * spd * 0.5), 0, 1);
+      const progress = clamp(view * 0.85 + 0.15 * ((t * spd * 0.35) % 1), 0, 1);
       const ml = 20, mt = 24, iw = W - 40, gap = 10;
       const rowH = (H - mt - 20 - gap * (n - 1)) / n; let hit = null;
       for (let i = 0; i < n; i++) {
