@@ -34,7 +34,6 @@ const loaders: Record<string, () => Promise<Record<string, MountFn>>> = {
   'gsap-scroll': () => import('./demos/gsap-scroll.js'),
   'gsap-text': () => import('./demos/gsap-text.js'),
   'webgl-shader': () => import('./demos/webgl-shader.js'),
-  'audio-viz': () => import('./demos/audio-viz.js'),
   'micro': () => import('./demos/micro.js'),
   'kit-css': () => import('./demos/kits/kit-css.js'),
   'kit-canvas': () => import('./demos/kits/kit-canvas.js'),
@@ -105,7 +104,6 @@ const LEGACY_META: Record<string, {
   'gsap-scroll': { title: 'GSAP 滚动', color: true, speed: true, size: true, count: false },
   'gsap-text': { title: 'GSAP 文字', color: true, speed: true, size: true, count: false },
   'webgl-shader': { title: 'WebGL Shader', color: true, speed: true, size: false, count: false },
-  'audio-viz': { title: '音频可视化', color: true, speed: true, size: true, count: true },
   'micro': { title: '微交互', color: true, speed: true, size: true, count: false },
 };
 
