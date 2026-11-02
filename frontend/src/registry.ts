@@ -205,9 +205,9 @@ export const categories: Category[] = [
     intro: '矢量图形动画：stroke-dasharray 描边、路径插值变形与 SMIL / CSS 图标动效。',
     tech: ['SVG', 'stroke-dashoffset', 'path morph', 'SMIL'],
     demos: [
-      { slug: 'draw', title: '路径描边动画', hint: '点击重播', desc: '利用 getTotalLength 实现手写描边。', tag: 'stroke', mod: 'svg-draw', fn: 'mount' },
-      { slug: 'morph', title: '形状变形 Morph', hint: '点击按钮切换形状', desc: '同构路径点插值，平滑形变。', tag: 'morph', mod: 'svg-morph', fn: 'mount' },
-      { slug: 'icons', title: '动画图标', hint: '点击图标切换状态', desc: '菜单/关闭、播放/暂停、加载、对勾等图标动效。', tag: 'icons', mod: 'svg-icons', fn: 'mount' },
+      { slug: 'draw', title: '路径描边动画', hint: '点击重播', desc: '利用 getTotalLength 实现手写描边。', tag: 'stroke', mod: 'kit-svg', fn: 'mount', variant: 'draw' },
+      { slug: 'morph', title: '形状变形 Morph', hint: '点击按钮切换形状', desc: '同构路径点插值，平滑形变。', tag: 'morph', mod: 'kit-svg', fn: 'mount', variant: 'morph' },
+      { slug: 'icons', title: '动画图标', hint: '点击图标切换状态', desc: '菜单/关闭、播放/暂停、加载、对勾等图标动效。', tag: 'icons', mod: 'kit-svg', fn: 'mount', variant: 'icons' },
       { slug: 'stroke', title: '描边路径', hint: '顶部切换形状 · 点击重播', desc: 'SVG stroke-dash 描边。', tag: 'stroke', mod: 'kit-svg', fn: 'mount', variant: 'stroke', presets: ['圆', '星', '心', '波浪', '折线', '螺旋', '六边形', '字母', '无穷', '齿轮感', '山脉', '签名'] },
       { slug: 'icon-anim', title: '图标动效', hint: '顶部切换 · 点击切换', desc: 'SVG 图标状态切换。', tag: 'icons', mod: 'kit-svg', fn: 'mount', variant: 'icon-anim', presets: ['汉堡', '播放', '爱心', '铃铛', '搜索', '下载', '设置', '云', '勾选', '箭头', '菜单变X', '加载弧'] },
       { slug: 'smil', title: 'SMIL/CSS 动画', hint: '顶部切换', desc: 'SVG 声明式动画。', tag: 'smil', mod: 'kit-svg', fn: 'mount', variant: 'smil', presets: ['animate', 'animateTransform', '路径上运动', '颜色渐变', '描边呼吸', '缩放弹跳', '旋转齿轮', '闪烁点'] },
