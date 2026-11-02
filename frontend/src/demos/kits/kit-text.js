@@ -203,7 +203,7 @@ FAM['bounce-in'] = tFam({ title: '弹性弹入', count: NC('字数', 3, 34, 12),
     const L = k.lay(k.str()); const T0 = 5.5, ph = (t % T0 + T0) % T0; let sum = 0;
     L.g.forEach((g, i) => { const p = Math.max(0, ph - i * 0.08), out = clamp((ph - 4.3 - i * 0.02) / 0.6, 0, 1), s = Math.max(0, (1 + k.x * Math.exp(-6 * p) * Math.sin(12 * p) * 0.6 - Math.exp(-8 * p)) * (1 - smooth(out))); sum += s;
       if (s < 0.01) return; ctx.save(); ctx.translate(g.x, g.y); ctx.scale(s, s); k.font(); ctx.fillStyle = hsla(k.hue + i * 6, 80, 68); ctx.fillText(g.ch, 0, 0); ctx.restore(); });
-    return { mode: `平均缩放 ${fmt(sum / Math.max(1, L.g.length), 2)}`, g: L.g };
+    return { mode: `平均缩放 ${fmt(sum / Math.max(1, L.g.length), 2)} · 弹性 ${fmt(k.x, 2)}`, g: L.g };
   } });
 
 FAM['blur-clear'] = tFam({ title: '模糊变清晰', count: NC('字数', 3, 34, 14), extra: R('blur', '最大模糊', 1, 30, 0.5, 14), color: '#38bdf8', extraDoc: '最模糊时的模糊半径（像素）', presets: { 少字: { count: 4 }, 多字: { count: 34 }, 轻糊: { blur: 3 }, 重糊: { blur: 29 }, 大字: { size: 66 } },
