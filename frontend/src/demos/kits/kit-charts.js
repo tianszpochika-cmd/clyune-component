@@ -152,7 +152,7 @@ function barLike(mode) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
       const n = clamp(Math.round(num(C.count, 8)), 3, 24);
-      const gap = num(C.gap, 0.2), rad = num(C.rad, 6), spd = num(C.speed, 0.9), stacked = mode.includes('stack') || mode === 'waterfall' || mode === 'horizstack';
+      const gap = num(C.gap, 0.2), rad = num(C.size, 6), spd = num(C.speed, 0.9), stacked = mode.includes('stack') || mode === 'waterfall' || mode === 'horizstack';
       const horiz = mode === 'hbar' || mode === 'horizstack';
       let groups = mode === 'groupedbar' ? 3 : (stacked && mode !== 'waterfall' ? 3 : 1);
       const box = padBox(W, H, horiz ? 2.6 : 1.8).finish();
@@ -242,9 +242,9 @@ function pieLike(mode) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
       const n = clamp(Math.round(num(C.count, 5)), 3, 10);
-      const hole = mode.includes('doughnut') || mode === 'progress' || mode === 'kpi' || mode === 'gauge' ? num(C.hole, 0.55) : (mode === 'pieexplode' ? 0 : 0);
-      const explode = mode === 'pieexplode' ? num(C.exp, 0.12) : 0;
-      const spd = num(C.speed, 0.9); const legend = on(C.leg);
+      const hole = num(C.hole, mode.includes('doughnut') || mode === 'progress' || mode === 'kpi' || mode === 'gauge' ? 0.55 : 0);
+      const explode = (mode === 'pieexplode' || mode === 'pie') ? num(C.exp, mode === 'pieexplode' ? 0.12 : 0) : 0;
+      const spd = num(C.speed, 0.9); const legend = on(C.leg); const strokeW = num(C.size, 1.5);
       const box = padBox(W, H).finish();
       const labels = CAT.slice(0, n);
       const raw = series(n, seed, t * spd * 0.4, 0.08); const sum = raw.reduce((a, b) => a + b, 0) || 1;
@@ -266,17 +266,17 @@ function pieLike(mode) {
         for (let i = 0; i < n; i++) {
           const a1 = a0 + TAU / n; const r = R * (0.35 + 0.65 * raw[i] / max);
           ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, r, a0, a1); ctx.closePath();
-          ctx.fillStyle = pal(C, i, n, 0.85); ctx.fill();
+          ctx.fillStyle = pal(C, i, n, 0.85); ctx.fill(); if (strokeW > 0.2) { ctx.strokeStyle = 'rgba(6,10,20,.5)'; ctx.lineWidth = strokeW; ctx.stroke(); }
           slices.push({ i, a0, a1, r }); a0 = a1;
         }
       } else {
         for (let i = 0; i < n; i++) {
           const a1 = a0 + TAU * (raw[i] / sum); const mid = (a0 + a1) / 2;
-          const off = (explode && (mode === 'pieexplode' ? (i === 0 || explode > 0.2) : false)) ? R * explode : (explode && i === Math.floor(t * 0.5) % n ? R * explode : 0);
+          const off = explode > 0.001 ? R * explode * (mode === 'pieexplode' ? (i === 0 ? 1 : 0.35) : (i === 0 ? 1 : 0.25)) : 0;
           const ox = Math.cos(mid) * off, oy = Math.sin(mid) * off;
           ctx.beginPath(); ctx.moveTo(cx + ox, cy + oy); ctx.arc(cx + ox, cy + oy, R, a0, a1);
           if (hole > 0.05) ctx.arc(cx + ox, cy + oy, R * hole, a1, a0, true);
-          ctx.closePath(); ctx.fillStyle = pal(C, i, n); ctx.fill();
+          ctx.closePath(); ctx.fillStyle = pal(C, i, n); ctx.fill(); if (strokeW > 0.2) { ctx.strokeStyle = 'rgba(6,10,20,.55)'; ctx.lineWidth = strokeW; ctx.stroke(); }
           slices.push({ i, a0, a1, ox, oy, mid }); a0 = a1;
         }
       }
@@ -286,7 +286,7 @@ function pieLike(mode) {
         if (a >= s.a0 && a <= s.a1 && dist <= (s.r || R) && dist >= R * hole * 0.9) hit = s;
       }
       if (hit) tip(ctx, W, H, P.x, P.y, [labels[hit.i], `${fmt(100 * raw[hit.i] / sum, 1)}% · ${fmt(raw[hit.i], 1)}`], C.color);
-      if (legend || mode === 'doughnutlegend') {
+      if (legend) {
         for (let i = 0; i < n; i++) {
           const x = mode.includes('legend') ? W * 0.68 : box.ml, y = (mode.includes('legend') ? H * 0.28 : 14) + i * (box.fs * 1.4);
           ctx.fillStyle = pal(C, i, n); rrect(ctx, x, y, 10, 10, 2); ctx.fill();
@@ -305,7 +305,7 @@ function radarLike(mode) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
       const n = clamp(Math.round(num(C.count, 6)), 3, 10), layers = mode === 'radarfill' ? 2 : 1;
-      const spd = num(C.speed, 0.9), fill = on(C.fill) || mode === 'radarfill';
+      const spd = num(C.speed, 0.9), fill = on(C.fill), legend = on(C.leg);
       const cx = W / 2, cy = H / 2 + 8, R = Math.min(W, H) * 0.34; const labels = CAT.slice(0, n);
       const data = Array.from({ length: layers }, (_, s) => series(n, seed + s * 9, t * spd, 0.1).map((v) => v / 100));
       for (let g = 1; g <= 4; g++) { ctx.beginPath(); for (let i = 0; i <= n; i++) { const a = -Math.PI / 2 + (i % n) * TAU / n; const x = cx + Math.cos(a) * R * g / 4, y = cy + Math.sin(a) * R * g / 4; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.strokeStyle = 'rgba(148,163,184,.2)'; ctx.stroke(); }
@@ -317,8 +317,14 @@ function radarLike(mode) {
         if (fill) { ctx.fillStyle = pal(C, s, layers, 0.25); ctx.fill(); }
         ctx.strokeStyle = pal(C, s, layers); ctx.lineWidth = num(C.size, 2); ctx.stroke();
       }
+      if (legend) {
+        for (let s = 0; s < layers; s++) {
+          ctx.fillStyle = pal(C, s, layers); rrect(ctx, 12, 12 + s * 18, 10, 10, 2); ctx.fill();
+          text(ctx, `序列${s + 1}`, 28, 17 + s * 18, { size: fsz(W, H, 0.85), col: '#94a3b8' });
+        }
+      }
       if (hit && best < 24) tip(ctx, W, H, P.x, P.y, [`${labels[hit.i]} · L${hit.s + 1}`, fmt(hit.v * 100, 1)], C.color);
-      return { n, layers, cell: hit && best < 24 ? labels[hit.i] : '（移到顶点）', val: hit && best < 24 ? fmt(hit.v * 100, 1) : '—', fill: yes(fill), hx: hit ? hit.x : cx, hy: hit ? hit.y : cy, colorHex: String(C.color || '').toLowerCase() };
+      return { n, layers, cell: hit && best < 24 ? labels[hit.i] : '（移到顶点）', val: hit && best < 24 ? fmt(hit.v * 100, 1) : '—', fill: yes(fill), legend: yes(legend), hx: hit ? hit.x : cx, hy: hit ? hit.y : cy, colorHex: String(C.color || '').toLowerCase() };
     };
   };
 }
@@ -384,573 +390,378 @@ function sparkLike(mode) {
     };
   };
 }
+
 FAM['line'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '平滑': { ten: 0.55 }, '折线': { ten: 0 }, '粗线': { size: 4.5 }, '填充': { fill: true }, '多点': { count: 24 } },
-  doc: {
-    title: '折线图 · 趋势',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p><b>折线图</b>用折线连接各时刻的数值，最适合看趋势升降。张力越大曲线越圆滑；打开填充可变成面积感。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '折线图 · 趋势', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p><b>折线图</b>用折线连接各时刻的数值，最适合看趋势升降。张力越大曲线越圆滑；打开填充可变成面积感。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("line"),
 };
 
 FAM['multiline'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '双线感': { count: 10 }, '密点': { count: 20 }, '粗线': { size: 3.5 }, '填充': { fill: true }, '高张力': { ten: 0.7 } },
-  doc: {
-    title: '多序列折线',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>多条折线画在同一坐标里，方便对比几个系列是否同涨同跌。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '多序列折线', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>多条折线画在同一坐标里，方便对比几个系列是否同涨同跌。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("multiline"),
 };
 
 FAM['area'] = {
-  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.4), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.4), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '渐变感': { ten: 0.55 }, '硬折': { ten: 0 }, '透明': { size: 1.5 }, '多点': { count: 20 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '面积图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>面积图 = 折线 + 下方填色，强调累计体量而不只是走势。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '面积图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>面积图 = 折线 + 下方填色，强调累计体量而不只是走势。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("area"),
 };
 
 FAM['stepline'] = {
-  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '填充': { fill: true }, '粗线': { size: 3.5 }, '多点': { count: 16 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '阶梯折线',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>阶梯线在下一个点之前保持水平，适合股价开盘价、费率档位这类「突然跳变」的数据。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '阶梯折线', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>阶梯线在下一个点之前保持水平，适合费率档位这类「突然跳变」的数据。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("stepline"),
 };
 
 FAM['stackedarea'] = {
-  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '三层感': { count: 10 }, '平滑': { ten: 0.6 }, '多点': { count: 18 }, '慢': { speed: 0.3 }, '快': { speed: 1.6 } },
-  doc: {
-    title: '堆叠面积',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>多层面积上下相叠，总高度是总和，颜色带表示各部分贡献。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '堆叠面积', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>多层面积上下相叠，总高度是总和，颜色带表示各部分贡献。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("stackedarea"),
 };
 
 FAM['areaRange'] = {
-  spec: { color: { label: '主色', value: '#38bdf8' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#38bdf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '宽带': { count: 12 }, '窄带': { count: 20 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 }, '粗边': { size: 3 } },
-  doc: {
-    title: '区间面积',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>上下两条边界围成的带状区域，常表示置信区间或温度高低范围。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '区间面积', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>上下两条边界围成的带状区域，常表示置信区间或温度高低范围。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("areaRange"),
 };
 
 FAM['logline'] = {
-  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '平滑': { ten: 0.5 }, '面积': { fill: true }, '多点': { count: 20 }, '慢': { speed: 0.3 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '对数折线',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>Y 轴用对数刻度，指数增长会变成近似直线，方便看跨越数量级的变化。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '对数折线', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>Y 轴用对数刻度，指数增长会变成近似直线，方便看跨越数量级的变化。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("logline"),
 };
 
-FAM['sparkline'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '采样点', min: 4, max: 36, step: 1, value: 24 }, extras: [T('leg','图例',false)], remountKeys: [] },
-  presets: { 默认: {}, '细线': { size: 1 }, '粗线': { size: 3.5 }, '多点': { count: 40 }, '少点': { count: 12 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '迷你折线',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>去掉坐标轴的迷你折线，嵌在表格或 KPI 旁一眼看趋势。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
-  build: sparkLike("sparkline"),
-};
-
 FAM['realtime'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 20 }, extras: [R('ten','曲线张力',0,1,0.05,0.25), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 20 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '滚动快': { speed: 2 }, '慢流': { speed: 0.35 }, '面积': { fill: true }, '多点': { count: 28 }, '粗线': { size: 3 } },
-  doc: {
-    title: '实时流图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>数据随时间推移不断更新，右侧涌入新点、左侧旧点离开，像心电图。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '实时流图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>数据随时间推移不断更新，右侧涌入新点、左侧旧点离开，像心电图。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("line"),
 };
 
 FAM['mixed'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '柱线': { count: 8 }, '多点': { count: 14 }, '粗线': { size: 3 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 } },
-  doc: {
-    title: '混合图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>柱表示量、线表示率，两种几何叠在一起读「量质」关系。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '混合图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>柱表示量、线表示率，两种几何叠在一起读「量质」关系。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("mixed"),
 };
 
 FAM['combo'] = {
-  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '面积线': { fill: true }, '柱线': { fill: false }, '多点': { count: 12 }, '慢': { speed: 0.3 }, '快': { speed: 1.6 } },
-  doc: {
-    title: '组合图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>组合图把柱与线（或面积）编在同一坐标系，适合仪表盘总览。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '组合图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>组合图把柱与线（或面积）编在同一坐标系，适合仪表盘总览。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("combo"),
 };
 
 FAM['barline'] = {
-  spec: { color: { label: '主色', value: '#f59e0b' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 }, extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#f59e0b' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '数据点', min: 4, max: 36, step: 1, value: 12 },
+    extras: [R('ten','曲线张力',0,1,0.05,0.35), T('fill','填充',false), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '对比': { count: 8 }, '密': { count: 14 }, '粗线': { size: 3.5 }, '慢': { speed: 0.3 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '柱线双轴感',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>柱与线共用类别轴，线常表示比率或均价，柱表示销量。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '柱线双轴感', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>柱与线共用类别轴，线常表示比率或均价，柱表示销量。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: lineLike("barline"),
 };
 
+FAM['sparkline'] = {
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '采样点', min: 8, max: 48, step: 1, value: 24 },
+    extras: [], remountKeys: [] },
+  presets: { 默认: {}, '细线': { size: 1 }, '粗线': { size: 3.5 }, '多点': { count: 40 }, '少点': { count: 12 }, '慢': { speed: 0.3 } },
+  doc: { title: '迷你折线', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>去掉坐标轴的迷你折线，嵌在表格或 KPI 旁一眼看趋势。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
+  build: sparkLike("sparkline"),
+};
+
+FAM['spark-canvas'] = {
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '采样', min: 8, max: 48, step: 1, value: 24 },
+    extras: [], remountKeys: [] },
+  presets: { 默认: {}, '细线': { size: 1.2 }, '粗线': { size: 3 }, '多点': { count: 36 }, '慢': { speed: 0.3 }, '快': { speed: 1.8 } },
+  doc: { title: '迷你趋势画布', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>纯画布实现的迷你趋势，无 Chart.js 依赖。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
+  build: sparkLike("sparkline"),
+};
+
 FAM['bar'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 }, count: { label: '柱数', min: 4, max: 20, step: 1, value: 8 }, extras: [R('gap','柱间隙',0.05,0.5,0.01,0.22), R('rad','圆角',0,20,1,8)], remountKeys: [] },
-  presets: { 默认: {}, '圆角': { rad: 14 }, '扁平': { rad: 0 }, '细缝': { gap: 0.08 }, '宽缝': { gap: 0.4 }, '少柱': { count: 5 } },
-  doc: {
-    title: '柱状图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>柱高表示数值大小，类别排在横轴。是最常见的对比图。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '柱数', min: 4, max: 20, step: 1, value: 8 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
+  presets: { 默认: {}, '圆角大': { size: 14 }, '扁平': { size: 0 }, '细缝': { gap: 0.08 }, '宽缝': { gap: 0.4 }, '少柱': { count: 5 } },
+  doc: { title: '柱状图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>柱高表示数值大小，类别排在横轴。是最常见的对比图。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("bar"),
 };
 
 FAM['hbar'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 }, count: { label: '条数', min: 4, max: 36, step: 1, value: 7 }, extras: [R('gap','条间隙',0.05,0.5,0.01,0.2), R('rad','圆角',0,20,1,8)], remountKeys: [] },
-  presets: { 默认: {}, '圆角': { rad: 12 }, '细条': { gap: 0.35 }, '密': { count: 10 }, '少': { count: 5 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '横向柱图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>把柱横过来，类别名更易读，适合排名榜。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '条数', min: 4, max: 20, step: 1, value: 7 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
+  presets: { 默认: {}, '圆角': { size: 12 }, '细条': { gap: 0.35 }, '密': { count: 10 }, '少': { count: 5 }, '慢': { speed: 0.3 } },
+  doc: { title: '横向柱图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>把柱横过来，类别名更易读，适合排名榜。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("hbar"),
 };
 
 FAM['stackedbar'] = {
-  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(), size: { label: '圆角', min: 0, max: 16, step: 0.5, value: 6 }, count: { label: '柱数', min: 4, max: 36, step: 1, value: 7 }, extras: [R('gap','柱间隙',0.05,0.45,0.01,0.2), R('rad','圆角',0,16,1,6)], remountKeys: [] },
-  presets: { 默认: {}, '三层': { count: 6 }, '多类': { count: 10 }, '圆角': { rad: 10 }, '宽缝': { gap: 0.35 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '堆叠柱图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>一根柱里叠多种构成，总高是合计，颜色分段是部分。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '柱数', min: 4, max: 20, step: 1, value: 7 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
+  presets: { 默认: {}, '三层': { count: 6 }, '多类': { count: 10 }, '圆角': { size: 10 }, '宽缝': { gap: 0.35 }, '慢': { speed: 0.3 } },
+  doc: { title: '堆叠柱图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>一根柱里叠多种构成，总高是合计，颜色分段是部分。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("stackedbar"),
 };
 
 FAM['groupedbar'] = {
-  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(), size: { label: '圆角', min: 0, max: 16, step: 0.5, value: 6 }, count: { label: '组数', min: 4, max: 36, step: 1, value: 6 }, extras: [R('gap','组间隙',0.05,0.45,0.01,0.18), R('rad','圆角',0,16,1,6)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '组数', min: 4, max: 20, step: 1, value: 6 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
   presets: { 默认: {}, '双组感': { count: 5 }, '多组': { count: 8 }, '窄缝': { gap: 0.1 }, '宽缝': { gap: 0.35 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '分组柱图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>同一类别并排多根柱，直接比不同系列在该类别上的差异。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '分组柱图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>同一类别并排多根柱，直接比不同系列在该类别上的差异。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("groupedbar"),
 };
 
 FAM['horizstack'] = {
-  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(), size: { label: '圆角', min: 0, max: 16, step: 0.5, value: 6 }, count: { label: '行数', min: 4, max: 36, step: 1, value: 6 }, extras: [R('gap','行间隙',0.05,0.45,0.01,0.2), R('rad','圆角',0,16,1,6)], remountKeys: [] },
-  presets: { 默认: {}, '三层': { count: 5 }, '多行': { count: 9 }, '圆角': { rad: 10 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 } },
-  doc: {
-    title: '横向堆叠',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>横向的堆叠条，常用于份额构成的排行。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '行数', min: 4, max: 20, step: 1, value: 6 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
+  presets: { 默认: {}, '三层': { count: 5 }, '多行': { count: 9 }, '圆角': { size: 10 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 } },
+  doc: { title: '横向堆叠', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>横向的堆叠条，常用于份额构成的排行。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("horizstack"),
 };
 
 FAM['waterfall'] = {
-  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(), size: { label: '圆角', min: 0, max: 16, step: 0.5, value: 6 }, count: { label: '步骤', min: 5, max: 36, step: 1, value: 8 }, extras: [R('gap','柱间隙',0.05,0.45,0.01,0.2), R('rad','圆角',0,16,1,6)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '步骤', min: 5, max: 20, step: 1, value: 8 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
   presets: { 默认: {}, '盈亏': { count: 7 }, '多步': { count: 10 }, '细缝': { gap: 0.12 }, '慢': { speed: 0.3 }, '快': { speed: 1.6 } },
-  doc: {
-    title: '瀑布图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>从起点出发，每一步加减，最后落到终点，用来拆解利润变化。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '瀑布图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>从起点出发，每一步加减，最后落到终点，用来拆解利润变化。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("waterfall"),
 };
 
 FAM['density'] = {
-  spec: { color: { label: '主色', value: '#38bdf8' }, speed: SPD(), size: { label: '圆角', min: 0, max: 12, step: 0.5, value: 4 }, count: { label: '柱数', min: 4, max: 24, step: 1, value: 12 }, extras: [R('gap','柱间隙',0.02,0.35,0.01,0.08), R('rad','圆角',0,12,1,4)], remountKeys: [] },
-  presets: { 默认: {}, '日感': { count: 24, gap: 0.05 }, '周': { count: 7 }, '月': { count: 12 }, '热力': { gap: 0.04, rad: 2 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '密度柱',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>很多细柱排在一起，像直方图，看出分布疏密。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#38bdf8' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 4 },
+    count: { label: '柱数', min: 4, max: 20, step: 1, value: 12 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
+  presets: { 默认: {}, '日感': { count: 24, gap: 0.05 }, '周': { count: 7 }, '月': { count: 12 }, '热力': { gap: 0.04, size: 2 }, '慢': { speed: 0.3 } },
+  doc: { title: '密度柱', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>很多细柱排在一起，像直方图，看出分布疏密。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("bar"),
 };
 
 FAM['weekday'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '圆角', min: 0, max: 14, step: 0.5, value: 6 }, count: { label: '天', min: 5, max: 7, step: 1, value: 7 }, extras: [R('gap','间隙',0.05,0.4,0.01,0.2), R('rad','圆角',0,14,1,6)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '圆角', min: 0, max: 20, step: 1, value: 8 },
+    count: { label: '天', min: 4, max: 7, step: 1, value: 7 },
+    extras: [R('gap','间隙',0.05,0.5,0.01,0.2)], remountKeys: [] },
   presets: { 默认: {}, '柱': { count: 7 }, '密': { gap: 0.1 }, '疏': { gap: 0.35 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 } },
-  doc: {
-    title: '工作日对比',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>周一到周日的分组对比，适合看工作日/周末差异。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '工作日对比', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>周一到周日的分组对比，适合看工作日/周末差异。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: barLike("groupedbar"),
 };
 
 FAM['sparkbar'] = {
-  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(), size: { label: '柱感', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '柱数', min: 4, max: 40, step: 1, value: 20 }, extras: [], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(),
+    count: { label: '柱数', min: 8, max: 40, step: 1, value: 20 },
+    extras: [], remountKeys: [] },
   presets: { 默认: {}, '细': { count: 28 }, '中': { count: 16 }, '少': { count: 10 }, '慢': { speed: 0.3 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '迷你柱列',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>迷你柱列嵌在报表里，比数字更直观的近期波动。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '迷你柱列', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>迷你柱列嵌在报表里，比数字更直观的近期波动。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: sparkLike("sparkbar"),
 };
 
-FAM['spark-canvas'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '采样', min: 4, max: 36, step: 1, value: 24 }, extras: [], remountKeys: [] },
-  presets: { 默认: {}, '细线': { size: 1.2 }, '粗线': { size: 3 }, '多点': { count: 36 }, '慢': { speed: 0.3 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '迷你趋势画布',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>纯画布实现的迷你趋势，无 Chart.js 依赖。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
-  build: sparkLike("sparkline"),
-};
-
 FAM['stack-canvas'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '柱数', min: 4, max: 36, step: 1, value: 16 }, extras: [], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    count: { label: '柱数', min: 6, max: 28, step: 1, value: 16 },
+    extras: [], remountKeys: [] },
   presets: { 默认: {}, '少': { count: 10 }, '多': { count: 22 }, '慢': { speed: 0.3 }, '快': { speed: 1.7 }, '中': { count: 14 } },
-  doc: {
-    title: '堆叠图画布',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>多层堆叠柱的画布版，展示构成随类别变化。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '堆叠图画布', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>多层堆叠柱的画布版，展示构成随类别变化。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: sparkLike("stack-canvas"),
 };
 
 FAM['pie'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '描边感', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '扇区', min: 3, max: 9, step: 1, value: 5 }, extras: [R('hole','内径',0,0.3,0.01,0), T('leg','图例',true), R('exp','分离',0,0.2,0.01,0)], remountKeys: [] },
-  presets: { 默认: {}, '标准': { count: 5 }, '多扇': { count: 8 }, '图例': { leg: true }, '少扇': { count: 3 }, '慢': { speed: 0.25 } },
-  doc: {
-    title: '饼图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>圆被切成扇形，角度 ∝ 占比。适合看「部分占整体」。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '扇区', min: 3, max: 9, step: 1, value: 5 },
+    extras: [R('hole','内径',0,0.35,0.01,0), T('leg','图例',true), R('exp','分离',0,0.28,0.01,0)], remountKeys: [] },
+  presets: { 默认: {}, '标准': { count: 5 }, '多扇': { count: 8 }, '分离': { exp: 0.12 }, '少扇': { count: 3 }, '慢': { speed: 0.25 } },
+  doc: { title: '饼图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>圆被切成扇形，角度 ∝ 占比。适合看「部分占整体」。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("pie"),
 };
 
 FAM['doughnut'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '环感', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '扇区', min: 3, max: 9, step: 1, value: 5 }, extras: [R('hole','内径',0.35,0.8,0.01,0.58), T('leg','图例',true), R('exp','分离',0,0.15,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '扇区', min: 3, max: 9, step: 1, value: 5 },
+    extras: [R('hole','内径',0.35,0.8,0.01,0.58), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '细环': { hole: 0.72 }, '粗环': { hole: 0.4 }, '多扇': { count: 7 }, '慢': { speed: 0.25 }, '快': { speed: 1.5 } },
-  doc: {
-    title: '环形图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>挖空的饼图，中间可放总计数字，更现代。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '环形图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>挖空的饼图，中间可放总计数字，更现代。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("doughnut"),
 };
 
 FAM['doughnutlegend'] = {
-  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '扇区', min: 4, max: 36, step: 1, value: 6 }, extras: [R('hole','内径',0.35,0.8,0.01,0.6), T('leg','图例',true), R('exp','分离',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '扇区', min: 3, max: 9, step: 1, value: 6 },
+    extras: [R('hole','内径',0.35,0.8,0.01,0.6), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '右图例': { count: 6 }, '多扇': { count: 8 }, '细环': { hole: 0.7 }, '慢': { speed: 0.25 }, '快': { speed: 1.4 } },
-  doc: {
-    title: '图例环形',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>环形图 + 右侧图例，会议投影时更清晰。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '图例环形', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>环形图 + 右侧图例，会议投影时更清晰。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("doughnutlegend"),
 };
 
 FAM['pieexplode'] = {
-  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '扇区', min: 4, max: 36, step: 1, value: 5 }, extras: [R('hole','内径',0,0.2,0.01,0), T('leg','图例',true), R('exp','分离量',0.05,0.28,0.01,0.14)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#f472b6' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '扇区', min: 3, max: 9, step: 1, value: 5 },
+    extras: [R('hole','内径',0,0.2,0.01,0), T('leg','图例',true), R('exp','分离',0,0.28,0.01,0.14)], remountKeys: [] },
   presets: { 默认: {}, '突出': { exp: 0.2 }, '轻分': { exp: 0.08 }, '多扇': { count: 7 }, '慢': { speed: 0.25 }, '快': { speed: 1.5 } },
-  doc: {
-    title: '分离饼图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>某一扇略微弹出，强调重点类别。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '分离饼图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>某一扇略微弹出，强调重点类别。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("pieexplode"),
 };
 
 FAM['categoryPie'] = {
-  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '类别', min: 4, max: 36, step: 1, value: 6 }, extras: [R('hole','内径',0,0.55,0.01,0.2), T('leg','图例',true), R('exp','分离',0,0.15,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#a78bfa' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '扇区', min: 3, max: 9, step: 1, value: 6 },
+    extras: [R('hole','内径',0,0.55,0.01,0.2), T('leg','图例',true), R('exp','分离',0,0.28,0.01,0)], remountKeys: [] },
   presets: { 默认: {}, '6类': { count: 6 }, '环形感': { hole: 0.5 }, '描边感': { size: 3 }, '慢': { speed: 0.25 }, '快': { speed: 1.5 } },
-  doc: {
-    title: '分类占比',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>面向品类/渠道占比的饼图预设。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '分类占比', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>面向品类/渠道占比的饼图预设。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("pie"),
 };
 
 FAM['polar'] = {
-  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '瓣数', min: 4, max: 36, step: 1, value: 6 }, extras: [R('hole','内径',0,0.2,0.01,0), T('leg','图例',true), R('exp','分离',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#fbbf24' }, speed: SPD(),
+    size: { label: '描边', min: 0, max: 6, step: 0.5, value: 1.5 },
+    count: { label: '瓣数', min: 3, max: 9, step: 1, value: 6 },
+    extras: [R('hole','内径',0,0.2,0.01,0), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '标准': { count: 6 }, '多瓣': { count: 8 }, '少瓣': { count: 4 }, '慢': { speed: 0.25 }, '快': { speed: 1.5 } },
-  doc: {
-    title: '极坐标面积',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>每瓣半径表示数值，角度均分，像雷达的「饼」版本。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '极坐标面积', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>每瓣半径表示数值，角度均分，像雷达的「饼」版本。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("polar"),
 };
 
 FAM['gauge'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '轨宽感', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '刻度感', min: 3, max: 8, step: 1, value: 5 }, extras: [R('hole','内径',0.55,0.85,0.01,0.7), T('leg','图例',false), R('exp','unused',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
+    extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '半环': { hole: 0.72 }, '粗轨': { hole: 0.58 }, '细针感': { hole: 0.8 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '仪表盘',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>半圆轨道上的进度，像汽车时速表，适合单一 KPI。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '仪表盘', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>半圆轨道上的进度，像汽车时速表，适合单一 KPI。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("gauge"),
 };
 
 FAM['progress'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '分段感', min: 4, max: 36, step: 1, value: 4 }, extras: [R('hole','内径',0.55,0.85,0.01,0.68), T('leg','图例',false), R('exp','unused',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
+    extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '单环': { hole: 0.7 }, '粗': { hole: 0.55 }, '细': { hole: 0.8 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 } },
-  doc: {
-    title: '进度环',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>完整圆环表示 0~100% 完成度。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '进度环', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>完整圆环表示 0~100% 完成度。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("progress"),
 };
 
 FAM['kpi'] = {
-  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '档', min: 4, max: 36, step: 1, value: 4 }, extras: [R('hole','内径',0.55,0.85,0.01,0.66), T('leg','图例',false), R('exp','unused',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#34d399' }, speed: SPD(),
+    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
+    extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '目标': { hole: 0.65 }, '完成感': { speed: 1.2 }, '粗环': { hole: 0.55 }, '慢': { speed: 0.3 }, '快': { speed: 1.9 } },
-  doc: {
-    title: 'KPI 环',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>中间显示百分比文案的 KPI 环，看板常用。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: 'KPI 环', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>中间显示百分比文案的 KPI 环，看板常用。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("kpi"),
 };
 
 FAM['gauge-canvas'] = {
-  spec: { color: { label: '主色', value: '#f59e0b' }, speed: SPD(), size: { label: '线宽/尺寸', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '档', min: 4, max: 36, step: 1, value: 5 }, extras: [R('hole','内径',0.55,0.85,0.01,0.7), T('leg','图例',false), R('exp','unused',0,0.1,0.01,0)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#f59e0b' }, speed: SPD(),
+    size: { label: '轨宽感', min: 0.5, max: 10, step: 0.5, value: 2 },
+    extras: [R('hole','内径',0.55,0.85,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '半环': { hole: 0.72 }, '粗轨': { hole: 0.58 }, '慢': { speed: 0.35 }, '快': { speed: 1.8 }, '细': { hole: 0.8 } },
-  doc: {
-    title: '仪表盘画布',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>画布实现的仪表盘，与 Chart.js 版对照。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '仪表盘画布', rows: (v) => [['进度', v.val, 'val'], ['内径', v.hole], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>画布实现的仪表盘，与 Chart.js 版对照。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: pieLike("gauge"),
 };
 
 FAM['radar'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '维度', min: 3, max: 10, step: 1, value: 6 }, extras: [T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '维度', min: 3, max: 10, step: 1, value: 6 },
+    extras: [T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '填充': { fill: true }, '描边': { fill: false }, '多维': { count: 8 }, '少维': { count: 4 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '雷达图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>多个维度围成多边形，形状越满综合越强，适合能力模型。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '雷达图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>多个维度围成多边形，形状越满综合越强，适合能力模型。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: radarLike("radar"),
 };
 
 FAM['radarfill'] = {
-  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(), size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 }, count: { label: '维度', min: 3, max: 10, step: 1, value: 6 }, extras: [T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#818cf8' }, speed: SPD(),
+    size: { label: '线宽', min: 1, max: 8, step: 0.5, value: 2 },
+    count: { label: '维度', min: 3, max: 10, step: 1, value: 6 },
+    extras: [T('fill','填充',true), T('leg','图例',true)], remountKeys: [] },
   presets: { 默认: {}, '填充': { fill: true }, '描边': { fill: false }, '多维': { count: 8 }, '少维': { count: 4 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '雷达填充对比',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>两层雷达叠加，对比两组评分的覆盖差异。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '雷达填充对比', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>两层雷达叠加，对比两组评分的覆盖差异。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: radarLike("radarfill"),
 };
 
 FAM['scatter'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 4 }, count: { label: '点数', min: 8, max: 100, step: 1, value: 40 }, extras: [T('leg','图例',false)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 4 },
+    count: { label: '点数', min: 8, max: 100, step: 1, value: 40 },
+    extras: [], remountKeys: [] },
   presets: { 默认: {}, '疏': { count: 20 }, '密': { count: 70 }, '大点': { size: 12 }, '小点': { size: 3 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '散点图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>每个点是一个样本的 (x,y)，看相关与离群点。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '散点图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>每个点是一个样本的 (x,y)，看相关与离群点。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: scatterLike("scatter"),
 };
 
 FAM['bubble'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 6 }, count: { label: '点数', min: 8, max: 100, step: 1, value: 40 }, extras: [T('leg','图例',false)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 10 },
+    count: { label: '点数', min: 8, max: 100, step: 1, value: 40 },
+    extras: [], remountKeys: [] },
   presets: { 默认: {}, '疏': { count: 20 }, '密': { count: 70 }, '大点': { size: 12 }, '小点': { size: 3 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '气泡图',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>散点 + 半径表示第三变量，气泡越大该维越大。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '气泡图', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>散点 + 半径表示第三变量，气泡越大该维越大。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: scatterLike("bubble"),
 };
 
 FAM['bubblepack'] = {
-  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(), size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 6 }, count: { label: '点数', min: 8, max: 100, step: 1, value: 40 }, extras: [T('leg','图例',false)], remountKeys: [] },
+  spec: { color: { label: '主色', value: '#22d3ee' }, speed: SPD(),
+    size: { label: '点/泡大小', min: 2, max: 22, step: 0.5, value: 8 },
+    count: { label: '点数', min: 8, max: 100, step: 1, value: 40 },
+    extras: [], remountKeys: [] },
   presets: { 默认: {}, '疏': { count: 20 }, '密': { count: 70 }, '大点': { size: 12 }, '小点': { size: 3 }, '慢': { speed: 0.3 } },
-  doc: {
-    title: '气泡矩阵',
-    rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]],
-    formula: () => F('值映射到画布坐标：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'),
-    explain: '<p>更密集的气泡散布，观察聚集与分层。</p>',
-    params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸/线宽','几何粗细'],['点数','类别或采样数']],
-    example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`,
-    tip: '悬停数据点查看数值；拖动滑条观察几何变化。',
-  },
+  doc: { title: '气泡矩阵', rows: (v) => [['点数/类数', v.n], ['悬停', v.cell, 'cell'], ['数值', v.val, 'val'], ['主色', v.colorHex]], formula: () => F('值映射到画布：x = pad + (i+0.5)/n × 宽') + F('y = pad + 高 × (1 − v / yMax)'), explain: '<p>更密集的气泡散布，观察聚集与分层。</p>', params: [['主色','系列颜色'],['速度','呼吸/动画快慢'],['尺寸','几何粗细'],['点数','类别或采样数']], example: (v) => `<ol><li>悬停：${v.cell} = ${v.val}</li><li>n=${v.n}</li></ol>`, tip: '悬停数据点查看数值；拖动滑条观察几何变化。' },
   build: scatterLike("bubblepack"),
 };
 
@@ -969,7 +780,7 @@ export function mount(host, opts = {}) {
     fallbackVariant: fam,
     params: paramsFromSpec(F0.spec),
     remountKeys: F0.spec.remountKeys || [],
-    liveKeys: ['color', 'speed', 'size', 'count', 'ten', 'fill', 'leg', 'gap', 'rad', 'hole', 'exp'],
+    liveKeys: ['color', 'speed', 'size', 'count', 'ten', 'fill', 'leg', 'gap', 'hole', 'exp'],
     presets: F0.presets ? Object.keys(F0.presets) : undefined,
     presetDefaults: F0.presets && { ...F0.presets, 默认: { color: F0.spec.color.value, ...(F0.presets['默认'] || {}) } },
     mapVariant: (family, n) => `${family}-${n}`,
