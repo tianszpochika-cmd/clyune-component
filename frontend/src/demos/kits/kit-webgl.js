@@ -153,9 +153,9 @@ FAM.raymarch = glFam({ title: '光线步进 Raymarch', size: { label: '球体半
 FAM.voronoi = glFam({ title: 'Voronoi 细胞', size: { label: '光晕半径', min: 0.05, max: 0.6, step: 0.01, value: 0.3 }, count: { label: '种子点数', min: 3, max: 16, step: 1, value: 10 },
   extra: T('edges', '显示边线', true), presets: { 少点: { count: 3 }, 多点: { count: 16 }, 无边线: { edges: false }, 大光晕: { size: 0.6 } },
   explain: 'Voronoi 图：画面被分成若干细胞，每个像素属于离它最近的种子点；两个最近距离相等的地方就是细胞边线。', formula: 'd₁ = min |p − cᵢ|，d₂ = 第二近距离', formula2: '边线 = smoothstep(0.02, 0, d₂ − d₁)',
-  frag: `float d1=9.,d2=9.; float id=0.; for(int i=0;i<16;i++){ if(float(i)>=u_n) break; float fi=float(i); vec2 c=vec2(sin(fi*1.7+t*.5)*asp*.8,cos(fi*2.3+t*.37)*.8); if(i==0) c=m;
+  frag: `float d1=9.,d2=9.; float id=0.; for(int i=0;i<16;i++){ if(float(i)>=u_n) break; float fi=float(i); vec2 c=vec2(sin(fi*1.7+t*.5)*asp*.8,cos(fi*2.3+t*.37)*.8); if(i==0) c=mix(c,m,.35);
     float d=length(p-c); if(d<d1){ d2=d1; d1=d; id=fi; } else if(d<d2) d2=d; }
-  col=mix(vec3(.06,.08,.18),u_col*(.4+.6*hash(vec2(id,1.))),.6)+u_col*smoothstep(u_s,0.,d1); col+=u_x*vec3(1.)*smoothstep(.025,0.,d2-d1);` });
+  col=mix(vec3(.06,.08,.18),u_col*(.4+.6*hash(vec2(id,1.))),.6)+u_col*smoothstep(u_s,0.,d1); col+=u_x*mix(u_col,vec3(1.),.5)*.7*smoothstep(.025,0.,d2-d1);` });
 
 FAM.warp = glFam({ title: '坐标扭曲 Warp', size: { label: '扭曲幅度', min: 0, max: 1, step: 0.01, value: 0.4 }, count: { label: '噪声层数', min: 1, max: 5, step: 1, value: 3 },
   extra: R('freq', '图案频率', 1, 8, 0.1, 4), presets: { 平直: { size: 0 }, 强扭曲: { size: 1 }, 低频: { freq: 1.5 }, 高频: { freq: 7.5 } },
