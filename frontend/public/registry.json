@@ -27,7 +27,8 @@
             "隐藏轨迹",
             "快进",
             "慢速"
-          ]
+          ],
+          "path": "/threejs/solar-system"
         },
         {
           "slug": "cube",
@@ -36,7 +37,8 @@
           "desc": "基础场景、光照与线框。",
           "tag": "basics",
           "mod": "cube",
-          "fn": "mountCube"
+          "fn": "mountCube",
+          "path": "/threejs/cube"
         },
         {
           "slug": "orbit",
@@ -45,7 +47,8 @@
           "desc": "OrbitControls 与多光源。",
           "tag": "controls",
           "mod": "orbit",
-          "fn": "mountOrbit"
+          "fn": "mountOrbit",
+          "path": "/threejs/orbit"
         },
         {
           "slug": "particles",
@@ -54,7 +57,8 @@
           "desc": "Points 粒子场与鼠标交互。",
           "tag": "points",
           "mod": "particles",
-          "fn": "mountParticles"
+          "fn": "mountParticles",
+          "path": "/threejs/particles"
         },
         {
           "slug": "gallery",
@@ -63,7 +67,8 @@
           "desc": "内置几何体与射线拾取。",
           "tag": "geometry",
           "mod": "gallery",
-          "fn": "mountGallery"
+          "fn": "mountGallery",
+          "path": "/threejs/gallery"
         },
         {
           "slug": "wave",
@@ -72,7 +77,8 @@
           "desc": "顶点动画生成地形。",
           "tag": "terrain",
           "mod": "wave",
-          "fn": "mountWave"
+          "fn": "mountWave",
+          "path": "/threejs/wave"
         },
         {
           "slug": "character",
@@ -81,7 +87,8 @@
           "desc": "层级模型与骨骼式动画。",
           "tag": "model",
           "mod": "gltf-shapes",
-          "fn": "mountGltfShapes"
+          "fn": "mountGltfShapes",
+          "path": "/threejs/character"
         },
         {
           "slug": "shader",
@@ -90,13 +97,14 @@
           "desc": "ShaderMaterial 变形球体。",
           "tag": "shader",
           "mod": "shader-blob",
-          "fn": "mountShaderBlob"
+          "fn": "mountShaderBlob",
+          "path": "/threejs/shader"
         },
         {
           "slug": "lattice",
           "title": "晶格",
           "hint": "3x3x3 晶格",
-          "desc": "立方晶格",
+          "desc": "用三重循环 i、j、k 在 x、y、z 三个方向各放 n 个小方块，就得到一个立方晶格（像盐的晶体结构）。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -108,13 +116,14 @@
             "慢转",
             "金属",
             "哑光"
-          ]
+          ],
+          "path": "/threejs/lattice"
         },
         {
           "slug": "torus",
           "title": "环带",
           "hint": "Torus",
-          "desc": "环带",
+          "desc": "圆环（甜甜圈）可以看成一个半径为 r 的小圆，绕着距离 R 的轴转一圈扫出来的曲面。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -126,13 +135,14 @@
             "慢",
             "金属",
             "玻璃感"
-          ]
+          ],
+          "path": "/threejs/torus"
         },
         {
           "slug": "nebula",
           "title": "星云球",
           "hint": "点球面",
-          "desc": "星云球",
+          "desc": "把球面按经线、纬线切成 N×N 格，每个格点放一个发光的点，就成了“星云球”。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -144,13 +154,14 @@
             "小点",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/nebula"
         },
         {
           "slug": "polycubes",
           "title": "多立方",
           "hint": "环绕立方",
-          "desc": "多立方",
+          "desc": "第 i 个方块的角度 θᵢ = 2πi/n。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -162,13 +173,14 @@
             "慢",
             "金属",
             "哑光"
-          ]
+          ],
+          "path": "/threejs/polycubes"
         },
         {
           "slug": "helix",
           "title": "螺旋柱",
           "hint": "螺旋导管",
-          "desc": "螺旋柱",
+          "desc": "参数 u 从 0 走到 1，x、z 绕圆转 k 圈，同时 y 均匀上升 h。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -180,13 +192,14 @@
             "粗管",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/helix"
         },
         {
           "slug": "glass",
           "title": "玻璃球",
           "hint": "透射球",
-          "desc": "玻璃球",
+          "desc": "MeshPhysicalMaterial 的 transmission（透射）让光穿过物体，ior（折射率）…",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -198,13 +211,14 @@
             "小",
             "快转",
             "慢转"
-          ]
+          ],
+          "path": "/threejs/glass"
         },
         {
           "slug": "wire",
           "title": "线框球",
           "hint": "Icosahedron 线框",
-          "desc": "线框球",
+          "desc": "正二十面体有 20 个三角形面。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -216,13 +230,14 @@
             "慢",
             "亮",
             "暗"
-          ]
+          ],
+          "path": "/threejs/wire"
         },
         {
           "slug": "instanced",
           "title": "Instanced",
           "hint": "实例化方块",
-          "desc": "Instanced Mesh",
+          "desc": "用一份几何体一次画出成百上千个方块，每个方块只记自己的位置和颜色，所以数量很多也不卡。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -234,13 +249,14 @@
             "聚拢",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/instanced"
         },
         {
           "slug": "terrain-3",
           "title": "起伏面",
           "hint": "顶点起伏",
-          "desc": "起伏面",
+          "desc": "往平静的水里丢一颗石子，波纹会从中心一圈圈向外扩散，而且越往外越弱。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -252,13 +268,14 @@
             "疏网",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/terrain-3"
         },
         {
           "slug": "ringcloud",
           "title": "点云环",
           "hint": "环状点云",
-          "desc": "点云环",
+          "desc": "土星环由无数冰块组成，每块都像小卫星一样绕土星公转。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -270,13 +287,14 @@
             "薄环",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/ringcloud"
         },
         {
           "slug": "pillar",
           "title": "光柱",
           "hint": "圆柱光柱",
-          "desc": "光柱",
+          "desc": "CylinderGeometry 的上下半径可以不同，于是得到一个圆台（被削掉尖的圆锥）。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -288,13 +306,14 @@
             "矮",
             "快转",
             "慢转"
-          ]
+          ],
+          "path": "/threejs/pillar"
         },
         {
           "slug": "mirror-floor",
           "title": "反射地板",
           "hint": "地板+球",
-          "desc": "反射地板",
+          "desc": "把物体关于地面翻转复制一份放到地板下面，再让地板半透明，看起来就像地面映出了倒影。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -306,13 +325,14 @@
             "暗地",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/mirror-floor"
         },
         {
           "slug": "knots",
           "title": "环结",
           "hint": "TorusKnot 感",
-          "desc": "环结",
+          "desc": "沿大圈方向绕 p 圈，同时沿管子绕 q 圈，就得到 (p, q) 环面纽结。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -324,13 +344,14 @@
             "慢",
             "金属",
             "线框感"
-          ]
+          ],
+          "path": "/threejs/knots"
         },
         {
           "slug": "orbit-moons",
           "title": "卫星轨道",
           "hint": "多卫星",
-          "desc": "卫星轨道",
+          "desc": "周期的平方与轨道半径的立方成正比（开普勒第三定律），所以面板里 T²/r³ 对每颗卫星都一样。",
           "tag": "scene",
           "mod": "kit-three",
           "fn": "mount",
@@ -342,7 +363,8 @@
             "远",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/threejs/orbit-moons"
         }
       ]
     },
@@ -350,10 +372,10 @@
       "key": "charts",
       "name": "Charts",
       "icon": "▦",
-      "intro": "Chart.js 全类型图表实验室：折线/柱/饼/雷达/散点/气泡/混合/双轴/实时流等，均可在右侧参数栏调节颜色、数据密度、动画与样式。",
+      "intro": "Canvas 手绘图表实验室：折线/柱/饼/雷达/散点/气泡/混合/双轴/实时流等，坐标映射与布局全部自己计算，悬停读出数值，右侧参数实时调节。",
       "tech": [
-        "Chart.js 4",
-        "Canvas",
+        "Canvas 2D",
+        "坐标映射",
         "DemoControls"
       ],
       "demos": [
@@ -361,7 +383,7 @@
           "slug": "line",
           "title": "折线图",
           "hint": "调颜色 · 张力 · 数据点",
-          "desc": "Chart.js 折线，可调平滑/虚线等。",
+          "desc": "把每个数据点按顺序连成线，看数值怎么随时间涨跌；可调平滑程度和虚线。",
           "tag": "line",
           "mod": "kit-charts",
           "fn": "mount",
@@ -372,7 +394,8 @@
             "虚线",
             "粗线",
             "多色点"
-          ]
+          ],
+          "path": "/charts/line"
         },
         {
           "slug": "multiline",
@@ -388,13 +411,14 @@
             "三线",
             "对比",
             "填充差"
-          ]
+          ],
+          "path": "/charts/multiline"
         },
         {
           "slug": "area",
           "title": "面积图",
           "hint": "填充开关 · 主色",
-          "desc": "面积填充折线。",
+          "desc": "面积图 = 折线 + 下方填色，强调累计体量而不只是走势。",
           "tag": "area",
           "mod": "kit-charts",
           "fn": "mount",
@@ -404,13 +428,14 @@
             "渐变",
             "堆叠感",
             "透明"
-          ]
+          ],
+          "path": "/charts/area"
         },
         {
           "slug": "stepline",
           "title": "阶梯折线",
           "hint": "阶梯模式切换",
-          "desc": "stepped line。",
+          "desc": "阶梯折线：数值在下一个点之前保持不变，再突然跳变，适合表示档位、价格调整。",
           "tag": "step",
           "mod": "kit-charts",
           "fn": "mount",
@@ -420,13 +445,14 @@
             "after",
             "middle",
             "虚线阶梯"
-          ]
+          ],
+          "path": "/charts/stepline"
         },
         {
           "slug": "bar",
           "title": "柱状图",
           "hint": "柱宽 · 圆角 · 换数据",
-          "desc": "基础柱状图。",
+          "desc": "柱高表示数值大小，类别排在横轴。",
           "tag": "bar",
           "mod": "kit-charts",
           "fn": "mount",
@@ -436,13 +462,14 @@
             "扁平",
             "细柱",
             "宽柱"
-          ]
+          ],
+          "path": "/charts/bar"
         },
         {
           "slug": "hbar",
           "title": "横向柱图",
           "hint": "indexAxis y",
-          "desc": "水平条形图。",
+          "desc": "把柱横过来，类别名更易读，适合排名榜。",
           "tag": "hbar",
           "mod": "kit-charts",
           "fn": "mount",
@@ -452,13 +479,14 @@
             "圆角",
             "分组感",
             "细条"
-          ]
+          ],
+          "path": "/charts/hbar"
         },
         {
           "slug": "stackedbar",
           "title": "堆叠柱图",
           "hint": "堆叠/百分比",
-          "desc": "多系列堆叠柱。",
+          "desc": "一根柱里叠多种构成，总高是合计，颜色分段是部分。",
           "tag": "stack",
           "mod": "kit-charts",
           "fn": "mount",
@@ -468,13 +496,14 @@
             "百分比",
             "圆角",
             "细柱"
-          ]
+          ],
+          "path": "/charts/stackedbar"
         },
         {
           "slug": "stackedarea",
           "title": "堆叠面积",
           "hint": "多层面积",
-          "desc": "堆叠面积图。",
+          "desc": "多层面积上下相叠，总高度是总和，颜色带表示各部分贡献。",
           "tag": "stack",
           "mod": "kit-charts",
           "fn": "mount",
@@ -484,13 +513,14 @@
             "平滑",
             "百分比",
             "高对比"
-          ]
+          ],
+          "path": "/charts/stackedarea"
         },
         {
           "slug": "groupedbar",
           "title": "分组柱图",
           "hint": "并排对比",
-          "desc": "分组柱状图。",
+          "desc": "同一类别并排多根柱，直接比不同系列在该类别上的差异。",
           "tag": "group",
           "mod": "kit-charts",
           "fn": "mount",
@@ -500,13 +530,14 @@
             "三组",
             "窄缝",
             "宽缝"
-          ]
+          ],
+          "path": "/charts/groupedbar"
         },
         {
           "slug": "pie",
           "title": "饼图",
           "hint": "扇区 · 旋转",
-          "desc": "占比饼图。",
+          "desc": "圆被切成扇形，角度 ∝ 占比。",
           "tag": "pie",
           "mod": "kit-charts",
           "fn": "mount",
@@ -516,13 +547,14 @@
             "描边",
             "旋转",
             "小扇突出"
-          ]
+          ],
+          "path": "/charts/pie"
         },
         {
           "slug": "doughnut",
           "title": "环形图",
           "hint": "环粗细",
-          "desc": "Doughnut。",
+          "desc": "环形图：中间挖空的饼图，每段弧长代表占比，中心可以放总数。",
           "tag": "doughnut",
           "mod": "kit-charts",
           "fn": "mount",
@@ -532,13 +564,14 @@
             "细环",
             "粗环",
             "半环感"
-          ]
+          ],
+          "path": "/charts/doughnut"
         },
         {
           "slug": "radar",
           "title": "雷达图",
           "hint": "多维评分",
-          "desc": "Radar。",
+          "desc": "多个维度围成多边形，形状越满综合越强，适合能力模型。",
           "tag": "radar",
           "mod": "kit-charts",
           "fn": "mount",
@@ -548,13 +581,14 @@
             "描边",
             "双雷达",
             "尖角"
-          ]
+          ],
+          "path": "/charts/radar"
         },
         {
           "slug": "polar",
           "title": "极坐标面积",
           "hint": "Polar Area",
-          "desc": "极坐标面积图。",
+          "desc": "每瓣半径表示数值，角度均分，像雷达的「饼」版本。",
           "tag": "polar",
           "mod": "kit-charts",
           "fn": "mount",
@@ -564,13 +598,14 @@
             "描边",
             "旋转",
             "高对比"
-          ]
+          ],
+          "path": "/charts/polar"
         },
         {
           "slug": "scatter",
           "title": "散点图",
           "hint": "点大小 · 多系列",
-          "desc": "Scatter。",
+          "desc": "每个点是一个样本的 (x,y)，看相关与离群点。",
           "tag": "scatter",
           "mod": "kit-charts",
           "fn": "mount",
@@ -580,13 +615,14 @@
             "大点",
             "多系列",
             "连线感"
-          ]
+          ],
+          "path": "/charts/scatter"
         },
         {
           "slug": "bubble",
           "title": "气泡图",
           "hint": "x/y/r",
-          "desc": "Bubble。",
+          "desc": "散点 + 半径表示第三变量，气泡越大该维越大。",
           "tag": "bubble",
           "mod": "kit-charts",
           "fn": "mount",
@@ -596,13 +632,14 @@
             "多彩",
             "稀疏",
             "密集"
-          ]
+          ],
+          "path": "/charts/bubble"
         },
         {
           "slug": "mixed",
           "title": "混合图",
           "hint": "柱+线",
-          "desc": "Bar + Line 混合。",
+          "desc": "柱状图和折线图画在同一张图里：柱子看数量，折线看趋势。",
           "tag": "mixed",
           "mod": "kit-charts",
           "fn": "mount",
@@ -612,13 +649,14 @@
             "双轴",
             "面积+柱",
             "三合一"
-          ]
+          ],
+          "path": "/charts/mixed"
         },
         {
           "slug": "sparkline",
           "title": "迷你折线",
           "hint": "无坐标可选",
-          "desc": "Sparkline。",
+          "desc": "迷你走势图：没有坐标轴的小折线，放在表格或卡片里一眼看出涨跌。",
           "tag": "spark",
           "mod": "kit-charts",
           "fn": "mount",
@@ -628,13 +666,14 @@
             "面积",
             "阶梯",
             "无坐标"
-          ]
+          ],
+          "path": "/charts/sparkline"
         },
         {
           "slug": "gauge",
           "title": "仪表盘",
           "hint": "半环/全环",
-          "desc": "Doughnut 仪表。",
+          "desc": "仪表盘：半个圆环当刻度，指针转到的角度 = 当前值占最大值的比例。",
           "tag": "gauge",
           "mod": "kit-charts",
           "fn": "mount",
@@ -644,13 +683,14 @@
             "全环",
             "粗轨",
             "细针"
-          ]
+          ],
+          "path": "/charts/gauge"
         },
         {
           "slug": "progress",
           "title": "进度环",
           "hint": "完成百分比",
-          "desc": "进度环形。",
+          "desc": "完整圆环表示 0~100% 完成度。",
           "tag": "progress",
           "mod": "kit-charts",
           "fn": "mount",
@@ -660,13 +700,14 @@
             "双环",
             "粗",
             "细"
-          ]
+          ],
+          "path": "/charts/progress"
         },
         {
           "slug": "waterfall",
           "title": "瀑布图",
           "hint": "盈亏柱",
-          "desc": "瀑布/浮动柱。",
+          "desc": "从起点出发，每一步加减，最后落到终点，用来拆解利润变化。",
           "tag": "waterfall",
           "mod": "kit-charts",
           "fn": "mount",
@@ -676,13 +717,14 @@
             "累计",
             "彩色",
             "细柱"
-          ]
+          ],
+          "path": "/charts/waterfall"
         },
         {
           "slug": "combo",
           "title": "组合图",
           "hint": "柱线组合",
-          "desc": "组合图。",
+          "desc": "组合图把柱与线（或面积）编在同一坐标系，适合仪表盘总览。",
           "tag": "combo",
           "mod": "kit-charts",
           "fn": "mount",
@@ -692,7 +734,8 @@
             "面积线",
             "双柱线",
             "阴影线"
-          ]
+          ],
+          "path": "/charts/combo"
         },
         {
           "slug": "logline",
@@ -708,7 +751,8 @@
             "折线",
             "面积",
             "多线"
-          ]
+          ],
+          "path": "/charts/logline"
         },
         {
           "slug": "horizstack",
@@ -724,13 +768,14 @@
             "百分比",
             "圆角",
             "细条"
-          ]
+          ],
+          "path": "/charts/horizstack"
         },
         {
           "slug": "density",
           "title": "密度柱",
           "hint": "月度密度",
-          "desc": "密集柱列。",
+          "desc": "很多细柱排在一起，像直方图，看出分布疏密。",
           "tag": "density",
           "mod": "kit-charts",
           "fn": "mount",
@@ -740,7 +785,8 @@
             "周",
             "月",
             "热力感"
-          ]
+          ],
+          "path": "/charts/density"
         },
         {
           "slug": "realtime",
@@ -756,13 +802,14 @@
             "追加",
             "双线",
             "面积流"
-          ]
+          ],
+          "path": "/charts/realtime"
         },
         {
           "slug": "radarfill",
           "title": "雷达对比",
           "hint": "多层雷达",
-          "desc": "多数据集雷达。",
+          "desc": "两层雷达叠加，对比两组评分的覆盖差异。",
           "tag": "radar",
           "mod": "kit-charts",
           "fn": "mount",
@@ -772,13 +819,14 @@
             "三层",
             "描边",
             "透明"
-          ]
+          ],
+          "path": "/charts/radarfill"
         },
         {
           "slug": "doughnutlegend",
           "title": "图例环形",
           "hint": "图例位置",
-          "desc": "带图例环形。",
+          "desc": "环形图 + 右侧图例，会议投影时更清晰。",
           "tag": "doughnut",
           "mod": "kit-charts",
           "fn": "mount",
@@ -788,13 +836,14 @@
             "底图例",
             "百分比",
             "细环"
-          ]
+          ],
+          "path": "/charts/doughnutlegend"
         },
         {
           "slug": "barline",
           "title": "柱线双轴",
           "hint": "左右双轴",
-          "desc": "Dual axis。",
+          "desc": "双坐标轴：左边轴给柱子用，右边轴给折线用，两种单位不同的数据放一起比较。",
           "tag": "dual",
           "mod": "kit-charts",
           "fn": "mount",
@@ -804,13 +853,14 @@
             "粗线",
             "面积线",
             "对比色"
-          ]
+          ],
+          "path": "/charts/barline"
         },
         {
           "slug": "pieexplode",
           "title": "分离饼图",
           "hint": "扇区偏移",
-          "desc": "Exploded pie。",
+          "desc": "分离饼图：把某一块扇形沿半径方向往外推，突出重点类别。",
           "tag": "pie",
           "mod": "kit-charts",
           "fn": "mount",
@@ -820,13 +870,14 @@
             "突出2",
             "全分离",
             "描边"
-          ]
+          ],
+          "path": "/charts/pieexplode"
         },
         {
           "slug": "bubblepack",
           "title": "气泡矩阵",
           "hint": "密度切换",
-          "desc": "Bubble field。",
+          "desc": "气泡图：每个圆的面积代表数值大小，位置代表另外两个维度。",
           "tag": "bubble",
           "mod": "kit-charts",
           "fn": "mount",
@@ -836,13 +887,14 @@
             "中等",
             "密集",
             "彩色"
-          ]
+          ],
+          "path": "/charts/bubblepack"
         },
         {
           "slug": "sparkbar",
           "title": "迷你柱列",
           "hint": "Spark bars",
-          "desc": "迷你柱。",
+          "desc": "迷你柱列嵌在报表里，比数字更直观的近期波动。",
           "tag": "spark",
           "mod": "kit-charts",
           "fn": "mount",
@@ -852,13 +904,14 @@
             "中",
             "宽",
             "圆角"
-          ]
+          ],
+          "path": "/charts/sparkbar"
         },
         {
           "slug": "areaRange",
           "title": "区间面积",
           "hint": "带状面积",
-          "desc": "区间/带状。",
+          "desc": "上下两条边界围成的带状区域，常表示置信区间或温度高低范围。",
           "tag": "area",
           "mod": "kit-charts",
           "fn": "mount",
@@ -868,13 +921,14 @@
             "透明",
             "双色",
             "平滑"
-          ]
+          ],
+          "path": "/charts/areaRange"
         },
         {
           "slug": "categoryPie",
           "title": "分类占比",
           "hint": "六类占比",
-          "desc": "分类饼图。",
+          "desc": "面向品类/渠道占比的饼图预设。",
           "tag": "pie",
           "mod": "kit-charts",
           "fn": "mount",
@@ -884,13 +938,14 @@
             "描边",
             "环形",
             "旋转"
-          ]
+          ],
+          "path": "/charts/categoryPie"
         },
         {
           "slug": "weekday",
           "title": "工作日对比",
           "hint": "周一到周日",
-          "desc": "工作日柱/线。",
+          "desc": "周一到周日的分组对比，适合看工作日/周末差异。",
           "tag": "week",
           "mod": "kit-charts",
           "fn": "mount",
@@ -900,13 +955,14 @@
             "线",
             "面积",
             "分组"
-          ]
+          ],
+          "path": "/charts/weekday"
         },
         {
           "slug": "kpi",
           "title": "KPI 环",
           "hint": "完成率",
-          "desc": "KPI doughnut。",
+          "desc": "KPI 环形进度：圆环填满的比例 = 完成值 ÷ 目标值，中间显示百分比。",
           "tag": "kpi",
           "mod": "kit-charts",
           "fn": "mount",
@@ -916,7 +972,8 @@
             "完成",
             "双KPI",
             "粗环"
-          ]
+          ],
+          "path": "/charts/kpi"
         },
         {
           "slug": "spark-canvas",
@@ -924,9 +981,9 @@
           "hint": "自绘 spark",
           "desc": "Canvas sparkline。",
           "tag": "canvas",
-          "mod": "kit-chart",
+          "mod": "kit-charts",
           "fn": "mount",
-          "variant": "spark",
+          "variant": "spark-canvas",
           "presets": [
             "细线",
             "粗线",
@@ -934,7 +991,8 @@
             "阶梯",
             "虚线",
             "双色"
-          ]
+          ],
+          "path": "/charts/spark-canvas"
         },
         {
           "slug": "gauge-canvas",
@@ -942,15 +1000,16 @@
           "hint": "自绘 gauge",
           "desc": "Canvas 仪表盘。",
           "tag": "canvas",
-          "mod": "kit-chart",
+          "mod": "kit-charts",
           "fn": "mount",
-          "variant": "gauge",
+          "variant": "gauge-canvas",
           "presets": [
             "半环",
             "全环",
             "粗轨",
             "细针"
-          ]
+          ],
+          "path": "/charts/gauge-canvas"
         },
         {
           "slug": "stack-canvas",
@@ -958,15 +1017,16 @@
           "hint": "自绘 stack",
           "desc": "Canvas 堆叠图。",
           "tag": "canvas",
-          "mod": "kit-chart",
+          "mod": "kit-charts",
           "fn": "mount",
-          "variant": "stack",
+          "variant": "stack-canvas",
           "presets": [
             "柱",
             "面积",
             "横向",
             "百分比"
-          ]
+          ],
+          "path": "/charts/stack-canvas"
         }
       ]
     },
@@ -974,10 +1034,11 @@
       "key": "ui",
       "name": "UI Components",
       "icon": "▣",
-      "intro": "后台常用基础组件：按钮、卡片与弹层，纯 CSS + 原生 JS。",
+      "intro": "后台常用组件的交互原理：按钮、卡片、弹层、轮播、分页等，画布复现几何与状态，悬停读数 + 中文讲解。",
       "tech": [
-        "CSS",
-        "Vanilla JS"
+        "Canvas 2D",
+        "组件状态机",
+        "Pointer Events"
       ],
       "demos": [
         {
@@ -986,8 +1047,10 @@
           "hint": "按钮变体与尺寸",
           "desc": "按钮变体、尺寸与禁用态。",
           "tag": "actions",
-          "mod": "ui-buttons",
-          "fn": "mountUiButtons"
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "buttons",
+          "path": "/ui/buttons"
         },
         {
           "slug": "cards",
@@ -995,14 +1058,16 @@
           "hint": "卡片与弹层交互",
           "desc": "卡片布局与模态框。",
           "tag": "overlay",
-          "mod": "ui-cards-modal",
-          "fn": "mountUiCardsModal"
+          "mod": "kit-ui",
+          "fn": "mount",
+          "variant": "cards",
+          "path": "/ui/cards"
         },
         {
           "slug": "input",
           "title": "输入控件",
           "hint": "顶部切换控件类型",
-          "desc": "表单控件演示。",
+          "desc": "文本框聚焦时边框变主色并出现光晕；校验失败显示红框与提示。",
           "tag": "form",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1020,13 +1085,14 @@
             "通知条",
             "密码可见",
             "OTP 格"
-          ]
+          ],
+          "path": "/ui/input"
         },
         {
           "slug": "nav",
           "title": "导航样式",
           "hint": "顶部切换导航类型",
-          "desc": "导航组件。",
+          "desc": "当前项用滑动指示器（下划线或胶囊）标出，指示器在项间平滑移动。",
           "tag": "nav",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1042,13 +1108,14 @@
             "命令面板",
             "底部 Tab",
             "锚点目录"
-          ]
+          ],
+          "path": "/ui/nav"
         },
         {
           "slug": "acc",
           "title": "手风琴组件",
           "hint": "顶部切换",
-          "desc": "UI Accordion。",
+          "desc": "手风琴：点击标题展开这一块内容，高度平滑过渡，其他块自动收起。",
           "tag": "accordion",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1060,13 +1127,14 @@
             "图标",
             "卡片",
             "FAQ"
-          ]
+          ],
+          "path": "/ui/acc"
         },
         {
           "slug": "mod",
           "title": "对话框",
           "hint": "顶部切换",
-          "desc": "Modal/Dialog。",
+          "desc": "弹窗：在页面上盖一层半透明遮罩，中间弹出对话框，关闭后回到原页面。",
           "tag": "modal",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1078,13 +1146,14 @@
             "抽屉式",
             "无障碍焦点",
             "堆叠"
-          ]
+          ],
+          "path": "/ui/mod"
         },
         {
           "slug": "car",
           "title": "走马灯组件",
           "hint": "顶部切换",
-          "desc": "UI Carousel。",
+          "desc": "轮播：一排卡片横向排列，按位置平滑滑动切换，圆点显示当前第几张。",
           "tag": "carousel",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1096,13 +1165,14 @@
             "卡片多可见",
             "淡入",
             "垂直"
-          ]
+          ],
+          "path": "/ui/car"
         },
         {
           "slug": "toast",
           "title": "Toast",
           "hint": "顶部切换类型 · 触发",
-          "desc": "通知栈。",
+          "desc": "新消息从角落滑入，旧消息依次下移并淡出，几秒后自动消失。",
           "tag": "toast",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1114,7 +1184,8 @@
             "进度",
             "可撤销",
             "堆叠多条"
-          ]
+          ],
+          "path": "/ui/toast"
         },
         {
           "slug": "drop",
@@ -1132,7 +1203,8 @@
             "多选",
             "右键菜单",
             "级联"
-          ]
+          ],
+          "path": "/ui/drop"
         },
         {
           "slug": "tip",
@@ -1150,13 +1222,14 @@
             "右",
             "富文本",
             "延迟"
-          ]
+          ],
+          "path": "/ui/tip"
         },
         {
           "slug": "skel",
           "title": "加载占位",
           "hint": "顶部切换布局",
-          "desc": "UI Skeleton。",
+          "desc": "骨架屏：内容加载前先显示灰色块勾勒布局，上面扫过一道亮光表示“正在加载”。",
           "tag": "skeleton",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1167,13 +1240,14 @@
             "表格",
             "详情",
             "头像墙"
-          ]
+          ],
+          "path": "/ui/skel"
         },
         {
           "slug": "btn",
           "title": "按钮动效",
           "hint": "顶部切换 · 点击反馈",
-          "desc": "Button micro。",
+          "desc": "按钮微交互：按下时轻微缩小、松开回弹，让人感觉按钮“被按到了”。",
           "tag": "button",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1187,13 +1261,14 @@
             "渐变边",
             "图标滑入",
             "按压缩放"
-          ]
+          ],
+          "path": "/ui/btn"
         },
         {
           "slug": "switch",
           "title": "开关弹簧",
           "hint": "顶部切换",
-          "desc": "Spring switch。",
+          "desc": "弹簧开关：滑块像挂在弹簧上，切换时先冲过头再回到位置。",
           "tag": "switch",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1205,13 +1280,14 @@
             "尺寸",
             "彩色轨",
             "软弹"
-          ]
+          ],
+          "path": "/ui/switch"
         },
         {
           "slug": "sheet",
           "title": "底栏/浮层",
           "hint": "顶部切换",
-          "desc": "Bottom sheet。",
+          "desc": "底部抽屉：面板从屏幕底部滑出，可以拖动把手调整高度或拉下关闭。",
           "tag": "sheet",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1222,7 +1298,8 @@
             "句柄",
             "操作表",
             "分享板"
-          ]
+          ],
+          "path": "/ui/sheet"
         },
         {
           "slug": "tabs",
@@ -1240,13 +1317,14 @@
             "淡入面板",
             "垂直",
             "图标"
-          ]
+          ],
+          "path": "/ui/tabs"
         },
         {
           "slug": "timeline",
           "title": "时间线",
           "hint": "顶部切换",
-          "desc": "Timeline UI。",
+          "desc": "时间线：事件按时间顺序竖向排列，圆点和连线标出先后关系。",
           "tag": "timeline",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1257,13 +1335,14 @@
             "进度点",
             "卡片",
             "紧凑"
-          ]
+          ],
+          "path": "/ui/timeline"
         },
         {
           "slug": "tree",
           "title": "树形",
           "hint": "顶部切换",
-          "desc": "Tree view。",
+          "desc": "树形目录：文件夹可以展开、收起，子项按层级缩进显示。",
           "tag": "tree",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1273,13 +1352,14 @@
             "懒展开",
             "选中高亮",
             "连接线"
-          ]
+          ],
+          "path": "/ui/tree"
         },
         {
           "slug": "fab",
           "title": "FAB",
           "hint": "顶部切换",
-          "desc": "浮动操作按钮。",
+          "desc": "主按钮旋转成 ×，子按钮依次弹出（竖排或扇形），带交错延迟。",
           "tag": "fab",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1289,13 +1369,14 @@
             "扇形",
             "速度拨号",
             "工具条"
-          ]
+          ],
+          "path": "/ui/fab"
         },
         {
           "slug": "chip",
           "title": "芯片/标签",
           "hint": "顶部切换",
-          "desc": "Chip/Tag。",
+          "desc": "标签：小圆角块表示分类或筛选条件，点击可以选中或删除。",
           "tag": "chip",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1305,13 +1386,14 @@
             "可删",
             "头像芯片",
             "拖排序"
-          ]
+          ],
+          "path": "/ui/chip"
         },
         {
           "slug": "table",
           "title": "表格交互",
           "hint": "顶部切换",
-          "desc": "Table UX。",
+          "desc": "表格交互：点表头排序、悬停高亮整行，长表格表头固定不动。",
           "tag": "table",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1321,13 +1403,14 @@
             "行展开",
             "骨架载入",
             "行选中"
-          ]
+          ],
+          "path": "/ui/table"
         },
         {
           "slug": "avatar",
           "title": "头像组",
           "hint": "顶部切换",
-          "desc": "Avatar stack。",
+          "desc": "头像堆叠：多个圆形头像部分重叠排成一排，超出数量显示 “+N”。",
           "tag": "avatar",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1337,13 +1420,14 @@
             "加号剩余",
             "状态点",
             "呼吸边"
-          ]
+          ],
+          "path": "/ui/avatar"
         },
         {
           "slug": "stepper",
           "title": "步骤条动效",
           "hint": "顶部切换",
-          "desc": "Stepper。",
+          "desc": "当前步骤之前打勾，连接线随进度填充主色，当前节点外圈脉冲。",
           "tag": "stepper",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1353,7 +1437,8 @@
             "垂直",
             "进度填充",
             "勾选完成"
-          ]
+          ],
+          "path": "/ui/stepper"
         },
         {
           "slug": "kanban",
@@ -1369,13 +1454,14 @@
             "三列",
             "紧凑",
             "宽卡片"
-          ]
+          ],
+          "path": "/ui/kanban"
         },
         {
           "slug": "colorpick",
           "title": "取色器",
           "hint": "色板 + input color",
-          "desc": "取色与预览。",
+          "desc": "色相环 + 预设色板。",
           "tag": "color",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1385,13 +1471,14 @@
             "色板",
             "预览大",
             "双色"
-          ]
+          ],
+          "path": "/ui/colorpick"
         },
         {
           "slug": "notify",
           "title": "通知中心",
           "hint": "推送/清空",
-          "desc": "通知栈。",
+          "desc": "铃铛显示未读数并轻摇，面板列出通知，新通知从顶部插入，其余下移。",
           "tag": "notify",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1401,13 +1488,14 @@
             "堆叠",
             "自动消失",
             "多类型"
-          ]
+          ],
+          "path": "/ui/notify"
         },
         {
           "slug": "command",
           "title": "命令面板",
           "hint": "⌘K 面板",
-          "desc": "命令面板",
+          "desc": "输入关键字逐字出现，结果列表实时过滤，高亮项上下移动，回车执行。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1419,13 +1507,14 @@
             "搜索感",
             "暗",
             "亮点"
-          ]
+          ],
+          "path": "/ui/command"
         },
         {
           "slug": "pagination",
           "title": "分页器",
           "hint": "页码分页",
-          "desc": "分页器",
+          "desc": "当前页高亮块滑动到目标页；页数多时中间折叠成 …，始终显示首尾页。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1437,13 +1526,14 @@
             "简洁",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/ui/pagination"
         },
         {
           "slug": "breadcrumb",
           "title": "面包屑",
           "hint": "路径面包屑",
-          "desc": "面包屑",
+          "desc": "显示当前页面在站点中的层级路径，末级为当前页；新层级从右侧滑入，悬停项加下划线。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1455,13 +1545,14 @@
             "纯文",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/ui/breadcrumb"
         },
         {
           "slug": "rating",
           "title": "评分星",
           "hint": "星级评分",
-          "desc": "评分",
+          "desc": "悬停预览分数（星星依次点亮放大），离开后回到当前分；支持半星。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1473,13 +1564,14 @@
             "小",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/ui/rating"
         },
         {
           "slug": "empty",
           "title": "空状态",
           "hint": "空状态插画感",
-          "desc": "空状态",
+          "desc": "列表没有数据时，用一幅轻微浮动的插画 + 说明文字 + 引导按钮，告诉用户下一步做什么。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1491,13 +1583,14 @@
             "纯文",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/ui/empty"
         },
         {
           "slug": "banner",
           "title": "顶栏横幅",
           "hint": "通知横幅",
-          "desc": "顶栏横幅",
+          "desc": "页面顶部的提示条，从上方滑下；长文字可横向滚动，右侧有关闭按钮。",
           "tag": "ui",
           "mod": "kit-ui",
           "fn": "mount",
@@ -1509,7 +1602,8 @@
             "可关",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/ui/banner"
         }
       ]
     },
@@ -1517,13 +1611,12 @@
       "key": "css-fx",
       "name": "CSS 动画与特效",
       "icon": "✦",
-      "intro": "纯 CSS 实现的动效：@keyframes、transition、backdrop-filter、3D transform 与滚动驱动动画。",
+      "intro": "CSS 动效实验室：脉冲/加载/悬停/轮播/玻璃/霓虹等 36 种，画布复现 + 悬停读数 + 公式说明。",
       "tech": [
-        "@keyframes",
-        "transition",
-        "backdrop-filter",
-        "transform-3d",
-        "animation-timeline"
+        "Canvas 2D",
+        "easing",
+        "keyframes",
+        "clip-path"
       ],
       "demos": [
         {
@@ -1532,8 +1625,10 @@
           "hint": "悬停卡片查看 transition · 渐变流光文字",
           "desc": "加载动画、过渡曲线对比与流光渐变文字。",
           "tag": "keyframes",
-          "mod": "css-keyframes",
-          "fn": "mount"
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "keyframes",
+          "path": "/css-fx/keyframes"
         },
         {
           "slug": "glass",
@@ -1541,8 +1636,10 @@
           "hint": "拖动滑块调节模糊与透明度",
           "desc": "backdrop-filter 毛玻璃卡片与流动背景。",
           "tag": "glass",
-          "mod": "css-glass",
-          "fn": "mount"
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "glass",
+          "path": "/css-fx/glass"
         },
         {
           "slug": "tilt",
@@ -1550,8 +1647,10 @@
           "hint": "移动指针倾斜 · 点击翻转",
           "desc": "perspective + rotateX/Y 的 3D 卡片。",
           "tag": "3d",
-          "mod": "css-tilt",
-          "fn": "mount"
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "tilt",
+          "path": "/css-fx/tilt"
         },
         {
           "slug": "scroll",
@@ -1559,8 +1658,10 @@
           "hint": "在面板内滚动",
           "desc": "animation-timeline: view()，不支持时回退 IntersectionObserver。",
           "tag": "scroll",
-          "mod": "css-scroll",
-          "fn": "mount"
+          "mod": "kit-css",
+          "fn": "mount",
+          "variant": "scroll",
+          "path": "/css-fx/scroll"
         },
         {
           "slug": "pulse",
@@ -1580,7 +1681,8 @@
             "天蓝",
             "橙",
             "品红"
-          ]
+          ],
+          "path": "/css-fx/pulse"
         },
         {
           "slug": "loader",
@@ -1604,7 +1706,8 @@
             "弹跳点",
             "旋转三角",
             "进度弧"
-          ]
+          ],
+          "path": "/css-fx/loader"
         },
         {
           "slug": "hover",
@@ -1628,7 +1731,8 @@
             "磁吸位移",
             "下划线展开",
             "背景填充"
-          ]
+          ],
+          "path": "/css-fx/hover"
         },
         {
           "slug": "grad",
@@ -1646,7 +1750,8 @@
             "霓虹",
             "日落",
             "极光"
-          ]
+          ],
+          "path": "/css-fx/grad"
         },
         {
           "slug": "ease",
@@ -1670,7 +1775,8 @@
             "steps",
             "bounce感",
             "自定义贝塞尔"
-          ]
+          ],
+          "path": "/css-fx/ease"
         },
         {
           "slug": "spring",
@@ -1690,13 +1796,14 @@
             "左右晃回",
             "旋转过冲",
             "连环弹跳"
-          ]
+          ],
+          "path": "/css-fx/spring"
         },
         {
           "slug": "stagger",
           "title": "交错入场",
           "hint": "顶部切换 · 点击重播",
-          "desc": "子元素 stagger 入场。",
+          "desc": "交错入场：子元素依次出现，每个比前一个延迟一小段时间。",
           "tag": "stagger",
           "mod": "kit-css",
           "fn": "mount",
@@ -1710,7 +1817,8 @@
             "反向收起",
             "缩放交错",
             "旋转交错"
-          ]
+          ],
+          "path": "/css-fx/stagger"
         },
         {
           "slug": "flip",
@@ -1728,7 +1836,8 @@
             "交换两格",
             "过滤显隐",
             "尺寸变形"
-          ]
+          ],
+          "path": "/css-fx/flip"
         },
         {
           "slug": "clip",
@@ -1750,7 +1859,8 @@
             "圆形收缩",
             "十字",
             "胶囊"
-          ]
+          ],
+          "path": "/css-fx/clip"
         },
         {
           "slug": "xform3d",
@@ -1772,7 +1882,8 @@
             "球体感",
             "棱柱",
             "行列翻转"
-          ]
+          ],
+          "path": "/css-fx/xform3d"
         },
         {
           "slug": "trans",
@@ -1794,13 +1905,14 @@
             "边框",
             "滤镜",
             "复合多属性"
-          ]
+          ],
+          "path": "/css-fx/trans"
         },
         {
           "slug": "parallax",
           "title": "视差",
           "hint": "调深度/颜色 · 移动指针",
-          "desc": "CSS 视差层。",
+          "desc": "多层以不同速度跟随指针，近快远慢，模拟 CSS 视差。",
           "tag": "parallax",
           "mod": "kit-css",
           "fn": "mount",
@@ -1812,7 +1924,8 @@
             "前景快移",
             "卡片深度",
             "文字层差"
-          ]
+          ],
+          "path": "/css-fx/parallax"
         },
         {
           "slug": "filter",
@@ -1832,13 +1945,14 @@
             "霓虹发光",
             "暗角呼吸",
             "色散感"
-          ]
+          ],
+          "path": "/css-fx/filter"
         },
         {
           "slug": "blend",
           "title": "混合模式",
           "hint": "顶部切换模式 · 移动色块",
-          "desc": "mix-blend-mode。",
+          "desc": "混合模式：上下两层颜色按公式（如 正片叠底 = 上×下）合成，得到新的颜色。",
           "tag": "blend",
           "mod": "kit-css",
           "fn": "mount",
@@ -1852,7 +1966,8 @@
             "color-dodge",
             "hard-light",
             "soft-light"
-          ]
+          ],
+          "path": "/css-fx/blend"
         },
         {
           "slug": "skeleton",
@@ -1870,13 +1985,14 @@
             "图表占位",
             "文章段落",
             "网格瓷砖"
-          ]
+          ],
+          "path": "/css-fx/skeleton"
         },
         {
           "slug": "progress",
           "title": "进度条",
           "hint": "顶部切换样式 · 点击开始",
-          "desc": "进度动效。",
+          "desc": "线性条、环、半环、水波填充。",
           "tag": "progress",
           "mod": "kit-css",
           "fn": "mount",
@@ -1890,13 +2006,14 @@
             "水波填充",
             "像素块",
             "渐变扫"
-          ]
+          ],
+          "path": "/css-fx/progress"
         },
         {
           "slug": "ripple",
           "title": "涟漪",
           "hint": "顶部切换 · 点击产生",
-          "desc": "Material/水波纹。",
+          "desc": "水波纹：点击处出现一个圆，半径不断变大、透明度变小，像水面涟漪。",
           "tag": "ripple",
           "mod": "kit-css",
           "fn": "mount",
@@ -1908,13 +2025,14 @@
             "彩色",
             "方块波",
             "长按放大"
-          ]
+          ],
+          "path": "/css-fx/ripple"
         },
         {
           "slug": "accordion",
           "title": "手风琴",
           "hint": "顶部切换 · 展开收起",
-          "desc": "高度过渡手风琴。",
+          "desc": "点开一块、高度过渡展开。",
           "tag": "accordion",
           "mod": "kit-css",
           "fn": "mount",
@@ -1926,7 +2044,8 @@
             "淡入内容",
             "边框高亮",
             "卡片式"
-          ]
+          ],
+          "path": "/css-fx/accordion"
         },
         {
           "slug": "modal",
@@ -1944,13 +2063,14 @@
             "模糊背景",
             "弹跳入",
             "翻转入"
-          ]
+          ],
+          "path": "/css-fx/modal"
         },
         {
           "slug": "carousel",
           "title": "轮播",
           "hint": "顶部切换切换方式",
-          "desc": "Carousel。",
+          "desc": "轮播：一组卡片横向排开，按时间或点击平滑滑到下一张。",
           "tag": "carousel",
           "mod": "kit-css",
           "fn": "mount",
@@ -1962,13 +2082,14 @@
             "卡片堆",
             "垂直",
             "无限循环"
-          ]
+          ],
+          "path": "/css-fx/carousel"
         },
         {
           "slug": "reveal",
           "title": "揭示",
           "hint": "顶部切换 · 点击触发",
-          "desc": "内容揭示。",
+          "desc": "擦除、百叶窗、圆形扩散、对角线、像素块、模糊清晰。",
           "tag": "reveal",
           "mod": "kit-css",
           "fn": "mount",
@@ -1980,13 +2101,14 @@
             "对角线",
             "像素块",
             "模糊清晰"
-          ]
+          ],
+          "path": "/css-fx/reveal"
         },
         {
           "slug": "neon",
           "title": "霓虹",
           "hint": "顶部切换 · 调颜色/速度",
-          "desc": "霓虹发光字/边。",
+          "desc": "多层阴影模拟 text-shadow / box-shadow 霓虹。",
           "tag": "neon",
           "mod": "kit-css",
           "fn": "mount",
@@ -1998,13 +2120,14 @@
             "图标",
             "双色交替",
             "故障闪"
-          ]
+          ],
+          "path": "/css-fx/neon"
         },
         {
           "slug": "liquid",
           "title": "液态",
           "hint": "顶部切换 · 悬停变形",
-          "desc": "液态/果冻感。",
+          "desc": "blob 边、水滴、波浪底边，悬停时黏滞拉伸。",
           "tag": "liquid",
           "mod": "kit-css",
           "fn": "mount",
@@ -2016,13 +2139,14 @@
             "果冻点击",
             "波浪底边",
             "粘滞切换"
-          ]
+          ],
+          "path": "/css-fx/liquid"
         },
         {
           "slug": "marquee",
           "title": "跑马灯",
           "hint": "顶部切换 · 调速度",
-          "desc": "无限滚动。",
+          "desc": "横向文字、双行、徽标带、垂直。",
           "tag": "marquee",
           "mod": "kit-css",
           "fn": "mount",
@@ -2034,7 +2158,8 @@
             "徽标带",
             "垂直",
             "变速"
-          ]
+          ],
+          "path": "/css-fx/marquee"
         },
         {
           "slug": "kenburns",
@@ -2050,13 +2175,14 @@
             "慢推",
             "对角",
             "急拉"
-          ]
+          ],
+          "path": "/css-fx/kenburns"
         },
         {
           "slug": "shake",
           "title": "抖动反馈",
           "hint": "顶部切换 · 点击触发",
-          "desc": "错误/提醒抖动。",
+          "desc": "左右、上下、旋转、弹性、心跳、震动条。",
           "tag": "shake",
           "mod": "kit-css",
           "fn": "mount",
@@ -2068,7 +2194,8 @@
             "弹性",
             "心跳",
             "震动条"
-          ]
+          ],
+          "path": "/css-fx/shake"
         },
         {
           "slug": "keyseq",
@@ -2088,13 +2215,14 @@
             "旋转+位移",
             "闪烁摩斯",
             "多段叙事"
-          ]
+          ],
+          "path": "/css-fx/keyseq"
         },
         {
           "slug": "neumorph",
           "title": "新拟态",
           "hint": "Neumorphism",
-          "desc": "新拟态按钮/卡片",
+          "desc": "浅底上双阴影做出凸起/凹陷按钮感。",
           "tag": "css",
           "mod": "kit-css",
           "fn": "mount",
@@ -2106,13 +2234,14 @@
             "硬",
             "彩光",
             "单"
-          ]
+          ],
+          "path": "/css-fx/neumorph"
         },
         {
           "slug": "cursor-fx",
           "title": "自定义光标",
           "hint": "跟随光标",
-          "desc": "自定义光标环",
+          "desc": "自定义光标环跟随指针（或自动巡游），可带拖尾。",
           "tag": "css",
           "mod": "kit-css",
           "fn": "mount",
@@ -2124,13 +2253,14 @@
             "混合",
             "大",
             "小"
-          ]
+          ],
+          "path": "/css-fx/cursor-fx"
         },
         {
           "slug": "text-stroke",
           "title": "文字描边动",
           "hint": "描边奔跑",
-          "desc": "文字描边",
+          "desc": "文字描边沿路径奔跑（stroke-dashoffset 感），可虚线流动。",
           "tag": "css",
           "mod": "kit-css",
           "fn": "mount",
@@ -2142,13 +2272,14 @@
             "慢",
             "霓虹",
             "单"
-          ]
+          ],
+          "path": "/css-fx/text-stroke"
         },
         {
           "slug": "border-beam",
           "title": "边框光束",
           "hint": "旋转边光",
-          "desc": "边框光束",
+          "desc": "光束沿圆角矩形边框旋转奔跑，常见于高亮卡片。",
           "tag": "css",
           "mod": "kit-css",
           "fn": "mount",
@@ -2160,13 +2291,14 @@
             "细光",
             "双色",
             "单色"
-          ]
+          ],
+          "path": "/css-fx/border-beam"
         },
         {
           "slug": "spotlight",
           "title": "聚光跟随",
           "hint": "指针聚光",
-          "desc": "聚光卡片",
+          "desc": "暗幕上开一束跟随指针的聚光，照亮下方卡片。",
           "tag": "css",
           "mod": "kit-css",
           "fn": "mount",
@@ -2178,7 +2310,8 @@
             "弱",
             "彩",
             "白"
-          ]
+          ],
+          "path": "/css-fx/spotlight"
         }
       ]
     },
@@ -2199,17 +2332,34 @@
           "hint": "移动指针吸引粒子",
           "desc": "粒子间距离连线的经典网络背景。",
           "tag": "particles",
-          "mod": "canvas-network",
-          "fn": "mount"
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "network",
+          "presets": [
+            "默认",
+            "稀疏",
+            "密集",
+            "高速"
+          ],
+          "path": "/canvas/network"
         },
         {
           "slug": "matrix",
           "title": "代码雨 Matrix",
-          "hint": "点击切换颜色",
+          "hint": "移动指针点亮字符列",
           "desc": "黑客帝国风格的字符雨。",
           "tag": "text",
-          "mod": "canvas-matrix",
-          "fn": "mount"
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "matrix",
+          "presets": [
+            "经典绿",
+            "疏列",
+            "长拖尾",
+            "大字",
+            "急雨"
+          ],
+          "path": "/canvas/matrix"
         },
         {
           "slug": "fireworks",
@@ -2217,23 +2367,41 @@
           "hint": "点击任意位置发射",
           "desc": "带重力与拖尾的粒子烟花。",
           "tag": "physics",
-          "mod": "canvas-fireworks",
-          "fn": "mount"
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "fireworks",
+          "presets": [
+            "默认",
+            "大礼花",
+            "高空",
+            "快节奏",
+            "慢落"
+          ],
+          "path": "/canvas/fireworks"
         },
         {
           "slug": "draw",
           "title": "画板",
-          "hint": "按住拖动绘画 · 支持触屏",
-          "desc": "平滑笔刷、颜色、粗细、撤销与导出 PNG。",
+          "hint": "按住拖动绘画 · 双击清空",
+          "desc": "指数平滑笔刷与速度感应线宽。",
           "tag": "tool",
-          "mod": "canvas-draw",
-          "fn": "mount"
+          "mod": "kit-canvas",
+          "fn": "mount",
+          "variant": "draw",
+          "presets": [
+            "钢笔",
+            "粗马克",
+            "细线",
+            "不褪色",
+            "高平滑"
+          ],
+          "path": "/canvas/draw"
         },
         {
           "slug": "orbits",
           "title": "轨道粒子",
-          "hint": "调颜色/数量/强度 · 移动指针",
-          "desc": "多轨粒子系统。",
+          "hint": "移动指针扰动粒子 · 看它们回到轨道",
+          "desc": "按开普勒第三定律运行的多轨粒子。",
           "tag": "orbit",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2248,13 +2416,14 @@
             "极细",
             "粗点",
             "扰动强"
-          ]
+          ],
+          "path": "/canvas/orbits"
         },
         {
           "slug": "trail",
           "title": "指针拖尾",
-          "hint": "顶部切换样式 · 移动画出",
-          "desc": "指针拖尾效果。",
+          "hint": "移动或甩动指针 · 看丝带惯性",
+          "desc": "链式插值的指针拖尾丝带。",
           "tag": "trail",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2270,13 +2439,14 @@
             "光剑",
             "萤火",
             "水彩"
-          ]
+          ],
+          "path": "/canvas/trail"
         },
         {
           "slug": "blob",
           "title": "软体 Blob",
-          "hint": "调颜色/柔软度 · 拖动变形",
-          "desc": "metaball 风格软体。",
+          "hint": "把指针压进软体推它 · 调柔软度",
+          "desc": "弹簧顶点构成的软体 Blob。",
           "tag": "blob",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2289,13 +2459,14 @@
             "慢",
             "快",
             "大"
-          ]
+          ],
+          "path": "/canvas/blob"
         },
         {
           "slug": "rain",
           "title": "粒子雨",
-          "hint": "调颜色/数量/风向",
-          "desc": "重力粒子雨。",
+          "hint": "指针是伞 · 调风速看雨线倾斜",
+          "desc": "空气阻力下达到终端速度的粒子雨。",
           "tag": "rain",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2308,13 +2479,14 @@
             "雪感",
             "火花雨",
             "慢飘"
-          ]
+          ],
+          "path": "/canvas/rain"
         },
         {
           "slug": "wave",
           "title": "波浪",
-          "hint": "顶部切换 · 拖动振幅/频率",
-          "desc": "Canvas 波浪。",
+          "hint": "指针靠近水面按压 · 调波数",
+          "desc": "多个正弦波叠加的水面。",
           "tag": "wave",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2328,13 +2500,14 @@
             "多层视差波",
             "极坐标波",
             "噪声波"
-          ]
+          ],
+          "path": "/canvas/wave"
         },
         {
           "slug": "noise",
           "title": "噪声场",
-          "hint": "顶部切换 · 拖动缩放",
-          "desc": "程序噪声。",
+          "hint": "移动指针读噪声值 · 切换倍频",
+          "desc": "分形布朗运动（FBM）噪声场。",
           "tag": "noise",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2348,13 +2521,14 @@
             "电浆",
             "像素风",
             "湍流"
-          ]
+          ],
+          "path": "/canvas/noise"
         },
         {
           "slug": "flock",
           "title": "群体",
-          "hint": "顶部切换 · 移动吸引点",
-          "desc": "Boids/群体。",
+          "hint": "指针是捕食者 · 移进群里驱散",
+          "desc": "Boids：分离、对齐、聚合三条规则。",
           "tag": "flock",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2366,13 +2540,14 @@
             "环绕",
             "捕食逃逸",
             "网格对齐"
-          ]
+          ],
+          "path": "/canvas/flock"
         },
         {
           "slug": "burst",
           "title": "爆发",
-          "hint": "顶部切换 · 点击爆发",
-          "desc": "粒子爆发。",
+          "hint": "点击任意位置爆发 · 切换形状",
+          "desc": "速度场决定形状的粒子爆发。",
           "tag": "burst",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2386,13 +2561,14 @@
             "火花四射",
             "爱心雨",
             "字母喷"
-          ]
+          ],
+          "path": "/canvas/burst"
         },
         {
           "slug": "flow",
           "title": "流场",
-          "hint": "顶部切换 · 点击重置",
-          "desc": "向量场粒子。",
+          "hint": "移动指针搅动出涡旋 · Γ 调负改旋向",
+          "desc": "噪声角度场驱动的向量场流线。",
           "tag": "flow",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2404,13 +2580,14 @@
             "噪声流",
             "吸引子",
             "双涡"
-          ]
+          ],
+          "path": "/canvas/flow"
         },
         {
           "slug": "gridwave",
           "title": "网格起伏",
-          "hint": "调颜色/振幅 · 移动指针",
-          "desc": "点阵/网格顶点波动。",
+          "hint": "移动指针改变波源 · 调衰减",
+          "desc": "衰减圆形波驱动的网格起伏。",
           "tag": "grid",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2422,13 +2599,14 @@
             "低波",
             "彩点",
             "线框"
-          ]
+          ],
+          "path": "/canvas/gridwave"
         },
         {
           "slug": "ink",
           "title": "墨水扩散",
-          "hint": "调颜色 · 点击滴墨",
-          "desc": "墨水/扩散模拟。",
+          "hint": "点击滴墨 · 调扩散系数 D",
+          "desc": "高斯扩散方程的墨水扩散。",
           "tag": "ink",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2438,13 +2616,14 @@
             "浓墨",
             "彩墨",
             "水彩"
-          ]
+          ],
+          "path": "/canvas/ink"
         },
         {
           "slug": "aurora",
           "title": "极光",
-          "hint": "调颜色/速度",
-          "desc": "极光色带。",
+          "hint": "左右移动指针吹动极光",
+          "desc": "噪声帘幕构成的极光色带。",
           "tag": "aurora",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2454,13 +2633,14 @@
             "蓝青",
             "粉橙",
             "慢漂"
-          ]
+          ],
+          "path": "/canvas/aurora"
         },
         {
           "slug": "constellation",
           "title": "星座连线",
-          "hint": "调阈值距离 · 移动成线",
-          "desc": "近邻连线星空。",
+          "hint": "指针与附近星星连线 · 调 k",
+          "desc": "k 近邻图构成的星座连线。",
           "tag": "constellation",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2470,13 +2650,14 @@
             "密星",
             "亮线",
             "暗线"
-          ]
+          ],
+          "path": "/canvas/constellation"
         },
         {
           "slug": "sand",
           "title": "沙粒",
-          "hint": "调数量 · 点击倾倒",
-          "desc": "沙漏/沙堆简化。",
+          "hint": "按住拖动倒沙 · 关漏斗看堆满",
+          "desc": "元胞自动机落沙与安息角。",
           "tag": "sand",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2485,13 +2666,14 @@
             "细沙",
             "粗沙",
             "彩沙"
-          ]
+          ],
+          "path": "/canvas/sand"
         },
         {
           "slug": "kaleido",
           "title": "万花筒",
-          "hint": "调对称数 · 移动图案",
-          "desc": "对称镜像绘制。",
+          "hint": "在画布上画线 · 自动对称复制",
+          "desc": "旋转与镜像对称的万花筒。",
           "tag": "kaleido",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2501,13 +2683,14 @@
             "8 瓣",
             "12 瓣",
             "彩镜"
-          ]
+          ],
+          "path": "/canvas/kaleido"
         },
         {
           "slug": "lightning",
           "title": "闪电折线",
-          "hint": "调颜色 · 点击放雷",
-          "desc": "随机闪电路径。",
+          "hint": "指针决定落点 · 点击立即闪击",
+          "desc": "中点位移分形生成的闪电。",
           "tag": "lightning",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2516,13 +2699,14 @@
             "单道",
             "分叉",
             "暴闪"
-          ]
+          ],
+          "path": "/canvas/lightning"
         },
         {
           "slug": "cloth",
           "title": "布料感",
-          "hint": "调弹性 · 拖拽扰动",
-          "desc": "弹簧网格布料简化。",
+          "hint": "按住拖动抓起布料 · 松开回落",
+          "desc": "Verlet 积分 + 距离约束的布料。",
           "tag": "cloth",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2531,13 +2715,14 @@
             "软布",
             "硬布",
             "彩布"
-          ]
+          ],
+          "path": "/canvas/cloth"
         },
         {
           "slug": "spiral",
           "title": "螺旋采样",
-          "hint": "调螺距/速度",
-          "desc": "阿基米德/对数螺旋。",
+          "hint": "移动指针读取半径 · 切换螺线类型",
+          "desc": "阿基米德 / 对数 / 费马螺线。",
           "tag": "spiral",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2547,13 +2732,14 @@
             "对数",
             "双螺旋",
             "彩旋"
-          ]
+          ],
+          "path": "/canvas/spiral"
         },
         {
           "slug": "tunnel",
           "title": "隧道穿梭",
-          "hint": "调速度/颜色",
-          "desc": "2D 隧道伪 3D。",
+          "hint": "移动指针让隧道转弯 · 换截面",
+          "desc": "透视投影 r = f·R/z 的伪 3D 隧道。",
           "tag": "tunnel",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2562,13 +2748,14 @@
             "圆环",
             "方管",
             "彩隧"
-          ]
+          ],
+          "path": "/canvas/tunnel"
         },
         {
           "slug": "fire",
           "title": "火焰",
-          "hint": "调颜色/数量/速度",
-          "desc": "上升火焰粒子。",
+          "hint": "移动指针点燃火苗 · 调风",
+          "desc": "热量元胞自动机的火焰。",
           "tag": "fire",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2580,13 +2767,14 @@
             "细苗",
             "宽焰",
             "风吹"
-          ]
+          ],
+          "path": "/canvas/fire"
         },
         {
           "slug": "smoke",
           "title": "烟雾",
-          "hint": "移动指针为烟源",
-          "desc": "扩散烟雾。",
+          "hint": "移动指针在任意位置冒烟",
+          "desc": "浮力 + 湍流 + 扩散的烟雾。",
           "tag": "smoke",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2598,13 +2786,14 @@
             "彩色烟",
             "慢散",
             "快喷"
-          ]
+          ],
+          "path": "/canvas/smoke"
         },
         {
           "slug": "reactdiff",
           "title": "反应扩散",
-          "hint": "调速度 · 形态演化",
-          "desc": "Gray-Scott 简化。",
+          "hint": "按住拖动播种 · 切换斑图",
+          "desc": "Gray-Scott 反应扩散模型。",
           "tag": "rd",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2616,13 +2805,14 @@
             "迷宫",
             "混沌",
             "慢演化"
-          ]
+          ],
+          "path": "/canvas/reactdiff"
         },
         {
           "slug": "isometric",
           "title": "等距方块",
-          "hint": "调尺寸/速度 · 起伏",
-          "desc": "等距像素城市场景感。",
+          "hint": "移动指针抬起柱子 · 调格数",
+          "desc": "等距投影的 2.5D 柱阵。",
           "tag": "iso",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2634,13 +2824,14 @@
             "疏",
             "密",
             "彩虹高"
-          ]
+          ],
+          "path": "/canvas/isometric"
         },
         {
           "slug": "metaballs2d",
           "title": "2D Metaball",
-          "hint": "软体融合",
-          "desc": "2D Metaball",
+          "hint": "拖动第一个球去粘其他球",
+          "desc": "隐式等值面构成的 2D 融球。",
           "tag": "canvas",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2652,13 +2843,14 @@
             "硬",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/canvas/metaballs2d"
         },
         {
           "slug": "pixelate",
           "title": "像素化游标",
-          "hint": "指针像素化",
-          "desc": "像素化",
+          "hint": "移动指针用透镜对比原图",
+          "desc": "降采样与色阶量化的像素化。",
           "tag": "canvas",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2670,13 +2862,14 @@
             "弱",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/canvas/pixelate"
         },
         {
           "slug": "ascii",
           "title": "ASCII 艺术",
-          "hint": "字符画",
-          "desc": "ASCII",
+          "hint": "移动指针照亮字符 · 调字号",
+          "desc": "亮度映射字符的 ASCII 字符画。",
           "tag": "canvas",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2688,13 +2881,14 @@
             "静",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/canvas/ascii"
         },
         {
           "slug": "ripple-c",
           "title": "水波纹点击",
-          "hint": "点击涟漪",
-          "desc": "水波纹",
+          "hint": "点击或拖动滴水 · 调阻尼",
+          "desc": "离散波动方程的水波纹。",
           "tag": "canvas",
           "mod": "kit-canvas",
           "fn": "mount",
@@ -2706,7 +2900,8 @@
             "慢",
             "强",
             "弱"
-          ]
+          ],
+          "path": "/canvas/ripple-c"
         }
       ]
     },
@@ -2714,12 +2909,12 @@
       "key": "svg",
       "name": "SVG 动画",
       "icon": "◇",
-      "intro": "矢量图形动画：stroke-dasharray 描边、路径插值变形与 SMIL / CSS 图标动效。",
+      "intro": "矢量图形动画原理：stroke-dasharray 描边、路径插值变形、遮罩与渐变，用 Path2D 在画布上逐帧复现，悬停读出路径数值。",
       "tech": [
-        "SVG",
+        "Path2D",
         "stroke-dashoffset",
         "path morph",
-        "SMIL"
+        "Canvas 2D"
       ],
       "demos": [
         {
@@ -2728,8 +2923,10 @@
           "hint": "点击重播",
           "desc": "利用 getTotalLength 实现手写描边。",
           "tag": "stroke",
-          "mod": "svg-draw",
-          "fn": "mount"
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "draw",
+          "path": "/svg/draw"
         },
         {
           "slug": "morph",
@@ -2737,8 +2934,10 @@
           "hint": "点击按钮切换形状",
           "desc": "同构路径点插值，平滑形变。",
           "tag": "morph",
-          "mod": "svg-morph",
-          "fn": "mount"
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "morph",
+          "path": "/svg/morph"
         },
         {
           "slug": "icons",
@@ -2746,8 +2945,10 @@
           "hint": "点击图标切换状态",
           "desc": "菜单/关闭、播放/暂停、加载、对勾等图标动效。",
           "tag": "icons",
-          "mod": "svg-icons",
-          "fn": "mount"
+          "mod": "kit-svg",
+          "fn": "mount",
+          "variant": "icons",
+          "path": "/svg/icons"
         },
         {
           "slug": "stroke",
@@ -2771,7 +2972,8 @@
             "齿轮感",
             "山脉",
             "签名"
-          ]
+          ],
+          "path": "/svg/stroke"
         },
         {
           "slug": "icon-anim",
@@ -2795,7 +2997,8 @@
             "箭头",
             "菜单变X",
             "加载弧"
-          ]
+          ],
+          "path": "/svg/icon-anim"
         },
         {
           "slug": "smil",
@@ -2815,7 +3018,8 @@
             "缩放弹跳",
             "旋转齿轮",
             "闪烁点"
-          ]
+          ],
+          "path": "/svg/smil"
         },
         {
           "slug": "dash",
@@ -2833,7 +3037,8 @@
             "箭头流",
             "虚线边框",
             "多段色"
-          ]
+          ],
+          "path": "/svg/dash"
         },
         {
           "slug": "drawtext",
@@ -2851,7 +3056,8 @@
             "弧形字",
             "填充延迟",
             "中文"
-          ]
+          ],
+          "path": "/svg/drawtext"
         },
         {
           "slug": "ring",
@@ -2869,7 +3075,8 @@
             "渐变弧",
             "缺口环",
             "仪表针"
-          ]
+          ],
+          "path": "/svg/ring"
         },
         {
           "slug": "filter-svg",
@@ -2889,7 +3096,8 @@
             "色彩矩阵",
             "形态学",
             "光晕"
-          ]
+          ],
+          "path": "/svg/filter-svg"
         },
         {
           "slug": "mask",
@@ -2907,7 +3115,8 @@
             "条纹",
             "菱形窗",
             "跟随指针"
-          ]
+          ],
+          "path": "/svg/mask"
         },
         {
           "slug": "follow",
@@ -2925,7 +3134,8 @@
             "往返",
             "变速",
             "无限符"
-          ]
+          ],
+          "path": "/svg/follow"
         },
         {
           "slug": "blob-svg",
@@ -2942,13 +3152,14 @@
             "尖",
             "多彩",
             "慢"
-          ]
+          ],
+          "path": "/svg/blob-svg"
         },
         {
           "slug": "chart-draw",
           "title": "图表描出",
           "hint": "顶部切换 · 点击重播",
-          "desc": "折线/面积描画。",
+          "desc": "折线图本质是一条 <polyline> / <path>，面积图是在折线下方补成封闭区域再填充。",
           "tag": "chart",
           "mod": "kit-svg",
           "fn": "mount",
@@ -2960,7 +3171,8 @@
             "雷达",
             "饼弧",
             "散点连"
-          ]
+          ],
+          "path": "/svg/chart-draw"
         },
         {
           "slug": "sprite",
@@ -2976,7 +3188,8 @@
             "线面切换",
             "旋转集",
             "大小集"
-          ]
+          ],
+          "path": "/svg/sprite"
         },
         {
           "slug": "gradient-svg",
@@ -2994,13 +3207,14 @@
             "双停色移动",
             "描边渐变",
             "文字渐变"
-          ]
+          ],
+          "path": "/svg/gradient-svg"
         },
         {
           "slug": "line-draw",
           "title": "线条生长",
           "hint": "路径生长",
-          "desc": "线条生长",
+          "desc": "每条线是一条二次贝塞尔曲线 <path d=\"M 中心 Q 控制点 终点\">。",
           "tag": "svg",
           "mod": "kit-svg",
           "fn": "mount",
@@ -3012,13 +3226,14 @@
             "细",
             "虚线",
             "实线"
-          ]
+          ],
+          "path": "/svg/line-draw"
         },
         {
           "slug": "check-morph",
           "title": "勾选变形",
           "hint": "形态到勾",
-          "desc": "勾选 Morph",
+          "desc": "复选框从「空心方框」变成「实心圆角 + 对勾」：圆角半径 rx 变大、填充从透明变成实色、对勾用 dasho…",
           "tag": "svg",
           "mod": "kit-svg",
           "fn": "mount",
@@ -3030,13 +3245,14 @@
             "线性",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/svg/check-morph"
         },
         {
           "slug": "loader-svg",
           "title": "SVG 加载弧",
           "hint": "旋转弧",
-          "desc": "SVG 加载",
+          "desc": "一个 <circle> 只描出一段弧（dasharray = 弧长 + 剩余周长），再用 animateTr…",
           "tag": "svg",
           "mod": "kit-svg",
           "fn": "mount",
@@ -3048,13 +3264,14 @@
             "单",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/svg/loader-svg"
         },
         {
           "slug": "menu-morph",
           "title": "菜单变形",
           "hint": "汉堡变 X",
-          "desc": "菜单 Morph",
+          "desc": "汉堡菜单 ☰ 是三条 <line>。",
           "tag": "svg",
           "mod": "kit-svg",
           "fn": "mount",
@@ -3066,7 +3283,8 @@
             "线性",
             "粗",
             "细"
-          ]
+          ],
+          "path": "/svg/menu-morph"
         }
       ]
     },
@@ -3074,46 +3292,53 @@
       "key": "gsap",
       "name": "GSAP 动画",
       "icon": "➶",
-      "intro": "GSAP 专业级动画引擎：时间轴编排、ScrollTrigger 滚动联动与文字逐字交错。",
+      "intro": "GSAP 核心概念实验室：补间、缓动曲线、Timeline 时间轴、stagger 交错、ScrollTrigger 与 scrub，用自写的补间引擎逐帧复现，并给出对应的 GSAP 写法。",
       "tech": [
-        "gsap@3.12",
+        "tween / ease",
         "Timeline",
-        "ScrollTrigger",
-        "stagger"
+        "stagger",
+        "ScrollTrigger 原理",
+        "Canvas 2D"
       ],
       "demos": [
         {
           "slug": "timeline",
           "title": "Timeline 时间轴",
-          "hint": "播放 / 暂停 / 倒放 / 拖动进度",
-          "desc": "多段动画编排与进度控制。",
+          "hint": "指针移到轨道查看片段",
+          "desc": "多段补间按时间轴编排，重叠衔接后 yoyo 倒放。",
           "tag": "timeline",
-          "mod": "gsap-timeline",
-          "fn": "mount"
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "timeline",
+          "path": "/gsap/timeline"
         },
         {
           "slug": "scroll",
           "title": "ScrollTrigger",
-          "hint": "在面板内向下滚动",
-          "desc": "滚动进度驱动的固定、视差与进度条。",
+          "hint": "指针上下移动控制滚动",
+          "desc": "区块滚过触发线时，卡片随滚动进度滑入、淡入。",
           "tag": "scroll",
-          "mod": "gsap-scroll",
-          "fn": "mount"
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "scroll",
+          "path": "/gsap/scroll"
         },
         {
           "slug": "text",
           "title": "文字交错动画",
-          "hint": "点击重播 · 切换效果",
+          "hint": "逐字交错入场",
           "desc": "逐字拆分 + stagger 的标题入场。",
           "tag": "text",
-          "mod": "gsap-text",
-          "fn": "mount"
+          "mod": "kit-gsap",
+          "fn": "mount",
+          "variant": "text",
+          "path": "/gsap/text"
         },
         {
           "slug": "bounce",
           "title": "弹跳入场",
-          "hint": "弹跳循环 · Play",
-          "desc": "bounce.out 入场",
+          "hint": "bounce.out 落地",
+          "desc": "弹跳入场：小球落地后按 bounce.out 缓动反弹几次，每次弹起都比上次低。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3125,13 +3350,14 @@
             "快",
             "大",
             "小"
-          ]
+          ],
+          "path": "/gsap/bounce"
         },
         {
           "slug": "stagger",
           "title": "交错卡片",
-          "hint": "交错入场",
-          "desc": "stagger 卡片",
+          "hint": "依次入场",
+          "desc": "交错入场：一组卡片做同一个动画，但每张比前一张晚一点开始（stagger 间隔）。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3143,13 +3369,14 @@
             "快",
             "慢",
             "回弹"
-          ]
+          ],
+          "path": "/gsap/stagger"
         },
         {
           "slug": "path",
           "title": "路径跟随",
-          "hint": "折线路径",
-          "desc": "路径位移",
+          "hint": "沿路径移动 · autoRotate",
+          "desc": "让物体沿着一条预先画好的路线移动。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3161,13 +3388,14 @@
             "快",
             "慢",
             "平滑"
-          ]
+          ],
+          "path": "/gsap/path"
         },
         {
           "slug": "spin-out",
           "title": "旋转出场",
-          "hint": "旋转缩小",
-          "desc": "旋转出场再入",
+          "hint": "旋转缩小再弹回",
+          "desc": "方块一边旋转一边缩小、变透明直到消失（ease: power3.in，越转越快），然后从很小的状态用 bac…",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3179,13 +3407,14 @@
             "慢",
             "弹性入",
             "淡入"
-          ]
+          ],
+          "path": "/gsap/spin-out"
         },
         {
           "slug": "elastic",
           "title": "弹性缩放",
-          "hint": "elastic 缩放",
-          "desc": "弹性缩放",
+          "hint": "elastic.out 缩放",
+          "desc": "像拉开再松手的橡皮筋，元素放大时会冲过目标大小、来回晃几下再停住。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3197,13 +3426,14 @@
             "快",
             "yoyo",
             "单次感"
-          ]
+          ],
+          "path": "/gsap/elastic"
         },
         {
           "slug": "colorflash",
           "title": "颜色闪烁",
-          "hint": "色闪循环",
-          "desc": "颜色关键",
+          "hint": "关键色循环渐变",
+          "desc": "GSAP 可以直接对颜色做补间——它会把颜色拆成红、绿、蓝三个数字，分别从旧值平滑过渡到新值。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3215,13 +3445,14 @@
             "慢闪",
             "霓虹",
             "柔和"
-          ]
+          ],
+          "path": "/gsap/colorflash"
         },
         {
           "slug": "flipcard",
           "title": "翻转牌",
           "hint": "rotateY 翻牌",
-          "desc": "卡片翻转",
+          "desc": "让卡片绕竖直中线转 180°，转过 90° 时正好侧对我们（宽度变成 0），之后看到的就是背面。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3233,13 +3464,14 @@
             "慢",
             "交错",
             "同步"
-          ]
+          ],
+          "path": "/gsap/flipcard"
         },
         {
           "slug": "ring",
           "title": "进度环",
-          "hint": "旋转环",
-          "desc": "环形旋转",
+          "hint": "弧长补间",
+          "desc": "圆环的弧长从 0 增长到目标百分比，就像加载进度或者运动 App 的「圆环」。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3251,13 +3483,14 @@
             "慢",
             "双环感",
             "单环"
-          ]
+          ],
+          "path": "/gsap/ring"
         },
         {
           "slug": "type",
           "title": "打字机",
-          "hint": "GSAP 打字",
-          "desc": "打字机时间轴",
+          "hint": "逐字打出再删除",
+          "desc": "时间轴上每隔固定时间「多显示一个字」，看起来就像有人在打字；全部打完停 1 秒，再用一半的时间一个字一个字删掉。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3269,13 +3502,14 @@
             "删除回放",
             "仅打出",
             "循环"
-          ]
+          ],
+          "path": "/gsap/type"
         },
         {
           "slug": "parallax-g",
           "title": "视差层",
-          "hint": "多层位移",
-          "desc": "视差时间轴",
+          "hint": "指针左右移动镜头",
+          "desc": "坐车时近处的树飞快后退，远处的山却慢慢移动，大脑就靠这种速度差判断远近。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3287,13 +3521,14 @@
             "二层",
             "慢",
             "快"
-          ]
+          ],
+          "path": "/gsap/parallax-g"
         },
         {
           "slug": "grid-stagger",
           "title": "网格交错",
-          "hint": "网格 stagger",
-          "desc": "中心扩散网格",
+          "hint": "指针处为扩散起点",
+          "desc": "stagger 的 grid 和 from 选项可以让延迟按「离起点的距离」来算，于是动画像水波一样从起点一…",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3305,13 +3540,14 @@
             "回弹",
             "淡出",
             "边缘优先"
-          ]
+          ],
+          "path": "/gsap/grid-stagger"
         },
         {
           "slug": "scrub",
           "title": "时间轴 scrub",
-          "hint": "拖动进度",
-          "desc": "scrub 时间轴",
+          "hint": "指针左右拖动进度",
+          "desc": "scrub 时间轴：动画进度不再自己播放，而是跟着拖动/滚动位置走，拖到哪动画就到哪。",
           "tag": "gsap",
           "mod": "kit-gsap",
           "fn": "mount",
@@ -3323,7 +3559,8 @@
             "慢感",
             "快感",
             "线性"
-          ]
+          ],
+          "path": "/gsap/scrub"
         }
       ]
     },
@@ -3345,8 +3582,10 @@
           "hint": "移动指针扰动",
           "desc": "FBM 分形噪声 + 域扭曲的流动背景。",
           "tag": "noise",
-          "mod": "webgl-shader",
-          "fn": "mountNoise"
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "noise",
+          "path": "/webgl/noise"
         },
         {
           "slug": "plasma",
@@ -3354,8 +3593,10 @@
           "hint": "经典 demoscene 效果",
           "desc": "多重正弦叠加的彩色等离子。",
           "tag": "plasma",
-          "mod": "webgl-shader",
-          "fn": "mountPlasma"
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "plasma",
+          "path": "/webgl/plasma"
         },
         {
           "slug": "raymarch",
@@ -3363,14 +3604,16 @@
           "hint": "移动指针旋转视角",
           "desc": "SDF 光线步进的融合球体与光照。",
           "tag": "sdf",
-          "mod": "webgl-shader",
-          "fn": "mountRaymarch"
+          "mod": "kit-webgl",
+          "fn": "mount",
+          "variant": "raymarch",
+          "path": "/webgl/raymarch"
         },
         {
           "slug": "voronoi",
           "title": "Voronoi",
           "hint": "细胞噪声",
-          "desc": "Voronoi 着色",
+          "desc": "沃罗诺伊着色：每个像素找离它最近的种子点，按距离上色，形成细胞状色块。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3382,13 +3625,14 @@
             "动核",
             "冷",
             "暖"
-          ]
+          ],
+          "path": "/webgl/voronoi"
         },
         {
           "slug": "warp",
           "title": "域扭曲",
           "hint": "噪声扭曲",
-          "desc": "域扭曲着色",
+          "desc": "先用噪声把坐标推来推去，再在扭曲后的坐标上画条纹/棋盘，规则图案就变成了流动的波纹。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3400,13 +3644,14 @@
             "慢",
             "细噪",
             "粗噪"
-          ]
+          ],
+          "path": "/webgl/warp"
         },
         {
           "slug": "spiral",
           "title": "螺旋",
           "hint": "极坐标螺旋",
-          "desc": "螺旋着色",
+          "desc": "把像素换成角度 θ 和半径 r，亮度取 sin(臂数·θ − 密度·r + t)，就得到旋转的螺旋臂。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3418,13 +3663,14 @@
             "慢转",
             "多臂",
             "单臂"
-          ]
+          ],
+          "path": "/webgl/spiral"
         },
         {
           "slug": "checker",
           "title": "棋盘扭曲",
           "hint": "扭曲棋盘",
-          "desc": "棋盘着色",
+          "desc": "floor(x)+floor(y) 的奇偶决定黑白；先用 sin 扭曲坐标，格子就会像布料一样波动。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3436,13 +3682,14 @@
             "弱扭",
             "高对比",
             "柔"
-          ]
+          ],
+          "path": "/webgl/checker"
         },
         {
           "slug": "tunnel",
           "title": "隧道",
           "hint": "隧道穿梭",
-          "desc": "隧道着色",
+          "desc": "用 1/r 当作深度 z、角度 θ 当作绕圈坐标，z 随时间增加，就像在管道里向前飞。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3454,13 +3701,14 @@
             "疏环",
             "霓虹",
             "暗"
-          ]
+          ],
+          "path": "/webgl/tunnel"
         },
         {
           "slug": "ripple",
           "title": "涟漪",
           "hint": "鼠标涟漪",
-          "desc": "涟漪着色",
+          "desc": "每个波源发出圆形波 sin(距离/波长 − t)，离得越远越弱；多个波源叠加会出现干涉条纹。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3472,13 +3720,14 @@
             "弱",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/webgl/ripple"
         },
         {
           "slug": "stars",
           "title": "星野",
           "hint": "分形星野",
-          "desc": "星野着色",
+          "desc": "把画面切成网格，每格用哈希随机放一颗星；多层网格以不同速度平移形成视差，近处星大且快。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3490,13 +3739,14 @@
             "暗",
             "冷",
             "暖"
-          ]
+          ],
+          "path": "/webgl/stars"
         },
         {
           "slug": "lava",
           "title": "熔岩",
           "hint": "熔岩噪声",
-          "desc": "熔岩着色",
+          "desc": "若干团块上下漂浮，每个团块贡献 r²/d² 的「场」，场之和超过阈值的区域连成一片，团块靠近时会融合。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3508,13 +3758,14 @@
             "慢涌",
             "高对比",
             "柔"
-          ]
+          ],
+          "path": "/webgl/lava"
         },
         {
           "slug": "grid3d",
           "title": "透视网格",
           "hint": "地平网格",
-          "desc": "透视网格",
+          "desc": "地平线以下用 1/|y| 做透视深度，深度随时间增加让网格向你滚来；上方是一轮带条纹缺口的太阳。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3526,13 +3777,14 @@
             "慢",
             "霓虹",
             "暗"
-          ]
+          ],
+          "path": "/webgl/grid3d"
         },
         {
           "slug": "kaleido",
           "title": "万花筒",
           "hint": "万花筒对称",
-          "desc": "万花筒",
+          "desc": "把角度对「每瓣角度」取模再镜像，整个平面就由一小块扇形复制出 n 瓣对称图案。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3544,13 +3796,14 @@
             "慢",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/webgl/kaleido"
         },
         {
           "slug": "hsv",
           "title": "HSV 旋转",
           "hint": "色相轮",
-          "desc": "HSV 着色",
+          "desc": "角度 = 色相 H，离中心距离 = 饱和度 S，整体亮度 = 明度 V。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3562,13 +3815,14 @@
             "慢转",
             "饱和",
             "淡"
-          ]
+          ],
+          "path": "/webgl/hsv"
         },
         {
           "slug": "scan",
           "title": "扫描线",
           "hint": "CRT 扫描",
-          "desc": "扫描着色",
+          "desc": "亮条从下往上扫过，身后留下指数衰减的余辉；背景是等间距的扫描线网格。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3580,13 +3834,14 @@
             "霓虹",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/webgl/scan"
         },
         {
           "slug": "metaball",
           "title": "双 Metaball",
           "hint": "双球融合",
-          "desc": "Metaball",
+          "desc": "每个球产生 1/d 的场，场之和大于阈值就算「球体内部」，所以球靠近时边界平滑地连在一起。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3598,13 +3853,14 @@
             "慢",
             "高亮",
             "柔"
-          ]
+          ],
+          "path": "/webgl/metaball"
         },
         {
           "slug": "fog",
           "title": "体积雾",
           "hint": "层叠雾",
-          "desc": "体积雾",
+          "desc": "多层噪声按不同速度沿风向飘动并叠加，越往下越浓；指针处像手电筒一样照亮雾气。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3616,13 +3872,14 @@
             "慢飘",
             "冷",
             "暖"
-          ]
+          ],
+          "path": "/webgl/fog"
         },
         {
           "slug": "stripes",
           "title": "流光条纹",
           "hint": "斜向条纹",
-          "desc": "流光条纹",
+          "desc": "把坐标旋转到条纹方向，按宽度切成一条条，每条按序号取 n 种颜色之一；指针附近条纹会弯曲。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3634,13 +3891,14 @@
             "慢",
             "霓虹",
             "柔"
-          ]
+          ],
+          "path": "/webgl/stripes"
         },
         {
           "slug": "circle-sdf",
           "title": "SDF 圆",
           "hint": "距离场圆",
-          "desc": "SDF 圆",
+          "desc": "每个像素记录到圆边界的距离，内部为负、外部为正。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3652,13 +3910,14 @@
             "鼠标跟",
             "亮",
             "暗"
-          ]
+          ],
+          "path": "/webgl/circle-sdf"
         },
         {
           "slug": "water",
           "title": "水面",
           "hint": "多层水面",
-          "desc": "水面着色",
+          "desc": "多组不同方向、频率的正弦波叠加成水面高度，高度的峰值区域形成明亮的焦散光斑；指针拨动相位。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3670,13 +3929,14 @@
             "慢",
             "清",
             "浊"
-          ]
+          ],
+          "path": "/webgl/water"
         },
         {
           "slug": "crt",
           "title": "CRT",
           "hint": "CRT 效果",
-          "desc": "CRT 着色",
+          "desc": "画面先按像素块量化，再加横向扫描线、RGB 三通道错位（色差）和四角暗角，模拟老电视。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3688,13 +3948,14 @@
             "弱暗角",
             "绿",
             "彩"
-          ]
+          ],
+          "path": "/webgl/crt"
         },
         {
           "slug": "julia-sh",
           "title": "Julia",
           "hint": "Julia 着色器",
-          "desc": "Julia 集",
+          "desc": "每个像素当作复数 z，反复做 z = z² + c，统计多少步后 |z| 超过 2（逃逸）。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3706,13 +3967,14 @@
             "浅",
             "火",
             "冰"
-          ]
+          ],
+          "path": "/webgl/julia-sh"
         },
         {
           "slug": "snow-sh",
           "title": "飘雪",
           "hint": "着色器雪",
-          "desc": "飘雪",
+          "desc": "每层把画面切成网格，每格放一片随机偏移的雪花并向下平移；近处层更大更快，风力让雪花倾斜飘落。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3724,13 +3986,14 @@
             "快",
             "大片",
             "小片"
-          ]
+          ],
+          "path": "/webgl/snow-sh"
         },
         {
           "slug": "oil",
           "title": "油画噪声",
           "hint": "油画感",
-          "desc": "油画噪声",
+          "desc": "坐标被「旋转 + 噪声偏移」反复迭代，每多一次图案越复杂，像油彩在水面上流动；彩虹膜模拟肥皂泡的干涉色。",
           "tag": "shader",
           "mod": "kit-webgl",
           "fn": "mount",
@@ -3742,7 +4005,8 @@
             "慢",
             "彩",
             "暗"
-          ]
+          ],
+          "path": "/webgl/oil"
         }
       ]
     },
@@ -3750,45 +4014,72 @@
       "key": "physics",
       "name": "物理与交互",
       "icon": "⚛",
-      "intro": "物理引擎与指针交互：Matter.js 刚体模拟、拖拽排序与磁吸 / 光标跟随效果。",
+      "intro": "物理引擎与指针交互：刚体碰撞、弹簧、单摆、轨道、绳索、软体、沙漏与磁场——每个都能拖动并实时读出能量、周期等物理量。",
       "tech": [
         "matter-js@0.20",
-        "Pointer Events",
-        "FLIP"
+        "Verlet / RK4 积分",
+        "Pointer Events"
       ],
       "demos": [
         {
           "slug": "matter",
           "title": "Matter.js 物理",
-          "hint": "拖动物体 · 点击空白处生成",
-          "desc": "重力、碰撞、弹性与鼠标约束。",
+          "hint": "按住物体抛出 · 指针推开物体",
+          "desc": "真实刚体引擎：重力、冲量碰撞、弹性与摩擦。",
           "tag": "matter",
-          "mod": "physics-matter",
-          "fn": "mount"
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "matter",
+          "presets": [
+            "默认",
+            "高弹",
+            "无重力",
+            "多物体",
+            "大块"
+          ],
+          "path": "/physics/matter"
         },
         {
           "slug": "drag",
           "title": "拖拽排序",
-          "hint": "按住卡片拖动排序 · 支持触屏",
-          "desc": "Pointer Events + FLIP 动画的看板拖拽。",
+          "hint": "按住卡片拖到别的列 · 弹簧归位",
+          "desc": "看板拖拽排序，卡片用临界阻尼弹簧动画归位。",
           "tag": "dnd",
-          "mod": "physics-drag",
-          "fn": "mount"
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "drag",
+          "presets": [
+            "默认",
+            "弹跳",
+            "迟缓",
+            "干脆",
+            "多卡"
+          ],
+          "path": "/physics/drag"
         },
         {
           "slug": "magnetic",
           "title": "磁吸与光标跟随",
-          "hint": "把指针移向按钮",
-          "desc": "磁吸按钮、弹性光标与跟随拖尾。",
+          "hint": "把指针移向按钮 · 点击脉冲",
+          "desc": "磁吸按钮（距离衰减）+ 弹簧跟随光标与拖尾。",
           "tag": "cursor",
-          "mod": "physics-magnetic",
-          "fn": "mount"
+          "mod": "kit-physics",
+          "fn": "mount",
+          "variant": "magnetic",
+          "presets": [
+            "默认",
+            "强吸",
+            "大范围",
+            "慢跟随",
+            "多按钮"
+          ],
+          "path": "/physics/magnetic"
         },
         {
           "slug": "wall-ball",
           "title": "弹球墙",
-          "hint": "重力弹球",
-          "desc": "弹球墙碰撞",
+          "hint": "抓起小球甩出 · 指针当挡板",
+          "desc": "重力 + 恢复系数的弹球，球间动量守恒碰撞。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3800,13 +4091,14 @@
             "小",
             "高弹",
             "低弹"
-          ]
+          ],
+          "path": "/physics/wall-ball"
         },
         {
           "slug": "multigrav",
           "title": "多重力",
-          "hint": "可变重力",
-          "desc": "多重力场",
+          "hint": "指针是引力井 · G 调负变斥力",
+          "desc": "多个软化平方反比引力井中的 500 个粒子。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3818,13 +4110,14 @@
             "高g",
             "侧向",
             "混沌"
-          ]
+          ],
+          "path": "/physics/multigrav"
         },
         {
           "slug": "spring",
           "title": "弹簧链",
-          "hint": "弹簧拉拽",
-          "desc": "弹簧链",
+          "hint": "锚点跟随指针 · 拉扯质点",
+          "desc": "胡克定律弹簧质点链，看周期与能量。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3836,13 +4129,14 @@
             "多点",
             "鼠标拉",
             "静"
-          ]
+          ],
+          "path": "/physics/spring"
         },
         {
           "slug": "box-collide",
           "title": "碰撞盒",
-          "hint": "盒体碰撞",
-          "desc": "碰撞盒",
+          "hint": "抓起盒子抛出 · 指针推箱",
+          "desc": "AABB 碰撞检测 + 冲量与摩擦，盒子可堆叠。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3854,13 +4148,14 @@
             "小",
             "高弹",
             "粘滞"
-          ]
+          ],
+          "path": "/physics/box-collide"
         },
         {
           "slug": "bubbles",
           "title": "漂浮气泡",
-          "hint": "上浮气泡",
-          "desc": "漂浮气泡",
+          "hint": "点击戳破 · 指针推开",
+          "desc": "斯托克斯定律：大泡比小泡升得快 (r²)。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3872,13 +4167,14 @@
             "小",
             "慢升",
             "快升"
-          ]
+          ],
+          "path": "/physics/bubbles"
         },
         {
           "slug": "pendulum",
           "title": "摆锤",
-          "hint": "单摆感",
-          "desc": "摆锤",
+          "hint": "拖动摆锤到任意角度松手",
+          "desc": "RK4 非线性单摆，阻尼 + 共振驱动。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3890,13 +4186,14 @@
             "轻锤",
             "阻尼大",
             "阻尼小"
-          ]
+          ],
+          "path": "/physics/pendulum"
         },
         {
           "slug": "hourglass",
           "title": "沙漏粒子",
-          "hint": "沙漏下落",
-          "desc": "沙漏粒子",
+          "hint": "点击翻转 · 按住拖动挖沙",
+          "desc": "颗粒元胞自动机沙漏，流量遵循 Beverloo 定律。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3908,13 +4205,14 @@
             "慢漏",
             "密",
             "疏"
-          ]
+          ],
+          "path": "/physics/hourglass"
         },
         {
           "slug": "magnet",
           "title": "磁力点",
-          "hint": "鼠标磁力",
-          "desc": "磁力点",
+          "hint": "移动指针（也是磁极）看磁针转向",
+          "desc": "磁针阵列显示多磁极叠加的磁场与磁感线。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3926,13 +4224,14 @@
             "吸力",
             "多点",
             "少点"
-          ]
+          ],
+          "path": "/physics/magnet"
         },
         {
           "slug": "rope",
           "title": "弹性绳",
-          "hint": "中心弹性绳",
-          "desc": "弹性绳",
+          "hint": "按住绳子拖动 · 指针推开",
+          "desc": "Verlet 积分 + 距离约束的悬挂绳索。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3944,13 +4243,14 @@
             "少节",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/physics/rope"
         },
         {
           "slug": "billiard",
           "title": "台球",
-          "hint": "台球碰撞",
-          "desc": "台球",
+          "hint": "从白球往后拖瞄准 · 松手击球",
+          "desc": "等质量弹性碰撞与滚动摩擦，停止距离 v²/2μg。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3962,13 +4262,14 @@
             "小",
             "高摩擦",
             "低摩擦"
-          ]
+          ],
+          "path": "/physics/billiard"
         },
         {
           "slug": "orbit-p",
           "title": "轨道物理",
-          "hint": "圆周轨道",
-          "desc": "轨道物理",
+          "hint": "拖动行星重新入轨",
+          "desc": "速度 Verlet 辛积分的开普勒轨道。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3980,13 +4281,14 @@
             "慢",
             "椭圆感",
             "圆"
-          ]
+          ],
+          "path": "/physics/orbit-p"
         },
         {
           "slug": "softbody",
           "title": "软体感",
-          "hint": "软体挤压",
-          "desc": "软体球",
+          "hint": "按住边缘拉扯 · 甩出去",
+          "desc": "弹簧质点 + 内部气体压强的果冻软体。",
           "tag": "sim",
           "mod": "kit-physics",
           "fn": "mount",
@@ -3998,7 +4300,8 @@
             "小",
             "多",
             "少"
-          ]
+          ],
+          "path": "/physics/softbody"
         }
       ]
     },
@@ -4006,229 +4309,262 @@
       "key": "audio",
       "name": "音频可视化",
       "icon": "♫",
-      "intro": "Web Audio API：振荡器合成声音，AnalyserNode 提取频谱与波形并实时绘制。",
+      "intro": "13 个音频演示全部基于真实信号计算（合成器模型 + FFT、滤波器响应、节拍检测、音序器），悬停/拖动可读出指针下的频率与分贝，点右上角「声音」即可听到。",
       "tech": [
         "Web Audio API",
-        "OscillatorNode",
-        "AnalyserNode",
+        "FFT",
+        "biquad filter",
+        "STFT",
+        "onset detection",
         "getUserMedia"
       ],
       "demos": [
         {
           "slug": "synth",
-          "title": "合成器频谱",
-          "hint": "点击播放 · 点击琴键演奏",
-          "desc": "振荡器 + LFO 合成音色的频谱/波形可视化。",
+          "title": "合成器",
+          "hint": "点琴键演奏 · 右上角开声音",
+          "desc": "振荡器波形、LFO 颤音与谐波频谱：看清方波/锯齿波为什么\"更亮\"。",
           "tag": "oscillator",
-          "mod": "audio-viz",
-          "fn": "mountSynth"
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "synth",
+          "presets": [
+            "默认",
+            "纯正弦",
+            "方波",
+            "三角柔音",
+            "强颤音",
+            "低八度"
+          ],
+          "path": "/audio/synth"
         },
         {
           "slug": "mic",
           "title": "麦克风可视化",
-          "hint": "点击按钮授权麦克风",
-          "desc": "实时麦克风输入的环形频谱（需浏览器授权）。",
+          "hint": "点右上角授权麦克风 · 无麦克风时演示人声模型",
+          "desc": "环形频谱 + 元音共振峰：实时把麦克风声音拆成频率。",
           "tag": "mic",
-          "mod": "audio-viz",
-          "fn": "mountMic"
+          "mod": "kit-audio",
+          "fn": "mount",
+          "variant": "mic",
+          "presets": [
+            "默认",
+            "高灵敏",
+            "细腻",
+            "粗犷",
+            "不镜像",
+            "无波形"
+          ],
+          "path": "/audio/mic"
         },
         {
           "slug": "bars",
           "title": "柱状频谱",
-          "hint": "Play tone · 柱状",
-          "desc": "柱状频谱",
-          "tag": "audio",
+          "hint": "悬停看频率与分贝 · 右上角开声音",
+          "desc": "真实 FFT：把一段音乐拆成频率柱，带峰值保持与对数频率轴。",
+          "tag": "fft",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "bars",
           "presets": [
+            "默认",
             "细柱",
             "粗柱",
-            "密",
-            "疏",
-            "霓虹",
-            "柔"
-          ]
+            "线性轴",
+            "线性幅度",
+            "慢峰值"
+          ],
+          "path": "/audio/bars"
         },
         {
           "slug": "circle-wave",
-          "title": "圆形波",
-          "hint": "圆形频谱",
-          "desc": "圆形波",
-          "tag": "audio",
+          "title": "圆形波形",
+          "hint": "悬停看相位与振幅",
+          "desc": "把时域波形绕成一个圆：半径 = 基准 + 振幅。",
+          "tag": "waveform",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "circle-wave",
           "presets": [
+            "默认",
             "细线",
             "粗线",
-            "多环感",
+            "多环",
             "单环",
-            "快",
-            "慢"
-          ]
+            "长窗口"
+          ],
+          "path": "/audio/circle-wave"
         },
         {
           "slug": "eq",
-          "title": "条形均衡",
-          "hint": "均衡器条",
-          "desc": "条形均衡",
-          "tag": "audio",
+          "title": "均衡器",
+          "hint": "拖动频段圆点调增益 · 悬停看响应",
+          "desc": "5 段峰值均衡（RBJ biquad）：拖点改变频率与增益，看频谱怎样被\"塑形\"。",
+          "tag": "eq",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "eq",
           "presets": [
+            "默认",
             "少段",
             "多段",
-            "高对比",
-            "柔",
-            "霓虹",
-            "暗"
-          ]
+            "窄带",
+            "宽带",
+            "静止"
+          ],
+          "path": "/audio/eq"
         },
         {
           "slug": "part-audio",
           "title": "粒子随音",
-          "hint": "音驱动粒子",
-          "desc": "粒子随音",
-          "tag": "audio",
+          "hint": "拖动移动发射点 · 低音越强粒子越多",
+          "desc": "用低/中/高三个频段的能量驱动粒子的数量、速度和颜色。",
+          "tag": "particles",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "part-audio",
           "presets": [
+            "默认",
             "少",
             "多",
             "大点",
-            "小点",
             "爆发",
             "平稳"
-          ]
+          ],
+          "path": "/audio/part-audio"
         },
         {
           "slug": "scope",
           "title": "示波器",
-          "hint": "波形示波",
-          "desc": "示波器",
-          "tag": "audio",
+          "hint": "拖动设置触发电平 · 悬停读电压",
+          "desc": "带触发的示波器：稳定显示周期波形，也可切换李萨如 XY 模式。",
+          "tag": "scope",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "scope",
           "presets": [
+            "默认",
             "细线",
             "粗线",
             "高幅",
-            "低幅",
-            "霓虹",
-            "绿"
-          ]
+            "慢扫",
+            "李萨如"
+          ],
+          "path": "/audio/scope"
         },
         {
           "slug": "polar",
-          "title": "极坐标",
-          "hint": "极坐标频谱",
-          "desc": "极坐标",
-          "tag": "audio",
+          "title": "极坐标频谱",
+          "hint": "悬停看角度对应的频率",
+          "desc": "把频谱绕成一圈：角度 = 频率，半径 = 分贝。",
+          "tag": "polar",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "polar",
           "presets": [
+            "默认",
             "密采样",
             "疏采样",
             "大半径",
-            "小",
-            "彩",
-            "单"
-          ]
+            "单色",
+            "高门限"
+          ],
+          "path": "/audio/polar"
         },
         {
           "slug": "waterfall",
-          "title": "瀑布图",
-          "hint": "频谱瀑布",
-          "desc": "瀑布图",
-          "tag": "audio",
+          "title": "瀑布频谱图",
+          "hint": "悬停看某时刻某频率的能量",
+          "desc": "短时傅里叶变换（STFT）：横轴频率、纵轴时间、颜色 = 能量。",
+          "tag": "stft",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "waterfall",
           "presets": [
+            "默认",
             "密行",
             "疏行",
             "高对比",
-            "柔",
-            "冷",
-            "暖"
-          ]
+            "线性轴",
+            "只听音乐"
+          ],
+          "path": "/audio/waterfall"
         },
         {
           "slug": "beat",
-          "title": "节拍脉冲",
-          "hint": "中心脉冲",
-          "desc": "节拍脉冲",
-          "tag": "audio",
+          "title": "节拍检测",
+          "hint": "悬停能量曲线看阈值 · 估算 BPM",
+          "desc": "能量突增法检测节拍：E > C × 平均能量 即判为一拍，并估算 BPM。",
+          "tag": "beat",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "beat",
           "presets": [
+            "默认",
             "大脉",
             "小脉",
-            "快感",
-            "慢感",
-            "霓虹",
-            "柔"
-          ]
+            "快歌",
+            "慢歌",
+            "迟钝"
+          ],
+          "path": "/audio/beat"
         },
         {
           "slug": "chord",
           "title": "和弦板",
-          "hint": "垫板网格",
-          "desc": "和弦板",
-          "tag": "audio",
+          "hint": "点和弦板切换 · 看组成音",
+          "desc": "大三/小三和弦的组成音、频率比与合成波形，自动 C–G–Am–F 进行。",
+          "tag": "chord",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "chord",
           "presets": [
-            "4x2",
-            "亮",
-            "暗",
-            "彩",
-            "单",
-            "脉动"
-          ]
+            "默认",
+            "四块",
+            "十二块",
+            "七和弦",
+            "一转位",
+            "低八度"
+          ],
+          "path": "/audio/chord"
         },
         {
           "slug": "noise-pad",
-          "title": "噪声垫",
-          "hint": "噪声垫",
-          "desc": "噪声垫",
-          "tag": "audio",
+          "title": "噪声滤波垫",
+          "hint": "拖动：左右改截止频率，上下改共振",
+          "desc": "白/粉红/棕噪声经过低通/带通/高通滤波器，看频谱怎样被雕刻。",
+          "tag": "filter",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "noise-pad",
           "presets": [
-            "柔",
-            "硬",
-            "亮",
-            "暗",
-            "冷",
-            "暖"
-          ]
+            "默认",
+            "带通",
+            "高通",
+            "白噪声",
+            "棕噪声",
+            "尖锐共振"
+          ],
+          "path": "/audio/noise-pad"
         },
         {
           "slug": "drum",
-          "title": "鼓机垫",
-          "hint": "鼓机网格",
-          "desc": "鼓机垫",
-          "tag": "audio",
+          "title": "鼓机",
+          "hint": "点格子开关鼓点 · 调 BPM 与 swing",
+          "desc": "16 步音序器：合成底鼓、军鼓、拍手、踩镲，支持摇摆节奏。",
+          "tag": "sequencer",
           "mod": "kit-audio",
           "fn": "mount",
           "variant": "drum",
           "presets": [
-            "亮击",
-            "暗",
-            "彩",
-            "单",
-            "密闪",
-            "疏"
-          ]
+            "默认",
+            "快",
+            "慢",
+            "八步",
+            "摇摆",
+            "圆垫"
+          ],
+          "path": "/audio/drum"
         }
       ]
     },
@@ -4236,328 +4572,373 @@
       "key": "dataviz",
       "name": "数据可视化进阶",
       "icon": "⌬",
-      "intro": "ECharts 与 D3：关系图谱、矩形树图与力导向布局，适合复杂数据结构展示。",
+      "intro": "19 种进阶图表全部基于真实布局算法（Squarify、力引导、堆叠、四分位、螺线放置…），悬停/拖动即可看到指针下的数值与中文讲解。",
       "tech": [
-        "echarts@5.5",
-        "d3@7",
+        "Canvas 2D",
         "force layout",
-        "treemap"
+        "squarify treemap",
+        "stack / quartile",
+        "spiral word placement"
       ],
       "demos": [
         {
           "slug": "graph",
-          "title": "ECharts 关系图",
-          "hint": "拖动节点 · 滚轮缩放",
-          "desc": "力引导布局的技术栈关系网络。",
-          "tag": "graph",
-          "mod": "dataviz",
-          "fn": "mountGraph"
+          "title": "关系图",
+          "hint": "悬停高亮邻居 · 拖动节点 · 滚轮缩放",
+          "desc": "技术栈关系网络：库仑斥力 + 弹簧拉力的力引导布局。",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "graph",
+          "presets": [
+            "默认",
+            "紧凑",
+            "舒展",
+            "仅分类",
+            "大节点",
+            "全部技术"
+          ],
+          "path": "/dataviz/graph"
         },
         {
           "slug": "treemap",
-          "title": "ECharts 矩形树图",
-          "hint": "点击下钻 · 面包屑返回",
-          "desc": "层级数据的矩形树图。",
-          "tag": "treemap",
-          "mod": "dataviz",
-          "fn": "mountTreemap"
+          "title": "矩形树图",
+          "hint": "悬停看数值 · 点击下钻/返回",
+          "desc": "Squarify 方形化算法：面积代表大小，可与切片法对比长宽比。",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "treemap",
+          "presets": [
+            "默认",
+            "切片布局",
+            "多叶子",
+            "无间距",
+            "静止数据",
+            "单色"
+          ],
+          "path": "/dataviz/treemap"
         },
         {
           "slug": "d3-force",
-          "title": "D3 力导向图",
-          "hint": "拖动节点",
-          "desc": "d3-force 模拟 + SVG 渲染。",
-          "tag": "d3",
-          "mod": "dataviz",
-          "fn": "mountD3Force"
+          "title": "力导向图",
+          "hint": "拖动节点重新加热 α",
+          "desc": "分组聚类的力导向模拟：电荷、连线、碰撞三种力与温度冷却。",
+          "tag": "viz",
+          "mod": "kit-dataviz",
+          "fn": "mount",
+          "variant": "d3-force",
+          "presets": [
+            "默认",
+            "大图",
+            "强斥力",
+            "无碰撞",
+            "多分组",
+            "两组"
+          ],
+          "path": "/dataviz/d3-force"
         },
         {
           "slug": "heatmap",
-          "title": "热力格子",
-          "hint": "热力格子",
-          "desc": "热力格子",
+          "title": "热力图",
+          "hint": "悬停格子看行列数值",
+          "desc": "高斯热点叠加的网格数据，γ 对比度与冷暖双色色带。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "heatmap",
           "presets": [
-            "8x8",
+            "默认",
+            "8×8",
             "高对比",
-            "冷热",
-            "动",
-            "静",
-            "柔"
-          ]
+            "冷暖",
+            "快变",
+            "柔和"
+          ],
+          "path": "/dataviz/heatmap"
         },
         {
           "slug": "radar",
           "title": "雷达图",
-          "hint": "多维雷达",
-          "desc": "雷达图",
+          "hint": "绕中心转动指针逐维查看",
+          "desc": "多系列多维度对比，实时计算多边形面积。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "radar",
           "presets": [
-            "填充",
+            "默认",
             "描边",
-            "双层感",
-            "尖角",
-            "快脉",
-            "静"
-          ]
+            "三系列",
+            "平滑",
+            "十维",
+            "三维"
+          ],
+          "path": "/dataviz/radar"
         },
         {
           "slug": "sankey",
-          "title": "桑基简化",
-          "hint": "流向桑基",
-          "desc": "桑基简化",
+          "title": "桑基图",
+          "hint": "悬停流带看流量占比",
+          "desc": "来源 → 页面 → 去向的流量图，中间节点流入 = 流出。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "sankey",
           "presets": [
+            "默认",
             "少流",
-            "多流",
-            "粗带",
-            "细带",
-            "彩",
-            "单"
-          ]
+            "多节点",
+            "宽节点",
+            "直线",
+            "单色"
+          ],
+          "path": "/dataviz/sankey"
         },
         {
           "slug": "bubbles",
           "title": "气泡散点",
-          "hint": "气泡散点",
-          "desc": "气泡散点",
+          "hint": "悬停气泡 · 调相关强度",
+          "desc": "散点 + 气泡大小三维数据，实时皮尔逊 r 与回归直线。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "bubbles",
           "presets": [
-            "疏",
-            "密",
-            "大泡",
-            "小泡",
-            "动",
-            "静"
-          ]
+            "默认",
+            "负相关",
+            "无相关",
+            "密集小泡",
+            "大泡"
+          ],
+          "path": "/dataviz/bubbles"
         },
         {
           "slug": "cal-heat",
           "title": "日历热力",
-          "hint": "周历热力",
-          "desc": "日历热力",
+          "hint": "悬停任意一天",
+          "desc": "GitHub 式周历热力图：分级配色、活跃天数与最长连续。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "cal-heat",
           "presets": [
-            "年感",
-            "月感",
-            "高活",
-            "低活",
-            "绿谱",
-            "火谱"
-          ]
+            "默认",
+            "一年",
+            "一个月",
+            "高活跃",
+            "低活跃",
+            "火焰色"
+          ],
+          "path": "/dataviz/cal-heat"
         },
         {
           "slug": "sunburst",
-          "title": "旭日简化",
-          "hint": "旭日层级",
-          "desc": "旭日简化",
+          "title": "旭日图",
+          "hint": "悬停扇区 · 点击下钻",
+          "desc": "一圈一层的层级占比，扇区角度 ∝ 数值。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "sunburst",
           "presets": [
-            "双层",
-            "三层",
-            "亮",
-            "暗",
-            "彩",
-            "单"
-          ]
+            "默认",
+            "两层",
+            "四层",
+            "无间隙",
+            "多分支",
+            "单色"
+          ],
+          "path": "/dataviz/sunburst"
         },
         {
           "slug": "chord",
-          "title": "和弦弧",
-          "hint": "和弦关系",
-          "desc": "和弦弧",
+          "title": "和弦图",
+          "hint": "沿外环转动查看分组",
+          "desc": "城市间往来矩阵：弧长 ∝ 流出量，弦宽 ∝ 双向流量。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "chord",
           "presets": [
-            "密弧",
-            "疏弧",
-            "粗",
-            "细",
-            "彩",
-            "单"
-          ]
+            "默认",
+            "密集",
+            "稀疏",
+            "粗外环",
+            "十组",
+            "单色"
+          ],
+          "path": "/dataviz/chord"
         },
         {
           "slug": "boxplot",
           "title": "箱线图",
-          "hint": "箱线",
-          "desc": "箱线图",
+          "hint": "悬停分组看四分位数",
+          "desc": "实时计算 Q1 / 中位数 / Q3、1.5·IQR 须线与离群点。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "boxplot",
           "presets": [
-            "多组",
+            "默认",
             "少组",
-            "高对比",
-            "柔",
-            "彩",
-            "单"
-          ]
+            "多组",
+            "高离散",
+            "只看箱"
+          ],
+          "path": "/dataviz/boxplot"
         },
         {
           "slug": "parallel",
           "title": "平行坐标",
-          "hint": "平行坐标",
-          "desc": "平行坐标",
+          "hint": "在轴上移动指针刷选",
+          "desc": "多维数据折线 + 指针刷选过滤，统计选中条数。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "parallel",
           "presets": [
+            "默认",
             "多轴",
             "少轴",
-            "高亮",
-            "淡",
-            "动",
-            "静"
-          ]
+            "窄刷选",
+            "只显选中",
+            "少数据"
+          ],
+          "path": "/dataviz/parallel"
         },
         {
           "slug": "stream",
           "title": "流图",
-          "hint": "层流图",
-          "desc": "流图",
+          "hint": "悬停时刻与图层",
+          "desc": "随时间滚动的堆叠面积图，三种基线模式对比。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "stream",
           "presets": [
+            "默认",
             "多层",
             "少层",
-            "高波",
-            "低波",
-            "彩",
-            "单"
-          ]
+            "高波动",
+            "零基线",
+            "单色"
+          ],
+          "path": "/dataviz/stream"
         },
         {
           "slug": "wordcloud",
-          "title": "词云简化",
-          "hint": "词云",
-          "desc": "词云简化",
+          "title": "词云",
+          "hint": "悬停词看频次字号",
+          "desc": "齐普夫词频 + 阿基米德螺线防重叠放置，线性/√/对数字号映射。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "wordcloud",
           "presets": [
+            "默认",
             "密",
             "疏",
-            "大字",
-            "小字",
-            "彩",
-            "单"
-          ]
+            "线性映射",
+            "全横排",
+            "单色"
+          ],
+          "path": "/dataviz/wordcloud"
         },
         {
           "slug": "hierarchy",
           "title": "层级列表",
-          "hint": "层级条",
-          "desc": "层级列表",
+          "hint": "点击 ▶ 展开/折叠",
+          "desc": "可折叠的缩进树，数值条显示占整体比例。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "hierarchy",
           "presets": [
+            "默认",
             "深",
             "浅",
-            "缩进",
-            "色条",
-            "动",
-            "静"
-          ]
+            "大缩进",
+            "无数值条",
+            "手动"
+          ],
+          "path": "/dataviz/hierarchy"
         },
         {
           "slug": "funnel",
-          "title": "漏斗",
-          "hint": "转化漏斗",
-          "desc": "漏斗图",
+          "title": "转化漏斗",
+          "hint": "悬停阶段看转化率",
+          "desc": "访问到推荐的多阶段转化，累计转化 = 单步转化连乘。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "funnel",
           "presets": [
-            "5层",
-            "陡",
-            "缓",
-            "彩",
-            "单",
-            "高对比"
-          ]
+            "默认",
+            "陡峭",
+            "平缓",
+            "八阶段",
+            "窄漏斗",
+            "彩色"
+          ],
+          "path": "/dataviz/funnel"
         },
         {
           "slug": "candle",
-          "title": "烛台",
-          "hint": "K 线烛台",
-          "desc": "烛台图",
+          "title": "K 线图",
+          "hint": "悬停看开高低收",
+          "desc": "对数正态随机游走行情，实时跳动 + 均线 + 成交量。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "candle",
           "presets": [
+            "默认",
             "多柱",
             "少柱",
-            "涨跌色",
-            "细",
-            "粗",
-            "动"
-          ]
+            "高波动",
+            "无均线",
+            "无成交量"
+          ],
+          "path": "/dataviz/candle"
         },
         {
           "slug": "icicle",
-          "title": "树状冰柱",
-          "hint": "冰柱图",
-          "desc": "树状冰柱",
+          "title": "冰柱图",
+          "hint": "悬停 · 点击块下钻",
+          "desc": "矩形版层级分区，子块位于父块正下方并按值分宽。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "icicle",
           "presets": [
-            "三层",
-            "二层",
-            "彩",
-            "单",
-            "密",
-            "疏"
-          ]
+            "默认",
+            "两层",
+            "四层",
+            "横向",
+            "多分支",
+            "单色"
+          ],
+          "path": "/dataviz/icicle"
         },
         {
           "slug": "arc",
           "title": "弧形进度",
-          "hint": "多层弧",
-          "desc": "弧形进度",
+          "hint": "悬停环看当前/目标",
+          "desc": "多层 KPI 圆环，线性/缓出/弹性三种缓动动画。",
           "tag": "viz",
           "mod": "kit-dataviz",
           "fn": "mount",
           "variant": "arc",
           "presets": [
-            "多层",
-            "单层",
-            "粗",
-            "细",
+            "默认",
+            "单环",
+            "粗环",
+            "弹性",
             "霓虹",
-            "柔"
-          ]
+            "线性"
+          ],
+          "path": "/dataviz/arc"
         }
       ]
     },
@@ -4565,21 +4946,23 @@
       "key": "micro",
       "name": "Lottie / 微交互",
       "icon": "❤",
-      "intro": "细节动效提升体验：Lottie 矢量动画、点赞粒子、开关与涟漪反馈。",
+      "intro": "细节动效提升体验：关键帧矢量动画（Lottie 原理）、点赞粒子、开关与涟漪反馈，画布逐帧复现并读出动画数值。",
       "tech": [
-        "lottie-web@5.12",
-        "CSS",
-        "Web Animations API"
+        "Canvas 2D",
+        "关键帧插值",
+        "spring 弹簧"
       ],
       "demos": [
         {
           "slug": "lottie",
           "title": "Lottie 动画",
-          "hint": "播放 / 暂停 / 调速",
-          "desc": "lottie-web 播放内联 JSON 动画数据。",
+          "hint": "关键帧插值",
+          "desc": "Lottie 原理：按关键帧时刻对每个图层的位置、缩放、旋转做插值播放。",
           "tag": "lottie",
-          "mod": "micro",
-          "fn": "mountLottie"
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "lottie",
+          "path": "/micro/lottie"
         },
         {
           "slug": "like",
@@ -4587,8 +4970,10 @@
           "hint": "点击爱心与按钮",
           "desc": "点赞粒子爆发、收藏、计数滚动。",
           "tag": "like",
-          "mod": "micro",
-          "fn": "mountLike"
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "like",
+          "path": "/micro/like"
         },
         {
           "slug": "controls",
@@ -4596,14 +4981,16 @@
           "hint": "点击各类控件",
           "desc": "Toggle、Checkbox 描边、Material 涟漪与加载按钮。",
           "tag": "controls",
-          "mod": "micro",
-          "fn": "mountControls"
+          "mod": "kit-micro",
+          "fn": "mount",
+          "variant": "controls",
+          "path": "/micro/controls"
         },
         {
           "slug": "heart",
           "title": "心跳赞",
           "hint": "点击点赞",
-          "desc": "心跳赞",
+          "desc": "已点赞的爱心像心脏一样有节奏地跳动——快速放大再回落，像「扑通」一声。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4615,13 +5002,14 @@
             "小",
             "带Toast",
             "静赞"
-          ]
+          ],
+          "path": "/micro/heart"
         },
         {
           "slug": "check",
           "title": "勾选弹跳",
           "hint": "勾选弹跳",
-          "desc": "勾选弹跳",
+          "desc": "点击复选框时，方框先缩小一下、再超过原大小弹回来（弹簧），同时对勾沿着笔画从左到右「画」出来，文字加上删除线…",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4633,13 +5021,14 @@
             "慢弹",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/micro/check"
         },
         {
           "slug": "send",
           "title": "发送纸飞机",
           "hint": "发送反馈",
-          "desc": "发送纸飞机",
+          "desc": "点击「发送」后，按钮里的纸飞机图标沿一条二次贝塞尔曲线飞出画面并留下尾迹，按钮文字变成「已发送 ✓」，稍后恢…",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4651,13 +5040,14 @@
             "默认",
             "大钮",
             "小钮"
-          ]
+          ],
+          "path": "/micro/send"
         },
         {
           "slug": "copy",
           "title": "复制成功",
           "hint": "复制 Toast",
-          "desc": "复制成功",
+          "desc": "点击代码块右上角的复制按钮，代码会被高亮扫过一次（表示已选中），按钮图标从「两张纸」变成「对勾」，底部弹出「…",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4669,13 +5059,14 @@
             "慢消",
             "彩边",
             "单"
-          ]
+          ],
+          "path": "/micro/copy"
         },
         {
           "slug": "download",
           "title": "下载进度",
           "hint": "进度条下载",
-          "desc": "下载进度",
+          "desc": "每个文件一条进度条，进度从 0% 增长到 100%。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4687,13 +5078,14 @@
             "细条",
             "霓虹",
             "柔"
-          ]
+          ],
+          "path": "/micro/download"
         },
         {
           "slug": "skeleton",
           "title": "骨架屏",
           "hint": "加载骨架",
-          "desc": "骨架屏",
+          "desc": "数据还在加载时，先用灰色的圆和长条画出页面的大致轮廓，再让一道高光从左往右扫过，告诉用户「正在加载」。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4705,13 +5097,14 @@
             "慢闪",
             "亮",
             "暗"
-          ]
+          ],
+          "path": "/micro/skeleton"
         },
         {
           "slug": "toast",
           "title": "Toast",
           "hint": "弹出提示",
-          "desc": "Toast",
+          "desc": "操作后在屏幕底部弹出一条短提示，几秒后自动消失，不打断用户。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4723,13 +5116,14 @@
             "成功",
             "信息",
             "警告感"
-          ]
+          ],
+          "path": "/micro/toast"
         },
         {
           "slug": "badge",
           "title": "徽章跳动",
           "hint": "数字徽章",
-          "desc": "徽章跳动",
+          "desc": "图标右上角的红色小圆显示未读数量。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4741,13 +5135,14 @@
             "数字",
             "大",
             "小"
-          ]
+          ],
+          "path": "/micro/badge"
         },
         {
           "slug": "drag",
           "title": "拖动卡片",
           "hint": "拖拽",
-          "desc": "拖动卡片",
+          "desc": "按住卡片可以拖着走，卡片会稍微放大、加深阴影并跟随拖动方向倾斜；松手后，卡片像被弹簧拉着一样弹回原来的位置。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4759,13 +5154,14 @@
             "彩",
             "单",
             "回弹感"
-          ]
+          ],
+          "path": "/micro/drag"
         },
         {
           "slug": "longpress",
           "title": "长按确认",
           "hint": "长按触发",
-          "desc": "长按确认",
+          "desc": "危险操作（比如删除）不希望被误点，于是要求按住一段时间。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4777,13 +5173,14 @@
             "小钮",
             "成功",
             "静"
-          ]
+          ],
+          "path": "/micro/longpress"
         },
         {
           "slug": "shake",
           "title": "摇一摇提示",
           "hint": "快速晃动",
-          "desc": "摇一摇提示",
+          "desc": "密码输错时，输入框会像摇头一样左右快速晃几下并变红，同时下方出现错误提示。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4795,13 +5192,14 @@
             "小",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/micro/shake"
         },
         {
           "slug": "slide-verify",
           "title": "滑动验证",
           "hint": "滑块验证",
-          "desc": "滑动验证",
+          "desc": "图片上有一个拼图形状的缺口，用户拖动下方滑块，拼图块跟着横向移动，松手时如果拼图与缺口的距离小于容差，就验证…",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4813,13 +5211,14 @@
             "小块",
             "成功色",
             "默认"
-          ]
+          ],
+          "path": "/micro/slide-verify"
         },
         {
           "slug": "dblzoom",
           "title": "双击放大",
           "hint": "双击缩放",
-          "desc": "双击放大",
+          "desc": "在图片上快速点两下，图片会以双击的位置为中心平滑放大（就像手机相册），再双击一次缩回。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4831,13 +5230,14 @@
             "慢",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/micro/dblzoom"
         },
         {
           "slug": "hover-mag",
           "title": "悬停磁吸",
           "hint": "磁吸按钮",
-          "desc": "悬停磁吸",
+          "desc": "指针进入按钮周围的感应范围后，按钮朝指针方向偏移一点，按钮上的文字偏移得更多（产生层次感），离开后弹回原位。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4849,13 +5249,14 @@
             "远",
             "大钮",
             "小钮"
-          ]
+          ],
+          "path": "/micro/hover-mag"
         },
         {
           "slug": "press-ripple",
           "title": "按压波纹",
           "hint": "点击涟漪",
-          "desc": "按压波纹",
+          "desc": "点击按钮时，从点击的位置画一个圆，圆的半径迅速变大、颜色逐渐变淡，并被裁剪在按钮的圆角矩形内部。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4867,13 +5268,14 @@
             "慢",
             "白涟漪",
             "色涟漪"
-          ]
+          ],
+          "path": "/micro/press-ripple"
         },
         {
           "slug": "toggle-spring",
           "title": "开关弹簧",
           "hint": "弹簧开关",
-          "desc": "开关弹簧",
+          "desc": "开关的圆钮不是匀速滑过去，而是像挂在弹簧上一样冲过头一点再弹回来，最后停稳。",
           "tag": "micro",
           "mod": "kit-micro",
           "fn": "mount",
@@ -4885,7 +5287,8 @@
             "快弹",
             "慢弹",
             "图标感"
-          ]
+          ],
+          "path": "/micro/toggle-spring"
         }
       ]
     },
@@ -4893,12 +5296,12 @@
       "key": "layout",
       "name": "CSS 布局玩具",
       "icon": "▦",
-      "intro": "Flex / Grid / 容器查询等布局实验：可调间距、列数与对齐。",
+      "intro": "Flex / Grid / 容器查询等布局原理：画布按真实布局算法排版，可调间距、列数与对齐，悬停读出尺寸。",
       "tech": [
-        "CSS Grid",
-        "Flexbox",
+        "CSS Grid 原理",
+        "Flexbox 原理",
         "gap",
-        "container"
+        "container query"
       ],
       "demos": [
         {
@@ -4911,67 +5314,33 @@
           "fn": "mount",
           "variant": "grid",
           "presets": [
-            "基础栅格",
-            "瀑布流模拟",
-            "圣杯",
-            "侧栏可调",
-            "卡片等分",
-            "密集自动填充",
-            "命名区域",
-            "子网格感",
-            "居中舞台",
-            "杂志排版",
-            "仪表盘",
-            "响应列",
-            "间隔实验",
-            "对齐线",
-            "重叠层",
-            "不等列宽",
-            "行列跨越",
-            "对齐内容",
-            "密集打包",
-            "流式卡片",
-            "双栏正文",
-            "页脚贴底",
-            "看板列",
-            "相片墙"
-          ]
+            "默认",
+            "三列",
+            "密集",
+            "大间隙",
+            "无轨线",
+            "圆角卡片"
+          ],
+          "path": "/layout/grid"
         },
         {
           "slug": "flex",
           "title": "Flex 布局",
           "hint": "换行预设 · +/− 增减元素",
-          "desc": "Flexbox 玩具。",
+          "desc": "Flexbox 布局：子元素沿主轴排成一行，可调对齐方式、间距和换行。",
           "tag": "flex",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "flex",
           "presets": [
-            "主轴分布",
-            "换行",
-            "等高卡片",
-            "工具栏",
-            "聊天气泡",
-            "标签云",
-            "底部操作栏",
-            "垂直导航",
-            "居中英雄",
-            "间距推开",
+            "默认",
             "两端对齐",
-            "基线对齐",
-            "反向排列",
-            "均分伸展",
-            "粘性页脚栏",
-            "面包屑",
-            "头像组",
-            "统计条",
-            "表单行",
-            "媒体对象",
-            "按钮组",
-            "分栏对照",
-            "滚动轨道",
-            "角标叠放"
-          ]
+            "居中",
+            "换行标签",
+            "竖直",
+            "贴边"
+          ],
+          "path": "/layout/flex"
         },
         {
           "slug": "masonry",
@@ -4983,31 +5352,33 @@
           "fn": "mount",
           "variant": "masonry",
           "presets": [
-            "三列瀑布",
+            "默认",
+            "两列",
             "四列",
-            "等高砖",
-            "卡片流",
-            "杂志砖",
-            "密铺"
-          ]
+            "密",
+            "疏",
+            "圆角"
+          ],
+          "path": "/layout/masonry"
         },
         {
           "slug": "columns",
           "title": "多列排版",
           "hint": "栏数与间距",
-          "desc": "多栏正文排版。",
+          "desc": "一段长文自动拆进 N 栏，阅读线更短。",
           "tag": "columns",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "columns",
           "presets": [
-            "双栏正文",
-            "三栏报纸",
-            "不等宽",
-            "首字下沉感",
-            "竖线分隔",
-            "响应栏数"
-          ]
+            "默认",
+            "双栏",
+            "四栏",
+            "大间距",
+            "无竖线",
+            "无下沉"
+          ],
+          "path": "/layout/columns"
         },
         {
           "slug": "sticky",
@@ -5019,31 +5390,33 @@
           "fn": "mount",
           "variant": "sticky",
           "presets": [
-            "侧栏粘滞",
-            "章节钉住",
-            "表头粘滞",
-            "工具条顶吸",
-            "双粘滞",
-            "卡片吸顶"
-          ]
+            "默认",
+            "宽侧栏",
+            "窄侧栏",
+            "多章节",
+            "顶距大",
+            "无顶栏"
+          ],
+          "path": "/layout/sticky"
         },
         {
           "slug": "layers",
           "title": "绝对层叠",
           "hint": "层叠卡片",
-          "desc": "绝对定位层叠。",
+          "desc": "元素脱离普通流，用坐标和 z-index 决定谁在上。",
           "tag": "layers",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "layers",
           "presets": [
-            "卡片堆",
-            "对角错位",
-            "视差层",
-            "徽章叠",
-            "模态感",
-            "网格底层"
-          ]
+            "默认",
+            "两层",
+            "六层",
+            "大错位",
+            "无旋转",
+            "同尺寸"
+          ],
+          "path": "/layout/layers"
         },
         {
           "slug": "container",
@@ -5055,103 +5428,109 @@
           "fn": "mount",
           "variant": "container",
           "presets": [
-            "窄变单列",
-            "中等双列",
-            "宽三列",
-            "卡片自适应",
-            "工具条折叠",
-            "图文换位"
-          ]
+            "默认",
+            "窄",
+            "宽",
+            "多卡",
+            "早断点",
+            "晚断点"
+          ],
+          "path": "/layout/container"
         },
         {
           "slug": "bento",
           "title": "Bento 拼贴",
           "hint": "Bento 网格",
-          "desc": "Bento 拼贴",
+          "desc": "Bento 布局用同一套网格，让某些卡片跨多列多行，形成主次分明的拼贴，常见于产品首页与仪表盘。",
           "tag": "layout",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "bento",
           "presets": [
-            "2x2",
-            "不等块",
+            "默认",
             "密",
             "疏",
-            "彩块",
-            "单色"
-          ]
+            "大方块",
+            "小圆角",
+            "无标签"
+          ],
+          "path": "/layout/bento"
         },
         {
           "slug": "holy",
           "title": "圣杯经典",
           "hint": "圣杯三栏",
-          "desc": "圣杯布局",
+          "desc": "上面一条标题，下面页脚，中间三栏。",
           "tag": "layout",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "holy",
           "presets": [
+            "默认",
             "宽侧",
             "窄侧",
-            "顶栏高",
-            "顶栏矮",
-            "彩",
-            "单"
-          ]
+            "矮顶",
+            "高顶",
+            "宽右栏"
+          ],
+          "path": "/layout/holy"
         },
         {
           "slug": "aspect",
           "title": "纵横比卡片",
           "hint": "aspect-ratio",
-          "desc": "纵横比",
+          "desc": "视频封面、卡片缩略图需要固定比例。",
           "tag": "layout",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "aspect",
           "presets": [
+            "默认",
             "16:9",
             "1:1",
             "4:3",
             "21:9",
-            "密",
-            "疏"
-          ]
+            "两列"
+          ],
+          "path": "/layout/aspect"
         },
         {
           "slug": "overlap",
           "title": "重叠层叠",
           "hint": "负边距重叠",
-          "desc": "重叠卡片",
+          "desc": "头像组、堆叠通知、封面错位都靠重叠。",
           "tag": "layout",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "overlap",
           "presets": [
+            "默认",
             "轻叠",
             "重叠",
-            "对角",
             "水平",
-            "彩",
-            "单"
-          ]
+            "竖直",
+            "五张"
+          ],
+          "path": "/layout/overlap"
         },
         {
           "slug": "subgrid",
           "title": "子网格感",
           "hint": "子网格对齐",
-          "desc": "子网格感",
+          "desc": "subgrid 让嵌套网格「借用」父级的行列线，卡片内部字段也能和隔壁卡片对齐。",
           "tag": "layout",
           "mod": "kit-layout",
           "fn": "mount",
           "variant": "subgrid",
           "presets": [
-            "双层",
-            "三列",
-            "对齐",
-            "错位",
-            "彩",
-            "单"
-          ]
+            "默认",
+            "三面板",
+            "内三列",
+            "不对齐",
+            "密",
+            "无轨线"
+          ],
+          "path": "/layout/subgrid"
         }
       ]
     },
@@ -5159,18 +5538,19 @@
       "key": "filters",
       "name": "CSS 滤镜与混合",
       "icon": "✧",
-      "intro": "filter / backdrop-filter / mix-blend-mode 视觉实验。",
+      "intro": "滤镜与混合原理：按 W3C 公式逐像素计算模糊、亮度、对比度、色相旋转、双色调、毛玻璃等，拖动对比线查看滤镜前后的颜色。",
       "tech": [
-        "filter",
+        "filter 公式",
         "backdrop-filter",
-        "mix-blend-mode"
+        "颜色矩阵",
+        "Canvas ImageData"
       ],
       "demos": [
         {
           "slug": "blur",
           "title": "模糊",
           "hint": "高斯模糊",
-          "desc": "模糊滤镜",
+          "desc": "把每个像素换成它周围一圈像素的平均值，图像的细节就被抹平了。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5182,13 +5562,14 @@
             "呼吸",
             "定向感",
             "静"
-          ]
+          ],
+          "path": "/filters/blur"
         },
         {
           "slug": "brightness",
           "title": "亮度",
           "hint": "亮度脉动",
-          "desc": "亮度",
+          "desc": "把红、绿、蓝三个通道都乘以同一个数。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5200,13 +5581,14 @@
             "静",
             "强脉",
             "弱脉"
-          ]
+          ],
+          "path": "/filters/brightness"
         },
         {
           "slug": "contrast",
           "title": "对比",
           "hint": "对比度",
-          "desc": "对比",
+          "desc": "以中间灰（0.5）为中心，把每个通道到中心的距离乘以一个倍数。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5218,13 +5600,14 @@
             "静",
             "强",
             "弱"
-          ]
+          ],
+          "path": "/filters/contrast"
         },
         {
           "slug": "saturate",
           "title": "饱和",
           "hint": "饱和脉动",
-          "desc": "饱和",
+          "desc": "先算出颜色的「灰度」（亮度相同的灰色），再把颜色与这个灰色的差距放大或缩小。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5236,13 +5619,14 @@
             "静",
             "强",
             "弱"
-          ]
+          ],
+          "path": "/filters/saturate"
         },
         {
           "slug": "hue",
           "title": "色相旋转",
           "hint": "色相旋转",
-          "desc": "色相",
+          "desc": "把每个颜色在色环上转过同一个角度，亮度基本不变。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5254,13 +5638,14 @@
             "大幅",
             "霓虹",
             "柔"
-          ]
+          ],
+          "path": "/filters/hue"
         },
         {
           "slug": "invert",
           "title": "反相",
           "hint": "反相",
-          "desc": "反相",
+          "desc": "把每个通道换成「255 减去它」，黑变白、白变黑、红变青，就像老式胶片的底片。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5272,13 +5657,14 @@
             "静",
             "彩底",
             "暗底"
-          ]
+          ],
+          "path": "/filters/invert"
         },
         {
           "slug": "grayscale",
           "title": "灰度",
           "hint": "灰度",
-          "desc": "灰度",
+          "desc": "把颜色换成亮度相同的灰色。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5290,13 +5676,14 @@
             "静",
             "高对比",
             "柔"
-          ]
+          ],
+          "path": "/filters/grayscale"
         },
         {
           "slug": "sepia",
           "title": "褐色",
           "hint": "褐色",
-          "desc": "褐色",
+          "desc": "模仿老照片发黄发褐的效果。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5308,13 +5695,14 @@
             "静",
             "暖",
             "冷褐"
-          ]
+          ],
+          "path": "/filters/sepia"
         },
         {
           "slug": "drop-shadow",
           "title": "投影发光",
           "hint": "投影",
-          "desc": "投影发光",
+          "desc": "和 box-shadow 不同，drop-shadow 会沿着图形真实的轮廓（包括透明区域）生成阴影，所以星…",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5326,13 +5714,14 @@
             "小模糊",
             "彩光",
             "白光"
-          ]
+          ],
+          "path": "/filters/drop-shadow"
         },
         {
           "slug": "neon-combo",
           "title": "组合霓虹",
           "hint": "多滤镜霓虹",
-          "desc": "组合霓虹",
+          "desc": "霓虹灯的效果是几层滤镜叠出来的——最外层是大范围、半透明的彩色光晕（大模糊的 drop-shadow），中间…",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5344,13 +5733,14 @@
             "弱",
             "快闪",
             "常亮"
-          ]
+          ],
+          "path": "/filters/neon-combo"
         },
         {
           "slug": "glass",
           "title": "毛玻璃",
           "hint": "毛玻璃背板",
-          "desc": "毛玻璃",
+          "desc": "给卡片背后的内容做模糊，再盖上一层半透明的白色和一条亮边，看起来就像隔着磨砂玻璃。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5362,13 +5752,14 @@
             "暗",
             "彩边",
             "无边"
-          ]
+          ],
+          "path": "/filters/glass"
         },
         {
           "slug": "duotone",
           "title": "双色调",
           "hint": "双色调",
-          "desc": "双色调",
+          "desc": "先把图片变成灰度，只保留「亮还是暗」的信息；再规定两种颜色，最暗处用暗色（主色），最亮处用亮色（主色的互补色…",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5380,13 +5771,14 @@
             "柔",
             "动",
             "静"
-          ]
+          ],
+          "path": "/filters/duotone"
         },
         {
           "slug": "glitch-f",
           "title": "故障抖动",
           "hint": "故障滤镜",
-          "desc": "故障抖动",
+          "desc": "模拟信号不良的电视画面。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5398,13 +5790,14 @@
             "慢",
             "彩错",
             "单"
-          ]
+          ],
+          "path": "/filters/glitch-f"
         },
         {
           "slug": "vignette",
           "title": "暗角",
           "hint": "暗角",
-          "desc": "暗角",
+          "desc": "让画面四周逐渐变暗，把视线集中到中心，常见于摄影和电影。",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5416,13 +5809,14 @@
             "静",
             "冷",
             "暖"
-          ]
+          ],
+          "path": "/filters/vignette"
         },
         {
           "slug": "glow-edge",
           "title": "发光描边",
           "hint": "描边光",
-          "desc": "发光描边",
+          "desc": "只给图形画轮廓线，并给轮廓线加上同色的模糊阴影（drop-shadow / text-shadow），就得到…",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5434,13 +5828,14 @@
             "弱光",
             "彩",
             "白"
-          ]
+          ],
+          "path": "/filters/glow-edge"
         },
         {
           "slug": "backdrop",
           "title": "背板模糊",
           "hint": "backdrop 感",
-          "desc": "背板模糊",
+          "desc": "iOS 的导航栏、通知中心都用这个效果——内容在卡片下面滚动，透过卡片看到的部分是模糊的，既能看出下面有东西…",
           "tag": "filter",
           "mod": "kit-filters",
           "fn": "mount",
@@ -5452,7 +5847,8 @@
             "暗卡",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/filters/backdrop"
         }
       ]
     },
@@ -5471,7 +5867,7 @@
           "slug": "starfield",
           "title": "星空",
           "hint": "星空漂浮 · 调数量/颜色",
-          "desc": "星点与慢漂粒子场",
+          "desc": "每颗星有深度 z，z 随时间减小（向你飞来），屏幕位置 = 中心 + 方向 / z，越近越大越快；曲速拉线画…",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5483,13 +5879,14 @@
             "慢",
             "彩点",
             "远近"
-          ]
+          ],
+          "path": "/particles-fx/starfield"
         },
         {
           "slug": "snow",
           "title": "降雪",
           "hint": "雪花下落 · 调速度",
-          "desc": "飘雪粒子",
+          "desc": "雪花从顶部匀速下落并左右轻摆，到底部后从顶部重新出现；风力让下落路径倾斜。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5501,13 +5898,14 @@
             "大片",
             "慢飘",
             "彩雪"
-          ]
+          ],
+          "path": "/particles-fx/snow"
         },
         {
           "slug": "goldrain",
           "title": "金雨",
           "hint": "金色雨帘",
-          "desc": "矩阵金雨感",
+          "desc": "细长的金色线段高速下落，落到底部溅起小火花；部分金粒带闪烁的十字星光。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5519,13 +5917,14 @@
             "慢",
             "宽",
             "窄"
-          ]
+          ],
+          "path": "/particles-fx/goldrain"
         },
         {
           "slug": "smoke-col",
           "title": "烟柱",
           "hint": "上升烟柱",
-          "desc": "烟雾粒子柱",
+          "desc": "烟粒从底部烟源升起，随高度变大、变透明，并按扩散角向两侧散开；指针像风一样把烟吹偏。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5537,13 +5936,14 @@
             "慢散",
             "彩烟",
             "双柱感"
-          ]
+          ],
+          "path": "/particles-fx/smoke-col"
         },
         {
           "slug": "firefly",
           "title": "萤火",
           "hint": "萤火虫闪烁",
-          "desc": "闪烁光点",
+          "desc": "每只沿两组不同频率的正弦曲线慢慢游荡（李萨如轨迹），亮度缓慢呼吸；指针附近的萤火虫会被吸引靠近。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5555,13 +5955,14 @@
             "快闪",
             "暖色",
             "冷色"
-          ]
+          ],
+          "path": "/particles-fx/firefly"
         },
         {
           "slug": "fountain",
           "title": "火花喷泉",
           "hint": "底部喷泉 · Burst",
-          "desc": "上喷火花",
+          "desc": "每颗火花以随机角度和初速度喷出，之后受重力影响做抛物线运动，颜色由白热逐渐变暗。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5573,13 +5974,14 @@
             "窄口",
             "彩火",
             "连喷"
-          ]
+          ],
+          "path": "/particles-fx/fountain"
         },
         {
           "slug": "attractor",
           "title": "引力井",
           "hint": "鼠标吸引",
-          "desc": "粒子吸入",
+          "desc": "每个粒子绕指针做圆周运动，引力越强轨道越小、转得越快（像行星：近的转得快）。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5591,13 +5993,14 @@
             "脉冲",
             "密群",
             "疏群"
-          ]
+          ],
+          "path": "/particles-fx/attractor"
         },
         {
           "slug": "repulsor",
           "title": "排斥场",
           "hint": "鼠标排斥",
-          "desc": "推开粒子",
+          "desc": "粒子排成整齐网格，指针附近的粒子被推开，推力随距离衰减；离开后粒子弹回原位并轻轻呼吸。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5609,13 +6012,14 @@
             "脉冲",
             "密",
             "疏"
-          ]
+          ],
+          "path": "/particles-fx/repulsor"
         },
         {
           "slug": "follow-swarm",
           "title": "跟随群",
           "hint": "鼠标跟随群",
-          "desc": "蜂群跟随",
+          "desc": "每个个体追随指针，但跟随有不同的延迟，并绕目标做小圆周运动，整体像一群小鱼/蜜蜂。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5627,13 +6031,14 @@
             "加速",
             "彩虹",
             "单色"
-          ]
+          ],
+          "path": "/particles-fx/follow-swarm"
         },
         {
           "slug": "explode",
           "title": "爆炸碎屑",
           "hint": "点击爆发",
-          "desc": "碎屑喷射",
+          "desc": "三个错开时间的爆点，碎片从中心沿随机方向飞出，受阻力减速、受重力下坠，并逐渐熄灭；第一个爆点跟随指针。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5645,13 +6050,14 @@
             "星爆",
             "彩屑",
             "慢散"
-          ]
+          ],
+          "path": "/particles-fx/explode"
         },
         {
           "slug": "galaxy",
           "title": "螺旋星系",
           "hint": "旋转星系臂",
-          "desc": "臂状粒子",
+          "desc": "星点沿对数螺旋分布在几条旋臂上，越靠内转得越快（差速旋转），中心是明亮的核球；指针让星系倾斜。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5663,13 +6069,14 @@
             "疏臂",
             "彩旋",
             "慢转"
-          ]
+          ],
+          "path": "/particles-fx/galaxy"
         },
         {
           "slug": "heartfield",
           "title": "心形场",
           "hint": "心形吸引",
-          "desc": "爱心轨迹",
+          "desc": "粒子分布在心形曲线附近，整体按心跳节奏缩放（快速放大、缓慢回落）；指针靠近时粒子被轻轻推开。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5681,13 +6088,14 @@
             "疏",
             "脉动",
             "慢聚"
-          ]
+          ],
+          "path": "/particles-fx/heartfield"
         },
         {
           "slug": "text-dots",
           "title": "文字点阵",
           "hint": "点阵聚字",
-          "desc": "粒子成字",
+          "desc": "先把文字画到离屏画布，再每隔几个像素采样一次，有颜色的位置就放一个粒子；粒子在目标位置附近微微浮动，指针靠近…",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5699,13 +6107,14 @@
             "慢聚",
             "彩点",
             "单色"
-          ]
+          ],
+          "path": "/particles-fx/text-dots"
         },
         {
           "slug": "grid-pulse",
           "title": "网格跳动",
           "hint": "网格脉冲",
-          "desc": "点阵呼吸",
+          "desc": "从指针位置发出一圈圈圆形波，波峰经过的点会放大变亮，像水面上的浮标随波起伏。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5717,13 +6126,14 @@
             "弱脉",
             "彩格",
             "单色"
-          ]
+          ],
+          "path": "/particles-fx/grid-pulse"
         },
         {
           "slug": "wave-part",
           "title": "波浪粒子",
           "hint": "波面起伏",
-          "desc": "正弦波粒子",
+          "desc": "粒子排成多行，每行沿正弦波上下起伏，行与行之间相位错开形成 3D 起伏的海面；指针位置的波浪更高。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5735,13 +6145,14 @@
             "快",
             "慢",
             "彩波"
-          ]
+          ],
+          "path": "/particles-fx/wave-part"
         },
         {
           "slug": "comet",
           "title": "彗星",
           "hint": "拖尾彗星",
-          "desc": "流星划过",
+          "desc": "每颗彗星沿斜线划过天空，尾巴由许多逐渐变小变淡的粒子组成，是彗星头部过去位置的轨迹。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5753,13 +6164,14 @@
             "短尾",
             "彩尾",
             "慢掠"
-          ]
+          ],
+          "path": "/particles-fx/comet"
         },
         {
           "slug": "bubbles",
           "title": "泡泡上升",
           "hint": "上升气泡",
-          "desc": "透明泡感",
+          "desc": "气泡从底部浮起，左右摆动上升，越接近顶部越透明；指针碰到的气泡会被推开。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5771,13 +6183,14 @@
             "疏",
             "慢升",
             "快升"
-          ]
+          ],
+          "path": "/particles-fx/bubbles"
         },
         {
           "slug": "leaves",
           "title": "落叶",
           "hint": "飘落叶",
-          "desc": "摇摆下落",
+          "desc": "叶片缓慢下落，同时左右大幅摇摆并绕自身旋转；叶片形状是两段圆弧拼成的椭圆叶。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5789,13 +6202,14 @@
             "大风",
             "微风",
             "彩叶"
-          ]
+          ],
+          "path": "/particles-fx/leaves"
         },
         {
           "slug": "dust",
           "title": "沙尘",
           "hint": "沙尘漂浮",
-          "desc": "扬尘场",
+          "desc": "一束斜射的光从左上照进来，飘浮的尘埃在光束里被照亮，在光束外几乎看不见；光束随指针摆动。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5807,13 +6221,14 @@
             "静",
             "彩尘",
             "暗尘"
-          ]
+          ],
+          "path": "/particles-fx/dust"
         },
         {
           "slug": "neon-dots",
           "title": "霓虹点",
           "hint": "霓虹闪点",
-          "desc": "发光粒子",
+          "desc": "发光的点在画面里漂移，两点距离小于「连线距离」时画一条线，越近线越亮；色相随位置缓慢变化。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5825,13 +6240,14 @@
             "疏闪",
             "脉冲",
             "常亮"
-          ]
+          ],
+          "path": "/particles-fx/neon-dots"
         },
         {
           "slug": "quantum",
           "title": "量子抖",
           "hint": "随机跃迁",
-          "desc": "量子抖动",
+          "desc": "原子核在中心，电子沿倾斜的椭圆轨道运动；电子云扩散越大，每个电子周围的「概率云」粒子越分散，体现量子的不确定性。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5843,13 +6259,14 @@
             "高频",
             "彩跳",
             "单色"
-          ]
+          ],
+          "path": "/particles-fx/quantum"
         },
         {
           "slug": "net",
           "title": "连接网",
           "hint": "近邻连线",
-          "desc": "粒子网络",
+          "desc": "节点在画面中缓慢漂移，距离近的节点连线；指针是一个特殊的「枢纽」，会把附近节点轻轻吸过来并全部连线。",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5861,13 +6278,14 @@
             "疏网",
             "发光",
             "淡线"
-          ]
+          ],
+          "path": "/particles-fx/net"
         },
         {
           "slug": "blackhole",
           "title": "黑洞吸积",
           "hint": "中心吸入",
-          "desc": "吸积盘",
+          "desc": "粒子组成扁平的吸积盘绕中心旋转，越靠内转得越快、越热越亮（开普勒运动），中间的事件视界是一个纯黑圆；指针让盘…",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5879,13 +6297,14 @@
             "急吸",
             "彩盘",
             "暗核"
-          ]
+          ],
+          "path": "/particles-fx/blackhole"
         },
         {
           "slug": "rainbow",
           "title": "彩虹喷泉",
           "hint": "彩虹喷射",
-          "desc": "多彩喷泉",
+          "desc": "粒子沿多层同心圆弧排成彩虹，每一层的色相 = 主色色相 + 层号 × 跨度 / 层数；粒子沿弧线流动，指针位…",
           "tag": "particles",
           "mod": "kit-particles",
           "fn": "mount",
@@ -5897,7 +6316,8 @@
             "疏喷",
             "高柱",
             "矮柱"
-          ]
+          ],
+          "path": "/particles-fx/rainbow"
         }
       ]
     },
@@ -5916,7 +6336,7 @@
           "slug": "flowfield",
           "title": "Perlin 流场",
           "hint": "噪声流场 · 重生",
-          "desc": "粒子沿噪声流动",
+          "desc": "画面每一点都有一个「风向」，由平滑噪声决定。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -5928,13 +6348,14 @@
             "慢",
             "粗线",
             "细线"
-          ]
+          ],
+          "path": "/generative/flowfield"
         },
         {
           "slug": "julia",
           "title": "Julia 集",
           "hint": "Julia 漫游",
-          "desc": "复平面 Julia",
+          "desc": "Julia 集：每个点反复做 z = z² + c，数它多少步后跑远，按步数上色。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -5946,13 +6367,14 @@
             "柔和",
             "深探",
             "浅探"
-          ]
+          ],
+          "path": "/generative/julia"
         },
         {
           "slug": "mandelbrot",
           "title": "Mandelbrot",
           "hint": "曼德勃漫游",
-          "desc": "分形缩放",
+          "desc": "对每个点 c，从 z = 0 开始反复做 z ← z² + c，看会不会逃到无穷远。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -5964,13 +6386,14 @@
             "深潜",
             "宽景",
             "细部"
-          ]
+          ],
+          "path": "/generative/mandelbrot"
         },
         {
           "slug": "gol",
           "title": "生命游戏",
           "hint": "细胞自动机",
-          "desc": "Conway GOL",
+          "desc": "生命游戏：每个格子看周围 8 个邻居，活邻居 2~3 个就活下去，正好 3 个就出生。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -5982,13 +6405,14 @@
             "慢演化",
             "大格",
             "小格"
-          ]
+          ],
+          "path": "/generative/gol"
         },
         {
           "slug": "voronoi",
           "title": "沃罗诺伊",
           "hint": "Voronoi 色块",
-          "desc": "最近点图",
+          "desc": "撒下若干「种子」点，画面上每个位置都归属离它最近的种子，于是平面被分成一块块区域。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6000,13 +6424,14 @@
             "静态",
             "高对比",
             "柔边"
-          ]
+          ],
+          "path": "/generative/voronoi"
         },
         {
           "slug": "tree",
           "title": "递归树",
           "hint": "分形树",
-          "desc": "递归枝干",
+          "desc": "画一根树枝，然后在末端左右各画一根更短的树枝，再对每根新树枝重复同样的事——这就是「递归」。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6018,13 +6443,14 @@
             "疏枝",
             "摇摆",
             "静"
-          ]
+          ],
+          "path": "/generative/tree"
         },
         {
           "slug": "sierpinski",
           "title": "Sierpinski",
           "hint": "三角分形",
-          "desc": "垫片递归",
+          "desc": "把一个三角形三条边的中点连起来，挖掉中间那个，剩下 3 个小三角；再对每个小三角重复。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6036,13 +6462,14 @@
             "面",
             "动",
             "静"
-          ]
+          ],
+          "path": "/generative/sierpinski"
         },
         {
           "slug": "circles",
           "title": "圆形填充",
           "hint": "圆堆积",
-          "desc": "随机圆填充",
+          "desc": "随机选一个点，算出它离最近的圆和边框还有多远，就在那里放一个刚好不重叠的圆；重复很多次，大圆先占位，小圆填缝。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6054,13 +6481,14 @@
             "填充",
             "大小差",
             "均匀"
-          ]
+          ],
+          "path": "/generative/circles"
         },
         {
           "slug": "terrain",
           "title": "噪声地形",
           "hint": "等高噪声",
-          "desc": "伪地形",
+          "desc": "把平滑噪声当作「海拔」，一行行横着取样画成折线，远处的线在上、近处在下，并用纯色遮住后面的线，就形成有前后遮…",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6072,13 +6500,14 @@
             "粗纹",
             "动态",
             "静态"
-          ]
+          ],
+          "path": "/generative/terrain"
         },
         {
           "slug": "walk",
           "title": "随机游走",
           "hint": "醉步轨迹",
-          "desc": "随机折线",
+          "desc": "每个游走者每一步随机选上、下、左、右之一走一步，像醉汉走路。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6090,13 +6519,14 @@
             "细",
             "彩色",
             "单色"
-          ]
+          ],
+          "path": "/generative/walk"
         },
         {
           "slug": "lsystem",
           "title": "L-System",
           "hint": "文法植物",
-          "desc": "L 系统草",
+          "desc": "从字符串 \"F\" 开始，按规则把每个 F 替换成一串更长的指令，反复几次；然后让「海龟」照着画：F 前进画线…",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6108,13 +6538,14 @@
             "密",
             "疏",
             "摇摆"
-          ]
+          ],
+          "path": "/generative/lsystem"
         },
         {
           "slug": "interfere",
           "title": "波纹干涉",
           "hint": "双波干涉",
-          "desc": "同心干涉",
+          "desc": "每个波源发出一圈圈圆形波。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6126,13 +6557,14 @@
             "慢",
             "强",
             "弱"
-          ]
+          ],
+          "path": "/generative/interfere"
         },
         {
           "slug": "diffuse",
           "title": "染色扩散",
           "hint": "墨染扩散",
-          "desc": "径向扩散",
+          "desc": "两种「化学物质」A 和 B 在格子里扩散并反应（A + 2B → 3B），A 不断被补充，B 不断被移除。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6144,13 +6576,14 @@
             "快",
             "浓",
             "淡"
-          ]
+          ],
+          "path": "/generative/diffuse"
         },
         {
           "slug": "mosaic",
           "title": "马赛克噪声",
           "hint": "块噪声",
-          "desc": "像素马赛克",
+          "desc": "把画面切成方砖，每块砖取中心点的噪声值，再按「色阶数」四舍五入成几档颜色（量化）。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6162,13 +6595,14 @@
             "静",
             "彩虹",
             "单色"
-          ]
+          ],
+          "path": "/generative/mosaic"
         },
         {
           "slug": "polar-flower",
           "title": "极坐标花",
           "hint": "极坐标曲线",
-          "desc": "玫瑰线",
+          "desc": "用「角度 θ + 半径 r」来画图。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6180,13 +6614,14 @@
             "呼吸",
             "描边",
             "填充"
-          ]
+          ],
+          "path": "/generative/polar-flower"
         },
         {
           "slug": "tri",
           "title": "三角剖分",
           "hint": "三角网",
-          "desc": "随机三角",
+          "desc": "在网格上放顶点，并让每个顶点随噪声轻轻抖动；每个方格沿对角线切成两个三角形。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6198,13 +6633,14 @@
             "面",
             "动",
             "静"
-          ]
+          ],
+          "path": "/generative/tri"
         },
         {
           "slug": "subdiv",
           "title": "方块细分",
           "hint": "四叉细分",
-          "desc": "递归方块",
+          "desc": "把一个矩形沿长边切成两块，再对每块重复，直到达到深度或随机决定停下。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6216,13 +6652,14 @@
             "色块",
             "动",
             "静"
-          ]
+          ],
+          "path": "/generative/subdiv"
         },
         {
           "slug": "contour",
           "title": "等高线",
           "hint": "噪声等高",
-          "desc": "层状等高",
+          "desc": "把噪声值当作地图上的高度，在高度恰好等于 1/n、2/n… 的地方画线，就像地图上的等高线。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6234,13 +6671,14 @@
             "粗线",
             "动",
             "静"
-          ]
+          ],
+          "path": "/generative/contour"
         },
         {
           "slug": "inkdrop",
           "title": "墨水滴",
           "hint": "涟漪墨滴",
-          "desc": "扩散环",
+          "desc": "一滴墨落入水中会向外扩散，半径增长越来越慢（约 ∝ √时间），颜色一圈圈分层，边缘因水流轻微抖动，最后淡去。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6252,13 +6690,14 @@
             "快",
             "浓",
             "淡"
-          ]
+          ],
+          "path": "/generative/inkdrop"
         },
         {
           "slug": "fiber",
           "title": "光纤束",
           "hint": "竖向光纤",
-          "desc": "束状曲线",
+          "desc": "一束光纤从底部同一点散开，每根是一条二次贝塞尔曲线，控制点随风摆动并被指针吸引。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6270,13 +6709,14 @@
             "静",
             "彩",
             "单色"
-          ]
+          ],
+          "path": "/generative/fiber"
         },
         {
           "slug": "pixelsort",
           "title": "像素排序感",
           "hint": "行偏移",
-          "desc": "排序错位",
+          "desc": "逐行扫描图片，把亮度超过阈值的连续一段像素按亮度从暗到亮重新排列，就会出现被「拉丝」的效果。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6288,13 +6728,14 @@
             "静",
             "彩",
             "灰"
-          ]
+          ],
+          "path": "/generative/pixelsort"
         },
         {
           "slug": "cellgrow",
           "title": "细胞增长",
           "hint": "圆胞扩张",
-          "desc": "生长圆",
+          "desc": "每个细胞长大后一分为二，两个子细胞沿随机方向分开，体积各占一半（半径 ÷ √2）。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6306,13 +6747,14 @@
             "多",
             "描边",
             "填充"
-          ]
+          ],
+          "path": "/generative/cellgrow"
         },
         {
           "slug": "gravline",
           "title": "引力绘线",
           "hint": "向心力轨迹",
-          "desc": "吸引折线",
+          "desc": "一组水平直线，像时空网格；画面上有 2 个绕圈运动的「质量」加上指针，每个质量都把附近的线点拉向自己，越近拉…",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6324,13 +6766,14 @@
             "少线",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/generative/gravline"
         },
         {
           "slug": "spiral-gen",
           "title": "螺旋采样",
           "hint": "阿基米德螺线",
-          "desc": "螺旋采样点",
+          "desc": "第 i 个点放在半径 √i、角度 i × 发散角 的位置。",
           "tag": "gen",
           "mod": "kit-generative",
           "fn": "mount",
@@ -6342,7 +6785,8 @@
             "静",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/generative/spiral-gen"
         }
       ]
     },
@@ -6350,18 +6794,18 @@
       "key": "text-fx",
       "name": "文字特效",
       "icon": "Aa",
-      "intro": "打字机、故障、渐变、描边、拆分入场等文字动效。",
+      "intro": "打字机、故障、渐变、描边、拆分入场等文字动效，逐字在画布上排版与动画，悬停读出每个字的状态。",
       "tech": [
-        "CSS",
-        "Canvas",
-        "WAAPI"
+        "Canvas 2D",
+        "逐字布局",
+        "easing"
       ],
       "demos": [
         {
           "slug": "typewriter",
           "title": "打字机",
           "hint": "逐字打出 · 重播",
-          "desc": "打字机效果",
+          "desc": "文字一个个出现，后面跟着闪烁的光标；打完停顿一会儿，再逐字删除，循环往复。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6373,13 +6817,14 @@
             "闪标",
             "无标",
             "循环"
-          ]
+          ],
+          "path": "/text-fx/typewriter"
         },
         {
           "slug": "glitch",
           "title": "故障 Glitch",
           "hint": "故障抖动",
-          "desc": "RGB 错位",
+          "desc": "模仿信号干扰——把文字切成横条随机左右错位，并把红、青两个颜色通道错开。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6391,13 +6836,14 @@
             "慢闪",
             "彩错",
             "单色"
-          ]
+          ],
+          "path": "/text-fx/glitch"
         },
         {
           "slug": "gradient",
           "title": "渐变扫光",
           "hint": "渐变流动字",
-          "desc": "扫光渐变",
+          "desc": "文字用一条横向的颜色渐变来填充，渐变不断平移形成流动感；再叠加一条倾斜的白色高光从左扫到右，像金属反光。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6409,13 +6855,14 @@
             "慢扫",
             "快扫",
             "三色"
-          ]
+          ],
+          "path": "/text-fx/gradient"
         },
         {
           "slug": "outline",
           "title": "描边填充",
           "hint": "空心描边",
-          "desc": "描边字",
+          "desc": "先只画文字的轮廓线（strokeText），并向右下错开叠几层形成立体阴影；然后实心颜色从左往右「灌」进文字…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6427,13 +6874,14 @@
             "填充延迟",
             "闪边",
             "静"
-          ]
+          ],
+          "path": "/text-fx/outline"
         },
         {
           "slug": "split-fall",
           "title": "拆分下落",
           "hint": "字母落下",
-          "desc": "拆分入场",
+          "desc": "把一句话拆成单个字，每个字依次从上方落下，落地时带一点弹跳；停留片刻后再逐个向下掉出画面，循环。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6445,13 +6893,14 @@
             "弹性",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/text-fx/split-fall"
         },
         {
           "slug": "bounce-in",
           "title": "弹性弹入",
           "hint": "过冲弹入",
-          "desc": "弹性缩放",
+          "desc": "每个字从 0 放大到原尺寸，因为「弹性」会先超过原尺寸再回弹几次才停下，像果冻。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6463,13 +6912,14 @@
             "同步",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/text-fx/bounce-in"
         },
         {
           "slug": "blur-clear",
           "title": "模糊清晰",
           "hint": "从糊到清",
-          "desc": "模糊入场",
+          "desc": "每个字一开始又糊又淡，然后依次变得清晰锐利，像镜头对焦；停留后再从左到右重新变糊。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6481,13 +6931,14 @@
             "慢清",
             "带色",
             "白"
-          ]
+          ],
+          "path": "/text-fx/blur-clear"
         },
         {
           "slug": "mirror",
           "title": "镜像翻转",
           "hint": "镜像还原",
-          "desc": "翻转显现",
+          "desc": "每个字绕水平轴依次翻转一圈（纵向缩放从 1 → −1 → 1），下方还有一个上下颠倒、逐渐变淡的倒影，像站在…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6499,13 +6950,14 @@
             "慢",
             "弹性",
             "线性"
-          ]
+          ],
+          "path": "/text-fx/mirror"
         },
         {
           "slug": "wave-text",
           "title": "波浪字",
           "hint": "逐字起伏",
-          "desc": "波浪动画",
+          "desc": "每个字的上下位置是一条正弦波，后面的字比前面的字晚一点（相位差），连起来就像一排在水面上起伏的浮标。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6517,13 +6969,14 @@
             "慢",
             "彩",
             "单色"
-          ]
+          ],
+          "path": "/text-fx/wave-text"
         },
         {
           "slug": "perspective",
           "title": "3D 透视",
           "hint": "透视翻转",
-          "desc": "3D 字",
+          "desc": "文字写在一张向后倒下的平面上，平面不断往远处移动。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6535,13 +6988,14 @@
             "快",
             "大",
             "小"
-          ]
+          ],
+          "path": "/text-fx/perspective"
         },
         {
           "slug": "neon-text",
           "title": "霓虹灯管",
           "hint": "霓虹发光",
-          "desc": "灯管字",
+          "desc": "文字用细线描边当作灯管，再加上同色的大范围模糊阴影（shadowBlur）当作光晕。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6553,13 +7007,14 @@
             "常亮",
             "双色",
             "单色"
-          ]
+          ],
+          "path": "/text-fx/neon-text"
         },
         {
           "slug": "scramble",
           "title": "打散重组",
           "hint": "散开再聚",
-          "desc": "重组动画",
+          "desc": "所有字从各自的位置飞散到随机方向并旋转，然后再沿原路飞回拼成原句，循环。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6571,13 +7026,14 @@
             "慢聚",
             "旋转",
             "平移"
-          ]
+          ],
+          "path": "/text-fx/scramble"
         },
         {
           "slug": "counter",
           "title": "计数滚动",
           "hint": "数字递增",
-          "desc": "计数器",
+          "desc": "每一位数字是一条竖着的 0~9 纸带，数值增加时最低位持续滚动；当低位从 9 滚到 0 的那一刻，高一位才跟…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6589,13 +7045,14 @@
             "快",
             "慢",
             "带号"
-          ]
+          ],
+          "path": "/text-fx/counter"
         },
         {
           "slug": "decode",
           "title": "密码解码",
           "hint": "乱码解码",
-          "desc": "解码显现",
+          "desc": "文字先显示为不断变化的乱码字符，然后从左到右一个个「破译」成真正的字，像电影里的黑客界面。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6607,13 +7064,14 @@
             "慢",
             "循环",
             "一次"
-          ]
+          ],
+          "path": "/text-fx/decode"
         },
         {
           "slug": "ribbon",
           "title": "打印色带",
           "hint": "色带扫过",
-          "desc": "打印感",
+          "desc": "模仿小票打印机——打印头从左到右扫过当前行把字印出来，印完一行纸带向上走一行。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6625,13 +7083,14 @@
             "单色",
             "循环",
             "一次"
-          ]
+          ],
+          "path": "/text-fx/ribbon"
         },
         {
           "slug": "handwrite",
           "title": "手写进度",
           "hint": "逐步显现",
-          "desc": "手写感",
+          "desc": "用虚线技巧画字的轮廓——把虚线的「实线段」从 0 慢慢加长到整条轮廓长度，看起来就像笔在一笔笔描字；每个字描…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6643,13 +7102,14 @@
             "填充",
             "循环",
             "一次"
-          ]
+          ],
+          "path": "/text-fx/handwrite"
         },
         {
           "slug": "karaoke",
           "title": "字幕卡拉OK",
           "hint": "逐字高亮",
-          "desc": "卡拉OK",
+          "desc": "当前唱到的那一行，颜色像进度条一样从左往右「刷」过去，刷过的字变成高亮色并发光；唱完一行切换到下一行，上下行…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6661,13 +7121,14 @@
             "朴素",
             "循环",
             "一次"
-          ]
+          ],
+          "path": "/text-fx/karaoke"
         },
         {
           "slug": "vertical",
           "title": "竖排滚动",
           "hint": "竖排文字",
-          "desc": "竖排展示",
+          "desc": "中文古籍从右往左、从上往下竖着排列。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6679,13 +7140,14 @@
             "疏距",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/text-fx/vertical"
         },
         {
           "slug": "pageflip",
           "title": "切页翻转",
           "hint": "翻页字",
-          "desc": "翻转入场",
+          "desc": "每一格上下两半分开，换字时上半片向下翻倒，露出新字的上半部分，翻倒的片背面是新字的下半部分。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6697,13 +7159,14 @@
             "线性",
             "大",
             "小"
-          ]
+          ],
+          "path": "/text-fx/pageflip"
         },
         {
           "slug": "liquid",
           "title": "液态变形",
           "hint": "液态缩放",
-          "desc": "果冻字",
+          "desc": "先把文字画到一张隐藏画布上，再把它横切成很多细条，每条按正弦波左右错开，看起来就像文字在水里晃动。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6715,13 +7178,14 @@
             "慢",
             "交错",
             "同步"
-          ]
+          ],
+          "path": "/text-fx/liquid"
         },
         {
           "slug": "pixel",
           "title": "像素显现",
           "hint": "像素风字",
-          "desc": "像素字",
+          "desc": "先把文字画到隐藏画布上，按网格取样：落在字形内的格子变成一个像素块。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6733,13 +7197,14 @@
             "静",
             "彩",
             "单"
-          ]
+          ],
+          "path": "/text-fx/pixel"
         },
         {
           "slug": "smoke",
           "title": "烟雾消散",
           "hint": "烟散消失",
-          "desc": "消散字",
+          "desc": "文字被拆成很多细小的粒子。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6751,13 +7216,14 @@
             "糊散",
             "循环",
             "一次"
-          ]
+          ],
+          "path": "/text-fx/smoke"
         },
         {
           "slug": "magnetic",
           "title": "磁吸排列",
           "hint": "指针磁吸",
-          "desc": "字母磁吸",
+          "desc": "字平时在画面里随噪声自由漂浮；指针像一块磁铁，离指针越近的字越会被吸回到它在句子中的位置并摆正。",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6769,13 +7235,14 @@
             "远距",
             "回弹",
             "粘滞"
-          ]
+          ],
+          "path": "/text-fx/magnetic"
         },
         {
           "slug": "rainbow",
           "title": "彩虹跳动",
           "hint": "彩虹起伏",
-          "desc": "彩虹字",
+          "desc": "每个字依次向上跳起再落下（|sin| 曲线，像弹跳的球），同时颜色沿色环流动，第一个字的色相是主色，整句跨越…",
           "tag": "text",
           "mod": "kit-text",
           "fn": "mount",
@@ -6787,7 +7254,8 @@
             "双色",
             "低波",
             "高波"
-          ]
+          ],
+          "path": "/text-fx/rainbow"
         }
       ]
     },
@@ -6795,18 +7263,19 @@
       "key": "scroll-fx",
       "name": "滚动特效",
       "icon": "↕",
-      "intro": "面板内滚动驱动的视差、进度、钉住与揭示效果。",
+      "intro": "虚拟滚动页面里的视差、进度、钉住与揭示效果：页面自动滚动，指针可接管滚动位置，实时读出滚动进度。",
       "tech": [
-        "IntersectionObserver",
-        "scroll",
-        "parallax"
+        "虚拟滚动",
+        "scroll 进度",
+        "parallax",
+        "Canvas 2D"
       ],
       "demos": [
         {
           "slug": "parallax",
           "title": "视差层",
           "hint": "面板内滚动 · 视差",
-          "desc": "滚动视差",
+          "desc": "现实中远处的山看起来移动得慢，近处的树移动得快。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6818,13 +7287,14 @@
             "三层",
             "慢",
             "快"
-          ]
+          ],
+          "path": "/scroll-fx/parallax"
         },
         {
           "slug": "progress",
           "title": "进度条",
           "hint": "顶栏进度",
-          "desc": "滚动进度",
+          "desc": "进度 = 已滚动距离 ÷ 可滚动的总距离。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6836,13 +7306,14 @@
             "单色",
             "发光",
             "朴素"
-          ]
+          ],
+          "path": "/scroll-fx/progress"
         },
         {
           "slug": "pin",
           "title": "章节钉住",
           "hint": "Sticky 钉住",
-          "desc": "章节钉住",
+          "desc": "章节标题平时跟着内容滚动，一旦碰到视口顶部，就「粘」在顶部不动；直到这一章的内容全部滚完，标题才被下一章推走。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6854,13 +7325,14 @@
             "标题",
             "双钉",
             "单钉"
-          ]
+          ],
+          "path": "/scroll-fx/pin"
         },
         {
           "slug": "reveal",
           "title": "淡入揭示",
           "hint": "滚入淡入",
-          "desc": "揭示卡片",
+          "desc": "卡片还没进入视口时是透明并且偏下的；当它从底部进入视口，进度 e 从 0 增加到 1，透明度跟着变成 1、位…",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6872,13 +7344,14 @@
             "慢",
             "交错",
             "同步"
-          ]
+          ],
+          "path": "/scroll-fx/reveal"
         },
         {
           "slug": "scale-in",
           "title": "缩放进入",
           "hint": "滚入缩放",
-          "desc": "缩放显现",
+          "desc": "卡片离视口中心越近就越大越亮，离开中心时又缩小变暗。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6890,13 +7363,14 @@
             "慢",
             "弹性",
             "线性"
-          ]
+          ],
+          "path": "/scroll-fx/scale-in"
         },
         {
           "slug": "h-gallery",
           "title": "横向画廊",
           "hint": "横向滚动",
-          "desc": "画廊轨道",
+          "desc": "页面纵向滚动时，把滚动进度换算成一条横向轨道的位移（translateX），卡片就从右向左移过屏幕。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6908,13 +7382,14 @@
             "窄卡",
             "吸附",
             "自由"
-          ]
+          ],
+          "path": "/scroll-fx/h-gallery"
         },
         {
           "slug": "stack",
           "title": "卡片堆叠",
           "hint": "Sticky 堆叠",
-          "desc": "堆叠卡片",
+          "desc": "每张卡片都是 position: sticky，钉住的位置一张比一张低一点（top = 基础 + i · 间…",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6926,13 +7401,14 @@
             "松",
             "彩色",
             "单色"
-          ]
+          ],
+          "path": "/scroll-fx/stack"
         },
         {
           "slug": "wipe-text",
           "title": "文字擦除",
           "hint": "擦除显现",
-          "desc": "擦除揭示",
+          "desc": "每一行文字先用暗色画一遍，再用一个从左到右的线性渐变（亮色 → 透明）覆盖。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6944,13 +7420,14 @@
             "慢",
             "强",
             "弱"
-          ]
+          ],
+          "path": "/scroll-fx/wipe-text"
         },
         {
           "slug": "path-draw",
           "title": "路径随滚",
           "hint": "描边随滚",
-          "desc": "路径绘制",
+          "desc": "一条蛇形的 SVG 路径贯穿整个页面。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6962,13 +7439,14 @@
             "细",
             "发光",
             "朴素"
-          ]
+          ],
+          "path": "/scroll-fx/path-draw"
         },
         {
           "slug": "countup",
           "title": "数字递增",
           "hint": "滚入计数",
-          "desc": "数字递增",
+          "desc": "统计数字进入视口后，从 0 开始滚动增加到目标值，常见于官网的「数据亮点」区域。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6980,13 +7458,14 @@
             "慢",
             "多组",
             "单组"
-          ]
+          ],
+          "path": "/scroll-fx/countup"
         },
         {
           "slug": "bg-shift",
           "title": "背景变色",
           "hint": "滚改背景",
-          "desc": "背景渐变",
+          "desc": "页面分成若干段，每段指定一个背景色。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -6998,13 +7477,14 @@
             "快变",
             "双色",
             "多色"
-          ]
+          ],
+          "path": "/scroll-fx/bg-shift"
         },
         {
           "slug": "split-wipe",
           "title": "分屏擦除",
           "hint": "左右分屏",
-          "desc": "分屏揭示",
+          "desc": "屏幕被分成两半，两半的内容朝相反方向移动——一边向上、一边向下（或一边向左、一边向右）。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7016,13 +7496,14 @@
             "慢",
             "强对比",
             "柔"
-          ]
+          ],
+          "path": "/scroll-fx/split-wipe"
         },
         {
           "slug": "snap",
           "title": "惯性吸附",
           "hint": "段落吸附",
-          "desc": "滚动吸附",
+          "desc": "给滚动容器设置 scroll-snap-type: y mandatory，每个段落设置 scroll-sn…",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7034,13 +7515,14 @@
             "少段",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/scroll-fx/snap"
         },
         {
           "slug": "toc",
           "title": "目录高亮",
           "hint": "锚点高亮",
-          "desc": "目录联动",
+          "desc": "长文档旁边的目录会随着阅读位置自动高亮当前章节。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7052,13 +7534,14 @@
             "疏",
             "胶囊",
             "下划线"
-          ]
+          ],
+          "path": "/scroll-fx/toc"
         },
         {
           "slug": "cover",
           "title": "封面揭开",
           "hint": "封面滚走",
-          "desc": "封面层",
+          "desc": "页面开头是一张大封面。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7070,13 +7553,14 @@
             "纯色",
             "字大",
             "字小"
-          ]
+          ],
+          "path": "/scroll-fx/cover"
         },
         {
           "slug": "timeline",
           "title": "滚动时间线",
           "hint": "竖向时间线",
-          "desc": "时间线",
+          "desc": "一条竖线贯穿页面，每个事件是线上的一个节点和一张卡片。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7088,13 +7572,14 @@
             "单色",
             "卡片",
             "纯文"
-          ]
+          ],
+          "path": "/scroll-fx/timeline"
         },
         {
           "slug": "lazy-img",
           "title": "图片懒显",
           "hint": "滚入显图",
-          "desc": "懒显卡片",
+          "desc": "页面里的图片先显示灰色占位框，只有当图片靠近视口（距离小于「加载距离」）时才真正开始下载，下载完成后从模糊淡…",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7106,13 +7591,14 @@
             "慢",
             "网格",
             "单列"
-          ]
+          ],
+          "path": "/scroll-fx/lazy-img"
         },
         {
           "slug": "stagger-grid",
           "title": "交错网格",
           "hint": "网格交错显",
-          "desc": "交错入场",
+          "desc": "网格里的格子不是一起出现，而是一个接一个地「波浪式」浮现。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7124,13 +7610,14 @@
             "慢",
             "对角",
             "行优"
-          ]
+          ],
+          "path": "/scroll-fx/stagger-grid"
         },
         {
           "slug": "totop",
           "title": "回顶气泡",
           "hint": "回顶按钮",
-          "desc": "回顶",
+          "desc": "页面滚动超过一定距离后，右下角浮出一个圆形按钮，按钮外圈的进度环显示读了多少。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7142,13 +7629,14 @@
             "小",
             "渐显",
             "常显"
-          ]
+          ],
+          "path": "/scroll-fx/totop"
         },
         {
           "slug": "story",
           "title": "滚动叙事",
           "hint": "长文叙事",
-          "desc": "叙事滚屏",
+          "desc": "一侧是固定不动的插图（sticky），另一侧是一段段文字。",
           "tag": "scroll",
           "mod": "kit-scroll",
           "fn": "mount",
@@ -7160,7 +7648,8 @@
             "小字",
             "插图",
             "纯文"
-          ]
+          ],
+          "path": "/scroll-fx/story"
         }
       ]
     },
@@ -7191,7 +7680,8 @@
             "矮胖",
             "大图",
             "慢动"
-          ]
+          ],
+          "path": "/math/pythagoras"
         },
         {
           "slug": "similar-tri",
@@ -7209,7 +7699,8 @@
             "静",
             "大",
             "小"
-          ]
+          ],
+          "path": "/math/similar-tri"
         },
         {
           "slug": "circle-angles",
@@ -7227,7 +7718,8 @@
             "静",
             "大圆",
             "小圆"
-          ]
+          ],
+          "path": "/math/circle-angles"
         },
         {
           "slug": "area-volume",
@@ -7245,7 +7737,8 @@
             "小球",
             "高锥",
             "矮锥"
-          ]
+          ],
+          "path": "/math/area-volume"
         },
         {
           "slug": "coord-geo",
@@ -7263,7 +7756,8 @@
             "静",
             "大刻度",
             "密"
-          ]
+          ],
+          "path": "/math/coord-geo"
         },
         {
           "slug": "conics",
@@ -7281,7 +7775,8 @@
             "扁椭圆",
             "动",
             "静"
-          ]
+          ],
+          "path": "/math/conics"
         },
         {
           "slug": "linear",
@@ -7299,7 +7794,8 @@
             "负斜率",
             "动",
             "静"
-          ]
+          ],
+          "path": "/math/linear"
         },
         {
           "slug": "quadratic",
@@ -7317,7 +7813,8 @@
             "无根",
             "动顶点",
             "静"
-          ]
+          ],
+          "path": "/math/quadratic"
         },
         {
           "slug": "exp-log",
@@ -7335,7 +7832,8 @@
             "快",
             "慢",
             "静"
-          ]
+          ],
+          "path": "/math/exp-log"
         },
         {
           "slug": "power",
@@ -7353,7 +7851,8 @@
             "偶次",
             "含负",
             "正"
-          ]
+          ],
+          "path": "/math/power"
         },
         {
           "slug": "piecewise",
@@ -7371,7 +7870,8 @@
             "小",
             "高对比",
             "柔"
-          ]
+          ],
+          "path": "/math/piecewise"
         },
         {
           "slug": "parametric",
@@ -7389,7 +7889,8 @@
             "慢绘",
             "大",
             "小"
-          ]
+          ],
+          "path": "/math/parametric"
         },
         {
           "slug": "polar",
@@ -7407,7 +7908,8 @@
             "快",
             "慢",
             "大"
-          ]
+          ],
+          "path": "/math/polar"
         },
         {
           "slug": "trig-waves",
@@ -7425,7 +7927,8 @@
             "相位波",
             "快速",
             "慢速"
-          ]
+          ],
+          "path": "/math/trig-waves"
         },
         {
           "slug": "unit-circle",
@@ -7443,7 +7946,8 @@
             "大振幅",
             "小",
             "相位"
-          ]
+          ],
+          "path": "/math/unit-circle"
         },
         {
           "slug": "trig-id",
@@ -7461,7 +7965,8 @@
             "大圆",
             "小圆",
             "高亮"
-          ]
+          ],
+          "path": "/math/trig-id"
         },
         {
           "slug": "law-sine",
@@ -7479,7 +7984,8 @@
             "静",
             "大圆",
             "小"
-          ]
+          ],
+          "path": "/math/law-sine"
         },
         {
           "slug": "limit",
@@ -7497,7 +8003,8 @@
             "慢",
             "大",
             "小"
-          ]
+          ],
+          "path": "/math/limit"
         },
         {
           "slug": "derivative",
@@ -7515,7 +8022,8 @@
             "小",
             "显割线",
             "隐"
-          ]
+          ],
+          "path": "/math/derivative"
         },
         {
           "slug": "integral",
@@ -7533,7 +8041,8 @@
             "慢",
             "高",
             "低"
-          ]
+          ],
+          "path": "/math/integral"
         },
         {
           "slug": "taylor",
@@ -7551,7 +8060,8 @@
             "8项",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/math/taylor"
         },
         {
           "slug": "vectors",
@@ -7569,7 +8079,8 @@
             "动",
             "大",
             "小"
-          ]
+          ],
+          "path": "/math/vectors"
         },
         {
           "slug": "matrix-2d",
@@ -7587,7 +8098,8 @@
             "小",
             "显基",
             "隐"
-          ]
+          ],
+          "path": "/math/matrix-2d"
         },
         {
           "slug": "determinant",
@@ -7605,7 +8117,8 @@
             "小",
             "动",
             "静"
-          ]
+          ],
+          "path": "/math/determinant"
         },
         {
           "slug": "eigen",
@@ -7623,7 +8136,8 @@
             "大",
             "小",
             "高亮"
-          ]
+          ],
+          "path": "/math/eigen"
         },
         {
           "slug": "venn",
@@ -7641,7 +8155,8 @@
             "静",
             "大圆",
             "小"
-          ]
+          ],
+          "path": "/math/venn"
         },
         {
           "slug": "combinatorics",
@@ -7659,7 +8174,8 @@
             "k小",
             "动",
             "静"
-          ]
+          ],
+          "path": "/math/combinatorics"
         },
         {
           "slug": "sequence",
@@ -7677,7 +8193,8 @@
             "少项",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/math/sequence"
         },
         {
           "slug": "shortest-path",
@@ -7695,7 +8212,8 @@
             "小",
             "显权",
             "简"
-          ]
+          ],
+          "path": "/math/shortest-path"
         },
         {
           "slug": "modular",
@@ -7713,7 +8231,8 @@
             "快",
             "慢",
             "大"
-          ]
+          ],
+          "path": "/math/modular"
         },
         {
           "slug": "binomial",
@@ -7731,7 +8250,8 @@
             "p低",
             "动p",
             "静"
-          ]
+          ],
+          "path": "/math/binomial"
         },
         {
           "slug": "normal",
@@ -7749,7 +8269,8 @@
             "静",
             "大",
             "小"
-          ]
+          ],
+          "path": "/math/normal"
         },
         {
           "slug": "clt",
@@ -7767,7 +8288,8 @@
             "少组",
             "快",
             "慢"
-          ]
+          ],
+          "path": "/math/clt"
         }
       ]
     },
@@ -7798,7 +8320,8 @@
             "低温",
             "动",
             "静"
-          ]
+          ],
+          "path": "/convert/temperature"
         },
         {
           "slug": "timezone",
@@ -7816,7 +8339,8 @@
             "少城",
             "快进",
             "慢"
-          ]
+          ],
+          "path": "/convert/timezone"
         },
         {
           "slug": "mass",
@@ -7834,7 +8358,8 @@
             "货运",
             "动",
             "静"
-          ]
+          ],
+          "path": "/convert/mass"
         },
         {
           "slug": "length",
@@ -7852,7 +8377,8 @@
             "航海",
             "动",
             "静"
-          ]
+          ],
+          "path": "/convert/length"
         },
         {
           "slug": "area-volume",
@@ -7870,7 +8396,8 @@
             "小",
             "动",
             "静"
-          ]
+          ],
+          "path": "/convert/area-volume"
         },
         {
           "slug": "radix",
@@ -7888,7 +8415,8 @@
             "快增",
             "慢增",
             "中值"
-          ]
+          ],
+          "path": "/convert/radix"
         },
         {
           "slug": "speed",
@@ -7906,7 +8434,8 @@
             "航速",
             "动",
             "静"
-          ]
+          ],
+          "path": "/convert/speed"
         },
         {
           "slug": "pressure",
@@ -7924,7 +8453,8 @@
             "动",
             "大",
             "小"
-          ]
+          ],
+          "path": "/convert/pressure"
         },
         {
           "slug": "energy",
@@ -7942,7 +8472,8 @@
             "动",
             "大",
             "小"
-          ]
+          ],
+          "path": "/convert/energy"
         }
       ]
     }
