@@ -65,7 +65,7 @@ FAM['pulse'] = {
     count: { label: '环数', min: 1, max: 6, step: 1, value: 3 },
     extras: [R('spread','扩散',0.4,2.2,0.05,1.2), T('fillRing','实心核',true)], remountKeys: [] },
   presets: { 默认: {}, '靛紫': { color:'#818cf8' }, '青绿': { color:'#22d3ee' }, '玫红': { color:'#f472b6' }, '琥珀': { color:'#fbbf24' }, '密环': { count:5 }, '慢': { speed:0.35 } },
-  doc: { title: '脉冲环', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('r(i) = base × (1 + spread × fract(t×spd + i/n))') + F('α = 1 − fract(...)'), explain: '<p><b>脉冲环</b>用多层不断扩大又淡出的圆环，模拟 CSS box-shadow / 伪元素动画的「呼吸感」。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '脉冲环', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('r(i) = base × (1 + spread × fract(t×spd + i/n))') + F('α = 1 − fract(...)'), explain: '<p><b>脉冲环</b>用多层不断扩大又淡出的圆环，模拟 CSS box-shadow / 伪元素动画的「呼吸感」。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -94,7 +94,7 @@ FAM['loader'] = {
     count: { label: '样式档', min: 0, max: 11, step: 1, value: 0 },
     extras: [T('trail','拖尾',true)], remountKeys: [] },
   presets: { 默认: {}, '环': { count:0 }, '点阵': { count:1 }, '条': { count:2 }, '轨道': { count:5 }, '双环': { count:8 }, '慢': { speed:0.35 } },
-  doc: { title: '加载器', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('CSS 时间函数驱动：progress = ease(fract(t × speed))'), explain: '<p>常见纯 CSS 加载动画：旋转环、弹跳点、音阶条……这里用画布复现，调速度/尺寸立刻改观感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '加载器', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('CSS 时间函数驱动：progress = ease(fract(t × speed))'), explain: '<p>常见纯 CSS 加载动画：旋转环、弹跳点、音阶条……这里用画布复现，调速度/尺寸立刻改观感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -146,7 +146,7 @@ FAM['hover'] = {
     count: { label: '样式', min: 0, max: 11, step: 1, value: 0 },
     extras: [T('glow','发光',true)], remountKeys: [] },
   presets: { 默认: {}, '上浮': { count:0 }, '缩放': { count:1 }, '扫光': { count:3 }, '霓虹': { count:8 }, '慢': { speed:0.3 } },
-  doc: { title: '悬停动效', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('CSS 时间函数驱动：progress = ease(fract(t × speed))'), explain: '<p>卡片悬停反馈：上浮、缩放、扫光、霓虹描边等。指针靠近卡片时触发「悬停态」。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '悬停动效', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('CSS 时间函数驱动：progress = ease(fract(t × speed))'), explain: '<p>卡片悬停反馈：上浮、缩放、扫光、霓虹描边等。指针靠近卡片时触发「悬停态」。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素个数']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -185,7 +185,7 @@ FAM['grad'] = {
     count: { label: '色带数', min: 2, max: 6, step: 1, value: 4 },
     extras: [R('angle','角度',0,360,1,120)], remountKeys: [] },
   presets: { 默认: {}, '冷色': { color:'#22d3ee' }, '暖色': { color:'#f472b6' }, '霓虹': { color:'#a78bfa', count:5 }, '慢': { speed:0.3 } },
-  doc: { title: '渐变流动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>多色线性渐变沿角度缓慢漂移，对应 CSS background-size 动画的流动渐变。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '渐变流动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>多色线性渐变沿角度缓慢漂移，对应 CSS background-size 动画的流动渐变。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -213,7 +213,7 @@ FAM['ease'] = {
     count: { label: '曲线', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('loop','循环',true)], remountKeys: [] },
   presets: { 默认: {}, 'linear': { count:0 }, 'ease-in': { count:1 }, 'ease-out': { count:2 }, 'back': { count:4 }, 'steps': { count:6 } },
-  doc: { title: '缓动曲线', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>对比不同 transition-timing-function：小球按曲线从左移到右，曲线图画在下方。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '缓动曲线', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>对比不同 transition-timing-function：小球按曲线从左移到右，曲线图画在下方。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -253,7 +253,7 @@ FAM['spring'] = {
     count: { label: '样式', min: 0, max: 7, step: 1, value: 0 },
     extras: [R('boost','过冲',0.2,1.8,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '弹入': { count:0 }, '过冲缩放': { count:2 }, '左右晃': { count:5 }, '慢': { speed:0.35 } },
-  doc: { title: '弹簧感', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>用阻尼正弦近似弹簧：过冲后再回落，对应 CSS 里难写的 spring 手感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '弹簧感', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>用阻尼正弦近似弹簧：过冲后再回落，对应 CSS 里难写的 spring 手感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -287,7 +287,7 @@ FAM['stagger'] = {
     count: { label: '条目', min: 3, max: 12, step: 1, value: 6 },
     extras: [R('delay','错峰',0.02,0.35,0.01,0.1), T('scaleIn','缩放入',true)], remountKeys: [] },
   presets: { 默认: {}, '少': { count:4 }, '多': { count:10 }, '快错峰': { delay:0.05 }, '慢': { speed:0.3 } },
-  doc: { title: '交错入场', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>子元素按延迟依次淡入，对应 animation-delay 递增的 stagger 入场。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '交错入场', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>子元素按延迟依次淡入，对应 animation-delay 递增的 stagger 入场。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -320,7 +320,7 @@ FAM['flip'] = {
     count: { label: '格子', min: 4, max: 12, step: 1, value: 9 },
     extras: [T('shuffle','打乱相位',true)], remountKeys: [] },
   presets: { 默认: {}, '少格': { count:4 }, '多格': { count:12 }, '大圆角': { size:20 }, '慢': { speed:0.35 } },
-  doc: { title: 'FLIP 布局', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>FLIP：记录 First 位置，改到 Last，用 Invert 补偿，再 Play 过渡。格子缓缓换位。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: 'FLIP 布局', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>FLIP：记录 First 位置，改到 Last，用 Invert 补偿，再 Play 过渡。格子缓缓换位。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -353,7 +353,7 @@ FAM['clip'] = {
     count: { label: '形状', min: 0, max: 9, step: 1, value: 0 },
     extras: [R('reveal','揭示量',0,1,0.01,0.65)], remountKeys: [] },
   presets: { 默认: {}, '圆': { count:0 }, '菱形': { count:1 }, '星形': { count:4 }, '全显': { reveal:1 } },
-  doc: { title: 'Clip-path', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>clip-path 裁出形状。揭示量从 0→1 像窗帘拉开，露出渐变底图。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: 'Clip-path', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>clip-path 裁出形状。揭示量从 0→1 像窗帘拉开，露出渐变底图。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) {
     return ({ ctx, W, H, t, C, P }) => {
       S.clear(); chip(ctx, W, H, C);
@@ -393,7 +393,7 @@ FAM['xform3d'] = {
     count: { label: '样式', min: 0, max: 9, step: 1, value: 0 },
     extras: [R('persp','透视感',0.2,2,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '立方': { count:0 }, '翻转牌': { count:1 }, '木马': { count:2 }, '慢': { speed:0.35 } },
-  doc: { title: '3D Transform', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>perspective + rotateX/Y 的三维感。拖动指针可微调视角。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '3D Transform', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>perspective + rotateX/Y 的三维感。拖动指针可微调视角。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 9), sz = num(C.size, 1), spd = num(C.speed, 0.9), persp = num(C.persp, 1);
@@ -426,7 +426,7 @@ FAM['trans'] = {
     count: { label: '属性', min: 0, max: 9, step: 1, value: 0 },
     extras: [T('hoverGo','悬停触发',true)], remountKeys: [] },
   presets: { 默认: {}, '颜色': { count:0 }, '宽高': { count:1 }, '透明度': { count:2 }, '圆角': { count:5 } },
-  doc: { title: '过渡属性', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>同一元素在两种状态间过渡：颜色、尺寸、透明度、阴影……悬停切换到 B 态。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '过渡属性', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>同一元素在两种状态间过渡：颜色、尺寸、透明度、阴影……悬停切换到 B 态。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 9), sz = num(C.size, 1), spd = num(C.speed, 0.9), hoverGo = on(C.hoverGo);
@@ -459,7 +459,7 @@ FAM['parallax'] = {
     count: { label: '层数', min: 2, max: 6, step: 1, value: 4 },
     extras: [R('depth','深度',0.2,2,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '多层': { count:5 }, '强深度': { depth:1.6 }, '慢': { speed:0.3 } },
-  doc: { title: '视差', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>多层以不同速度跟随指针，近快远慢，模拟 CSS 视差。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '视差', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>多层以不同速度跟随指针，近快远慢，模拟 CSS 视差。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 4)), 2, 6), amp = num(C.size, 1), depth = num(C.depth, 1), spd = num(C.speed, 0.9);
@@ -487,7 +487,7 @@ FAM['filter'] = {
     count: { label: '滤镜', min: 0, max: 7, step: 1, value: 0 },
     extras: [R('amount','强度',0.1,1.5,0.05,0.8)], remountKeys: [] },
   presets: { 默认: {}, '模糊': { count:0 }, '色相': { count:2 }, '霓虹': { count:5 }, '慢': { speed:0.35 } },
-  doc: { title: '滤镜动效', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>模拟 CSS filter：模糊、饱和、色相旋转、对比、发光等随时间脉动。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '滤镜动效', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>模拟 CSS filter：模糊、饱和、色相旋转、对比、发光等随时间脉动。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), amount = num(C.amount, 0.8);
@@ -516,7 +516,7 @@ FAM['blend'] = {
     count: { label: '模式', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('follow','跟随指针',true)], remountKeys: [] },
   presets: { 默认: {}, 'screen': { count:0 }, 'multiply': { count:1 }, 'overlay': { count:2 }, 'difference': { count:3 } },
-  doc: { title: '混合模式', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>两色块叠加以不同 mix-blend-mode 感觉混合。移动指针拖动上层。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '混合模式', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>两色块叠加以不同 mix-blend-mode 感觉混合。移动指针拖动上层。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), follow = on(C.follow);
@@ -542,7 +542,7 @@ FAM['skeleton'] = {
     count: { label: '布局', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('shimmer','扫光速度',0.3,2.5,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '卡片': { count:0 }, '列表': { count:1 }, '头像行': { count:2 }, '慢扫': { shimmer:0.4 } },
-  doc: { title: '骨架屏', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>占位灰块 + 高光扫过，模拟 Skeleton loading。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '骨架屏', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>占位灰块 + 高光扫过，模拟 Skeleton loading。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), rad = num(C.size, 8), spd = num(C.speed, 0.9), shimmer = num(C.shimmer, 1);
@@ -573,7 +573,7 @@ FAM['progress'] = {
     count: { label: '样式', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('auto','自动往返',true)], remountKeys: [] },
   presets: { 默认: {}, '线性': { count:0 }, '环形': { count:2 }, '半环': { count:3 }, '水波': { count:5 } },
-  doc: { title: '进度条', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>进度从 0→100% 的多种画法：线性条、环、半环、水波填充。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '进度条', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>进度从 0→100% 的多种画法：线性条、环、半环、水波填充。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), auto = on(C.auto);
@@ -619,7 +619,7 @@ FAM['ripple'] = {
     count: { label: '波数', min: 1, max: 5, step: 1, value: 3 },
     extras: [T('square','方波',false)], remountKeys: [] },
   presets: { 默认: {}, '单波': { count:1 }, '多波': { count:4 }, '方波': { square:true }, '慢': { speed:0.35 } },
-  doc: { title: '涟漪', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>点击/自动在指针处扩散波纹，对应 Material ripple。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '涟漪', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>点击/自动在指针处扩散波纹，对应 Material ripple。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 3)), 1, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), square = on(C.square);
@@ -646,7 +646,7 @@ FAM['carousel'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('slides','页数',3,8,1,5), T('autoplay','自动播放',true)], remountKeys: [] },
   presets: { 默认: {}, '滑移': { count:0 }, '淡入': { count:1 }, '封面流': { count:2 }, '垂直': { count:4 }, '循环快': { speed:1.6 } },
-  doc: { title: '轮播', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('offset = (t × speed) mod slides') + F('slide_i 绘制于满幅舞台'), explain: '<p>轮播占满整个舞台。样式含滑移、淡入、3D 封面流、卡片堆、垂直、无限循环。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '轮播铺满舞台；调页数/速度/圆角。' },
+  doc: { title: '轮播', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('offset = (t × speed) mod slides') + F('slide_i 绘制于满幅舞台'), explain: '<p>轮播占满整个舞台。样式含滑移、淡入、3D 封面流、卡片堆、垂直、无限循环。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '轮播铺满舞台；调页数/速度/圆角。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), rad = num(C.size, 16), spd = num(C.speed, 0.9);
@@ -705,7 +705,7 @@ FAM['accordion'] = {
     count: { label: '面板数', min: 2, max: 6, step: 1, value: 4 },
     extras: [T('multi','多开',false)], remountKeys: [] },
   presets: { 默认: {}, '三栏': { count:3 }, '多开': { multi:true }, '慢': { speed:0.35 } },
-  doc: { title: '手风琴', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>手风琴：点开一块、高度过渡展开。默认单开，可开多开。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '手风琴', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>手风琴：点开一块、高度过渡展开。默认单开，可开多开。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 4)), 2, 6), rad = num(C.size, 10), spd = num(C.speed, 0.9), multi = on(C.multi);
@@ -735,7 +735,7 @@ FAM['modal'] = {
     count: { label: '进出场', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('blurBg','模糊背景',true)], remountKeys: [] },
   presets: { 默认: {}, '淡入缩放': { count:0 }, '下滑': { count:1 }, '右滑': { count:2 }, '弹跳': { count:4 } },
-  doc: { title: '弹层进出', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Modal 进出场：淡入缩放、滑入、模糊背景、弹跳等。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '弹层进出', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Modal 进出场：淡入缩放、滑入、模糊背景、弹跳等。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), blurBg = on(C.blurBg);
@@ -764,7 +764,7 @@ FAM['reveal'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('amount','揭示量',0,1,0.01,0.7)], remountKeys: [] },
   presets: { 默认: {}, '擦除': { count:0 }, '百叶窗': { count:1 }, '圆形': { count:2 }, '对角': { count:3 } },
-  doc: { title: '揭示', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>内容被遮罩逐渐揭示：擦除、百叶窗、圆形扩散、对角线、像素块、模糊清晰。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '揭示', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>内容被遮罩逐渐揭示：擦除、百叶窗、圆形扩散、对角线、像素块、模糊清晰。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), amount = num(C.amount, 0.7);
@@ -772,10 +772,13 @@ FAM['reveal'] = {
       const a = clamp(amount * (0.75 + 0.25 * Math.sin(t * spd)), 0, 1);
       const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, C.color || '#818cf8'); g.addColorStop(1, pastel(C, 4));
       ctx.fillStyle = g; ctx.fillRect(0, 8, W, H);
-      text(ctx, 'REVEAL', W / 2, H / 2, { size: fsz(W, H, 2), col: '#0b1020', align: 'center', bold: true });
+      text(ctx, 'REVEAL', W / 2, H / 2, { size: fsz(W, H, 1.4 + sz * 0.9), col: '#0b1020', align: 'center', bold: true });
+      // size also draws a scaled accent frame so knob always moves pixels
+      ctx.strokeStyle = hsla(hueOf(C.color), 80, 65, 0.55); ctx.lineWidth = 2 + sz * 3;
+      rrect(ctx, 16 * sz, 16 + 8 * sz, W - 32 * sz, H - 32 * sz - 8, 10 + sz * 6); ctx.stroke();
       ctx.fillStyle = '#060a14';
       if (style === 0) ctx.fillRect(W * a, 8, W * (1 - a), H);
-      else if (style === 1) { const bars = 10; for (let i = 0; i < bars; i++) { const bh = H / bars; const cut = a * W; ctx.fillRect(cut, 8 + i * bh, W - cut, bh - 1); } }
+      else if (style === 1) { const bars = Math.round(6 + sz * 6); for (let i = 0; i < bars; i++) { const bh = H / bars; const cut = a * W; ctx.fillRect(cut, 8 + i * bh, W - cut, bh - 1); } }
       else if (style === 2) { ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.arc(W / 2, H / 2, Math.min(W, H) * 0.55 * a * sz, 0, TAU); ctx.fill('evenodd'); }
       else if (style === 3) { ctx.beginPath(); ctx.moveTo(W * a * 2, 0); ctx.lineTo(W, 0); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.lineTo(0, H * (1 - a)); ctx.closePath(); ctx.fill(); }
       else if (style === 4) { const cols = 8, rows = 6; for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { if ((c + r) / (cols + rows) > a) ctx.fillRect(c * W / cols, r * H / rows, W / cols + 1, H / rows + 1); } }
@@ -792,7 +795,7 @@ FAM['neon'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('flicker','闪烁',true)], remountKeys: [] },
   presets: { 默认: {}, '文字': { count:0 }, '边框': { count:1 }, '双色': { count:4 }, '故障': { count:5 } },
-  doc: { title: '霓虹', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>霓虹发光字/边：多层阴影模拟 text-shadow / box-shadow 霓虹。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '霓虹', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>霓虹发光字/边：多层阴影模拟 text-shadow / box-shadow 霓虹。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), glow = num(C.size, 1), spd = num(C.speed, 0.9), flicker = on(C.flicker);
@@ -828,7 +831,7 @@ FAM['liquid'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('visc','黏度',0.2,2,0.05,1)], remountKeys: [] },
   presets: { 默认: {}, '按钮': { count:0 }, 'blob': { count:1 }, '水滴': { count:2 }, '波浪': { count:4 } },
-  doc: { title: '液态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>液态/果冻变形：blob 边、水滴、波浪底边，悬停时黏滞拉伸。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '液态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>液态/果冻变形：blob 边、水滴、波浪底边，悬停时黏滞拉伸。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), visc = num(C.visc, 1);
@@ -867,7 +870,7 @@ FAM['marquee'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('reverse','反向',false)], remountKeys: [] },
   presets: { 默认: {}, '横向': { count:0 }, '反向': { reverse:true }, '双行': { count:2 }, '垂直': { count:4 } },
-  doc: { title: '跑马灯', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>无限滚动跑马灯：横向文字、双行、徽标带、垂直。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '跑马灯', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>无限滚动跑马灯：横向文字、双行、徽标带、垂直。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), reverse = on(C.reverse);
@@ -903,7 +906,7 @@ FAM['kenburns'] = {
     count: { label: '路径', min: 0, max: 3, step: 1, value: 0 },
     extras: [], remountKeys: [] },
   presets: { 默认: {}, '慢推': { count:1, speed:0.35 }, '对角': { count:2 }, '急拉': { count:3, speed:1.8 } },
-  doc: { title: 'Ken Burns', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Ken Burns：画面缓慢缩放+平移，常用于幻灯纪录片感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: 'Ken Burns', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Ken Burns：画面缓慢缩放+平移，常用于幻灯纪录片感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 3), amp = num(C.size, 0.7), spd = num(C.speed, 0.9);
@@ -932,7 +935,7 @@ FAM['shake'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('amp','幅度',2,28,1,10)], remountKeys: [] },
   presets: { 默认: {}, '左右': { count:0 }, '旋转': { count:2 }, '心跳': { count:4 }, '强震': { amp:22 } },
-  doc: { title: '抖动反馈', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>错误/提醒抖动：左右、上下、旋转、弹性、心跳、震动条。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '抖动反馈', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>错误/提醒抖动：左右、上下、旋转、弹性、心跳、震动条。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), amp = num(C.amp, 10);
@@ -961,7 +964,7 @@ FAM['keyseq'] = {
     count: { label: '序列', min: 0, max: 7, step: 1, value: 0 },
     extras: [T('loop','循环',true)], remountKeys: [] },
   presets: { 默认: {}, '行走': { count:0 }, '变形': { count:1 }, '节拍': { count:2 }, '呼吸': { count:4 } },
-  doc: { title: '关键帧序列', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>复杂 @keyframes 多段叙事：位移、缩放、旋转、颜色节拍组合。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '关键帧序列', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>复杂 @keyframes 多段叙事：位移、缩放、旋转、颜色节拍组合。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), loop = on(C.loop);
@@ -995,7 +998,7 @@ FAM['neumorph'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('inset','凹陷',false)], remountKeys: [] },
   presets: { 默认: {}, '凸起': { inset:false }, '凹陷': { inset:true }, '软': { size:0.5 }, '硬': { size:1.6 } },
-  doc: { title: '新拟态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>新拟态：浅底上双阴影做出凸起/凹陷按钮感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '新拟态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>新拟态：浅底上双阴影做出凸起/凹陷按钮感。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), inset = on(C.inset);
@@ -1024,7 +1027,7 @@ FAM['cursor-fx'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('trail','拖尾',true)], remountKeys: [] },
   presets: { 默认: {}, '环': { count:0 }, '点': { count:1 }, '拖尾': { trail:true }, '大': { size:1.6 } },
-  doc: { title: '自定义光标', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>自定义光标环跟随指针（或自动巡游），可带拖尾。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '自定义光标', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>自定义光标环跟随指针（或自动巡游），可带拖尾。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), trail = on(C.trail);
@@ -1034,11 +1037,23 @@ FAM['cursor-fx'] = {
       // decorative cards
       for (let i = 0; i < 3; i++) { ctx.fillStyle = pastel(C, i, 3, 0.35); rrect(ctx, 40 + i * (W / 4), 60 + (i % 2) * 40, W * 0.2, H * 0.35, 14); ctx.fill(); }
       const R = 18 * sz * (style === 4 ? 1.5 : style === 5 ? 0.6 : 1);
-      if (trail || style === 2) {
-        for (let k = 6; k >= 1; k--) {
-          ctx.strokeStyle = hsla(hueOf(C.color), 80, 65, 0.15); ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(cx - k * 4, cy - k * 2, R * (1 - k * 0.05), 0, TAU); ctx.stroke();
+      if (trail) {
+        for (let k = 8; k >= 1; k--) {
+          ctx.strokeStyle = hsla(hueOf(C.color), 80, 65, 0.12 + k * 0.02); ctx.lineWidth = 2 + sz;
+          ctx.beginPath(); ctx.arc(cx - k * 7, cy - k * 3, R * (1 - k * 0.04), 0, TAU); ctx.stroke();
         }
+        // filled trail blobs for stronger pixel delta
+        for (let k = 5; k >= 1; k--) {
+          ctx.fillStyle = hsla(hueOf(C.color), 80, 65, 0.18); ctx.beginPath();
+          ctx.arc(cx - k * 9, cy - k * 4, 5 * sz, 0, TAU); ctx.fill();
+        }
+      } else {
+        // no-trail marker: crosshair ticks (visibly different from trail)
+        ctx.strokeStyle = 'rgba(148,163,184,.55)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(cx - R - 10, cy); ctx.lineTo(cx - R - 2, cy);
+        ctx.moveTo(cx + R + 2, cy); ctx.lineTo(cx + R + 10, cy);
+        ctx.moveTo(cx, cy - R - 10); ctx.lineTo(cx, cy - R - 2);
+        ctx.moveTo(cx, cy + R + 2); ctx.lineTo(cx, cy + R + 10); ctx.stroke();
       }
       ctx.strokeStyle = C.color || '#818cf8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
       if (style !== 0) { ctx.fillStyle = C.color || '#818cf8'; ctx.beginPath(); ctx.arc(cx, cy, 4 * sz, 0, TAU); ctx.fill(); }
@@ -1053,7 +1068,7 @@ FAM['text-stroke'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('dash','虚线跑',true)], remountKeys: [] },
   presets: { 默认: {}, '细': { size:1.5 }, '粗': { size:7 }, '霓虹': { count:4 }, '慢': { speed:0.3 } },
-  doc: { title: '文字描边动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>文字描边沿路径奔跑（stroke-dashoffset 感），可虚线流动。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '文字描边动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>文字描边沿路径奔跑（stroke-dashoffset 感），可虚线流动。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), lw = num(C.size, 3), spd = num(C.speed, 0.9), dash = on(C.dash);
@@ -1063,7 +1078,8 @@ FAM['text-stroke'] = {
       ctx.font = `800 ${Math.min(W, H) * 0.22}px ui-sans-serif,system-ui,sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       const off = (t * spd * 80) % 80;
-      if (dash || style !== 5) ctx.setLineDash([18, 14]); ctx.lineDashOffset = -off;
+      if (dash) { ctx.setLineDash([18, 14]); ctx.lineDashOffset = -off; }
+      else { ctx.setLineDash([]); ctx.lineDashOffset = 0; }
       ctx.lineWidth = lw; ctx.strokeStyle = style === 4 ? hsla(hueOf(C.color) + t * spd * 80, 90, 60) : (C.color || '#818cf8');
       if (style === 4) { ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 18; }
       ctx.strokeText(label, cx, cy);
@@ -1081,7 +1097,7 @@ FAM['border-beam'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [T('dual','双色',true)], remountKeys: [] },
   presets: { 默认: {}, '快': { speed:1.8 }, '慢': { speed:0.3 }, '粗光': { size:9 }, '双色': { dual:true } },
-  doc: { title: '边框光束', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>光束沿圆角矩形边框旋转奔跑，常见于高亮卡片。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '边框光束', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>光束沿圆角矩形边框旋转奔跑，常见于高亮卡片。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), lw = num(C.size, 4), spd = num(C.speed, 0.9), dual = on(C.dual);
@@ -1122,7 +1138,7 @@ FAM['spotlight'] = {
     count: { label: '样式', min: 0, max: 5, step: 1, value: 0 },
     extras: [R('bright','亮度',0.2,1,0.05,0.7)], remountKeys: [] },
   presets: { 默认: {}, '小光': { size:0.5 }, '大光': { size:1.6 }, '强': { bright:1 }, '彩': { count:4 } },
-  doc: { title: '聚光跟随', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>暗幕上开一束跟随指针的聚光，照亮下方卡片。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '聚光跟随', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>暗幕上开一束跟随指针的聚光，照亮下方卡片。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), bright = num(C.bright, 0.7);
@@ -1162,7 +1178,7 @@ FAM['keyframes'] = {
     count: { label: '场景', min: 0, max: 3, step: 1, value: 0 },
     extras: [T('shine','流光',true)], remountKeys: [] },
   presets: { 默认: {}, '加载': { count:0 }, '过渡': { count:1 }, '流光字': { count:2 }, '慢': { speed:0.3 } },
-  doc: { title: 'Keyframes 与渐变文字', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>@keyframes 入门：加载点、过渡曲线小球、流光渐变文字同台演示。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: 'Keyframes 与渐变文字', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>@keyframes 入门：加载点、过渡曲线小球、流光渐变文字同台演示。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 3), sz = num(C.size, 1), spd = num(C.speed, 0.9), shine = on(C.shine);
@@ -1195,7 +1211,7 @@ FAM['glass'] = {
     count: { label: '卡片数', min: 1, max: 4, step: 1, value: 2 },
     extras: [R('alpha','透明度',0.05,0.5,0.01,0.18)], remountKeys: [] },
   presets: { 默认: {}, '清晰': { size:0.4 }, '大模糊': { size:1.7 }, '多卡': { count:3 }, '慢漂': { speed:0.3 } },
-  doc: { title: '玻璃拟态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Glassmorphism：半透明卡片叠在流动色斑上，模拟 backdrop-filter 毛玻璃。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '玻璃拟态', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>Glassmorphism：半透明卡片叠在流动色斑上，模拟 backdrop-filter 毛玻璃。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 2)), 1, 4), blur = num(C.size, 1), spd = num(C.speed, 0.9), alpha = num(C.alpha, 0.18);
@@ -1227,7 +1243,7 @@ FAM['tilt'] = {
     count: { label: '卡片', min: 1, max: 3, step: 1, value: 1 },
     extras: [R('maxTilt','最大倾角',0.1,0.8,0.05,0.35), T('glare','光泽',true)], remountKeys: [] },
   presets: { 默认: {}, '单卡': { count:1 }, '双卡': { count:2 }, '强倾': { maxTilt:0.65 }, '慢': { speed:0.3 } },
-  doc: { title: '3D 倾斜卡片', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>指针驱动 rotateX/Y 倾斜；可叠加光泽高光，点击感翻转。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '3D 倾斜卡片', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>指针驱动 rotateX/Y 倾斜；可叠加光泽高光，点击感翻转。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 1)), 1, 3), sz = num(C.size, 1), spd = num(C.speed, 0.9), maxTilt = num(C.maxTilt, 0.35), glare = on(C.glare);
@@ -1260,7 +1276,7 @@ FAM['scroll'] = {
     count: { label: '样式', min: 0, max: 3, step: 1, value: 0 },
     extras: [R('view','视口进度',0,1,0.01,0.35)], remountKeys: [] },
   presets: { 默认: {}, '淡入': { count:0 }, '滑入': { count:1 }, '缩放': { count:2 }, '进度中': { view:0.5 } },
-  doc: { title: '滚动驱动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>模拟 animation-timeline: view()：随「滚动进度」段落依次入场。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>${v.mode}</li><li>相位 ${v.ph}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
+  doc: { title: '滚动驱动', rows: (v) => [['模式', v.mode], ['相位', v.ph], ['悬停', v.cell, 'cell'], ['主色', v.colorHex]], formula: () => F('progress = fract(t × speed)'), explain: '<p>模拟 animation-timeline: view()：随「滚动进度」段落依次入场。</p>', params: [['主色','强调色'],['速度','动画快慢'],['尺寸','几何大小'],['数量','元素/样式']], example: (v) => `<ol><li>当前模式：${v.mode}</li><li>相位 ${v.ph}</li><li>主色 ${v.colorHex}</li></ol>`, tip: '悬停或拖动指针；调滑条看几何变化。' },
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 3), n = clamp(Math.round(num(C.size, 6)), 3, 10), spd = num(C.speed, 0.9), view = num(C.view, 0.35);
