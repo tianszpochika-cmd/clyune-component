@@ -333,6 +333,8 @@ FAM['glitch-f'] = fFam({ title: '故障抖动', count: NC('切片数', 2, 24, 8)
       for (let y = 0; y < h; y++) { const j = Math.floor(y / sl), off = hh(j, blk) > 0.7 ? Math.round((hh(j, blk + 99) - 0.5) * 0.24 * w) : 0;
         for (let x = 0; x < w; x++) { const i = (y * w + x) * 4, xr = clamp(x + off + sh, 0, w - 1), xg = clamp(x + off, 0, w - 1), xb = clamp(x + off - sh, 0, w - 1); d[i] = s[(y * w + xr) * 4]; d[i + 1] = s[(y * w + xg) * 4 + 1]; d[i + 2] = s[(y * w + xb) * 4 + 2]; } }
       return id; }, P, k.split);
+    ctx.save(); rrect(ctx, box.x, box.y, box.w, box.h, 10); ctx.clip(); ctx.fillStyle = hsla(k.hue, 95, 58, 0.22); for (let y = box.y; y < box.y + box.h; y += 4) ctx.fillRect(box.x, y, box.w, 2); ctx.restore();
+    ctx.strokeStyle = hsla(k.hue, 95, 62, 0.9); ctx.lineWidth = 3; rrect(ctx, box.x - 2, box.y - 2, box.w + 4, box.h + 4, 11); ctx.stroke();
     let moved = 0; for (let j = 0; j < k.n; j++) if (hh(j, blk) > 0.7) moved++;
     return { mode: `${k.n} 条切片中 ${moved} 条错位 · 色差 ${fmt(k.x, 1)}px`, cell: c };
   } });

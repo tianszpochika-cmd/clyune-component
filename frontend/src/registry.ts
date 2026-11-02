@@ -232,9 +232,9 @@ export const categories: Category[] = [
     intro: 'GSAP 专业级动画引擎：时间轴编排、ScrollTrigger 滚动联动与文字逐字交错。',
     tech: ['gsap@3.12', 'Timeline', 'ScrollTrigger', 'stagger'],
     demos: [
-      { slug: 'timeline', title: 'Timeline 时间轴', hint: '播放 / 暂停 / 倒放 / 拖动进度', desc: '多段动画编排与进度控制。', tag: 'timeline', mod: 'gsap-timeline', fn: 'mount' },
-      { slug: 'scroll', title: 'ScrollTrigger', hint: '在面板内向下滚动', desc: '滚动进度驱动的固定、视差与进度条。', tag: 'scroll', mod: 'gsap-scroll', fn: 'mount' },
-      { slug: 'text', title: '文字交错动画', hint: '点击重播 · 切换效果', desc: '逐字拆分 + stagger 的标题入场。', tag: 'text', mod: 'gsap-text', fn: 'mount' },
+      { slug: 'timeline', title: 'Timeline 时间轴', hint: '播放 / 暂停 / 倒放 / 拖动进度', desc: '多段动画编排与进度控制。', tag: 'timeline', mod: 'kit-gsap', fn: 'mount', variant: 'timeline' },
+      { slug: 'scroll', title: 'ScrollTrigger', hint: '在面板内向下滚动', desc: '滚动进度驱动的固定、视差与进度条。', tag: 'scroll', mod: 'kit-gsap', fn: 'mount', variant: 'scroll' },
+      { slug: 'text', title: '文字交错动画', hint: '点击重播 · 切换效果', desc: '逐字拆分 + stagger 的标题入场。', tag: 'text', mod: 'kit-gsap', fn: 'mount', variant: 'text' },
       { slug: 'bounce', title: '弹跳入场', hint: '弹跳循环 · Play', desc: 'bounce.out 入场', tag: 'gsap', mod: 'kit-gsap', fn: 'mount', variant: 'bounce', presets: ['轻弹', '重弹', '慢', '快', '大', '小'] },
       { slug: 'stagger', title: '交错卡片', hint: '交错入场', desc: 'stagger 卡片', tag: 'gsap', mod: 'kit-gsap', fn: 'mount', variant: 'stagger', presets: ['从左', '从中', '从边', '快', '慢', '回弹'] },
       { slug: 'path', title: '路径跟随', hint: '折线路径', desc: '路径位移', tag: 'gsap', mod: 'kit-gsap', fn: 'mount', variant: 'path', presets: ['方径', '三角', '8字感', '快', '慢', '平滑'] },
