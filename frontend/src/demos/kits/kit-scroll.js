@@ -425,11 +425,11 @@ FAM.cover = scFam({ title: '封面滑出', count: NC('内容段数', 2, 8, 4), e
     const n = k.n, ch = k.vh * k.x, sec = 120, pageH = ch + n * sec + 40, sy = k.sy(pageH), e = clamp(sy / ch, 0, 1), cy = 8 - sy * 0.5; let cell = null;
     const g = ctx.createLinearGradient(0, cy, W, cy + ch); g.addColorStop(0, hsla(k.hue, 70, 40)); g.addColorStop(1, hsla(k.hue + 60, 70, 18)); ctx.fillStyle = g; ctx.fillRect(0, cy, W, ch);
     for (let i = 0; i < 5; i++) { ctx.fillStyle = hsla(k.hue + i * 20, 80, 70, 0.12); ctx.beginPath(); ctx.arc(W * hh(i, 3), cy + ch * hh(i, 7), ch * 0.25, 0, TAU); ctx.fill(); }
-    ctx.globalAlpha = 1 - e; text(ctx, '封面标题', W / 2, cy + ch * 0.45, { size: Math.min(k.s, W / 6) * (1 - 0.3 * e), col: '#fff', align: 'center', bold: true }); text(ctx, '向下滚动 ↓', W / 2, cy + ch * 0.45 + k.s, { size: 13, col: '#e2e8f0', align: 'center' }); ctx.globalAlpha = 1;
+    ctx.globalAlpha = Math.max(0.25, 1 - e); text(ctx, '封面标题', W / 2, cy + ch * 0.45, { size: Math.min(k.s, W / 6) * (1 - 0.3 * e), col: '#fff', align: 'center', bold: true }); text(ctx, '向下滚动 ↓', W / 2, cy + ch * 0.45 + k.s, { size: 13, col: '#e2e8f0', align: 'center' }); ctx.globalAlpha = 1;
     if (P.y > 8 && P.y < cy + ch) cell = `封面（已滑出 ${Math.round(e * 100)}%）`;
     const y0 = 8 + ch - sy; ctx.fillStyle = '#0b1222'; ctx.fillRect(0, y0, W, pageH); const cw = Math.min(W * 0.84, 640), x0 = (W - cw) / 2;
     for (let i = 0; i < n; i++) { const y = y0 + 20 + i * sec; if (!vis(y, y + sec, 0, H)) continue; ctx.fillStyle = hsla(k.hue + i * 30, 30, 16); rrect(ctx, x0, y, cw, sec - 20, 12); ctx.fill(); text(ctx, `内容 ${i + 1}`, x0 + 16, y + 22, { size: 16, col: hsla(k.hue + i * 30, 70, 72), bold: true }); bars(ctx, x0 + 16, y + 44, cw - 32, 2, 22, 'rgba(148,163,184,.3)', i); if (P.y > y && P.y < y + sec - 20) cell = `内容第 ${i + 1} 段`; }
-    return { mode: `封面高度 ${fmt(k.x, 2)} 屏 · 已滑出 ${Math.round(e * 100)}%`, cell, pageH };
+    return { mode: `封面高度 ${fmt(k.x, 2)} 屏 · 标题 ${Math.round(k.s)}px · 已滑出 ${Math.round(e * 100)}%`, cell, pageH };
   } });
 
 FAM.timeline = scFam({ title: '时间轴', count: NC('事件数', 3, 14, 7), extra: T('alt', '左右交错', true), size: SZ('节点大小', 4, 20, 9), color: '#38bdf8',
