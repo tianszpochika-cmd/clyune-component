@@ -178,7 +178,7 @@ FAM.sankey = {
       for (let j = 0; j < n; j++) { const mid = N(1, j); if (!mid.in) continue; const ts = []; for (let k = 0; k < n; k++) if (r() < dens || k === (j + 1) % n) ts.push([k, 0.2 + r()]); const sw = ts.reduce((a, b) => a + b[1], 0); ts.forEach(([k, w]) => { const v = (mid.in * w) / sw; links.push({ a: mid, b: N(2, k), v, c: links.filter((l) => l.b === mid).sort((p, q) => q.v - p.v)[0]?.c ?? j }); mid.out += v; N(2, k).in += v; }); }
       parts = [];
     };
-    return ({ ctx, W, H, dt, t, C, P }) => {
+    return ({ ctx, W, H, dt, dtw, t, C, P }) => {
       S.clear();
       const n = clamp(Math.round(num(C.count, 4)), 2, 6), dens = num(C.dens, 0.75), curv = num(C.curv, 0.5), gapK = num(C.gap, 0.07), mono = on(C.mono);
       const k2 = `${n}|${dens}`; if (k2 !== key) { key = k2; make(n, dens); }
@@ -196,7 +196,7 @@ FAM.sankey = {
       const lit = (l) => (hl ? l === hl : hn ? l.a === hn || l.b === hn : true);
       for (const l of links) {
         ctx.beginPath(); const steps = 24; for (let s = 0; s <= steps; s++) { const [x, y] = bez(l, s / steps); s ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
-        ctx.strokeStyle = pal(C, l.c, n, mono, lit(l) ? (hl || hn ? 0.75 : 0.5) : 0.12); ctx.lineWidth = Math.max(1, l.w); ctx.lineCap = 'butt'; ctx.stroke();
+        { const ta = lit(l) ? (hl || hn ? 0.75 : 0.5) : 0.12; l.al = l.al == null ? ta : l.al + (ta - l.al) * Math.min(1, (dtw || 0.016) * 9); } ctx.strokeStyle = pal(C, l.c, n, mono, l.al); ctx.lineWidth = Math.max(1, l.w); ctx.lineCap = 'butt'; ctx.stroke();
       }
       // particles ∝ flow
       if (dt > 0) for (const l of links) if (Math.random() < (l.v / tot) * 14 * dt * 8) parts.push({ l, s: 0, o: (Math.random() - 0.5) * 0.8 });
@@ -541,6 +541,7 @@ FAM.wordcloud = {
       const zs = placed.length ? clamp(Math.min((W - 16) / (bx1 - bx0), (H - 16) / (by1 - by0)), 0.5, 2.4) : 1, ox = W / 2 - ((bx0 + bx1) / 2) * zs, oy = H / 2 - ((by0 + by1) / 2) * zs;
       const qx = (P.x - ox) / zs, qy = (P.y - oy) / zs;
       let hv = null; for (const o of placed) if (qx >= o.x && qx <= o.x + o.w && qy >= o.y && qy <= o.y + o.h) hv = o;
+      { const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.max(W, H) * 0.6); g.addColorStop(0, hsla(hueOf(C.color), 70, 50, 0.16)); g.addColorStop(1, hsla(hueOf(C.color), 70, 50, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
       ctx.save(); ctx.translate(ox, oy); ctx.scale(zs, zs);
       for (const o of placed) {
         const bob = Math.sin(t * 1.4 + o.ph) * 1.5, cx = o.x + o.w / 2, cy = o.y + o.h / 2 + bob, s = o === hv ? 1.12 : 1;
@@ -690,14 +691,14 @@ FAM.candle = {
 
 /* ───────────────────────── icicle ───────────────────────── */
 FAM.icicle = {
-  spec: { color: { label: '起始色相', value: '#818cf8' }, speed: SPD('数据波动速度'), size: { label: '块间隙', min: 0, max: 6, step: 0.5, value: 1.5 }, count: { label: '层级深度', min: 1, max: 4, step: 1, value: 3, buttons: true }, extras: [R('br', '分支数', 2, 5, 1, 3), R('orient', '方向（0 竖 / 1 横）', 0, 1, 1, 0), T('mono', '单色', false)], remountKeys: [] },
-  presets: { 默认: {}, 两层: { count: 2 }, 四层: { count: 4, br: 2 }, 横向: { orient: 1 }, 多分支: { br: 5 }, 单色: { mono: true } },
+  spec: { color: { label: '起始色相', value: '#818cf8' }, speed: SPD('数据波动速度'), size: { label: '块间隙', min: 0, max: 6, step: 0.5, value: 1.5 }, count: { label: '层级深度', min: 1, max: 4, step: 1, value: 3, buttons: true }, extras: [R('br', '分支数', 2, 5, 1, 3), T('hor', '横向排列', false), T('mono', '单色', false)], remountKeys: [] },
+  presets: { 默认: {}, 两层: { count: 2 }, 四层: { count: 4, br: 2 }, 横向: { hor: true }, 多分支: { br: 5 }, 单色: { mono: true } },
   doc: {
     title: '冰柱图 · 矩形版的层级分区',
     rows: (v) => [['层级 / 叶子', `${v.depth} / ${v.leaves}`], ['悬停路径', v.path, 'path'], ['数值', fmt(v.val, 1), 'val'], ['占父级 / 占当前视图', `${pct(v.sp)} / ${pct(v.sa)}`], ['当前视图', v.focus], ['方向 / 单色', `${v.ori} / ${v.mono}`]],
     formula: () => F('第 d 层的块排在第 d 行（或列）') + F('子块宽度 = 子值 / 父值 × 父块宽度，并且位于父块正下方') + F('点击下钻：把选中块的区间 [x₀, x₁] 线性放大到整个宽度'),
     explain: '<p><b>冰柱图</b>（Icicle / Partition）是旭日图的"拉直版"：最上面一行是整体，往下每一行是下一层的细分，每个子块都正好在父块的正下方，宽度按数值分配。</p><p>和旭日图相比，矩形更容易比较长度、也更方便放文字。<b>点击</b>任意块会把它放大成整个宽度（下钻），点击最上面一行返回。</p><p>数据在轻微波动，可以看到子块宽度变化时父块也跟着变。</p>',
-    params: [['起始色相', '一级分类的颜色起点'], ['数据波动速度', '叶子数值的波动；0 = 静止'], ['块间隙', '块与块之间的像素留白'], ['层级深度', '树的层数'], ['分支数', '每个节点大约几个孩子'], ['方向（0 竖 / 1 横）', '0 从上往下，1 从左往右'], ['单色', '只用一个色相']],
+    params: [['起始色相', '一级分类的颜色起点'], ['数据波动速度', '叶子数值的波动；0 = 静止'], ['块间隙', '块与块之间的像素留白'], ['层级深度', '树的层数'], ['分支数', '每个节点大约几个孩子'], ['横向排列', '关 = 从上往下分层，开 = 从左往右分层'], ['单色', '只用一个色相']],
     example: (v) => `<ol><li>"${v.path}" 值 ${fmt(v.val, 1)}，父节点 ${fmt(v.pv, 1)}</li><li>宽度占父块 ${pct(v.sp)}</li><li>占当前视图 ${pct(v.sa)}，所以它的块是整个宽度的 ${pct(v.sa)}</li></ol>`,
     tip: '点击任意块下钻，点顶行返回。',
   },
@@ -706,7 +707,7 @@ FAM.icicle = {
     S.onDown(() => { if (!hov) return; if (hov === focus) focus = focus.parent || root; else if (hov.ch.length || hov.d < focus.d) focus = hov; });
     return ({ ctx, W, H, dtw, t, C, P }) => {
       S.clear();
-      const depth = clamp(Math.round(num(C.count, 3)), 1, 4), br = clamp(Math.round(num(C.br, 3)), 2, 5), gp = num(C.size, 1.5), hor = Math.round(num(C.orient, 0)) === 1, mono = on(C.mono);
+      const depth = clamp(Math.round(num(C.count, 3)), 1, 4), br = clamp(Math.round(num(C.br, 3)), 2, 5), gp = num(C.size, 1.5), hor = on(C.hor), mono = on(C.mono);
       if (`${depth}|${br}` !== key) { key = `${depth}|${br}`; root = makeTree(depth, br, 131 + br); const link = (n) => n.ch.forEach((c) => { c.parent = n; link(c); }); link(root); focus = root; z0 = tz0 = 0; z1 = tz1 = 1; }
       sumTree(root, t, 0.25);
       const lay = (n, a, b, ti) => { n.x0 = a; n.x1 = b; n.ti = ti; let s = a; n.ch.forEach((c, i) => { const e = s + ((b - a) * c.v) / n.v; lay(c, s, e, n.d === 0 ? i : ti); s = e; }); }; lay(root, 0, 1, 0);
