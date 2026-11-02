@@ -344,13 +344,14 @@ FAM.toast = mFam({ title: 'Toast 提示', count: NC('提示条数', 1, 5, 3), ex
   draw(ctx, W, H, t, C, P, k) {
     const ts = k.u * k.per, n = k.n, tw = Math.max(160, (W * k.s) / 100 - 20), th = 44, x0 = (W - tw) / 2, alive = []; let cell = null;
     for (let i = 0; i < n; i++) { const a = 0.3 + i * 0.35, inn = smooth(win(ts, a, a + 0.25)), out = smooth(win(ts, a + k.x, a + k.x + 0.3)), v = inn * (1 - out); alive.push({ i, v, a, inn, out }); }
+    ctx.strokeStyle = 'rgba(148,163,184,.18)'; ctx.setLineDash([5, 5]); rrect(ctx, x0, H - 24 - th, tw, th, 10); ctx.stroke(); ctx.setLineDash([]);
     text(ctx, '页面内容', W / 2, 8 + (H - 8) * 0.2, { size: 16, col: '#334155', align: 'center', bold: true });
     let stack = 0;
     for (let q = n - 1; q >= 0; q--) { const o = alive[q]; if (o.v <= 0) { continue; } const y = H - 24 - th - stack * (th + 8) + (1 - o.inn) * 30; stack += o.v; const [ty, msg, hu] = TMSG[o.i];
       ctx.globalAlpha = o.v; ctx.fillStyle = 'rgba(15,23,42,.96)'; rrect(ctx, x0, y, tw, th, 10); ctx.fill(); ctx.fillStyle = hsla(k.hue + hu, 75, 55); rrect(ctx, x0, y, 5, th, 2); ctx.fill();
       text(ctx, ty, x0 + 18, y + th / 2, { size: 12, col: hsla(k.hue + hu, 80, 70), bold: true }); text(ctx, msg, x0 + 56, y + th / 2, { size: 13, col: '#f1f5f9' }); ctx.fillStyle = hsla(k.hue + hu, 70, 60, 0.6); ctx.fillRect(x0 + 8, y + th - 3, (tw - 16) * clamp(1 - (ts - o.a) / k.x, 0, 1), 2); ctx.globalAlpha = 1;
       if (P.x > x0 && P.x < x0 + tw && P.y > y && P.y < y + th) cell = `「${msg}」剩余 ${fmt(Math.max(0, o.a + k.x - ts), 1)} 秒`; }
-    return { mode: `显示中 ${alive.filter((o) => o.v > 0.5).length} 条 · 停留 ${fmt(k.x, 2)} 秒`, cell };
+    return { mode: `显示中 ${alive.filter((o) => o.v > 0.5).length} 条 · 停留 ${fmt(k.x, 2)} 秒 · 宽 ${Math.round(tw)}px`, cell };
   } });
 
 const ICN = ['铃铛', '邮件', '聊天'];
