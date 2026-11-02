@@ -118,10 +118,10 @@ function tFam(d) {
         k.font = (fs = k.s, w) => { ctx.font = FONT(fs, w); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
         k.str = (n = k.n) => [...TXT].slice(0, n).join('');
         k.nearest = (g) => { let b = -1, bd = 1e9; g.forEach((q, i) => { const dd = (q.x - P.x) ** 2 + (q.y - P.y) ** 2; if (dd < bd) { bd = dd; b = i; } }); return b < 0 ? null : { i: b, ch: g[b].ch, d: Math.sqrt(bd) }; };
-        ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip();
+        ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip(); ctx.translate(0, Math.sin(tt * 1.7) * 2.5);
         const r = d.draw(ctx, W, H, tt, C, P, k, st) || {};
         ctx.restore();
-        const lp = fract(tt / 6); ctx.fillStyle = hsla(k.hue, 80, 60, 0.18); ctx.fillRect(0, H - 3, W, 3); ctx.fillStyle = hsla(k.hue, 85, 65, 0.7); ctx.fillRect(0, H - 3, W * lp, 3);
+        const lp = fract(tt / 6); ctx.fillStyle = hsla(k.hue, 80, 60, 0.18); ctx.fillRect(0, H - 4, W, 4); ctx.fillStyle = hsla(k.hue, 85, 65, 0.7); ctx.fillRect(0, H - 4, W * lp, 4);
         chip(ctx, W, H, C);
         let cell = r.cell;
         if (!cell && r.g) { const nb = k.nearest(r.g); cell = nb ? (nb.d < k.s ? `指针在第 ${nb.i + 1} 个字「${nb.ch}」上` : `最近的字是第 ${nb.i + 1} 个「${nb.ch}」，距 ${Math.round(nb.d)}px`) : '画面中暂时没有文字'; }
@@ -358,7 +358,7 @@ FAM.pageflip = tFam({ title: '切页翻转', count: NC('格数', 3, 16, 10), ext
       half(x, b, true, 1); half(x, a, false, 1);
       if (p < 0.5) half(x, a, true, Math.max(0.02, Math.cos(p * Math.PI))); else half(x, b, false, Math.max(0.02, -Math.cos(p * Math.PI)));
       ctx.fillStyle = '#060a14'; ctx.fillRect(x - cw * 0.46, cy - 0.75, cw * 0.92, 1.5); }
-    return { mode: `显示「${WORDS[((wi % WORDS.length) + WORDS.length) % WORDS.length]}」`, cell: pcI >= 0 ? `指针在第 ${pcI + 1} 格「${B(pcI) === ' ' ? '空' : B(pcI)}」` : '指针不在翻页牌上' };
+    return { mode: `显示「${WORDS[((wi % WORDS.length) + WORDS.length) % WORDS.length]}」· 每格翻 ${k.x.toFixed(2)} 秒`, cell: pcI >= 0 ? `指针在第 ${pcI + 1} 格「${B(pcI) === ' ' ? '空' : B(pcI)}」` : '指针不在翻页牌上' };
   } });
 
 FAM.liquid = tFam({ title: '液态变形', count: NC('切片行数', 10, 160, 70, 2), extra: R('warp', '扭曲强度', 0, 40, 0.5, 12), size: { label: '字号', min: 20, max: 96, step: 1, value: 64 }, color: '#06b6d4', countDoc: '把文字横切成多少条细片，越多越平滑', presets: { 粗切: { count: 12 }, 细切: { count: 160 }, 平静: { warp: 1 }, 剧烈: { warp: 39 }, 大字: { size: 94 } },
