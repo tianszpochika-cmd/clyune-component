@@ -1262,3 +1262,48 @@ body.sidebar-open {
   .demo-actions .btn { min-width: 0; flex: 0 1 auto; }
   .demo-actions .btn.primary { flex: 1 1 auto; }
 }
+
+/* ---- v8: phones — params panel never floats over the stage ----
+   The ops sheet sits in normal flow: below the stage in portrait (stage shrinks to the
+   remaining height), beside it in landscape. Nothing overlays the canvas. */
+@media (max-width: 860px) {
+  .fx-root.fx-layout { flex-direction: column; }
+  .fx-main { flex: 1 1 auto; min-height: 0; }
+  .fx-ops,
+  .fx-root:not(.ops-collapsed) .fx-ops {
+    position: relative; inset: auto;
+    flex: 0 0 auto; width: 100% !important; max-width: none;
+    max-height: min(46%, 380px);
+    border-radius: 14px 14px 0 0; box-shadow: none;
+    padding-bottom: 0;
+  }
+  .fx-root.ops-collapsed .fx-ops { display: none; }
+  .fx-ops-head { cursor: default; padding: 8px 14px 6px; }
+  .fx-ops-head::before { display: none; }
+  .fx-ops-body.param-row { overflow-y: auto; min-height: 0; flex: 1 1 auto; }
+}
+@media (max-width: 860px) and (orientation: landscape) {
+  .fx-root.fx-layout { flex-direction: row; }
+  .fx-ops,
+  .fx-root:not(.ops-collapsed) .fx-ops {
+    width: min(260px, 42vw) !important; max-height: none; border-radius: 0;
+  }
+}
+@media (max-width: 860px) {
+  /* one-row toolbar: presets scroll sideways, 重置/参数 stay on the right */
+  .content.content--demo .fx-toolbar.demo-controls { flex-wrap: nowrap; padding: 6px; gap: 6px; }
+  .content.content--demo .fx-toolbar .btn-group.preset-group {
+    flex: 1 1 0; min-width: 0; max-height: none;
+    flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none; touch-action: pan-x;
+  }
+  .content.content--demo .fx-toolbar .btn-group.preset-group::-webkit-scrollbar { display: none; }
+  .content.content--demo .fx-toolbar .preset-btn { flex: 0 0 auto; white-space: nowrap; }
+  .content.content--demo .fx-toolbar .action-group { flex: 0 0 auto; flex-wrap: nowrap; }
+  .content.content--demo .fx-toolbar .action-group:empty { display: none; }
+  .content.content--demo .fx-toolbar .btn,
+  .content.content--demo .fx-toolbar .fx-ops-toggle { min-height: 34px; padding: 6px 10px; flex: 0 0 auto; }
+  /* params open: share the height — params ≤ 40%, readout sheet ≤ 32% */
+  .fx-ops, .fx-root:not(.ops-collapsed) .fx-ops { max-height: min(40%, 320px); }
+  .fx-root:not(.ops-collapsed) .mip-narrow .mip { max-height: 32%; }
+}
