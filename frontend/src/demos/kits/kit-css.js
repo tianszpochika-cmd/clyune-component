@@ -193,11 +193,17 @@ FAM['grad'] = {
       const n = clamp(Math.round(num(C.count, 4)), 2, 6), sz = num(C.size, 1), spd = num(C.speed, 0.9), ang = num(C.angle, 120) * Math.PI / 180;
       const pad = 8; const x0 = pad, y0 = pad + 4, w = W - pad * 2, h = H - pad * 2 - 12;
       const shift = (t * spd * 0.25) % 1;
+      // backdrop keeps luminance stable across knob sweeps (avoids interact flicker spikes)
+      ctx.fillStyle = hsla(hueOf(C.color), 45, 28, 1); rrect(ctx, x0, y0, w, h, 18 * sz); ctx.fill();
       const g = ctx.createLinearGradient(x0, y0, x0 + Math.cos(ang) * w, y0 + Math.sin(ang) * h);
-      for (let i = 0; i <= n; i++) {
-        const u = (i / n + shift) % 1;
-        g.addColorStop(u, pastel(C, i, n));
-      }
+      const stops = [];
+      for (let i = 0; i <= n; i++) stops.push([(i / n + shift) % 1, pastel(C, i, n, 0.92)]);
+      stops.sort((a, b) => a[0] - b[0]);
+      if (stops[0][0] > 0.001) stops.unshift([0, stops[0][1]]);
+      if (stops[stops.length - 1][0] < 0.999) stops.push([1, stops[stops.length - 1][1]]);
+      // dedupe identical offsets
+      let last = -1;
+      for (const [u, c] of stops) { const uu = Math.min(1, Math.max(0, u)); if (uu - last < 1e-4) continue; g.addColorStop(uu, c); last = uu; }
       ctx.fillStyle = g; rrect(ctx, x0, y0, w, h, 18 * sz); ctx.fill();
       text(ctx, 'gradient flow', x0 + 12, y0 + 16, { size: fsz(W, H, 0.9), col: 'rgba(15,23,42,.7)', bold: true });
       const over = P.x >= x0 && P.x <= x0 + w && P.y >= y0 && P.y <= y0 + h;
@@ -294,14 +300,17 @@ FAM['stagger'] = {
 
       const n = clamp(Math.round(num(C.count, 6)), 3, 12), gap = num(C.size, 14), delay = num(C.delay, 0.1), spd = num(C.speed, 0.9), scaleIn = on(C.scaleIn);
       const ml = 24, mr = 24, mt = 28, iw = W - ml - mr, ih = H - mt - 24;
+      // stable mid-tone stage so count/gap sweeps don't flash dark↔bright
+      ctx.fillStyle = '#121a2e'; rrect(ctx, 10, 10, W - 20, H - 20, 14); ctx.fill();
       const rowH = (ih - gap * (n - 1)) / n; let hit = null;
       const cycle = (t * spd * 0.35) % (1.5 + n * delay);
       for (let i = 0; i < n; i++) {
         const local = clamp((cycle - i * delay) / 0.55, 0, 1);
         const e = easeFn('ease-out', local); const y = mt + i * (rowH + gap);
-        const sc = scaleIn ? 0.85 + 0.15 * e : 1;
-        ctx.globalAlpha = e; ctx.fillStyle = pastel(C, i, n);
-        const w = iw * (0.55 + 0.45 * e);
+        const sc = scaleIn ? 0.9 + 0.1 * e : 1;
+        // floor alpha so rows never fully vanish (luminance spike on remount-like sweeps)
+        ctx.globalAlpha = 0.35 + 0.65 * e; ctx.fillStyle = pastel(C, i, n, 0.85);
+        const w = iw * (0.7 + 0.3 * e);
         rrect(ctx, ml, y + rowH * (1 - sc) / 2, w, rowH * sc, 10); ctx.fill();
         ctx.globalAlpha = 1;
         text(ctx, `Item ${i + 1}`, ml + 12, y + rowH / 2, { size: fsz(W, H, 0.9), col: '#0f172a', bold: true });
