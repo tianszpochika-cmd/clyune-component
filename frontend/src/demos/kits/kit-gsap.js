@@ -174,7 +174,7 @@ function gFam(d) {
       return ({ ctx, W, H, t, C, P }) => {
         S.clear();
         ctx.fillStyle = '#060a14'; ctx.fillRect(0, 8, W, H);
-        const col = C.color || '#818cf8', tt = t * num(C.speed, 0.9);
+        const col = C.color || '#818cf8', spd = num(C.speed, 0.9), dt = st.lt == null ? 0 : t - st.lt; st.lt = t; st.tt = st.tt == null ? t * spd : st.tt + (dt > 0 && dt < 0.25 ? dt * spd : 0); const tt = st.tt;
         const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), x: exVal(C), col, hue: hueOf(col), cx: W / 2, cy: (H + 8) / 2, raw: t };
         ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip(); ctx.translate(0, Math.sin(tt * 1.7) * 2.5);
         const r = d.draw(ctx, W, H, tt, C, P, k, st) || {};
@@ -312,7 +312,7 @@ FAM['spin-out'] = gFam({ title: '旋转出场', count: NC('方块数', 1, 6, 3),
   draw(ctx, W, H, t, C, P, k) {
     const L = 2.4, lt = t % L; let cell = null;
     grid(k.n, W - 20, H - 16).forEach((c, i) => { const s = c.r * 1.6 * (k.s / 60), x = c.x + 10, y = c.y + 2, d = i * 0.1, eo = pIn(3)(seg(lt, d, 0.8)), inn = lt >= 1.1 + d, ei = backOut(2)(seg(lt, 1.1 + d, 0.6));
-      const sc = inn ? lerp(0.15, 1, ei) : 1 - eo, rot = inn ? 0 : eo * k.x * TAU, a = inn ? clamp(ei * 2, 0, 1) : 1 - eo;
+      const sc = inn ? lerp(0.15, 1, ei) : 1 - eo, rot = inn ? 0 : eo * k.x * TAU, a = inn ? smooth(seg(lt, 1.1 + d, 0.5)) : 1 - smooth(seg(lt, d, 0.8));
       ctx.strokeStyle = 'rgba(148,163,184,.3)'; ctx.setLineDash([4, 4]); rrect(ctx, x - s / 2, y - s / 2, s, s, s * 0.18); ctx.stroke(); ctx.setLineDash([]);
       ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(Math.max(0.001, sc), Math.max(0.001, sc)); ctx.globalAlpha = clamp(a, 0, 1); ctx.fillStyle = hsla(k.hue + i * 30, 80, 62); rrect(ctx, -s / 2, -s / 2, s, s, s * 0.18); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(-s * 0.08, -s / 2 + 4, s * 0.16, s * 0.25); ctx.restore();
       if (inCell(P, c)) cell = `方块 ${i + 1}：旋转 ${Math.round((rot * 180) / Math.PI)}°，缩放 ${fmt(sc, 2)}`; });
@@ -334,16 +334,16 @@ FAM.elastic = gFam({ title: '弹性缩放', count: NC('元素数', 1, 6, 3), ext
     return { mode: `ease: "elastic.out(${fmt(k.x, 2)}, 0.3)" · 元素 ${Math.round(k.s)}%`, cell };
   } });
 
-FAM.colorflash = gFam({ title: '颜色闪烁', count: NC('关键色数', 2, 6, 3), extra: R('hold', '每色持续', 0.1, 1, 0.01, 0.35), size: SZ('色块大小', 20, 100, 60), color: '#ef4444',
+FAM.colorflash = gFam({ title: '颜色闪烁', count: NC('关键色数', 2, 6, 3), extra: R('hold', '每色持续', 0.2, 1.5, 0.01, 0.7), size: SZ('色块大小', 20, 100, 60), color: '#ef4444',
   countDoc: '颜色动画里依次切换的关键颜色数量（由主色在色环上均匀取色）', extraDoc: '每个关键色停留多久（秒），越短闪得越快', sizeDoc: '中间色块的大小',
-  presets: { 双色: { count: 2 }, 六色: { count: 6 }, 快闪: { hold: 0.1 }, 慢变: { hold: 1 }, 大色块: { size: 100 } },
-  explain: '颜色闪烁：GSAP 可以直接对颜色做补间——它会把颜色拆成红、绿、蓝三个数字，分别从旧值平滑过渡到新值。这里把几个关键色排成一个循环的时间轴（下方色条），每个颜色先用 40% 的时间渐变过去，再停留一会儿。白色三角是当前播放位置。',
+  presets: { 双色: { count: 2 }, 六色: { count: 6 }, 快闪: { hold: 0.2 }, 慢变: { hold: 1.5 }, 大色块: { size: 100 } },
+  explain: '颜色闪烁：GSAP 可以直接对颜色做补间——它会把颜色拆成红、绿、蓝三个数字，分别从旧值平滑过渡到新值。这里把几个关键色排成一个循环的时间轴（下方色条），每个颜色先用 70% 的时间渐变过去，再停留一会儿。白色三角是当前播放位置。',
   formula: '颜色 = 旧色 + (新色 − 旧色) · sine.inOut(p)，对 R、G、B 分别计算', formula2: 'tl.to(el, { backgroundColor: "#22d3ee", duration: 0.35 }).to(el, { backgroundColor: "#f472b6" })…',
   draw(ctx, W, H, t, C, P, k) {
-    const n = k.n, hold = k.x, cols = Array.from({ length: n }, (_, j) => h2r(k.hue + (j * 360) / n, 0.8, 0.58)), L = n * hold, lt = t % L, j = Math.min(n - 1, Math.floor(lt / hold)), u = (lt - j * hold) / hold, e = 0.5 - 0.5 * Math.cos(Math.PI * clamp(u / 0.4, 0, 1));
+    const n = k.n, hold = k.x, cols = Array.from({ length: n }, (_, j) => h2r(k.hue + (j * 360) / n, 0.8, 0.58)), L = n * hold, lt = t % L, j = Math.min(n - 1, Math.floor(lt / hold)), u = (lt - j * hold) / hold, e = 0.5 - 0.5 * Math.cos(Math.PI * clamp(u / 0.7, 0, 1));
     const from = cols[(j - 1 + n) % n], to = cols[j], cur = from.map((v, q) => lerp(v, to[q], e)), cs = rgbS(cur); let cell = null;
     const stripY = H - 44, avail = stripY - 24, bs = clamp(Math.min(W - 80, avail) * (k.s / 100), 30, Math.min(W - 40, avail)), bx = W / 2 - bs / 2, by = 16 + (avail - bs) / 2;
-    ctx.save(); ctx.shadowColor = cs; ctx.shadowBlur = 30; ctx.fillStyle = cs; rrect(ctx, bx, by, bs, bs, bs * 0.16); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.shadowColor = cs; ctx.shadowBlur = 14; ctx.fillStyle = cs; rrect(ctx, bx, by, bs, bs, bs * 0.16); ctx.fill(); ctx.restore();
     text(ctx, hex2(cur), W / 2, by + bs / 2, { size: clamp(bs * 0.12, 10, 22), col: '#0b1020', align: 'center', bold: true });
     const sw = Math.min(W - 100, 420), sx = (W - sw) / 2 - 20;
     cols.forEach((c, q) => { ctx.fillStyle = rgbS(c); rrect(ctx, sx + (q * sw) / n + 1, stripY, sw / n - 2, 16, 4); ctx.fill(); if (P.x > sx + (q * sw) / n && P.x < sx + ((q + 1) * sw) / n && P.y > stripY - 4 && P.y < stripY + 20) cell = `关键色 ${q + 1}：${hex2(c)}`; });
@@ -418,14 +418,15 @@ FAM['parallax-g'] = gFam({ title: '视差层', count: NC('图层数', 2, 6, 4), 
 FAM['grid-stagger'] = gFam({ title: '网格交错', count: NC('每行格数', 3, 12, 7), extra: R('each', '交错间隔', 0, 0.2, 0.005, 0.06), size: SZ('格子大小', 20, 100, 70), color: '#f97316',
   countDoc: '网格每一行的格子数量（行数按画面比例自动算）', extraDoc: '每远离起点一格，动画推迟多少秒', sizeDoc: '方块占格子的百分比',
   presets: { 稀疏: { count: 3 }, 密集: { count: 12 }, 同时: { each: 0 }, 慢波: { each: 0.19 }, 大格子: { size: 100 } },
-  explain: '网格交错：stagger 的 grid 和 from 选项可以让延迟按「离起点的距离」来算，于是动画像水波一样从起点一圈圈扩散出去。默认从中心开始；把指针放进网格，起点就变成指针所在的格子。每个格子先缩小、变亮，再恢复原样。',
+  explain: '网格交错：stagger 的 grid 和 from 选项可以让延迟按「离起点的距离」来算，于是动画像水波一样从起点一圈圈扩散出去。默认从中心开始；把指针放进网格，起点就变成指针所在的格子。每个格子先缩小、稍微变亮，再恢复原样；起点会平滑地移到指针处。',
   formula: '延迟 = 到起点的距离（格） · each', formula2: 'gsap.to(".cell", { scale: 0.4, yoyo: true, repeat: 1, stagger: { grid: "auto", from: "center", each: 0.06 } })',
-  draw(ctx, W, H, t, C, P, k) {
+  draw(ctx, W, H, t, C, P, k, st) {
     const cols = k.n, pad = 16, gw = W - pad * 2 - 30, gh = H - 8 - pad * 2, pitch = gw / cols, rows = clamp(Math.floor(gh / pitch), 2, 12), py = gh / rows, x0 = pad, y0 = 8 + pad;
-    const inside = P.user && P.x > x0 && P.x < x0 + gw && P.y > y0 && P.y < y0 + gh, oc = inside ? Math.floor((P.x - x0) / pitch) : (cols - 1) / 2, or = inside ? Math.floor((P.y - y0) / py) : (rows - 1) / 2;
+    const inside = P.user && P.x > x0 && P.x < x0 + gw && P.y > y0 && P.y < y0 + gh, toc = inside ? Math.floor((P.x - x0) / pitch) : (cols - 1) / 2, tor = inside ? Math.floor((P.y - y0) / py) : (rows - 1) / 2;
+    st.oc = st.oc == null ? toc : lerp(st.oc, toc, 0.05); st.or = st.or == null ? tor : lerp(st.or, tor, 0.05); const oc = clamp(st.oc, 0, cols - 1), or = clamp(st.or, 0, rows - 1);
     const maxD = Math.hypot(Math.max(oc, cols - 1 - oc), Math.max(or, rows - 1 - or)), L = 1.3 + k.x * maxD + 0.4, lt = t % L; let cell = null;
     for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const d = Math.hypot(c - oc, r - or), dl = d * k.x, e = pIO(2)(seg(lt, dl, 0.5)) - pIO(2)(seg(lt, dl + 0.6, 0.5)), s = Math.min(pitch, py) * (k.s / 100) * (1 - 0.6 * e), x = x0 + (c + 0.5) * pitch, y = y0 + (r + 0.5) * py;
-      ctx.fillStyle = hsla(k.hue + d * 12, 80, 50 + 25 * e); rrect(ctx, x - s / 2, y - s / 2, s, s, s * 0.2); ctx.fill();
+      ctx.fillStyle = hsla(k.hue + d * 12, 80, 52 + 10 * e); rrect(ctx, x - s / 2, y - s / 2, s, s, s * 0.2); ctx.fill();
       if (Math.abs(P.x - x) < pitch / 2 && Math.abs(P.y - y) < py / 2) cell = `格子 (${r + 1}, ${c + 1})：距起点 ${fmt(d, 1)} 格，延迟 ${fmt(dl, 2)}s`; }
     return { mode: `stagger: { each: ${fmt(k.x, 3)}, from: ${inside ? '指针处' : '"center"'} } · ${cols}×${rows} · 格子 ${Math.round(k.s)}%`, n: `${cols}（共 ${rows} 行）`, cell };
   } });
