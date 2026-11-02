@@ -303,7 +303,7 @@ FAM['stagger'] = {
       // stable mid-tone stage so count/gap sweeps don't flash dark↔bright
       ctx.fillStyle = '#121a2e'; rrect(ctx, 10, 10, W - 20, H - 20, 14); ctx.fill();
       const rowH = (ih - gap * (n - 1)) / n; let hit = null;
-      const cycle = (t * spd * 0.35) % (1.5 + n * delay);
+      const cycle = (t * spd * 0.35) % (1.5 + 12 * delay); // period independent of count → no jump on count sweep
       for (let i = 0; i < n; i++) {
         const local = clamp((cycle - i * delay) / 0.55, 0, 1);
         const e = easeFn('ease-out', local); const y = mt + i * (rowH + gap);
