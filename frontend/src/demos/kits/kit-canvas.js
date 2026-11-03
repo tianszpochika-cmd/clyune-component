@@ -179,7 +179,7 @@ FAM.fireworks = {
 
 /* ───────────────────────── draw ───────────────────────── */
 FAM.draw = {
-  spec: { color: { label: '笔刷颜色', value: '#22d3ee' }, speed: false, size: { label: '笔刷粗细', min: 1, max: 30, step: 1, value: 6 }, count: false, extras: [R('smooth', '平滑度 s', 0, 0.9, 0.05, 0.5), R('fade', '褪色速度', 0, 1, 0.05, 0.15), T('press', '速度感应线宽', true), T('ghost', '自动示范笔', true)], remountKeys: [] },
+  spec: { color: { label: '笔刷颜色', value: '#22d3ee' }, speed: false, size: { label: '笔刷粗细', min: 1, max: 30, step: 1, value: 6 }, count: false, extras: [R('smooth', '平滑度 s', 0, 0.9, 0.05, 0.5), R('fade', '褪色速度', 0, 1, 0.05, 0.15), T('press', '速度感应线宽', true), T('ghost', '自动示范笔', false)], remountKeys: [] },
   presets: { 钢笔: {}, 粗马克: { size: 22 }, 细线: { size: 2, press: false }, 不褪色: { fade: 0 }, 高平滑: { smooth: 0.85 } },
   doc: {
     title: '画板 · 指数平滑笔刷',
@@ -204,7 +204,7 @@ FAM.draw = {
     return ({ ctx, W, H, dt, dtw, C, P }) => {
       ensure(W, H);
       const s = num(C.smooth, 0.5), base = num(C.size, 6), col = C.color || '#22d3ee';
-      const ghost = on(C.ghost ?? true) && !P.user;
+      const ghost = on(C.ghost ?? true) && S.isAutoDemo() && !P.user;
       if (ghost && !ghostDown) { ghostDown = true; sp = { x: P.x, y: P.y }; strokes++; }
       if (!ghost && ghostDown && !P.down) { ghostDown = false; sp = null; }
       if (dtw > 0 && num(C.fade, 0.15) > 0) {

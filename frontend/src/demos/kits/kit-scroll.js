@@ -143,7 +143,9 @@ function scFam(d) {
         S.clear();
         ctx.fillStyle = '#060a14'; ctx.fillRect(0, 8, W, H);
         // accumulate scaled time so changing the speed knob never teleports the scroll position
-        const dtt = st.lt == null ? 0 : Math.min(0.1, Math.max(0, t - st.lt)); st.lt = t; st.tt = (st.tt || 0) + dtt * num(C.speed, 0.9);
+        const dtt = st.lt == null ? 0 : Math.min(0.1, Math.max(0, t - st.lt)); st.lt = t;
+        if (S.isAutoDemo()) st.tt = (st.tt || 0) + dtt * num(C.speed, 0.9);
+        else if (P.user || P.down) st.tt = (Math.acos(1 - 2 * Math.min(1, Math.max(0, P.y / Math.max(1, H)))) / Math.PI) * 14; // map pointer Y → same phase as cos-scroll
         const col = C.color || '#818cf8', tt = st.tt, vh = H - 12;
         const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), x: exVal(C), col, hue: hueOf(col), cx: W / 2, cy: (H + 8) / 2, vh, sp: 0.5 - 0.5 * Math.cos((TAU * tt) / 14) };
         k.sy = (pageH) => k.sp * Math.max(0, pageH - vh);

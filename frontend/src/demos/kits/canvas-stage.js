@@ -8,6 +8,7 @@
  */
 import { createInfoPanel, alignDocParams, fmt } from './info-panel.js';
 import { readLiveControls } from './_shared.js';
+import { isAutoDemo } from '../../lib/autoDemo.js';
 
 export { fmt };
 export const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
@@ -116,7 +117,7 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
     canvas, ctx, view, info, get, P, bg,
     get W() { return W; }, get H() { return H; }, get dpr() { return dpr; },
     get t() { return sim; },
-    onFrame(fn) { frames.push(fn); },
+    isAutoDemo, onFrame(fn) { frames.push(fn); },
     onResize(fn) { resizeFns.push(fn); if (W) fn(W, H, true); },
     onDown(fn) { downFns.push(fn); }, onUp(fn) { upFns.push(fn); }, onMove(fn) { moveFns.push(fn); },
     clear(a = 1) { ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = a >= 1 ? bg : rgba(bg, a); ctx.fillRect(0, 0, W, H); },
@@ -132,8 +133,8 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
     const C = get();
     const spd = Number.isFinite(C.speed) ? C.speed : 1;
     sim += dtw * spd; wall += dtw;
-    // idle pointer: glide along a Lissajous path when the user has not touched for 6 s
-    if (auto && !P.down && (!P.user || wall - P.lastUser > 6)) {
+    // idle pointer: Lissajous path only when 「自动演示」 is on (and this stage opts in)
+    if (auto && isAutoDemo() && !P.down && (!P.user || wall - P.lastUser > 6)) {
       const [ax, ay] = (api.autoPath || idlePath)(sim, W, H);
       const k = P.user ? 1 - Math.exp(-dtw * 3) : 1;
       P.x += (ax - P.x) * k; P.y += (ay - P.y) * k;
