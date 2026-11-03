@@ -94,7 +94,20 @@ async function auditOne(browser, cat, slug, mobile) {
     const vCol = await cssVars(page);
     if (!col.ok) fails.push('color-missing');
     if (vCol.c && vCol.c.toLowerCase() !== '#ff2244') fails.push(`color-var:${vCol.c}`);
-    if (delta(s1, sCol) < Math.max(1.8, drift * 0.9) && Math.abs((sCol?.r || 0) - (s1?.r || 0)) < 1.5) fails.push('color-visual');
+    let colWeak = delta(s1, sCol) < Math.max(1.8, drift * 0.9) && Math.abs((sCol?.r || 0) - (s1?.r || 0)) < 1.5;
+    if (colWeak) {
+      // Busy canvases (bursts, force sims) drift a lot between samples; re-probe with a contrasting colour and
+      // a fresh drift baseline before calling the knob dead. Restores #ff2244 afterwards for later checks.
+      for (let k = 0; k < 2 && colWeak; k++) {
+        const a0 = await canvasSig(page); await page.waitForTimeout(280); const a1 = await canvasSig(page);
+        const d2 = delta(a0, a1);
+        await setParam(page, 'color', '#22ccff'); await page.waitForTimeout(350);
+        const sB = await canvasSig(page);
+        colWeak = delta(a1, sB) < Math.max(1.8, d2 * 0.9) && Math.abs((sB?.b || 0) - (a1?.b || 0)) < 1.5;
+        await setParam(page, 'color', '#ff2244'); await page.waitForTimeout(350);
+      }
+    }
+    if (colWeak) fails.push('color-visual');
 
     // Only test knobs this demo actually exposes (per-demo knob specs); values come from each input's own range.
     const rng = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('.fx-ops input[type=range][data-k]')].map((i) => [i.dataset.k, [+i.min, +i.max]])));
