@@ -1320,3 +1320,9 @@ body.sidebar-open {
   .mip-layout.mip-narrow .mip { max-height: 38%; }
   .fx-root:not(.ops-collapsed) .mip-layout.mip-narrow .mip { max-height: 28%; }
 }
+
+/* v8 mobile shell: topbar grows with its wrapped search row so it never overlays .content */
+@media (max-width: 860px) {
+  .topbar { flex: 0 0 auto; height: auto; }
+  .card p, .card h3, .tile p, .hero p { overflow-wrap: anywhere; word-break: break-word; }
+}
