@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode }
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
+import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
 
 type Health = { ok: boolean; db: string; service?: string; version?: string };
 
@@ -305,14 +306,14 @@ function Home({ health }: { health: Health | null }) {
           本仓库为 <strong>Rust (Axum) + React (Vite)</strong> 移植版；演示逻辑按需走 CDN / 本地 kit。
         </p>
         <div className="stats">
-          <div><b>{categories.length}</b><span>分类</span></div>
-          <div><b>{totalDemos}</b><span>Demos</span></div>
+          <div><b><CountUp n={categories.length} /></b><span>分类</span></div>
+          <div><b><CountUp n={totalDemos} /></b><span>Demos</span></div>
           <div><DbBadge health={health} /></div>
         </div>
       </section>
-      <div className="grid">
-        {categories.map((c) => (
-          <Link key={c.key} className="card tile" to={`/${c.key}`}>
+      <div className="grid stagger">
+        {categories.map((c, i) => (
+          <Link key={c.key} className="card tile ripple press" to={`/${c.key}`} style={{ ...catStyle(c.key), ['--i' as string]: Math.min(i, 14) }}>
             <div className="tile-head">
               <span className="tile-icon">{c.icon}</span>
               <h3>{c.name}</h3>
@@ -349,18 +350,39 @@ function CategoryPage() {
   const { category } = useParams();
   const c = categories.find((x) => x.key === category);
   const [q, setQ] = useState('');
+  const { ready, live } = useCatalog();
   if (!c) return <NotFound />;
-  const demos = q.trim()
-    ? c.demos.filter((d) => d.title.toLowerCase().includes(q.toLowerCase()) || d.tag.toLowerCase().includes(q.toLowerCase()) || d.slug.includes(q.toLowerCase()))
+  const ql = q.trim().toLowerCase();
+  const demos = ql
+    ? c.demos.filter((d) => d.title.toLowerCase().includes(ql) || d.tag.toLowerCase().includes(ql) || d.slug.includes(ql))
     : c.demos;
+  const tags = new Set(c.demos.map((d) => d.tag)).size;
+  const n = (live?.byCat[c.key] || c.demos.length);
   return (
-    <>
-      <section className="card hero">
-        <h1>{c.icon} {c.name}</h1>
-        <p>{c.intro}</p>
+    <div className="cat-page" style={catStyle(c.key)}>
+      <section className="card cat-hero">
+        <div className="cat-hero-glow" aria-hidden />
+        <nav className="cat-crumb" aria-label="面包屑">
+          <Link to="/" className="cat-back ripple press" aria-label="返回首页">←</Link>
+          <Link to="/" className="cat-crumb-home">Home</Link>
+          <span className="cat-crumb-sep">/</span>
+          <span className="cat-crumb-cur">{c.name}</span>
+        </nav>
+        <div className="cat-hero-main">
+          <span className="cat-icon" aria-hidden>{c.icon}</span>
+          <div className="cat-hero-text">
+            <span className="cat-kicker">分类 · Level 2</span>
+            <h1>{c.name}</h1>
+            <p>{c.intro}</p>
+          </div>
+        </div>
+        <div className="cat-stats">
+          <div><b>{ready ? <CountUp n={n} /> : <i className="skel skel-num" />}</b><span>Demos</span></div>
+          <div><b><CountUp n={tags} /></b><span>标签</span></div>
+          <div><b><CountUp n={c.tech.length} /></b><span>技术栈</span></div>
+        </div>
         <div className="chips">
           {c.tech.map((t) => <span key={t} className="chip">{t}</span>)}
-          <span className="chip accent">{c.demos.length} demos</span>
         </div>
         <div className="cat-search">
           <input
@@ -373,20 +395,35 @@ function CategoryPage() {
           <span className="muted">{demos.length} / {c.demos.length}</span>
         </div>
       </section>
-      {demos.length === 0 ? (
-        <section className="card placeholder"><h2>无结果</h2><p>换个关键词试试</p></section>
-      ) : (
-        <div className="grid">
-          {demos.map((d) => (
-            <Link key={d.slug} className="card tile" to={`/${c.key}/${d.slug}`}>
-              <h3>{d.title}</h3>
-              <p>{d.desc || d.hint}</p>
-              <span className="tag">{d.tag}</span>
-            </Link>
+      {!ready ? (
+        <div className="demo-list" aria-busy="true">
+          {Array.from({ length: Math.min(8, c.demos.length) }, (_, i) => (
+            <div key={i} className="card demo-row skel-row"><span className="skel skel-thumb" /><span className="skel-lines"><i className="skel" /><i className="skel" /></span></div>
           ))}
         </div>
+      ) : demos.length === 0 ? (
+        <section className="card placeholder fade-in"><h2>无结果</h2><p>换个关键词试试</p></section>
+      ) : (
+        <div className="demo-list stagger" key={ql}>
+          {demos.map((d, i) => {
+            const idx = c.demos.indexOf(d) + 1;
+            return (
+              <Link key={d.slug} className="card demo-row ripple press" to={`/${c.key}/${d.slug}`} style={{ ['--i' as string]: Math.min(i, 14) }}>
+                <span className="demo-thumb" style={thumbStyle(c.key, d.slug, i)} aria-hidden>
+                  <span className="demo-num">{String(idx).padStart(2, '0')}</span>
+                </span>
+                <span className="demo-body">
+                  <span className="demo-row-title">{d.title}</span>
+                  <span className="demo-row-desc">{d.desc || d.hint}</span>
+                  <span className="demo-row-tags"><span className="chip">{d.tag}</span>{d.hint && d.desc ? <span className="demo-row-hint">{d.hint}</span> : null}</span>
+                </span>
+                <span className="demo-go" aria-hidden>›</span>
+              </Link>
+            );
+          })}
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -460,6 +497,7 @@ function NotFound() {
 export default function App() {
   const { open, setOpen, close } = useSidebar();
   const health = useHealth();
+  useRipple();
   const [filter, setFilter] = useState('');
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
@@ -495,13 +533,15 @@ export default function App() {
           </div>
         </header>
         <div className={`content${demo ? ' content--demo' : ''}`} id="main-scroll">
-          <Routes>
-            <Route path="/" element={<Home health={health} />} />
-            <Route path="/:category" element={<CategoryPage />} />
-            <Route path="/threejs/trig-waves" element={<Navigate to="/math/trig-waves" replace />} />
-            <Route path="/:category/:slug" element={<DemoPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <RouteView render={(l) => (
+            <Routes location={l}>
+              <Route path="/" element={<Home health={health} />} />
+              <Route path="/:category" element={<CategoryPage />} />
+              <Route path="/threejs/trig-waves" element={<Navigate to="/math/trig-waves" replace />} />
+              <Route path="/:category/:slug" element={<DemoPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          )} />
         </div>
       </main>
     </div>
