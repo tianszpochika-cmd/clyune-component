@@ -18,6 +18,10 @@ struct RegCategory {
     name: String,
     icon: String,
     intro: String,
+    #[serde(default)]
+    name_en: String,
+    #[serde(default)]
+    intro_en: String,
     tech: Vec<String>,
     demos: Vec<RegDemo>,
 }
@@ -28,6 +32,12 @@ struct RegDemo {
     title: String,
     hint: String,
     desc: String,
+    #[serde(default)]
+    title_en: String,
+    #[serde(default)]
+    hint_en: String,
+    #[serde(default)]
+    desc_en: String,
     tag: String,
     #[serde(rename = "mod")]
     mount_mod: String,
@@ -52,10 +62,12 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
         let tech = Value::Array(c.tech.iter().cloned().map(Value::String).collect());
         let cat_id: (i64,) = sqlx::query_as(
             r#"
-            INSERT INTO categories (key, name, icon, intro, tech, sort_order, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, NOW())
+            INSERT INTO categories (key, name, icon, intro, tech, sort_order, name_en, intro_en, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
             ON CONFLICT (key) DO UPDATE SET
                 name = EXCLUDED.name,
+                name_en = EXCLUDED.name_en,
+                intro_en = EXCLUDED.intro_en,
                 icon = EXCLUDED.icon,
                 intro = EXCLUDED.intro,
                 tech = EXCLUDED.tech,
@@ -70,6 +82,8 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
         .bind(&c.intro)
         .bind(&tech)
         .bind(i as i32)
+        .bind(&c.name_en)
+        .bind(&c.intro_en)
         .fetch_one(pool)
         .await?;
 
@@ -78,10 +92,14 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
                 r#"
                 INSERT INTO demos (
                     category_id, slug, title, hint, description, tag,
-                    tech, mount_mod, mount_fn, published, sort_order, updated_at
-                ) VALUES ($1,$2,$3,$4,$5,$6,'[]'::jsonb,$7,$8,TRUE,$9,NOW())
+                    tech, mount_mod, mount_fn, published, sort_order,
+                    title_en, hint_en, description_en, updated_at
+                ) VALUES ($1,$2,$3,$4,$5,$6,'[]'::jsonb,$7,$8,TRUE,$9,$10,$11,$12,NOW())
                 ON CONFLICT (category_id, slug) DO UPDATE SET
                     title = EXCLUDED.title,
+                    title_en = EXCLUDED.title_en,
+                    hint_en = EXCLUDED.hint_en,
+                    description_en = EXCLUDED.description_en,
                     hint = EXCLUDED.hint,
                     description = EXCLUDED.description,
                     tag = EXCLUDED.tag,
@@ -101,6 +119,9 @@ pub async fn seed_from_registry(pool: &PgPool, path: &PathBuf) -> anyhow::Result
             .bind(&d.mount_mod)
             .bind(&d.mount_fn)
             .bind(j as i32)
+            .bind(&d.title_en)
+            .bind(&d.hint_en)
+            .bind(&d.desc_en)
             .execute(pool)
             .await?;
             demo_total += 1;

@@ -92,9 +92,9 @@ pub async fn one_demo(
 }
 
 async fn load_categories_from_db(pool: &PgPool) -> anyhow::Result<Value> {
-    let cats = sqlx::query_as::<_, (i64, String, String, String, String, Value, i32)>(
+    let cats = sqlx::query_as::<_, (i64, String, String, String, String, Value, i32, String, String)>(
         r#"
-        SELECT id, key, name, icon, intro, tech, sort_order
+        SELECT id, key, name, icon, intro, tech, sort_order, name_en, intro_en
         FROM categories
         ORDER BY sort_order, id
         "#,
@@ -105,10 +105,10 @@ async fn load_categories_from_db(pool: &PgPool) -> anyhow::Result<Value> {
     let mut out_cats = Vec::new();
     let mut total = 0u64;
 
-    for (id, key, name, icon, intro, tech, _) in cats {
-        let demos = sqlx::query_as::<_, (String, String, String, String, String, String, String, Value)>(
+    for (id, key, name, icon, intro, tech, _, name_en, intro_en) in cats {
+        let demos = sqlx::query_as::<_, (String, String, String, String, String, String, String, Value, String, String, String)>(
             r#"
-            SELECT slug, title, hint, description, tag, mount_mod, mount_fn, tech
+            SELECT slug, title, hint, description, tag, mount_mod, mount_fn, tech, title_en, hint_en, description_en
             FROM demos
             WHERE category_id = $1 AND published = TRUE
             ORDER BY sort_order, id
@@ -120,13 +120,16 @@ async fn load_categories_from_db(pool: &PgPool) -> anyhow::Result<Value> {
 
         let demo_vals: Vec<Value> = demos
             .into_iter()
-            .map(|(slug, title, hint, desc, tag, mount_mod, mount_fn, dtech)| {
+            .map(|(slug, title, hint, desc, tag, mount_mod, mount_fn, dtech, title_en, hint_en, desc_en)| {
                 total += 1;
                 json!({
                     "slug": slug,
                     "title": title,
                     "hint": hint,
                     "desc": desc,
+                    "title_en": title_en,
+                    "hint_en": hint_en,
+                    "desc_en": desc_en,
                     "tag": tag,
                     "mod": mount_mod,
                     "fn": mount_fn,
@@ -139,8 +142,10 @@ async fn load_categories_from_db(pool: &PgPool) -> anyhow::Result<Value> {
         out_cats.push(json!({
             "key": key,
             "name": name,
+            "name_en": name_en,
             "icon": icon,
             "intro": intro,
+            "intro_en": intro_en,
             "tech": tech,
             "demos": demo_vals,
         }));
@@ -166,11 +171,16 @@ async fn load_one_demo(pool: &PgPool, category: &str, slug: &str) -> anyhow::Res
             String,
             Value,
             String,
+            String,
+            String,
+            String,
+            String,
         ),
     >(
         r#"
         SELECT d.slug, d.title, d.hint, d.description, d.tag,
-               d.mount_mod, d.mount_fn, c.key, d.tech, c.name
+               d.mount_mod, d.mount_fn, c.key, d.tech, c.name,
+               d.title_en, d.hint_en, d.description_en, c.name_en
         FROM demos d
         JOIN categories c ON c.id = d.category_id
         WHERE c.key = $1 AND d.slug = $2 AND d.published = TRUE
@@ -182,12 +192,16 @@ async fn load_one_demo(pool: &PgPool, category: &str, slug: &str) -> anyhow::Res
     .await?;
 
     Ok(row.map(
-        |(slug, title, hint, desc, tag, mount_mod, mount_fn, cat_key, tech, cat_name)| {
+        |(slug, title, hint, desc, tag, mount_mod, mount_fn, cat_key, tech, cat_name, title_en, hint_en, desc_en, cat_name_en)| {
             json!({
                 "slug": slug,
                 "title": title,
                 "hint": hint,
                 "desc": desc,
+                "title_en": title_en,
+                "hint_en": hint_en,
+                "desc_en": desc_en,
+                "category_name_en": cat_name_en,
                 "tag": tag,
                 "mod": mount_mod,
                 "fn": mount_fn,

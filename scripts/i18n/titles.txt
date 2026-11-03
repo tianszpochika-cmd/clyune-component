@@ -1,0 +1,465 @@
+@threejs|Three.js 三维|Three.js 3D||A WebGL-based 3D rendering library: scenes, cameras, lights, materials and custom shaders.
+solar-system||Solar System Orbits
+cube|旋转立方体|Rotating Cube
+orbit|环绕视角与灯光|Orbit Controls + Lights
+particles|粒子场|Particle Field
+gallery|几何体画廊|Geometry Gallery
+wave|波浪地形|Wave Terrain
+character|小人动画|Character Animation
+shader|着色器变形球|Shader Blob
+lattice||Cubic Lattice
+torus||Torus Ring
+nebula||Nebula Sphere
+polycubes||Orbiting Cubes
+helix||Helix Tube
+glass||Glass Sphere
+wire||Wireframe Sphere
+instanced|批量实例方块|Instanced Cubes
+terrain-3||Rippling Surface
+ringcloud||Ring Point Cloud
+pillar||Light Pillar
+mirror-floor||Mirror Floor
+knots||Torus Knot
+orbit-moons||Moon Orbits
+@charts|图表|Charts||Everyday statistical charts — line, bar, pie, radar and more — with interaction.
+line||Line Chart
+multiline||Multi-series Line
+area||Area Chart
+stepline||Step Line
+bar||Bar Chart
+hbar||Horizontal Bar
+stackedbar||Stacked Bar
+stackedarea||Stacked Area
+groupedbar||Grouped Bar
+pie||Pie Chart
+doughnut||Doughnut Chart
+radar||Radar Chart
+polar||Polar Area
+scatter||Scatter Plot
+bubble||Bubble Chart
+mixed||Mixed Chart
+sparkline||Sparkline
+gauge||Gauge
+progress||Progress Ring
+waterfall||Waterfall Chart
+combo||Combo Chart
+logline||Log-scale Line
+horizstack||Horizontal Stack
+density||Density Bars
+realtime||Realtime Stream
+radarfill||Radar Comparison
+doughnutlegend||Doughnut with Legend
+barline||Bar + Line Dual Axis
+pieexplode||Exploded Pie
+bubblepack||Bubble Matrix
+sparkbar||Mini Bar Strip
+areaRange||Range Area
+categoryPie||Category Share
+weekday||Weekday Comparison
+kpi||KPI Ring
+spark-canvas||Canvas Mini Trend
+gauge-canvas||Canvas Gauge
+stack-canvas||Canvas Stacked
+@ui|界面组件|UI Components||How common dashboard components work: buttons, cards, overlays, carousels, pagination and more, redrawn on canvas with live hover readouts and explanations.
+buttons|按钮|Buttons
+cards|卡片与弹窗|Cards + Modal
+input||Inputs
+nav||Navigation Styles
+acc||Accordion
+mod||Dialog
+car||Carousel
+toast|轻提示 Toast|Toast
+drop|下拉菜单|Dropdown
+tip|悬浮提示|Tooltip
+skel||Loading Placeholder
+btn||Button Effects
+switch||Spring Switch
+sheet||Bottom Sheet / Overlay
+tabs|标签页动效|Animated Tabs
+timeline||Timeline
+tree|树形列表|Tree View
+fab|悬浮按钮 FAB|Floating Action Button
+chip||Chips / Tags
+table||Interactive Table
+avatar||Avatar Group
+stepper||Animated Stepper
+kanban||Kanban Board
+colorpick||Color Picker
+notify||Notification Center
+command||Command Palette
+pagination||Pagination
+breadcrumb||Breadcrumb
+rating||Star Rating
+empty||Empty State
+banner||Top Banner
+@css-fx|CSS 动画与特效|CSS Animation & Effects||A CSS motion lab: 36 effects — pulse, loaders, hover, carousel, glass, neon — redrawn on canvas with hover readouts and formulas.
+keyframes|关键帧与渐变文字|Keyframes & Gradient Text
+glass|玻璃拟态|Glassmorphism
+tilt||3D Flip & Tilt Cards
+scroll||Scroll-driven Animation
+pulse||Pulse Rings
+loader||Loaders
+hover||Hover Effects
+grad||Flowing Gradient
+ease||Easing Curves
+spring||Spring Motion
+stagger||Staggered Entrance
+flip|FLIP 布局动画|FLIP Layout
+clip|裁剪路径 Clip-path|Clip-path
+xform3d|3D 变换|3D Transform
+trans||Transition Properties
+parallax||Parallax
+filter||Filter Animation
+blend||Blend Modes
+skeleton||Skeleton Screen
+progress||Progress Bar
+ripple||Ripple
+accordion||Accordion
+modal||Modal In / Out
+carousel||Carousel
+reveal||Reveal
+neon||Neon
+liquid||Liquid
+marquee||Marquee
+kenburns|Ken Burns 推镜|Ken Burns
+shake||Shake Feedback
+keyseq||Keyframe Sequence
+neumorph||Neumorphism
+cursor-fx||Custom Cursor
+text-stroke||Animated Text Stroke
+border-beam||Border Beam
+spotlight||Spotlight Follow
+@canvas|Canvas 2D 绘图|Canvas 2D||Immediate-mode HTML5 Canvas 2D: particle systems, character rain, firework physics and a drawing board.
+network||Particle Network
+matrix|代码雨|Matrix Rain
+fireworks||Fireworks
+draw||Drawing Board
+orbits||Orbiting Particles
+trail||Pointer Trail
+blob|软体团块|Soft Blob
+rain||Particle Rain
+wave||Waves
+noise||Noise Field
+flock||Flocking
+burst||Burst
+flow||Flow Field
+gridwave||Grid Wave
+ink||Ink Spread
+aurora||Aurora
+constellation||Constellations
+sand||Falling Sand
+kaleido||Kaleidoscope
+lightning||Lightning
+cloth||Cloth
+spiral||Spiral Sampling
+tunnel||Tunnel Flight
+fire||Fire
+smoke||Smoke
+reactdiff||Reaction–Diffusion
+isometric||Isometric Blocks
+metaballs2d|2D 融球|2D Metaballs
+pixelate||Pixelate Cursor
+ascii|ASCII 字符画|ASCII Art
+ripple-c||Click Water Ripple
+@svg|SVG 矢量动画|SVG Animation||How vector animation works: stroke-dasharray drawing, path morphing, masks and gradients, replayed frame by frame with Path2D; hover to read path values.
+draw||Path Stroke Drawing
+morph|形状变形|Shape Morph
+icons||Animated Icons
+stroke||Stroke Paths
+icon-anim||Icon Motion
+smil|SMIL / CSS 动画|SMIL / CSS Animation
+dash||Flowing Dashes
+drawtext||Text Stroke
+ring||Progress Ring
+filter-svg||SVG Filters
+mask||Masks
+follow||Path Following
+blob-svg|SVG 团块|SVG Blob
+chart-draw||Chart Draw-in
+sprite||Icon Sprites
+gradient-svg||Animated Gradient
+line-draw||Growing Lines
+check-morph||Checkmark Morph
+loader-svg||SVG Loader Arc
+menu-morph||Menu Morph
+@gsap|GSAP 动画|GSAP Animation||A GSAP concepts lab: tweens, easing curves, Timeline, stagger, ScrollTrigger and scrub, replayed by a hand-written tween engine alongside the matching GSAP code.
+timeline|时间轴 Timeline|Timeline
+scroll|滚动触发 ScrollTrigger|ScrollTrigger
+text||Staggered Text
+bounce||Bounce In
+stagger||Staggered Cards
+path||Path Following
+spin-out||Spin Out
+elastic||Elastic Scale
+colorflash||Color Flash
+flipcard||Flip Cards
+ring||Progress Ring
+type||Typewriter
+parallax-g||Parallax Layers
+grid-stagger||Grid Stagger
+scrub|时间轴拖动 scrub|Timeline Scrub
+@webgl|WebGL 着色器|WebGL / Shaders||Native WebGL full-screen fragment shaders: procedural noise, plasma and raymarching, all computed live on the GPU.
+noise||Noise Fluid Background
+plasma|等离子|Plasma
+raymarch|光线步进融球|Raymarched Metaballs
+voronoi|泰森多边形 Voronoi|Voronoi
+warp||Domain Warping
+spiral||Spiral
+checker||Warped Checkerboard
+tunnel||Tunnel
+ripple||Ripples
+stars||Starfield
+lava||Lava
+grid3d||Perspective Grid
+kaleido||Kaleidoscope
+hsv|HSV 色相旋转|HSV Rotation
+scan||Scanlines
+metaball|双融球|Twin Metaballs
+fog||Volumetric Fog
+stripes||Light Stripes
+circle-sdf|SDF 距离场圆|SDF Circle
+water||Water Surface
+crt|CRT 老电视|CRT Screen
+julia-sh|Julia 分形|Julia Fractal
+snow-sh||Snowfall
+oil||Oil-paint Noise
+@physics|物理与交互|Physics & Interaction||Physics engines and pointer interaction: collisions, springs, pendulums, orbits, ropes, soft bodies, hourglasses and magnets — drag any of them and read energy, period and more in real time.
+matter|Matter.js 物理引擎|Matter.js Physics
+drag||Drag to Reorder
+magnetic||Magnetic Cursor Follow
+wall-ball||Bouncing Balls
+multigrav||Multiple Gravity
+spring||Spring Chain
+box-collide||Box Collisions
+bubbles||Floating Bubbles
+pendulum||Pendulum
+hourglass||Hourglass Sand
+magnet||Magnetic Points
+rope||Elastic Rope
+billiard||Billiards
+orbit-p||Orbital Physics
+softbody||Soft Body
+@audio|音频可视化|Audio Visualization||13 audio demos built on real signal processing (synth models + FFT, filter responses, beat detection, sequencer). Hover or drag to read frequency and dB under the pointer; tap “Sound” at top-right to listen.
+synth||Synthesizer
+mic||Microphone Visualizer
+bars||Spectrum Bars
+circle-wave||Circular Waveform
+eq||Equalizer
+part-audio||Audio-reactive Particles
+scope||Oscilloscope
+polar||Polar Spectrum
+waterfall||Spectrogram Waterfall
+beat||Beat Detection
+chord||Chord Pad
+noise-pad||Noise Filter Pad
+drum||Drum Machine
+@dataviz|数据可视化进阶|Advanced Data Viz||19 advanced charts built on real layout algorithms (squarify, force-directed, stacking, quartiles, spiral placement…). Hover or drag to see values and explanations.
+graph||Network Graph
+treemap||Treemap
+d3-force||Force-directed Graph
+heatmap||Heatmap
+radar||Radar Chart
+sankey||Sankey Diagram
+bubbles||Bubble Scatter
+cal-heat||Calendar Heatmap
+sunburst||Sunburst
+chord||Chord Diagram
+boxplot||Box Plot
+parallel||Parallel Coordinates
+stream||Streamgraph
+wordcloud||Word Cloud
+hierarchy||Hierarchy List
+funnel||Conversion Funnel
+candle|K 线图（蜡烛图）|Candlestick Chart
+icicle||Icicle Chart
+arc||Arc Progress
+@micro|Lottie 与微交互|Lottie & Micro-interactions||Small motion details that lift UX: keyframe vector animation (how Lottie works), like particles, toggles and ripple feedback, replayed frame by frame with live values.
+lottie||Lottie Animation
+like||Like & Feedback
+controls||Toggles & Ripples
+heart||Heartbeat Like
+check||Bouncy Checkbox
+send||Paper Plane Send
+copy||Copied!
+download||Download Progress
+skeleton||Skeleton Screen
+toast|轻提示 Toast|Toast
+badge||Bouncing Badge
+drag||Draggable Card
+longpress||Long-press Confirm
+shake||Shake Hint
+slide-verify||Slide to Verify
+dblzoom||Double-tap Zoom
+hover-mag||Magnetic Hover
+press-ripple||Press Ripple
+toggle-spring||Spring Toggle
+@layout|CSS 布局玩具|CSS Layout Toys||How Flex, Grid and container queries lay things out: canvas layouts driven by the real algorithms, with adjustable gaps, columns and alignment; hover to read sizes.
+grid|Grid 网格布局|Grid Layout
+flex|Flex 弹性布局|Flex Layout
+masonry|瀑布流 Masonry|Masonry
+columns||Multi-column Text
+sticky|Sticky 粘性定位|Sticky
+layers||Absolute Layers
+container||Container Queries
+bento|Bento 便当拼贴|Bento Grid
+holy|圣杯布局|Holy Grail Layout
+aspect||Aspect-ratio Cards
+overlap||Overlapping Layers
+subgrid|子网格|Subgrid
+@filters|CSS 滤镜与混合|CSS Filters & Blending||How filters and blending work: blur, brightness, contrast, hue-rotate, duotone, frosted glass and more, computed per pixel from the W3C formulas; drag the split line to compare.
+blur||Blur
+brightness||Brightness
+contrast||Contrast
+saturate||Saturation
+hue||Hue Rotate
+invert||Invert
+grayscale||Grayscale
+sepia|怀旧褐色|Sepia
+drop-shadow||Drop-shadow Glow
+neon-combo||Neon Combo
+glass||Frosted Glass
+duotone||Duotone
+glitch-f||Glitch Jitter
+vignette||Vignette
+glow-edge||Glowing Edge
+backdrop||Backdrop Blur
+@particles-fx|粒子特效|Particle Effects||A Canvas particle kit: starfields, snow, smoke, gravity fields and more, with tunable variants.
+starfield||Starfield
+snow||Snowfall
+goldrain||Golden Rain
+smoke-col||Smoke Column
+firefly||Fireflies
+fountain||Spark Fountain
+attractor||Gravity Well
+repulsor||Repulsion Field
+follow-swarm||Following Swarm
+explode||Explosion Debris
+galaxy||Spiral Galaxy
+heartfield||Heart Field
+text-dots||Dot-matrix Text
+grid-pulse||Pulsing Grid
+wave-part||Wave Particles
+comet||Comet
+bubbles||Rising Bubbles
+leaves||Falling Leaves
+dust||Dust Storm
+neon-dots||Neon Dots
+quantum||Quantum Jitter
+net||Connection Net
+blackhole||Black-hole Accretion
+rainbow||Rainbow Fountain
+@generative|生成艺术|Generative Art||Procedurally generated patterns: noise fields, cellular automata, recursive fractals and random walks.
+flowfield|Perlin 噪声流场|Perlin Flow Field
+julia|Julia 分形集|Julia Set
+mandelbrot|曼德博集合|Mandelbrot Set
+gol|康威生命游戏|Game of Life
+voronoi||Voronoi Diagram
+tree||Recursive Tree
+sierpinski|谢尔宾斯基三角|Sierpinski Triangle
+circles||Circle Packing
+terrain||Noise Terrain
+walk||Random Walk
+lsystem|L 系统植物|L-System
+interfere||Wave Interference
+diffuse||Dye Diffusion
+mosaic||Mosaic Noise
+polar-flower||Polar Flower
+tri||Triangulation
+subdiv||Square Subdivision
+contour||Contour Lines
+inkdrop||Ink Drop
+fiber||Fiber-optic Strands
+pixelsort||Pixel Sorting
+cellgrow||Cell Growth
+gravline||Gravity Lines
+spiral-gen||Spiral Sampling
+@text-fx|文字特效|Text Effects||Typewriter, glitch, gradient, outline, split entrances and more — laid out and animated letter by letter on canvas; hover to read each glyph’s state.
+typewriter||Typewriter
+glitch|故障风文字|Glitch Text
+gradient||Gradient Shine
+outline||Outline Fill
+split-fall||Split & Fall
+bounce-in||Elastic Bounce-in
+blur-clear||Blur to Clear
+mirror||Mirror Flip
+wave-text||Wavy Text
+perspective||3D Perspective
+neon-text||Neon Tube Text
+scramble||Scramble
+counter||Rolling Counter
+decode||Cipher Decode
+ribbon||Printer Ribbon
+handwrite||Handwriting Progress
+karaoke||Karaoke Subtitles
+vertical||Vertical Scroll Text
+pageflip||Page Flip
+liquid||Liquid Morph
+pixel||Pixel Reveal
+smoke||Smoke Dissolve
+magnetic||Magnetic Letters
+rainbow||Rainbow Bounce
+@scroll-fx|滚动特效|Scroll Effects||Parallax, progress, pinning and reveal effects in a virtual scrolling page; the pointer drives the scroll position and progress is read out live.
+parallax||Parallax Layers
+progress||Reading Progress
+pin||Pinned Sections
+reveal||Fade-in Reveal
+scale-in||Scale In
+h-gallery||Horizontal Gallery
+stack||Stacked Cards
+wipe-text||Text Wipe
+path-draw||Scroll Path Drawing
+countup||Count Up
+bg-shift||Background Shift
+split-wipe||Split-screen Wipe
+snap||Scroll Snap
+toc||TOC Highlight
+cover||Cover Reveal
+timeline||Scroll Timeline
+lazy-img||Lazy Image Reveal
+stagger-grid||Staggered Grid
+totop||Back-to-top Bubble
+story||Scrollytelling
+@math|数学|Math||Maths visualised from middle school up: geometry, functions, trigonometry, intro calculus, linear algebra, discrete maths and probability, with tunable parameters.
+pythagoras||Pythagorean Theorem
+similar-tri||Similar Triangles
+circle-angles||Central & Inscribed Angles
+area-volume||Pyramids & Spheres
+coord-geo||Coordinate Geometry
+conics||Conic Sections
+linear||Linear Functions
+quadratic||Quadratic Functions
+exp-log||Exponentials & Logarithms
+power||Power Functions
+piecewise||Piecewise Functions
+parametric||Parametric Equations
+polar||Polar Coordinates
+trig-waves||Trig Functions
+unit-circle||Unit Circle & Waves
+trig-id||Trig Identities
+law-sine||Law of Sines
+limit||Limits
+derivative||Derivatives & Tangents
+integral||Integrals & Area
+taylor||Taylor Series
+vectors||Vector Operations
+matrix-2d||Matrix Transforms
+determinant||Determinant & Area
+eigen||Eigenvalues & Eigenvectors
+venn||Venn Diagrams
+combinatorics||Permutations & Combinations
+sequence||Recursive Sequences
+shortest-path||Shortest Path
+modular||Modular Arithmetic
+binomial||Binomial Distribution
+normal||Normal Distribution
+clt||Central Limit Theorem
+@convert|单位换算|Unit Conversion||Visualising differences between the world’s common units: temperature, time zones, mass, length, area/volume, number bases, speed, pressure and energy.
+temperature||Temperature
+timezone||World Time Zones
+mass||Weight & Mass
+length||Distance & Length
+area-volume||Area & Volume
+radix||Number Bases
+speed||Speed
+pressure||Pressure
+energy||Energy

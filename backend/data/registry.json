@@ -2,7 +2,7 @@
   "categories": [
     {
       "key": "threejs",
-      "name": "Three.js",
+      "name": "Three.js 三维",
       "icon": "◈",
       "intro": "基于 WebGL 的 3D 渲染库：场景、相机、光照、材质与自定义着色器。",
       "tech": [
@@ -28,77 +28,101 @@
             "快进",
             "慢速"
           ],
-          "path": "/threejs/solar-system"
+          "path": "/threejs/solar-system",
+          "title_en": "Solar System Orbits",
+          "hint_en": "Day / Helix Forward · Satellite · Scale Focus",
+          "desc_en": "Colored Sun + Coron, Programmatic Planets and Halo-rings, 30 satellites; able to zoom in and switch the spiral pattern of the Sun forward."
         },
         {
           "slug": "cube",
-          "title": "Rotating Cube",
+          "title": "旋转立方体",
           "hint": "自动旋转 · MeshStandardMaterial",
           "desc": "基础场景、光照与线框。",
           "tag": "basics",
           "mod": "cube",
           "fn": "mountCube",
-          "path": "/threejs/cube"
+          "path": "/threejs/cube",
+          "title_en": "Rotating Cube",
+          "hint_en": "Auto rotation · MeshStandardMaterial",
+          "desc_en": "Basic scenes, light and line frames."
         },
         {
           "slug": "orbit",
-          "title": "Orbit + Lights",
+          "title": "环绕视角与灯光",
           "hint": "拖拽旋转 · 滚轮缩放",
           "desc": "OrbitControls 与多光源。",
           "tag": "controls",
           "mod": "orbit",
           "fn": "mountOrbit",
-          "path": "/threejs/orbit"
+          "path": "/threejs/orbit",
+          "title_en": "Orbit Controls + Lights",
+          "hint_en": "Drag and Rotate · Roller Zoom",
+          "desc_en": "OrbitControls with Multilight."
         },
         {
           "slug": "particles",
-          "title": "Particles",
+          "title": "粒子场",
           "hint": "移动鼠标扰动粒子场",
           "desc": "Points 粒子场与鼠标交互。",
           "tag": "points",
           "mod": "particles",
           "fn": "mountParticles",
-          "path": "/threejs/particles"
+          "path": "/threejs/particles",
+          "title_en": "Particle Field",
+          "hint_en": "Move mouse disturbance particle field",
+          "desc_en": "Points particle field interacts with mouse."
         },
         {
           "slug": "gallery",
-          "title": "Geometry Gallery",
+          "title": "几何体画廊",
           "hint": "点击几何体切换高亮",
           "desc": "内置几何体与射线拾取。",
           "tag": "geometry",
           "mod": "gallery",
           "fn": "mountGallery",
-          "path": "/threejs/gallery"
+          "path": "/threejs/gallery",
+          "title_en": "Geometry Gallery",
+          "hint_en": "Click Geometric to Highlight",
+          "desc_en": "Inside geometry and Establishment."
         },
         {
           "slug": "wave",
-          "title": "Wave Terrain",
+          "title": "波浪地形",
           "hint": "程序化起伏地形",
           "desc": "顶点动画生成地形。",
           "tag": "terrain",
           "mod": "wave",
           "fn": "mountWave",
-          "path": "/threejs/wave"
+          "path": "/threejs/wave",
+          "title_en": "Wave Terrain",
+          "hint_en": "Programmatic rise and fall terrain",
+          "desc_en": "Top-point animation generates terrain."
         },
         {
           "slug": "character",
-          "title": "Character",
+          "title": "小人动画",
           "hint": "程序化角色 · 摆臂动画",
           "desc": "层级模型与骨骼式动画。",
           "tag": "model",
           "mod": "gltf-shapes",
           "fn": "mountGltfShapes",
-          "path": "/threejs/character"
+          "path": "/threejs/character",
+          "title_en": "Character Animation",
+          "hint_en": "Programmatic Role · Arm Animation",
+          "desc_en": "Level model and bone animation."
         },
         {
           "slug": "shader",
-          "title": "Shader Blob",
+          "title": "着色器变形球",
           "hint": "自定义顶点/片元着色器",
           "desc": "ShaderMaterial 变形球体。",
           "tag": "shader",
           "mod": "shader-blob",
           "fn": "mountShaderBlob",
-          "path": "/threejs/shader"
+          "path": "/threejs/shader",
+          "title_en": "Shader Blob",
+          "hint_en": "Custom 113 / Cardular Colours",
+          "desc_en": "ShaderMaterial Transforming Sphere/12."
         },
         {
           "slug": "lattice",
@@ -117,7 +141,10 @@
             "金属",
             "哑光"
           ],
-          "path": "/threejs/lattice"
+          "path": "/threejs/lattice",
+          "title_en": "Cubic Lattice",
+          "hint_en": "3x3x3 crystal",
+          "desc_en": "Triple cycle i, j, K In x, y, z put n blocks in each of the three directions and get a cubic crystal (a crystal structure like salt)."
         },
         {
           "slug": "torus",
@@ -136,7 +163,10 @@
             "金属",
             "玻璃感"
           ],
-          "path": "/threejs/torus"
+          "path": "/threejs/torus",
+          "title_en": "Torus Ring",
+          "hint_en": "Torus",
+          "desc_en": "The circle can be seen as a small circle with a radius of r, which turns around the axis from R."
         },
         {
           "slug": "nebula",
@@ -155,7 +185,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/nebula"
+          "path": "/threejs/nebula",
+          "title_en": "Nebula Sphere",
+          "hint_en": "Sphere",
+          "desc_en": "Cut the surface by the longitude, the latitude N×N Greg, put a light spot on each grid, and it's done“Nebula Sphere”。"
         },
         {
           "slug": "polycubes",
@@ -174,7 +207,10 @@
             "金属",
             "哑光"
           ],
-          "path": "/threejs/polycubes"
+          "path": "/threejs/polycubes",
+          "title_en": "Orbiting Cubes",
+          "hint_en": "Round Cubic",
+          "desc_en": "I don't think so i Angle of diamonds θᵢ = 2πi/n。"
         },
         {
           "slug": "helix",
@@ -193,7 +229,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/helix"
+          "path": "/threejs/helix",
+          "title_en": "Helix Tube",
+          "hint_en": "Helix catheter",
+          "desc_en": "Parameter u from 0 to 1,x, z circle k while y evenly rise h."
         },
         {
           "slug": "glass",
@@ -212,7 +251,10 @@
             "快转",
             "慢转"
           ],
-          "path": "/threejs/glass"
+          "path": "/threejs/glass",
+          "title_en": "Glass Sphere",
+          "hint_en": "A penetrating ball",
+          "desc_en": "The transmission of MeshPhysicalMaterial lets light through the object, ior (refraction rate)"
         },
         {
           "slug": "wire",
@@ -231,11 +273,14 @@
             "亮",
             "暗"
           ],
-          "path": "/threejs/wire"
+          "path": "/threejs/wire",
+          "title_en": "Wireframe Sphere",
+          "hint_en": "Icosahedron",
+          "desc_en": "Twenties have 20 triangles."
         },
         {
           "slug": "instanced",
-          "title": "Instanced",
+          "title": "批量实例方块",
           "hint": "实例化方块",
           "desc": "用一份几何体一次画出成百上千个方块，每个方块只记自己的位置和颜色，所以数量很多也不卡。",
           "tag": "scene",
@@ -250,7 +295,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/instanced"
+          "path": "/threejs/instanced",
+          "title_en": "Instanced Cubes",
+          "hint_en": "Example Cube",
+          "desc_en": "Hundreds of squares are drawn at once with a geometry, each of which only remembers its own location and colour, so many are not allowed to fit."
         },
         {
           "slug": "terrain-3",
@@ -269,7 +317,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/terrain-3"
+          "path": "/threejs/terrain-3",
+          "title_en": "Rippling Surface",
+          "hint_en": "Up and down",
+          "desc_en": "Throwing a stone into the calm water will spread the ripples out of the centre and weaken."
         },
         {
           "slug": "ringcloud",
@@ -288,7 +339,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/ringcloud"
+          "path": "/threejs/ringcloud",
+          "title_en": "Ring Point Cloud",
+          "hint_en": "Ring cloud",
+          "desc_en": "Saturn rings consist of numerous ice blocks, each of which rotate around Saturn like a small satellite."
         },
         {
           "slug": "pillar",
@@ -307,7 +361,10 @@
             "快转",
             "慢转"
           ],
-          "path": "/threejs/pillar"
+          "path": "/threejs/pillar",
+          "title_en": "Light Pillar",
+          "hint_en": "Cylinder",
+          "desc_en": "CylinderGeometry can have a different upper and lower radius, so it gets a circle (a cone that has been cut off)."
         },
         {
           "slug": "mirror-floor",
@@ -326,7 +383,10 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/mirror-floor"
+          "path": "/threejs/mirror-floor",
+          "title_en": "Mirror Floor",
+          "hint_en": "Floor + Ball",
+          "desc_en": "A copy of the object relating to the ground flip was placed under the floor, which was then made transparent and looked like a reflection of the ground."
         },
         {
           "slug": "knots",
@@ -345,7 +405,10 @@
             "金属",
             "线框感"
           ],
-          "path": "/threejs/knots"
+          "path": "/threejs/knots",
+          "title_en": "Torus Knot",
+          "hint_en": "TorusKnot",
+          "desc_en": "Circle around p in the direction of the large circle, and circle around the tube in the q circle, and get (p, q) ring tie."
         },
         {
           "slug": "orbit-moons",
@@ -364,15 +427,20 @@
             "快",
             "慢"
           ],
-          "path": "/threejs/orbit-moons"
+          "path": "/threejs/orbit-moons",
+          "title_en": "Moon Orbits",
+          "hint_en": "Multisatellite",
+          "desc_en": "The square of the cycle is proportional to the cube of the orbit radius, so it's in the panel T²/r³ For every satellite."
         }
-      ]
+      ],
+      "name_en": "Three.js 3D",
+      "intro_en": "A WebGL-based 3D rendering library: scenes, cameras, lights, materials and custom shaders."
     },
     {
       "key": "charts",
-      "name": "Charts",
+      "name": "图表",
       "icon": "▦",
-      "intro": "Canvas 手绘图表实验室：折线/柱/饼/雷达/散点/气泡/混合/双轴/实时流等，坐标映射与布局全部自己计算，悬停读出数值，右侧参数实时调节。",
+      "intro": "折线、柱状、饼图、雷达等常用统计图表及其交互。",
       "tech": [
         "Canvas 2D",
         "坐标映射",
@@ -395,7 +463,10 @@
             "粗线",
             "多色点"
           ],
-          "path": "/charts/line"
+          "path": "/charts/line",
+          "title_en": "Line Chart",
+          "hint_en": "Colours · Tension · Data Point",
+          "desc_en": "Connecting each data point in sequence to see how the values rise or fall over time; smoothing and dashing."
         },
         {
           "slug": "multiline",
@@ -412,7 +483,10 @@
             "对比",
             "填充差"
           ],
-          "path": "/charts/multiline"
+          "path": "/charts/multiline",
+          "title_en": "Multi-series Line",
+          "hint_en": "Multiline Contrast · Change Emphasizes",
+          "desc_en": "Multi-data set retweeting."
         },
         {
           "slug": "area",
@@ -429,7 +503,10 @@
             "堆叠感",
             "透明"
           ],
-          "path": "/charts/area"
+          "path": "/charts/area",
+          "title_en": "Area Chart",
+          "hint_en": "Fill Switches · Main colour",
+          "desc_en": "Area = Line + Filled below, highlighting cumulative volume rather than just movement."
         },
         {
           "slug": "stepline",
@@ -446,7 +523,10 @@
             "middle",
             "虚线阶梯"
           ],
-          "path": "/charts/stepline"
+          "path": "/charts/stepline",
+          "title_en": "Step Line",
+          "hint_en": "Stepwise Mode Switch",
+          "desc_en": "stairline: the value remains unchanged until the next point, then suddenly jumps and is suitable to represent the slot, Price adjustments."
         },
         {
           "slug": "bar",
@@ -463,7 +543,10 @@
             "细柱",
             "宽柱"
           ],
-          "path": "/charts/bar"
+          "path": "/charts/bar",
+          "title_en": "Bar Chart",
+          "hint_en": "Column width · Rounded corner; fillet · Change Emphasizes",
+          "desc_en": "The height of the column indicates the numerical size, and the category is placed in a cross-axis."
         },
         {
           "slug": "hbar",
@@ -480,7 +563,10 @@
             "分组感",
             "细条"
           ],
-          "path": "/charts/hbar"
+          "path": "/charts/hbar",
+          "title_en": "Horizontal Bar",
+          "hint_en": "indexAxis y",
+          "desc_en": "It's easier to read a column across, and it suits the ranking."
         },
         {
           "slug": "stackedbar",
@@ -497,7 +583,10 @@
             "圆角",
             "细柱"
           ],
-          "path": "/charts/stackedbar"
+          "path": "/charts/stackedbar",
+          "title_en": "Stacked Bar",
+          "hint_en": "Pile up / Percentage",
+          "desc_en": "A column has multiple compositions, the total height being a sum and the colour segment being a partial."
         },
         {
           "slug": "stackedarea",
@@ -514,7 +603,10 @@
             "百分比",
             "高对比"
           ],
-          "path": "/charts/stackedarea"
+          "path": "/charts/stackedarea",
+          "title_en": "Stacked Area",
+          "hint_en": "Multidimensional accumulation",
+          "desc_en": "The multidimensional build-up is stacked upwards and downs, the overall height is the sum, and the colour belts represent the contribution of each part."
         },
         {
           "slug": "groupedbar",
@@ -531,7 +623,10 @@
             "窄缝",
             "宽缝"
           ],
-          "path": "/charts/groupedbar"
+          "path": "/charts/groupedbar",
+          "title_en": "Grouped Bar",
+          "hint_en": "Side by side",
+          "desc_en": "The same category is divided into multiple pillars, directly different from the different series in that category."
         },
         {
           "slug": "pie",
@@ -548,7 +643,10 @@
             "旋转",
             "小扇突出"
           ],
-          "path": "/charts/pie"
+          "path": "/charts/pie",
+          "title_en": "Pie Chart",
+          "hint_en": "Disk sector · Rotate",
+          "desc_en": "The circle is cut into a fan, the angles are poignant."
         },
         {
           "slug": "doughnut",
@@ -565,7 +663,10 @@
             "粗环",
             "半环感"
           ],
-          "path": "/charts/doughnut"
+          "path": "/charts/doughnut",
+          "title_en": "Doughnut Chart",
+          "hint_en": "Cyclical",
+          "desc_en": "Circumference: The sum of the pies that are emptied in the middle, representing the proportion of each arc long, is available at the centre."
         },
         {
           "slug": "radar",
@@ -582,7 +683,10 @@
             "双雷达",
             "尖角"
           ],
-          "path": "/charts/radar"
+          "path": "/charts/radar",
+          "title_en": "Radar Chart",
+          "hint_en": "Multi-dimensional rating",
+          "desc_en": "Multiple dimensions are circumscribed into polygons, and the larger the shape, the stronger it is, the better it is for a capability model."
         },
         {
           "slug": "polar",
@@ -599,7 +703,10 @@
             "旋转",
             "高对比"
           ],
-          "path": "/charts/polar"
+          "path": "/charts/polar",
+          "title_en": "Polar Area",
+          "hint_en": "Polar Area",
+          "desc_en": "Each valve radius represents the value, the angles are equal, like the radar \"cake\" version."
         },
         {
           "slug": "scatter",
@@ -616,7 +723,10 @@
             "多系列",
             "连线感"
           ],
-          "path": "/charts/scatter"
+          "path": "/charts/scatter",
+          "title_en": "Scatter Plot",
+          "hint_en": "Point Size · Multiseries",
+          "desc_en": "Each point is a sample (x,y) of the relevant and discrete points."
         },
         {
           "slug": "bubble",
@@ -633,7 +743,10 @@
             "稀疏",
             "密集"
           ],
-          "path": "/charts/bubble"
+          "path": "/charts/bubble",
+          "title_en": "Bubble Chart",
+          "hint_en": "x/y/r",
+          "desc_en": "The breakpoint + radius means the third variable, the greater the bubble, the greater the dimension."
         },
         {
           "slug": "mixed",
@@ -650,7 +763,10 @@
             "面积+柱",
             "三合一"
           ],
-          "path": "/charts/mixed"
+          "path": "/charts/mixed",
+          "title_en": "Mixed Chart",
+          "hint_en": "Column+line",
+          "desc_en": "The column chart and the line diagram are in the same picture: the column looks at the number and the line looks at the trend."
         },
         {
           "slug": "sparkline",
@@ -667,7 +783,10 @@
             "阶梯",
             "无坐标"
           ],
-          "path": "/charts/sparkline"
+          "path": "/charts/sparkline",
+          "title_en": "Sparkline",
+          "hint_en": "No coordinates available",
+          "desc_en": "Mini-portrait: There are no small folds of the axis, which appear in the table or card at a glance."
         },
         {
           "slug": "gauge",
@@ -684,7 +803,10 @@
             "粗轨",
             "细针"
           ],
-          "path": "/charts/gauge"
+          "path": "/charts/gauge",
+          "title_en": "Gauge",
+          "hint_en": "Half circle / Full circle",
+          "desc_en": "dashboard: Half a circle at a time, pointer to angle = current value as a proportion of maximum value."
         },
         {
           "slug": "progress",
@@ -701,7 +823,10 @@
             "粗",
             "细"
           ],
-          "path": "/charts/progress"
+          "path": "/charts/progress",
+          "title_en": "Progress Ring",
+          "hint_en": "Percentage completed",
+          "desc_en": "Full circle means 0~100% completion."
         },
         {
           "slug": "waterfall",
@@ -718,7 +843,10 @@
             "彩色",
             "细柱"
           ],
-          "path": "/charts/waterfall"
+          "path": "/charts/waterfall",
+          "title_en": "Waterfall Chart",
+          "hint_en": "Win-Long",
+          "desc_en": "From the point of departure, each step is added or reduced and ends up at the end, and is used to dismantle profit changes."
         },
         {
           "slug": "combo",
@@ -735,7 +863,10 @@
             "双柱线",
             "阴影线"
           ],
-          "path": "/charts/combo"
+          "path": "/charts/combo",
+          "title_en": "Combo Chart",
+          "hint_en": "Column Group",
+          "desc_en": "Combination diagrams have the same coordinate system of columns and lines (or areas) and are suitable for the dashboard overview."
         },
         {
           "slug": "logline",
@@ -752,7 +883,10 @@
             "面积",
             "多线"
           ],
-          "path": "/charts/logline"
+          "path": "/charts/logline",
+          "title_en": "Log-scale Line",
+          "hint_en": "Logarithmic axis",
+          "desc_en": "Logarithmic scale。"
         },
         {
           "slug": "horizstack",
@@ -769,7 +903,10 @@
             "圆角",
             "细条"
           ],
-          "path": "/charts/horizstack"
+          "path": "/charts/horizstack",
+          "title_en": "Horizontal Stack",
+          "hint_en": "Horizontal Stack",
+          "desc_en": "Horizontal stacked。"
         },
         {
           "slug": "density",
@@ -786,7 +923,10 @@
             "月",
             "热力感"
           ],
-          "path": "/charts/density"
+          "path": "/charts/density",
+          "title_en": "Density Bars",
+          "hint_en": "Monthly density",
+          "desc_en": "A lot of fine columns lined up, like histograms, to see a dissipation."
         },
         {
           "slug": "realtime",
@@ -803,7 +943,10 @@
             "双线",
             "面积流"
           ],
-          "path": "/charts/realtime"
+          "path": "/charts/realtime",
+          "title_en": "Realtime Stream",
+          "hint_en": "Automatically scroll data",
+          "desc_en": "Realtime streaming。"
         },
         {
           "slug": "radarfill",
@@ -820,7 +963,10 @@
             "描边",
             "透明"
           ],
-          "path": "/charts/radarfill"
+          "path": "/charts/radarfill",
+          "title_en": "Radar Comparison",
+          "hint_en": "Multilayer radar",
+          "desc_en": "Two layers of radar superimpose, comparing the coverage differences of the two sets."
         },
         {
           "slug": "doughnutlegend",
@@ -837,7 +983,10 @@
             "百分比",
             "细环"
           ],
-          "path": "/charts/doughnutlegend"
+          "path": "/charts/doughnutlegend",
+          "title_en": "Doughnut with Legend",
+          "hint_en": "Legend Location",
+          "desc_en": "Ring + Right Legend, clearer when projecting."
         },
         {
           "slug": "barline",
@@ -854,7 +1003,10 @@
             "面积线",
             "对比色"
           ],
-          "path": "/charts/barline"
+          "path": "/charts/barline",
+          "title_en": "Bar + Line Dual Axis",
+          "hint_en": "Double-axis Left-Right",
+          "desc_en": "Two-coordinate axes: the left axis is used for the column, the right axis is used for the fold, and the data are compared in two different units."
         },
         {
           "slug": "pieexplode",
@@ -871,7 +1023,10 @@
             "全分离",
             "描边"
           ],
-          "path": "/charts/pieexplode"
+          "path": "/charts/pieexplode",
+          "title_en": "Exploded Pie",
+          "hint_en": "Sector Offset",
+          "desc_en": "Dissociative pie charts: Push a piece of sector outward along the radius, highlighting the focus categories."
         },
         {
           "slug": "bubblepack",
@@ -888,7 +1043,10 @@
             "密集",
             "彩色"
           ],
-          "path": "/charts/bubblepack"
+          "path": "/charts/bubblepack",
+          "title_en": "Bubble Matrix",
+          "hint_en": "Density Switch",
+          "desc_en": "A bubble map: The area of each circle represents the numerical size and position represents the other two dimensions."
         },
         {
           "slug": "sparkbar",
@@ -905,7 +1063,10 @@
             "宽",
             "圆角"
           ],
-          "path": "/charts/sparkbar"
+          "path": "/charts/sparkbar",
+          "title_en": "Mini Bar Strip",
+          "hint_en": "Spark bars",
+          "desc_en": "The mini-column is embedded in the report, with more visible recent fluctuations than the numbers."
         },
         {
           "slug": "areaRange",
@@ -922,7 +1083,10 @@
             "双色",
             "平滑"
           ],
-          "path": "/charts/areaRange"
+          "path": "/charts/areaRange",
+          "title_en": "Range Area",
+          "hint_en": "Band area",
+          "desc_en": "A banded area surrounded by two upper and lower borders often indicates a confidence interval or a high temperature range."
         },
         {
           "slug": "categoryPie",
@@ -939,7 +1103,10 @@
             "环形",
             "旋转"
           ],
-          "path": "/charts/categoryPie"
+          "path": "/charts/categoryPie",
+          "title_en": "Category Share",
+          "hint_en": "Percentage of six categories",
+          "desc_en": "Text-oriented / A pre-set pie map of the channel share."
         },
         {
           "slug": "weekday",
@@ -956,7 +1123,10 @@
             "面积",
             "分组"
           ],
-          "path": "/charts/weekday"
+          "path": "/charts/weekday",
+          "title_en": "Weekday Comparison",
+          "hint_en": "Monday to Sunday",
+          "desc_en": "Monday to Sunday group comparison for workdays / Weekend difference."
         },
         {
           "slug": "kpi",
@@ -973,7 +1143,10 @@
             "双KPI",
             "粗环"
           ],
-          "path": "/charts/kpi"
+          "path": "/charts/kpi",
+          "title_en": "KPI Ring",
+          "hint_en": "Completion rate",
+          "desc_en": "KPI Ring Progress: The proportion of the circle filled = the completed value ÷ target value, with percentages shown in the middle."
         },
         {
           "slug": "spark-canvas",
@@ -992,7 +1165,10 @@
             "虚线",
             "双色"
           ],
-          "path": "/charts/spark-canvas"
+          "path": "/charts/spark-canvas",
+          "title_en": "Canvas Mini Trend",
+          "hint_en": "Self-draw",
+          "desc_en": "Canvas sparkline。"
         },
         {
           "slug": "gauge-canvas",
@@ -1009,7 +1185,10 @@
             "粗轨",
             "细针"
           ],
-          "path": "/charts/gauge-canvas"
+          "path": "/charts/gauge-canvas",
+          "title_en": "Canvas Gauge",
+          "hint_en": "Self-drawing gauge",
+          "desc_en": "Canvas dashboard."
         },
         {
           "slug": "stack-canvas",
@@ -1026,13 +1205,18 @@
             "横向",
             "百分比"
           ],
-          "path": "/charts/stack-canvas"
+          "path": "/charts/stack-canvas",
+          "title_en": "Canvas Stacked",
+          "hint_en": "Self-draw",
+          "desc_en": "Canvas stack."
         }
-      ]
+      ],
+      "name_en": "Charts",
+      "intro_en": "Everyday statistical charts — line, bar, pie, radar and more — with interaction."
     },
     {
       "key": "ui",
-      "name": "UI Components",
+      "name": "界面组件",
       "icon": "▣",
       "intro": "后台常用组件的交互原理：按钮、卡片、弹层、轮播、分页等，画布复现几何与状态，悬停读数 + 中文讲解。",
       "tech": [
@@ -1043,25 +1227,31 @@
       "demos": [
         {
           "slug": "buttons",
-          "title": "Buttons",
+          "title": "按钮",
           "hint": "按钮变体与尺寸",
           "desc": "按钮变体、尺寸与禁用态。",
           "tag": "actions",
           "mod": "kit-ui",
           "fn": "mount",
           "variant": "buttons",
-          "path": "/ui/buttons"
+          "path": "/ui/buttons",
+          "title_en": "Buttons",
+          "hint_en": "Button Variables and Dimensions",
+          "desc_en": "Button Variable, Size with Disable State."
         },
         {
           "slug": "cards",
-          "title": "Cards + Modal",
+          "title": "卡片与弹窗",
           "hint": "卡片与弹层交互",
           "desc": "卡片布局与模态框。",
           "tag": "overlay",
           "mod": "kit-ui",
           "fn": "mount",
           "variant": "cards",
-          "path": "/ui/cards"
+          "path": "/ui/cards",
+          "title_en": "Cards + Modal",
+          "hint_en": "The card interacts with the ballistic layer",
+          "desc_en": "A card layout with a model frame."
         },
         {
           "slug": "input",
@@ -1086,7 +1276,10 @@
             "密码可见",
             "OTP 格"
           ],
-          "path": "/ui/input"
+          "path": "/ui/input",
+          "title_en": "Inputs",
+          "hint_en": "Top Toggle Control Type",
+          "desc_en": "Text frames change the main colour and dizziness when the focus is on; red frames and tips are displayed when verification fails."
         },
         {
           "slug": "nav",
@@ -1109,7 +1302,10 @@
             "底部 Tab",
             "锚点目录"
           ],
-          "path": "/ui/nav"
+          "path": "/ui/nav",
+          "title_en": "Navigation Styles",
+          "hint_en": "Top Toggle Navigation Type",
+          "desc_en": "The current item is marked with a slide indicator (underlined or capsule), which moves smoothly between the items."
         },
         {
           "slug": "acc",
@@ -1128,7 +1324,10 @@
             "卡片",
             "FAQ"
           ],
-          "path": "/ui/acc"
+          "path": "/ui/acc",
+          "title_en": "Accordion",
+          "hint_en": "Top Switch",
+          "desc_en": "accordion: Clicking on the title to expand this section, smoothing the transition height, and automatically closing the others."
         },
         {
           "slug": "mod",
@@ -1147,7 +1346,10 @@
             "无障碍焦点",
             "堆叠"
           ],
-          "path": "/ui/mod"
+          "path": "/ui/mod",
+          "title_en": "Dialog",
+          "hint_en": "Top Switch",
+          "desc_en": "Blank windows: Cover the page with a semi-transparent mask, pop up the middle dialogue box and return to the original page after closing."
         },
         {
           "slug": "car",
@@ -1166,11 +1368,14 @@
             "淡入",
             "垂直"
           ],
-          "path": "/ui/car"
+          "path": "/ui/car",
+          "title_en": "Carousel",
+          "hint_en": "Top Switch",
+          "desc_en": "Rotation: A row of cards is lateralized, smoothed by location, and the dot shows the current number."
         },
         {
           "slug": "toast",
-          "title": "Toast",
+          "title": "轻提示 Toast",
           "hint": "顶部切换类型 · 触发",
           "desc": "新消息从角落滑入，旧消息依次下移并淡出，几秒后自动消失。",
           "tag": "toast",
@@ -1185,11 +1390,14 @@
             "可撤销",
             "堆叠多条"
           ],
-          "path": "/ui/toast"
+          "path": "/ui/toast",
+          "title_en": "Toast",
+          "hint_en": "Top Effects endorse · Trigger",
+          "desc_en": "New news slipped from the corner, the old news moved down and faded out, and then disappeared in seconds."
         },
         {
           "slug": "drop",
-          "title": "下拉",
+          "title": "下拉菜单",
           "hint": "顶部切换",
           "desc": "Dropdown/Select。",
           "tag": "dropdown",
@@ -1204,11 +1412,14 @@
             "右键菜单",
             "级联"
           ],
-          "path": "/ui/drop"
+          "path": "/ui/drop",
+          "title_en": "Dropdown",
+          "hint_en": "Top Switch",
+          "desc_en": "Dropdown/Select。"
         },
         {
           "slug": "tip",
-          "title": "提示",
+          "title": "悬浮提示",
           "hint": "顶部切换方位",
           "desc": "Tooltip/Popover。",
           "tag": "tooltip",
@@ -1223,7 +1434,10 @@
             "富文本",
             "延迟"
           ],
-          "path": "/ui/tip"
+          "path": "/ui/tip",
+          "title_en": "Tooltip",
+          "hint_en": "Top Switcher",
+          "desc_en": "Tooltip/Popover。"
         },
         {
           "slug": "skel",
@@ -1241,7 +1455,10 @@
             "详情",
             "头像墙"
           ],
-          "path": "/ui/skel"
+          "path": "/ui/skel",
+          "title_en": "Loading Placeholder",
+          "hint_en": "Top Toggle Layout",
+          "desc_en": "Bones screen: The contents are pre-mounted with a grey block twirl layout, with a sweep indicating that the light is “mounting”."
         },
         {
           "slug": "btn",
@@ -1262,7 +1479,10 @@
             "图标滑入",
             "按压缩放"
           ],
-          "path": "/ui/btn"
+          "path": "/ui/btn",
+          "title_en": "Button Effects",
+          "hint_en": "Top Switch · Click Feedback",
+          "desc_en": "Button Microinteract: Shrink slightly when pressing, Unleash the bounce and make you feel that the button \"was pressed.\""
         },
         {
           "slug": "switch",
@@ -1281,7 +1501,10 @@
             "彩色轨",
             "软弹"
           ],
-          "path": "/ui/switch"
+          "path": "/ui/switch",
+          "title_en": "Spring Switch",
+          "hint_en": "Top Switch",
+          "desc_en": "Spring switch: The slider appears to be hanging on the spring, and the switch goes over and back to position."
         },
         {
           "slug": "sheet",
@@ -1299,11 +1522,14 @@
             "操作表",
             "分享板"
           ],
-          "path": "/ui/sheet"
+          "path": "/ui/sheet",
+          "title_en": "Bottom Sheet / Overlay",
+          "hint_en": "Top Switch",
+          "desc_en": "Bottom drawer: The panel slips out of the bottom of the screen and can drag the handle to adjust the height or pull it off."
         },
         {
           "slug": "tabs",
-          "title": "Tabs 动效",
+          "title": "标签页动效",
           "hint": "顶部切换",
           "desc": "指示条滑动 Tabs。",
           "tag": "tabs",
@@ -1318,7 +1544,10 @@
             "垂直",
             "图标"
           ],
-          "path": "/ui/tabs"
+          "path": "/ui/tabs",
+          "title_en": "Animated Tabs",
+          "hint_en": "Top Switch",
+          "desc_en": "Instruction slips Tabs."
         },
         {
           "slug": "timeline",
@@ -1336,11 +1565,14 @@
             "卡片",
             "紧凑"
           ],
-          "path": "/ui/timeline"
+          "path": "/ui/timeline",
+          "title_en": "Timeline",
+          "hint_en": "Top Switch",
+          "desc_en": "Timeline: Events are in chronological order vertically and dots and links indicate the sequence."
         },
         {
           "slug": "tree",
-          "title": "树形",
+          "title": "树形列表",
           "hint": "顶部切换",
           "desc": "树形目录：文件夹可以展开、收起，子项按层级缩进显示。",
           "tag": "tree",
@@ -1353,11 +1585,14 @@
             "选中高亮",
             "连接线"
           ],
-          "path": "/ui/tree"
+          "path": "/ui/tree",
+          "title_en": "Tree View",
+          "hint_en": "Top Switch",
+          "desc_en": "Tree directory: folders can be expanded, closes, sub-items are shown by level indentation."
         },
         {
           "slug": "fab",
-          "title": "FAB",
+          "title": "悬浮按钮 FAB",
           "hint": "顶部切换",
           "desc": "主按钮旋转成 ×，子按钮依次弹出（竖排或扇形），带交错延迟。",
           "tag": "fab",
@@ -1370,7 +1605,10 @@
             "速度拨号",
             "工具条"
           ],
-          "path": "/ui/fab"
+          "path": "/ui/fab",
+          "title_en": "Floating Action Button",
+          "hint_en": "Top Switch",
+          "desc_en": "Main button rotated to ×，sub-buttons with a staggered delay in subsequent ejection (dive or fan formation)."
         },
         {
           "slug": "chip",
@@ -1387,7 +1625,10 @@
             "头像芯片",
             "拖排序"
           ],
-          "path": "/ui/chip"
+          "path": "/ui/chip",
+          "title_en": "Chips / Tags",
+          "hint_en": "Top Switch",
+          "desc_en": "Label: Small corner blocks represent the classification or filter conditions, and click to select or delete."
         },
         {
           "slug": "table",
@@ -1404,7 +1645,10 @@
             "骨架载入",
             "行选中"
           ],
-          "path": "/ui/table"
+          "path": "/ui/table",
+          "title_en": "Interactive Table",
+          "hint_en": "Top Switch",
+          "desc_en": "Table Interactive: Header Sorting, Suspends the high-lighted whole row, and the long table header is fixed."
         },
         {
           "slug": "avatar",
@@ -1421,7 +1665,10 @@
             "状态点",
             "呼吸边"
           ],
-          "path": "/ui/avatar"
+          "path": "/ui/avatar",
+          "title_en": "Avatar Group",
+          "hint_en": "Top Switch",
+          "desc_en": "Folding of heads: Multiple circle heads overlap in one row, exceeding the number shown for \"+N\"."
         },
         {
           "slug": "stepper",
@@ -1438,7 +1685,10 @@
             "进度填充",
             "勾选完成"
           ],
-          "path": "/ui/stepper"
+          "path": "/ui/stepper",
+          "title_en": "Animated Stepper",
+          "hint_en": "Top Switch",
+          "desc_en": "The current steps are preceded by a tick, the connection line fills the main colour with progress, and the current node outer circle pulse."
         },
         {
           "slug": "kanban",
@@ -1455,7 +1705,10 @@
             "紧凑",
             "宽卡片"
           ],
-          "path": "/ui/kanban"
+          "path": "/ui/kanban",
+          "title_en": "Kanban Board",
+          "hint_en": "Top Switch · Card",
+          "desc_en": "Kanban Entity."
         },
         {
           "slug": "colorpick",
@@ -1472,7 +1725,10 @@
             "预览大",
             "双色"
           ],
-          "path": "/ui/colorpick"
+          "path": "/ui/colorpick",
+          "title_en": "Color Picker",
+          "hint_en": "Palette + input color",
+          "desc_en": "Color ring + preset palette."
         },
         {
           "slug": "notify",
@@ -1489,7 +1745,10 @@
             "自动消失",
             "多类型"
           ],
-          "path": "/ui/notify"
+          "path": "/ui/notify",
+          "title_en": "Notification Center",
+          "hint_en": "Server push / Clear",
+          "desc_en": "The bell displays unreading and shaking, the panel lists notifications, new notifications are inserted from the top and the rest moved down."
         },
         {
           "slug": "command",
@@ -1508,7 +1767,10 @@
             "暗",
             "亮点"
           ],
-          "path": "/ui/command"
+          "path": "/ui/command",
+          "title_en": "Command Palette",
+          "hint_en": "⌘K Panel",
+          "desc_en": "Enter the keyword word by word, the result list is filtered in real time, the highlight item moves up and down, and back to the car for execution."
         },
         {
           "slug": "pagination",
@@ -1527,7 +1789,10 @@
             "彩",
             "单"
           ],
-          "path": "/ui/pagination"
+          "path": "/ui/pagination",
+          "title_en": "Pagination",
+          "hint_en": "Page Break",
+          "desc_en": "The current high-light block slides to the target page; the number of pages folds into... and always shows the end page."
         },
         {
           "slug": "breadcrumb",
@@ -1546,7 +1811,10 @@
             "彩",
             "单"
           ],
-          "path": "/ui/breadcrumb"
+          "path": "/ui/breadcrumb",
+          "title_en": "Breadcrumb",
+          "hint_en": "Road crumbs",
+          "desc_en": "Displays the hierarchy path of the current page in the site, with the last level as the current page; the new layer slides from the right side and the suspension is underlined."
         },
         {
           "slug": "rating",
@@ -1565,7 +1833,10 @@
             "彩",
             "单"
           ],
-          "path": "/ui/rating"
+          "path": "/ui/rating",
+          "title_en": "Star Rating",
+          "hint_en": "Star rating Budgetary",
+          "desc_en": "Suspend preview fractions (the stars light up in turn) and then return to the current fractions; support half-stars."
         },
         {
           "slug": "empty",
@@ -1584,7 +1855,10 @@
             "彩",
             "单"
           ],
-          "path": "/ui/empty"
+          "path": "/ui/empty",
+          "title_en": "Empty State",
+          "hint_en": "Empty-state illustration sense",
+          "desc_en": "When the list does not have data, use a slightly floating illustration + specify text + guide button to tell the user what to do next."
         },
         {
           "slug": "banner",
@@ -1603,9 +1877,14 @@
             "彩",
             "单"
           ],
-          "path": "/ui/banner"
+          "path": "/ui/banner",
+          "title_en": "Top Banner",
+          "hint_en": "Notification banner",
+          "desc_en": "tab at the top of the page, slides from above; long text can scroll horizontally, with a closing button on the right."
         }
-      ]
+      ],
+      "name_en": "UI Components",
+      "intro_en": "How common dashboard components work: buttons, cards, overlays, carousels, pagination and more, redrawn on canvas with live hover readouts and explanations."
     },
     {
       "key": "css-fx",
@@ -1621,25 +1900,31 @@
       "demos": [
         {
           "slug": "keyframes",
-          "title": "Keyframes 与渐变文字",
+          "title": "关键帧与渐变文字",
           "hint": "悬停卡片查看 transition · 渐变流光文字",
           "desc": "加载动画、过渡曲线对比与流光渐变文字。",
           "tag": "keyframes",
           "mod": "kit-css",
           "fn": "mount",
           "variant": "keyframes",
-          "path": "/css-fx/keyframes"
+          "path": "/css-fx/keyframes",
+          "title_en": "Keyframes & Gradient Text",
+          "hint_en": "Suspend Card View · Gradient Streaming Text",
+          "desc_en": "Load Animations, The transition curve contrasts with the fluid gradient text."
         },
         {
           "slug": "glass",
-          "title": "玻璃拟态 Glassmorphism",
+          "title": "玻璃拟态",
           "hint": "拖动滑块调节模糊与透明度",
           "desc": "backdrop-filter 毛玻璃卡片与流动背景。",
           "tag": "glass",
           "mod": "kit-css",
           "fn": "mount",
           "variant": "glass",
-          "path": "/css-fx/glass"
+          "path": "/css-fx/glass",
+          "title_en": "Glassmorphism",
+          "hint_en": "Drag slider to reconcile blurry and transparency degrees",
+          "desc_en": "This post is part of our special coverage Global Voices 2011."
         },
         {
           "slug": "tilt",
@@ -1650,7 +1935,10 @@
           "mod": "kit-css",
           "fn": "mount",
           "variant": "tilt",
-          "path": "/css-fx/tilt"
+          "path": "/css-fx/tilt",
+          "title_en": "3D Flip & Tilt Cards",
+          "hint_en": "Move pointer tilt · Click to flip",
+          "desc_en": "perspective + rotateX / Y's 3D card."
         },
         {
           "slug": "scroll",
@@ -1661,7 +1949,10 @@
           "mod": "kit-css",
           "fn": "mount",
           "variant": "scroll",
-          "path": "/css-fx/scroll"
+          "path": "/css-fx/scroll",
+          "title_en": "Scroll-driven Animation",
+          "hint_en": "Scroll in Panel",
+          "desc_en": "Animation-timeline: view(), retreating from international service if not supported."
         },
         {
           "slug": "pulse",
@@ -1682,7 +1973,10 @@
             "橙",
             "品红"
           ],
-          "path": "/css-fx/pulse"
+          "path": "/css-fx/pulse",
+          "title_en": "Pulse Rings",
+          "hint_en": "Top Toggle Colour Preset · Turn speed / Size",
+          "desc_en": "Modemable cycle, Color and size CSS Variation Ring."
         },
         {
           "slug": "loader",
@@ -1707,7 +2001,10 @@
             "旋转三角",
             "进度弧"
           ],
-          "path": "/css-fx/loader"
+          "path": "/css-fx/loader",
+          "title_en": "Loaders",
+          "hint_en": "Top IDB Could not close temporary folder: %s · Turn speed / Color",
+          "desc_en": "Pure CSS Load Animation: Ring / Lattice / Articles, etc."
         },
         {
           "slug": "hover",
@@ -1732,7 +2029,10 @@
             "下划线展开",
             "背景填充"
           ],
-          "path": "/css-fx/hover"
+          "path": "/css-fx/hover",
+          "title_en": "Hover Effects",
+          "hint_en": "Top IDB Could not close temporary folder: %s · Suspend Card",
+          "desc_en": "Card suspension feedback package."
         },
         {
           "slug": "grad",
@@ -1751,7 +2051,10 @@
             "日落",
             "极光"
           ],
-          "path": "/css-fx/grad"
+          "path": "/css-fx/grad",
+          "title_en": "Flowing Gradient",
+          "hint_en": "Colours / Speed",
+          "desc_en": "Multicolour gradient background flow."
         },
         {
           "slug": "ease",
@@ -1776,7 +2079,10 @@
             "bounce感",
             "自定义贝塞尔"
           ],
-          "path": "/css-fx/ease"
+          "path": "/css-fx/ease",
+          "title_en": "Easing Curves",
+          "hint_en": "Top Consultancy Curve · Click to replay",
+          "desc_en": "CSS comparison-timing-finance."
         },
         {
           "slug": "spring",
@@ -1797,7 +2103,10 @@
             "旋转过冲",
             "连环弹跳"
           ],
-          "path": "/css-fx/spring"
+          "path": "/css-fx/spring",
+          "title_en": "Spring Motion",
+          "hint_en": "Top Switch · Click to trigger",
+          "desc_en": "Approximate spring / The echo effect."
         },
         {
           "slug": "stagger",
@@ -1818,11 +2127,14 @@
             "缩放交错",
             "旋转交错"
           ],
-          "path": "/css-fx/stagger"
+          "path": "/css-fx/stagger",
+          "title_en": "Staggered Entrance",
+          "hint_en": "Top Switch · Click to replay",
+          "desc_en": "Cross-entry: The sub-elements appear in sequence, each with a small delay over the previous one."
         },
         {
           "slug": "flip",
-          "title": "FLIP 布局",
+          "title": "FLIP 布局动画",
           "hint": "顶部切换 · 点击打乱",
           "desc": "First-Last-Invert-Play 布局动画。",
           "tag": "flip",
@@ -1837,11 +2149,14 @@
             "过滤显隐",
             "尺寸变形"
           ],
-          "path": "/css-fx/flip"
+          "path": "/css-fx/flip",
+          "title_en": "FLIP Layout",
+          "hint_en": "Top Switch · Click to break",
+          "desc_en": "First-Last-Invert-Play layout animation."
         },
         {
           "slug": "clip",
-          "title": "Clip-path",
+          "title": "裁剪路径 Clip-path",
           "hint": "顶部切换形状 · 点击变形",
           "desc": "clip-path 揭示/变形。",
           "tag": "clip",
@@ -1860,11 +2175,14 @@
             "十字",
             "胶囊"
           ],
-          "path": "/css-fx/clip"
+          "path": "/css-fx/clip",
+          "title_en": "Clip-path",
+          "hint_en": "Top Packing Shape · Click to Transform",
+          "desc_en": "crip- Tangible / Transform."
         },
         {
           "slug": "xform3d",
-          "title": "3D Transform",
+          "title": "3D 变换",
           "hint": "顶部切换 · 拖动/悬停",
           "desc": "perspective 三维变换。",
           "tag": "3d",
@@ -1883,7 +2201,10 @@
             "棱柱",
             "行列翻转"
           ],
-          "path": "/css-fx/xform3d"
+          "path": "/css-fx/xform3d",
+          "title_en": "3D Transform",
+          "hint_en": "Top Switch · Drag / Hover",
+          "desc_en": "Perspective 3D transformation."
         },
         {
           "slug": "trans",
@@ -1906,7 +2227,10 @@
             "滤镜",
             "复合多属性"
           ],
-          "path": "/css-fx/trans"
+          "path": "/css-fx/trans",
+          "title_en": "Transition Properties",
+          "hint_en": "Top Switch Jointly · Suspended observation",
+          "desc_en": "CSS conversion attribute."
         },
         {
           "slug": "parallax",
@@ -1925,7 +2249,10 @@
             "卡片深度",
             "文字层差"
           ],
-          "path": "/css-fx/parallax"
+          "path": "/css-fx/parallax",
+          "title_en": "Parallax",
+          "hint_en": "Depth / Color · Move Pointer",
+          "desc_en": "Multiple layers follow the compass at different speeds, near and slow, simulate CSS vision."
         },
         {
           "slug": "filter",
@@ -1946,7 +2273,10 @@
             "暗角呼吸",
             "色散感"
           ],
-          "path": "/css-fx/filter"
+          "path": "/css-fx/filter",
+          "title_en": "Filter Animation",
+          "hint_en": "Top Switch · Drag / Trigger",
+          "desc_en": "animated filter。"
         },
         {
           "slug": "blend",
@@ -1967,7 +2297,10 @@
             "hard-light",
             "soft-light"
           ],
-          "path": "/css-fx/blend"
+          "path": "/css-fx/blend",
+          "title_en": "Blend Modes",
+          "hint_en": "Top Switch Mode · Move Colour Blocks",
+          "desc_en": "Mixed mode: two layers of top and bottom colour by formulae (e.g Fragmented = Up×Down Alternatively, get a new color."
         },
         {
           "slug": "skeleton",
@@ -1986,7 +2319,10 @@
             "文章段落",
             "网格瓷砖"
           ],
-          "path": "/css-fx/skeleton"
+          "path": "/css-fx/skeleton",
+          "title_en": "Skeleton Screen",
+          "hint_en": "Top Toggle Layout · Turn speed",
+          "desc_en": "Skeleton loading。"
         },
         {
           "slug": "progress",
@@ -2007,7 +2343,10 @@
             "像素块",
             "渐变扫"
           ],
-          "path": "/css-fx/progress"
+          "path": "/css-fx/progress",
+          "title_en": "Progress Bar",
+          "hint_en": "Top IDB Could not close temporary folder: %s · Click to start",
+          "desc_en": "Linear, Ring, Half circle, Water wave fill."
         },
         {
           "slug": "ripple",
@@ -2026,7 +2365,10 @@
             "方块波",
             "长按放大"
           ],
-          "path": "/css-fx/ripple"
+          "path": "/css-fx/ripple",
+          "title_en": "Ripple",
+          "hint_en": "Top Switch · Click to produce",
+          "desc_en": "Water ripples: a circle appears at the point of impact, and the radius continues to grow, Transparency gets smaller, like the surface."
         },
         {
           "slug": "accordion",
@@ -2045,7 +2387,10 @@
             "边框高亮",
             "卡片式"
           ],
-          "path": "/css-fx/accordion"
+          "path": "/css-fx/accordion",
+          "title_en": "Accordion",
+          "hint_en": "Top Switch · Expand and close",
+          "desc_en": "Light a piece, High degree of transition."
         },
         {
           "slug": "modal",
@@ -2064,7 +2409,10 @@
             "弹跳入",
             "翻转入"
           ],
-          "path": "/css-fx/modal"
+          "path": "/css-fx/modal",
+          "title_en": "Modal In / Out",
+          "hint_en": "Top switch entrance and exit",
+          "desc_en": "Modal enter/exit。"
         },
         {
           "slug": "carousel",
@@ -2083,7 +2431,10 @@
             "垂直",
             "无限循环"
           ],
-          "path": "/css-fx/carousel"
+          "path": "/css-fx/carousel",
+          "title_en": "Carousel",
+          "hint_en": "Top Toggle",
+          "desc_en": "Rotation: A set of cards is drawn horizontally, smoothing by time or click to the next one."
         },
         {
           "slug": "reveal",
@@ -2102,7 +2453,10 @@
             "像素块",
             "模糊清晰"
           ],
-          "path": "/css-fx/reveal"
+          "path": "/css-fx/reveal",
+          "title_en": "Reveal",
+          "hint_en": "Top Switch · Click to trigger",
+          "desc_en": "Erase, The blinds, Round diffusion, Diagonal, Pixels, Fuzzy and clear."
         },
         {
           "slug": "neon",
@@ -2121,7 +2475,10 @@
             "双色交替",
             "故障闪"
           ],
-          "path": "/css-fx/neon"
+          "path": "/css-fx/neon",
+          "title_en": "Neon",
+          "hint_en": "Top Switch · Colours / Speed",
+          "desc_en": "Multilayer Shadow Simulation Text-shadow / Box-shadow neon."
         },
         {
           "slug": "liquid",
@@ -2140,7 +2497,10 @@
             "波浪底边",
             "粘滞切换"
           ],
-          "path": "/css-fx/liquid"
+          "path": "/css-fx/liquid",
+          "title_en": "Liquid",
+          "hint_en": "Top Switch · Suspended Transform",
+          "desc_en": "Blob side, Drop of water, At the bottom of the wave, sticky stretches when suspended."
         },
         {
           "slug": "marquee",
@@ -2159,11 +2519,14 @@
             "垂直",
             "变速"
           ],
-          "path": "/css-fx/marquee"
+          "path": "/css-fx/marquee",
+          "title_en": "Marquee",
+          "hint_en": "Top Switch · Turn speed",
+          "desc_en": "Horizontal Text, Double, The emblem, 1.15 p Operations."
         },
         {
           "slug": "kenburns",
-          "title": "Ken Burns",
+          "title": "Ken Burns 推镜",
           "hint": "调颜色/速度",
           "desc": "图片缓动缩放平移。",
           "tag": "kenburns",
@@ -2176,7 +2539,10 @@
             "对角",
             "急拉"
           ],
-          "path": "/css-fx/kenburns"
+          "path": "/css-fx/kenburns",
+          "title_en": "Ken Burns",
+          "hint_en": "Colours / Speed",
+          "desc_en": "Picture slow scaling."
         },
         {
           "slug": "shake",
@@ -2195,7 +2561,10 @@
             "心跳",
             "震动条"
           ],
-          "path": "/css-fx/shake"
+          "path": "/css-fx/shake",
+          "title_en": "Shake Feedback",
+          "hint_en": "Top Switch · Click to trigger",
+          "desc_en": "Left and right, The top and bottom of sth, Rotate, Elasticity, Heartbeat, Vibrator bar."
         },
         {
           "slug": "keyseq",
@@ -2216,7 +2585,10 @@
             "闪烁摩斯",
             "多段叙事"
           ],
-          "path": "/css-fx/keyseq"
+          "path": "/css-fx/keyseq",
+          "title_en": "Keyframe Sequence",
+          "hint_en": "Top Switch · Play Control",
+          "desc_en": "Complicated @keyframes."
         },
         {
           "slug": "neumorph",
@@ -2235,7 +2607,10 @@
             "彩光",
             "单"
           ],
-          "path": "/css-fx/neumorph"
+          "path": "/css-fx/neumorph",
+          "title_en": "Neumorphism",
+          "hint_en": "Neumorphism",
+          "desc_en": "as the shadows rise / Dimple button sense."
         },
         {
           "slug": "cursor-fx",
@@ -2254,7 +2629,10 @@
             "大",
             "小"
           ],
-          "path": "/css-fx/cursor-fx"
+          "path": "/css-fx/cursor-fx",
+          "title_en": "Custom Cursor",
+          "hint_en": "Follow cursor",
+          "desc_en": "Custom cursor rings follow a pointer (or an automatic cruise) with dragtails."
         },
         {
           "slug": "text-stroke",
@@ -2273,7 +2651,10 @@
             "霓虹",
             "单"
           ],
-          "path": "/css-fx/text-stroke"
+          "path": "/css-fx/text-stroke",
+          "title_en": "Animated Text Stroke",
+          "hint_en": "Scratch and run",
+          "desc_en": "Text scrutinizing along the path (stroke-dashoffset sense), which flows in vain."
         },
         {
           "slug": "border-beam",
@@ -2292,7 +2673,10 @@
             "双色",
             "单色"
           ],
-          "path": "/css-fx/border-beam"
+          "path": "/css-fx/border-beam",
+          "title_en": "Border Beam",
+          "hint_en": "Rotate Edge",
+          "desc_en": "The beam rotates along a rectangle frame, often in high-light cards."
         },
         {
           "slug": "spotlight",
@@ -2311,13 +2695,18 @@
             "彩",
             "白"
           ],
-          "path": "/css-fx/spotlight"
+          "path": "/css-fx/spotlight",
+          "title_en": "Spotlight Follow",
+          "hint_en": "Pointer light",
+          "desc_en": "Turns out there's a light on the screen that follows the Associated Pointer and lights out the cards below."
         }
-      ]
+      ],
+      "name_en": "CSS Animation & Effects",
+      "intro_en": "A CSS motion lab: 36 effects — pulse, loaders, hover, carousel, glass, neon — redrawn on canvas with hover readouts and formulas."
     },
     {
       "key": "canvas",
-      "name": "Canvas 2D",
+      "name": "Canvas 2D 绘图",
       "icon": "◐",
       "intro": "HTML5 Canvas 2D 即时绘制：粒子系统、字符雨、烟花物理与手绘画板。",
       "tech": [
@@ -2341,11 +2730,14 @@
             "密集",
             "高速"
           ],
-          "path": "/canvas/network"
+          "path": "/canvas/network",
+          "title_en": "Particle Network",
+          "hint_en": "Move pointer attracts particles",
+          "desc_en": "Classic network background of particle distance connections."
         },
         {
           "slug": "matrix",
-          "title": "代码雨 Matrix",
+          "title": "代码雨",
           "hint": "移动指针点亮字符列",
           "desc": "黑客帝国风格的字符雨。",
           "tag": "text",
@@ -2359,7 +2751,10 @@
             "大字",
             "急雨"
           ],
-          "path": "/canvas/matrix"
+          "path": "/canvas/matrix",
+          "title_en": "Matrix Rain",
+          "hint_en": "Light character bar for moving pointer",
+          "desc_en": "Hacking Empire style character rain."
         },
         {
           "slug": "fireworks",
@@ -2377,7 +2772,10 @@
             "快节奏",
             "慢落"
           ],
-          "path": "/canvas/fireworks"
+          "path": "/canvas/fireworks",
+          "title_en": "Fireworks",
+          "hint_en": "Click on any position to launch",
+          "desc_en": "Pyrotechnics with gravity and tails."
         },
         {
           "slug": "draw",
@@ -2395,7 +2793,10 @@
             "不褪色",
             "高平滑"
           ],
-          "path": "/canvas/draw"
+          "path": "/canvas/draw",
+          "title_en": "Drawing Board",
+          "hint_en": "Hold on tow drawings · Double click emptiness",
+          "desc_en": "Index smooth brushes and speed sensors wide."
         },
         {
           "slug": "orbits",
@@ -2417,7 +2818,10 @@
             "粗点",
             "扰动强"
           ],
-          "path": "/canvas/orbits"
+          "path": "/canvas/orbits",
+          "title_en": "Orbiting Particles",
+          "hint_en": "Move pointer disturbing particles · Look at them back in orbit",
+          "desc_en": "Multi-orbit particles operating according to the third law of Kepler."
         },
         {
           "slug": "trail",
@@ -2440,11 +2844,14 @@
             "萤火",
             "水彩"
           ],
-          "path": "/canvas/trail"
+          "path": "/canvas/trail",
+          "title_en": "Pointer Trail",
+          "hint_en": "Move or Shake Pointer · Look at ribbon habit",
+          "desc_en": "A chain plug-in pointer drags tail ribbon."
         },
         {
           "slug": "blob",
-          "title": "软体 Blob",
+          "title": "软体团块",
           "hint": "把指针压进软体推它 · 调柔软度",
           "desc": "弹簧顶点构成的软体 Blob。",
           "tag": "blob",
@@ -2460,7 +2867,10 @@
             "快",
             "大"
           ],
-          "path": "/canvas/blob"
+          "path": "/canvas/blob",
+          "title_en": "Soft Blob",
+          "hint_en": "Put your finger on it · Softness",
+          "desc_en": "The spring top is made up of software Blob."
         },
         {
           "slug": "rain",
@@ -2480,7 +2890,10 @@
             "火花雨",
             "慢飘"
           ],
-          "path": "/canvas/rain"
+          "path": "/canvas/rain",
+          "title_en": "Particle Rain",
+          "hint_en": "The pointer is the umbrella · 3.1",
+          "desc_en": "Particle rain at terminal speed under air resistance."
         },
         {
           "slug": "wave",
@@ -2501,7 +2914,10 @@
             "极坐标波",
             "噪声波"
           ],
-          "path": "/canvas/wave"
+          "path": "/canvas/wave",
+          "title_en": "Waves",
+          "hint_en": "Pointer close to surface pressure · Inverted",
+          "desc_en": "Multiple sine waves with water surface."
         },
         {
           "slug": "noise",
@@ -2522,7 +2938,10 @@
             "像素风",
             "湍流"
           ],
-          "path": "/canvas/noise"
+          "path": "/canvas/noise",
+          "title_en": "Noise Field",
+          "hint_en": "Move pointer to read noise values · Switch Frequency",
+          "desc_en": "FBM Noise Field."
         },
         {
           "slug": "flock",
@@ -2541,7 +2960,10 @@
             "捕食逃逸",
             "网格对齐"
           ],
-          "path": "/canvas/flock"
+          "path": "/canvas/flock",
+          "title_en": "Flocking",
+          "hint_en": "Pointers are predators · Move in and disperse",
+          "desc_en": "Boid Emissions, Align, Combine three rules."
         },
         {
           "slug": "burst",
@@ -2562,7 +2984,10 @@
             "爱心雨",
             "字母喷"
           ],
-          "path": "/canvas/burst"
+          "path": "/canvas/burst",
+          "title_en": "Burst",
+          "hint_en": "Click on any position to explode · Switch Shape",
+          "desc_en": "Speed field determines the shape particle eruption."
         },
         {
           "slug": "flow",
@@ -2581,7 +3006,10 @@
             "吸引子",
             "双涡"
           ],
-          "path": "/canvas/flow"
+          "path": "/canvas/flow",
+          "title_en": "Flow Field",
+          "hint_en": "Move pointer stir Governance · Busy. Turn it around",
+          "desc_en": "Noise field-driven vector flow lines."
         },
         {
           "slug": "gridwave",
@@ -2600,7 +3028,10 @@
             "彩点",
             "线框"
           ],
-          "path": "/canvas/gridwave"
+          "path": "/canvas/gridwave",
+          "title_en": "Grid Wave",
+          "hint_en": "Move pointer to change wave source · Decomposition",
+          "desc_en": "Decline round wave-driven grid ups and downs."
         },
         {
           "slug": "ink",
@@ -2617,7 +3048,10 @@
             "彩墨",
             "水彩"
           ],
-          "path": "/canvas/ink"
+          "path": "/canvas/ink",
+          "title_en": "Ink Spread",
+          "hint_en": "Click Ink · Redo diffusion factor D",
+          "desc_en": "Goss spreads the equation ink."
         },
         {
           "slug": "aurora",
@@ -2634,7 +3068,10 @@
             "粉橙",
             "慢漂"
           ],
-          "path": "/canvas/aurora"
+          "path": "/canvas/aurora",
+          "title_en": "Aurora",
+          "hint_en": "Move pointer right or left blowing auroral light",
+          "desc_en": "The auroral band of the noise curtain."
         },
         {
           "slug": "constellation",
@@ -2651,7 +3088,10 @@
             "亮线",
             "暗线"
           ],
-          "path": "/canvas/constellation"
+          "path": "/canvas/constellation",
+          "title_en": "Constellations",
+          "hint_en": "The pointer connects to the nearby stars · Transfer k",
+          "desc_en": "k Constellation of a nearby map."
         },
         {
           "slug": "sand",
@@ -2667,7 +3107,10 @@
             "粗沙",
             "彩沙"
           ],
-          "path": "/canvas/sand"
+          "path": "/canvas/sand",
+          "title_en": "Falling Sand",
+          "hint_en": "Submitt the sand · Contribution",
+          "desc_en": "The mother's motive is to fall into the sand and make peace."
         },
         {
           "slug": "kaleido",
@@ -2684,7 +3127,10 @@
             "12 瓣",
             "彩镜"
           ],
-          "path": "/canvas/kaleido"
+          "path": "/canvas/kaleido",
+          "title_en": "Kaleidoscope",
+          "hint_en": "Draw lines on Throughout Arabian Consistent Proceedings · Autosymmetric Copy",
+          "desc_en": "Rotation is symmetrical to mirrors of a kamikaze."
         },
         {
           "slug": "lightning",
@@ -2700,7 +3146,10 @@
             "分叉",
             "暴闪"
           ],
-          "path": "/canvas/lightning"
+          "path": "/canvas/lightning",
+          "title_en": "Lightning",
+          "hint_en": "The pointer decides the drop point · Click to flash immediately",
+          "desc_en": "Middle-point fractal lightning."
         },
         {
           "slug": "cloth",
@@ -2716,7 +3165,10 @@
             "硬布",
             "彩布"
           ],
-          "path": "/canvas/cloth"
+          "path": "/canvas/cloth",
+          "title_en": "Cloth",
+          "hint_en": "Hold the drag and grab the fabric · Let go!",
+          "desc_en": "Verlet + distance bound fabric."
         },
         {
           "slug": "spiral",
@@ -2733,7 +3185,10 @@
             "双螺旋",
             "彩旋"
           ],
-          "path": "/canvas/spiral"
+          "path": "/canvas/spiral",
+          "title_en": "Spiral Sampling",
+          "hint_en": "Moving pointer to read radius · Toggle screw type",
+          "desc_en": "Archimed / logarithm / Pema screw."
         },
         {
           "slug": "tunnel",
@@ -2749,7 +3204,10 @@
             "方管",
             "彩隧"
           ],
-          "path": "/canvas/tunnel"
+          "path": "/canvas/tunnel",
+          "title_en": "Tunnel Flight",
+          "hint_en": "Move the pointer to turn the tunnel around · Change the line",
+          "desc_en": "Visual projection r = f · R / z's fake 3D tunnel."
         },
         {
           "slug": "fire",
@@ -2768,7 +3226,10 @@
             "宽焰",
             "风吹"
           ],
-          "path": "/canvas/fire"
+          "path": "/canvas/fire",
+          "title_en": "Fire",
+          "hint_en": "Move pointer to light fire · Winds",
+          "desc_en": "The heat cells are self-motive flames."
         },
         {
           "slug": "smoke",
@@ -2787,7 +3248,10 @@
             "慢散",
             "快喷"
           ],
-          "path": "/canvas/smoke"
+          "path": "/canvas/smoke",
+          "title_en": "Smoke",
+          "hint_en": "Move pointer smokes anywhere",
+          "desc_en": "Floating + streaming + spreading smoke."
         },
         {
           "slug": "reactdiff",
@@ -2806,7 +3270,10 @@
             "混沌",
             "慢演化"
           ],
-          "path": "/canvas/reactdiff"
+          "path": "/canvas/reactdiff",
+          "title_en": "Reaction–Diffusion",
+          "hint_en": "UNCTs: · Toggle Blanket",
+          "desc_en": "Gray-Scott reaction diffusion model."
         },
         {
           "slug": "isometric",
@@ -2825,11 +3292,14 @@
             "密",
             "彩虹高"
           ],
-          "path": "/canvas/isometric"
+          "path": "/canvas/isometric",
+          "title_en": "Isometric Blocks",
+          "hint_en": "Move the pointer up the post · Alteration",
+          "desc_en": "2.5D array of equidistance projection."
         },
         {
           "slug": "metaballs2d",
-          "title": "2D Metaball",
+          "title": "2D 融球",
           "hint": "拖动第一个球去粘其他球",
           "desc": "隐式等值面构成的 2D 融球。",
           "tag": "canvas",
@@ -2844,7 +3314,10 @@
             "彩",
             "单"
           ],
-          "path": "/canvas/metaballs2d"
+          "path": "/canvas/metaballs2d",
+          "title_en": "2D Metaballs",
+          "hint_en": "Drag the first ball to stick the other ball",
+          "desc_en": "The hidden equivalent of a 2D melting ball."
         },
         {
           "slug": "pixelate",
@@ -2863,11 +3336,14 @@
             "彩",
             "单"
           ],
-          "path": "/canvas/pixelate"
+          "path": "/canvas/pixelate",
+          "title_en": "Pixelate Cursor",
+          "hint_en": "Move pointer contrasts original map with lens",
+          "desc_en": "Drops the pixelization of sampling and the quantification of colour scales."
         },
         {
           "slug": "ascii",
-          "title": "ASCII 艺术",
+          "title": "ASCII 字符画",
           "hint": "移动指针照亮字符 · 调字号",
           "desc": "亮度映射字符的 ASCII 字符画。",
           "tag": "canvas",
@@ -2882,7 +3358,10 @@
             "彩",
             "单"
           ],
-          "path": "/canvas/ascii"
+          "path": "/canvas/ascii",
+          "title_en": "ASCII Art",
+          "hint_en": "Mobile pointer light characters · Transcript",
+          "desc_en": "ASCII character painting for bright map characters."
         },
         {
           "slug": "ripple-c",
@@ -2901,13 +3380,18 @@
             "强",
             "弱"
           ],
-          "path": "/canvas/ripple-c"
+          "path": "/canvas/ripple-c",
+          "title_en": "Click Water Ripple",
+          "hint_en": "Click or drag drops · Deterrence",
+          "desc_en": "The water wavering of the discrete fluctuating equation."
         }
-      ]
+      ],
+      "name_en": "Canvas 2D",
+      "intro_en": "Immediate-mode HTML5 Canvas 2D: particle systems, character rain, firework physics and a drawing board."
     },
     {
       "key": "svg",
-      "name": "SVG 动画",
+      "name": "SVG 矢量动画",
       "icon": "◇",
       "intro": "矢量图形动画原理：stroke-dasharray 描边、路径插值变形、遮罩与渐变，用 Path2D 在画布上逐帧复现，悬停读出路径数值。",
       "tech": [
@@ -2926,18 +3410,24 @@
           "mod": "kit-svg",
           "fn": "mount",
           "variant": "draw",
-          "path": "/svg/draw"
+          "path": "/svg/draw",
+          "title_en": "Path Stroke Drawing",
+          "hint_en": "Click to replay",
+          "desc_en": "Use get TotalLength to achieve handwritten edges."
         },
         {
           "slug": "morph",
-          "title": "形状变形 Morph",
+          "title": "形状变形",
           "hint": "点击按钮切换形状",
           "desc": "同构路径点插值，平滑形变。",
           "tag": "morph",
           "mod": "kit-svg",
           "fn": "mount",
           "variant": "morph",
-          "path": "/svg/morph"
+          "path": "/svg/morph",
+          "title_en": "Shape Morph",
+          "hint_en": "Click on the button to switch shape",
+          "desc_en": "Symmetric Path Point interpolation, smooth transformation."
         },
         {
           "slug": "icons",
@@ -2948,7 +3438,10 @@
           "mod": "kit-svg",
           "fn": "mount",
           "variant": "icons",
-          "path": "/svg/icons"
+          "path": "/svg/icons",
+          "title_en": "Animated Icons",
+          "hint_en": "Click icon to switch status",
+          "desc_en": "Menu / Close, Play / Pause, Load, icon action."
         },
         {
           "slug": "stroke",
@@ -2973,7 +3466,10 @@
             "山脉",
             "签名"
           ],
-          "path": "/svg/stroke"
+          "path": "/svg/stroke",
+          "title_en": "Stroke Paths",
+          "hint_en": "Top Packing Shape · Click to replay",
+          "desc_en": "SVG stroke-dash."
         },
         {
           "slug": "icon-anim",
@@ -2998,11 +3494,14 @@
             "菜单变X",
             "加载弧"
           ],
-          "path": "/svg/icon-anim"
+          "path": "/svg/icon-anim",
+          "title_en": "Icon Motion",
+          "hint_en": "Top Switch · Click Switch",
+          "desc_en": "SVG icon status switch."
         },
         {
           "slug": "smil",
-          "title": "SMIL/CSS 动画",
+          "title": "SMIL / CSS 动画",
           "hint": "顶部切换",
           "desc": "SVG 声明式动画。",
           "tag": "smil",
@@ -3019,7 +3518,10 @@
             "旋转齿轮",
             "闪烁点"
           ],
-          "path": "/svg/smil"
+          "path": "/svg/smil",
+          "title_en": "SMIL / CSS Animation",
+          "hint_en": "Top Switch",
+          "desc_en": "SVG declaration animation."
         },
         {
           "slug": "dash",
@@ -3038,7 +3540,10 @@
             "虚线边框",
             "多段色"
           ],
-          "path": "/svg/dash"
+          "path": "/svg/dash",
+          "title_en": "Flowing Dashes",
+          "hint_en": "Top Switch · Reconciliation speed",
+          "desc_en": "Stroke-dashoffset loop."
         },
         {
           "slug": "drawtext",
@@ -3057,7 +3562,10 @@
             "填充延迟",
             "中文"
           ],
-          "path": "/svg/drawtext"
+          "path": "/svg/drawtext",
+          "title_en": "Text Stroke",
+          "hint_en": "Top Switch · Click to replay",
+          "desc_en": "SVG text path aside."
         },
         {
           "slug": "ring",
@@ -3076,7 +3584,10 @@
             "缺口环",
             "仪表针"
           ],
-          "path": "/svg/ring"
+          "path": "/svg/ring",
+          "title_en": "Progress Ring",
+          "hint_en": "Top Switch · Drag Value",
+          "desc_en": "SVG circle progress."
         },
         {
           "slug": "filter-svg",
@@ -3097,7 +3608,10 @@
             "形态学",
             "光晕"
           ],
-          "path": "/svg/filter-svg"
+          "path": "/svg/filter-svg",
+          "title_en": "SVG Filters",
+          "hint_en": "Top Switch · Drag Parameters",
+          "desc_en": "FeGassian interferer, etc."
         },
         {
           "slug": "mask",
@@ -3116,7 +3630,10 @@
             "菱形窗",
             "跟随指针"
           ],
-          "path": "/svg/mask"
+          "path": "/svg/mask",
+          "title_en": "Masks",
+          "hint_en": "Top Switch · Move Mask",
+          "desc_en": "SVG mask/clipPath。"
         },
         {
           "slug": "follow",
@@ -3135,11 +3652,14 @@
             "变速",
             "无限符"
           ],
-          "path": "/svg/follow"
+          "path": "/svg/follow",
+          "title_en": "Path Following",
+          "hint_en": "Top Switch · Play",
+          "desc_en": "The object moves along path."
         },
         {
           "slug": "blob-svg",
-          "title": "SVG Blob",
+          "title": "SVG 团块",
           "hint": "调颜色/速度",
           "desc": "path 插值有机形。",
           "tag": "blob",
@@ -3153,7 +3673,10 @@
             "多彩",
             "慢"
           ],
-          "path": "/svg/blob-svg"
+          "path": "/svg/blob-svg",
+          "title_en": "SVG Blob",
+          "hint_en": "Colours / Speed",
+          "desc_en": "path plugin organic."
         },
         {
           "slug": "chart-draw",
@@ -3172,7 +3695,10 @@
             "饼弧",
             "散点连"
           ],
-          "path": "/svg/chart-draw"
+          "path": "/svg/chart-draw",
+          "title_en": "Chart Draw-in",
+          "hint_en": "Top Switch · Click to replay",
+          "desc_en": "The contours are essentially a <polyline> / <Path>, the area map is filled by supplementing the closed area below the fold."
         },
         {
           "slug": "sprite",
@@ -3189,7 +3715,10 @@
             "旋转集",
             "大小集"
           ],
-          "path": "/svg/sprite"
+          "path": "/svg/sprite",
+          "title_en": "Icon Sprites",
+          "hint_en": "Top Switch · Hover",
+          "desc_en": "SVG sprite / use。"
         },
         {
           "slug": "gradient-svg",
@@ -3208,7 +3737,10 @@
             "描边渐变",
             "文字渐变"
           ],
-          "path": "/svg/gradient-svg"
+          "path": "/svg/gradient-svg",
+          "title_en": "Animated Gradient",
+          "hint_en": "Top Switch",
+          "desc_en": "linear / Radio Gradient Animation."
         },
         {
           "slug": "line-draw",
@@ -3227,7 +3759,10 @@
             "虚线",
             "实线"
           ],
-          "path": "/svg/line-draw"
+          "path": "/svg/line-draw",
+          "title_en": "Growing Lines",
+          "hint_en": "Path Growth",
+          "desc_en": "Each line is a double Bézier curve <Path d= \"M Center Q Control Point End\"."
         },
         {
           "slug": "check-morph",
@@ -3246,7 +3781,10 @@
             "彩",
             "单"
           ],
-          "path": "/svg/check-morph"
+          "path": "/svg/check-morph",
+          "title_en": "Checkmark Morph",
+          "hint_en": "Form-to-Tick",
+          "desc_en": "Checkbox from Empty Box to Solid Circle + Round: Round radius rx bigger, Fill from transparency to colour, It's all right"
         },
         {
           "slug": "loader-svg",
@@ -3265,7 +3803,10 @@
             "快",
             "慢"
           ],
-          "path": "/svg/loader-svg"
+          "path": "/svg/loader-svg",
+          "title_en": "SVG Loader Arc",
+          "hint_en": "Rotate Arc",
+          "desc_en": "A <circle> only draws an arc (dasharay = arc long + remaining perimeter) with animateTr"
         },
         {
           "slug": "menu-morph",
@@ -3284,9 +3825,14 @@
             "粗",
             "细"
           ],
-          "path": "/svg/menu-morph"
+          "path": "/svg/menu-morph",
+          "title_en": "Menu Morph",
+          "hint_en": "Hamburger X",
+          "desc_en": "The Hamburg menu is three <line>."
         }
-      ]
+      ],
+      "name_en": "SVG Animation",
+      "intro_en": "How vector animation works: stroke-dasharray drawing, path morphing, masks and gradients, replayed frame by frame with Path2D; hover to read path values."
     },
     {
       "key": "gsap",
@@ -3303,25 +3849,31 @@
       "demos": [
         {
           "slug": "timeline",
-          "title": "Timeline 时间轴",
+          "title": "时间轴 Timeline",
           "hint": "指针移到轨道查看片段",
           "desc": "多段补间按时间轴编排，重叠衔接后 yoyo 倒放。",
           "tag": "timeline",
           "mod": "kit-gsap",
           "fn": "mount",
           "variant": "timeline",
-          "path": "/gsap/timeline"
+          "path": "/gsap/timeline",
+          "title_en": "Timeline",
+          "hint_en": "Move pointer to orbit to view clips",
+          "desc_en": "Multiple patches are organized in a time-axis format, and the overlap is followed by the yoyo reverse."
         },
         {
           "slug": "scroll",
-          "title": "ScrollTrigger",
+          "title": "滚动触发 ScrollTrigger",
           "hint": "指针上下移动控制滚动",
           "desc": "区块滚过触发线时，卡片随滚动进度滑入、淡入。",
           "tag": "scroll",
           "mod": "kit-gsap",
           "fn": "mount",
           "variant": "scroll",
-          "path": "/gsap/scroll"
+          "path": "/gsap/scroll",
+          "title_en": "ScrollTrigger",
+          "hint_en": "Move Control Scroll Up and Down Pointer",
+          "desc_en": "When blocks roll over the trigger line, the card slides Widening Progress, Dilution."
         },
         {
           "slug": "text",
@@ -3332,7 +3884,10 @@
           "mod": "kit-gsap",
           "fn": "mount",
           "variant": "text",
-          "path": "/gsap/text"
+          "path": "/gsap/text",
+          "title_en": "Staggered Text",
+          "hint_en": "Staggered entry",
+          "desc_en": "Split word for word + stagger heading."
         },
         {
           "slug": "bounce",
@@ -3351,7 +3906,10 @@
             "大",
             "小"
           ],
-          "path": "/gsap/bounce"
+          "path": "/gsap/bounce",
+          "title_en": "Bounce In",
+          "hint_en": "I'm sorry, boonce",
+          "desc_en": "Bounce into the field: Once a small ball hits the ground, press bource.out and bounces back several times, each time lower than last time."
         },
         {
           "slug": "stagger",
@@ -3370,7 +3928,10 @@
             "慢",
             "回弹"
           ],
-          "path": "/gsap/stagger"
+          "path": "/gsap/stagger",
+          "title_en": "Staggered Cards",
+          "hint_en": "In turn",
+          "desc_en": "Cross-entry: a group of cards do the same animation, but starts a little later than the previous one (stagger interval)."
         },
         {
           "slug": "path",
@@ -3389,7 +3950,10 @@
             "慢",
             "平滑"
           ],
-          "path": "/gsap/path"
+          "path": "/gsap/path",
+          "title_en": "Path Following",
+          "hint_en": "Move along the path · autoRotate",
+          "desc_en": "Let objects move along a pre-drawn route."
         },
         {
           "slug": "spin-out",
@@ -3408,7 +3972,10 @@
             "弹性入",
             "淡入"
           ],
-          "path": "/gsap/spin-out"
+          "path": "/gsap/spin-out",
+          "title_en": "Spin Out",
+          "hint_en": "Spin down and bounce back",
+          "desc_en": "Shrink while spinning the squares, make it transparent until it disappears ease: power3.in，Turn faster) and use it from a very small state bac…"
         },
         {
           "slug": "elastic",
@@ -3427,7 +3994,10 @@
             "yoyo",
             "单次感"
           ],
-          "path": "/gsap/elastic"
+          "path": "/gsap/elastic",
+          "title_en": "Elastic Scale",
+          "hint_en": "Scale",
+          "desc_en": "It's like pulling out the rubber band and letting go. The elements go past the target size when they zoom in, We'll just hang around and stop."
         },
         {
           "slug": "colorflash",
@@ -3446,7 +4016,10 @@
             "霓虹",
             "柔和"
           ],
-          "path": "/gsap/colorflash"
+          "path": "/gsap/colorflash",
+          "title_en": "Color Flash",
+          "hint_en": "Key Colour Cycle Gradient",
+          "desc_en": "GSAP can fix the color directly -- it will tear it apart. Red, Green, Blue, smooth transition from old to new."
         },
         {
           "slug": "flipcard",
@@ -3465,7 +4038,10 @@
             "交错",
             "同步"
           ],
-          "path": "/gsap/flipcard"
+          "path": "/gsap/flipcard",
+          "title_en": "Flip Cards",
+          "hint_en": "rotatey over",
+          "desc_en": "Turn the cards around the vertical middle line at 180 degrees, turn at 90 degrees and side to us, and then see the back."
         },
         {
           "slug": "ring",
@@ -3484,7 +4060,10 @@
             "双环感",
             "单环"
           ],
-          "path": "/gsap/ring"
+          "path": "/gsap/ring",
+          "title_en": "Progress Ring",
+          "hint_en": "Arc patch",
+          "desc_en": "The arc length of the circle has increased from 0 to the target percentage, like the \"ring\" that loads progress or moves App."
         },
         {
           "slug": "type",
@@ -3503,7 +4082,10 @@
             "仅打出",
             "循环"
           ],
-          "path": "/gsap/type"
+          "path": "/gsap/type",
+          "title_en": "Typewriter",
+          "hint_en": "Type Out and Delete",
+          "desc_en": "\"Show one more word every fixed time on the axis.\" It looks like someone's typing; it's all done. Stop 1 Authorities, one word at a time and one word at a time."
         },
         {
           "slug": "parallax-g",
@@ -3522,7 +4104,10 @@
             "慢",
             "快"
           ],
-          "path": "/gsap/parallax-g"
+          "path": "/gsap/parallax-g",
+          "title_en": "Parallax Layers",
+          "hint_en": "Pointer left and right motion lens",
+          "desc_en": "The nearby trees retreated while the distant mountains moved slowly, and the brain was so close by the speed difference."
         },
         {
           "slug": "grid-stagger",
@@ -3541,11 +4126,14 @@
             "淡出",
             "边缘优先"
           ],
-          "path": "/gsap/grid-stagger"
+          "path": "/gsap/grid-stagger",
+          "title_en": "Grid Stagger",
+          "hint_en": "The pointer is the starting point for proliferation",
+          "desc_en": "Stagger's grid and from options allow delay to be calculated by \"range from the start\" and animate from point one like a wave"
         },
         {
           "slug": "scrub",
-          "title": "时间轴 scrub",
+          "title": "时间轴拖动 scrub",
           "hint": "指针左右拖动进度",
           "desc": "scrub 时间轴：动画进度不再自己播放，而是跟着拖动/滚动位置走，拖到哪动画就到哪。",
           "tag": "gsap",
@@ -3560,13 +4148,18 @@
             "快感",
             "线性"
           ],
-          "path": "/gsap/scrub"
+          "path": "/gsap/scrub",
+          "title_en": "Timeline Scrub",
+          "hint_en": "Drag progress around the pointer",
+          "desc_en": "Scrub Time axis: Animation progress is no longer played by itself, but drags with it / Scroll where you want to drag it to the animation."
         }
-      ]
+      ],
+      "name_en": "GSAP Animation",
+      "intro_en": "A GSAP concepts lab: tweens, easing curves, Timeline, stagger, ScrollTrigger and scrub, replayed by a hand-written tween engine alongside the matching GSAP code."
     },
     {
       "key": "webgl",
-      "name": "WebGL / Shader",
+      "name": "WebGL 着色器",
       "icon": "◉",
       "intro": "原生 WebGL 全屏片元着色器：程序化噪声、等离子与光线步进，全部在 GPU 实时计算。",
       "tech": [
@@ -3585,33 +4178,42 @@
           "mod": "kit-webgl",
           "fn": "mount",
           "variant": "noise",
-          "path": "/webgl/noise"
+          "path": "/webgl/noise",
+          "title_en": "Noise Fluid Background",
+          "hint_en": "Move pointer disturbance",
+          "desc_en": "FBM Fractal Noise + Domain Distorted Movement Background."
         },
         {
           "slug": "plasma",
-          "title": "等离子 Plasma",
+          "title": "等离子",
           "hint": "经典 demoscene 效果",
           "desc": "多重正弦叠加的彩色等离子。",
           "tag": "plasma",
           "mod": "kit-webgl",
           "fn": "mount",
           "variant": "plasma",
-          "path": "/webgl/plasma"
+          "path": "/webgl/plasma",
+          "title_en": "Plasma",
+          "hint_en": "classic demoscene effects",
+          "desc_en": "A colour plasma with multiple sines."
         },
         {
           "slug": "raymarch",
-          "title": "光线步进 Metaballs",
+          "title": "光线步进融球",
           "hint": "移动指针旋转视角",
           "desc": "SDF 光线步进的融合球体与光照。",
           "tag": "sdf",
           "mod": "kit-webgl",
           "fn": "mount",
           "variant": "raymarch",
-          "path": "/webgl/raymarch"
+          "path": "/webgl/raymarch",
+          "title_en": "Raymarched Metaballs",
+          "hint_en": "Move pointer rotation view",
+          "desc_en": "SDF light-lined integration sphere and light."
         },
         {
           "slug": "voronoi",
-          "title": "Voronoi",
+          "title": "泰森多边形 Voronoi",
           "hint": "细胞噪声",
           "desc": "沃罗诺伊着色：每个像素找离它最近的种子点，按距离上色，形成细胞状色块。",
           "tag": "shader",
@@ -3626,7 +4228,10 @@
             "冷",
             "暖"
           ],
-          "path": "/webgl/voronoi"
+          "path": "/webgl/voronoi",
+          "title_en": "Voronoi",
+          "hint_en": "Cell noise",
+          "desc_en": "Volonoy colours: each pixel looks for the nearest seed point to it, colours it above the distance, and forms a cell-shaped piece."
         },
         {
           "slug": "warp",
@@ -3645,7 +4250,10 @@
             "细噪",
             "粗噪"
           ],
-          "path": "/webgl/warp"
+          "path": "/webgl/warp",
+          "title_en": "Domain Warping",
+          "hint_en": "Noise Distortion",
+          "desc_en": "You push the coordinates by noise, then draw stripes on the distorted coordinates / On board, the rule pattern becomes a flow of ripples."
         },
         {
           "slug": "spiral",
@@ -3664,7 +4272,10 @@
             "多臂",
             "单臂"
           ],
-          "path": "/webgl/spiral"
+          "path": "/webgl/spiral",
+          "title_en": "Spiral",
+          "hint_en": "Polar Coordinate Spiral",
+          "desc_en": "Change pixels to angles θ And Radius r，Brightness sin(Arms · θ − Density ·  r + t)，Just get the spiral arm."
         },
         {
           "slug": "checker",
@@ -3683,7 +4294,10 @@
             "高对比",
             "柔"
           ],
-          "path": "/webgl/checker"
+          "path": "/webgl/checker",
+          "title_en": "Warped Checkerboard",
+          "hint_en": "Skew Board",
+          "desc_en": "floor(x)+floor(y) puppets decide black and white; first twist coordinates with sin and the grids fluctuate like fabric."
         },
         {
           "slug": "tunnel",
@@ -3702,7 +4316,10 @@
             "霓虹",
             "暗"
           ],
-          "path": "/webgl/tunnel"
+          "path": "/webgl/tunnel",
+          "title_en": "Tunnel",
+          "hint_en": "Tunnel Flight",
+          "desc_en": "Use; to make use of; to employ 1/r Depth z、Angle θ As the circle coordinates, z Over time, it's like flying forward in a pipe."
         },
         {
           "slug": "ripple",
@@ -3721,7 +4338,10 @@
             "快",
             "慢"
           ],
-          "path": "/webgl/ripple"
+          "path": "/webgl/ripple",
+          "title_en": "Ripples",
+          "hint_en": "Mouse Curve",
+          "desc_en": "Each wave source sends round waves sin (range) / A CWC"
         },
         {
           "slug": "stars",
@@ -3740,7 +4360,10 @@
             "冷",
             "暖"
           ],
-          "path": "/webgl/stars"
+          "path": "/webgl/stars",
+          "title_en": "Starfield",
+          "hint_en": "Fractal Starfield",
+          "desc_en": "Cut the image into a grid, each with a single star randomly placed by Hash; multi- Production grids vary at different speeds to form a vision, with large and fast stars close."
         },
         {
           "slug": "lava",
@@ -3759,7 +4382,10 @@
             "高对比",
             "柔"
           ],
-          "path": "/webgl/lava"
+          "path": "/webgl/lava",
+          "title_en": "Lava",
+          "hint_en": "Melvin Noise",
+          "desc_en": "Several groups floating up and down, each contributing r²/d² The \"fields\", the fields and the areas above the threshold, are connected, and clusters will merge when they approach."
         },
         {
           "slug": "grid3d",
@@ -3778,7 +4404,10 @@
             "霓虹",
             "暗"
           ],
-          "path": "/webgl/grid3d"
+          "path": "/webgl/grid3d",
+          "title_en": "Perspective Grid",
+          "hint_en": "Horizon",
+          "desc_en": "Use 1 below the horizon / |y| The depth of vision, which increases over time, allows the grid to roll over to you; above it is a round of suns with stripes."
         },
         {
           "slug": "kaleido",
@@ -3797,11 +4426,14 @@
             "彩",
             "单"
           ],
-          "path": "/webgl/kaleido"
+          "path": "/webgl/kaleido",
+          "title_en": "Kaleidoscope",
+          "hint_en": "Kalescope symmetry",
+          "desc_en": "The entire plane is copied by a small sector of n petal symmetry."
         },
         {
           "slug": "hsv",
-          "title": "HSV 旋转",
+          "title": "HSV 色相旋转",
           "hint": "色相轮",
           "desc": "角度 = 色相 H，离中心距离 = 饱和度 S，整体亮度 = 明度 V。",
           "tag": "shader",
@@ -3816,7 +4448,10 @@
             "饱和",
             "淡"
           ],
-          "path": "/webgl/hsv"
+          "path": "/webgl/hsv",
+          "title_en": "HSV Rotation",
+          "hint_en": "Color wheel",
+          "desc_en": "Angle = colour H, distance from centre = saturation S, overall brightness = visibility V."
         },
         {
           "slug": "scan",
@@ -3835,11 +4470,14 @@
             "快",
             "慢"
           ],
-          "path": "/webgl/scan"
+          "path": "/webgl/scan",
+          "title_en": "Scanlines",
+          "hint_en": "CRT Scan",
+          "desc_en": "Light strips are cleaned up from the bottom, leaving behind them a residual of index decay; the background is a scanning grid with equal spacing."
         },
         {
           "slug": "metaball",
-          "title": "双 Metaball",
+          "title": "双融球",
           "hint": "双球融合",
           "desc": "每个球产生 1/d 的场，场之和大于阈值就算「球体内部」，所以球靠近时边界平滑地连在一起。",
           "tag": "shader",
@@ -3854,7 +4492,10 @@
             "高亮",
             "柔"
           ],
-          "path": "/webgl/metaball"
+          "path": "/webgl/metaball",
+          "title_en": "Twin Metaballs",
+          "hint_en": "Double ball integration",
+          "desc_en": "Every ball produces 1/d In the field, the sum of the field is greater than the threshold, even if it is \"the inner sphere of the sphere\", so the borders are smoothly linked when the ball approaches."
         },
         {
           "slug": "fog",
@@ -3873,7 +4514,10 @@
             "冷",
             "暖"
           ],
-          "path": "/webgl/fog"
+          "path": "/webgl/fog",
+          "title_en": "Volumetric Fog",
+          "hint_en": "Collapse Fog",
+          "desc_en": "Multiple layers of noise float and collide along the wind at different speeds, deepening downwards; the pointer lights the fog like a flashlight."
         },
         {
           "slug": "stripes",
@@ -3892,11 +4536,14 @@
             "霓虹",
             "柔"
           ],
-          "path": "/webgl/stripes"
+          "path": "/webgl/stripes",
+          "title_en": "Light Stripes",
+          "hint_en": "Tilt stripes",
+          "desc_en": "Rotates the coordinates to the stripe direction and cuts them in width into a strip, each of which takes one of the n colours by serial number; ADMINISTRATIVE stripes close to the pointer bend."
         },
         {
           "slug": "circle-sdf",
-          "title": "SDF 圆",
+          "title": "SDF 距离场圆",
           "hint": "距离场圆",
           "desc": "每个像素记录到圆边界的距离，内部为负、外部为正。",
           "tag": "shader",
@@ -3911,7 +4558,10 @@
             "亮",
             "暗"
           ],
-          "path": "/webgl/circle-sdf"
+          "path": "/webgl/circle-sdf",
+          "title_en": "SDF Circle",
+          "hint_en": "Distance Circle",
+          "desc_en": "Each pixel records the distance to the circle boundary, negative inside, Externally positive."
         },
         {
           "slug": "water",
@@ -3930,11 +4580,14 @@
             "清",
             "浊"
           ],
-          "path": "/webgl/water"
+          "path": "/webgl/water",
+          "title_en": "Water Surface",
+          "hint_en": "Multisurface",
+          "desc_en": "Multiple directions, The frequency sine wave superheaves into water surface heights, where the peak area forms a bright focal-dispersed spot; the pointer moves the phase."
         },
         {
           "slug": "crt",
-          "title": "CRT",
+          "title": "CRT 老电视",
           "hint": "CRT 效果",
           "desc": "画面先按像素块量化，再加横向扫描线、RGB 三通道错位（色差）和四角暗角，模拟老电视。",
           "tag": "shader",
@@ -3949,11 +4602,14 @@
             "绿",
             "彩"
           ],
-          "path": "/webgl/crt"
+          "path": "/webgl/crt",
+          "title_en": "CRT Screen",
+          "hint_en": "CRT Effects",
+          "desc_en": "The image is quantified by pixels, followed by a horizontal scan, RGB Three-channel error (colour differential) and four-angle dark corner, simulation of old television."
         },
         {
           "slug": "julia-sh",
-          "title": "Julia",
+          "title": "Julia 分形",
           "hint": "Julia 着色器",
           "desc": "每个像素当作复数 z，反复做 z = z² + c，统计多少步后 |z| 超过 2（逃逸）。",
           "tag": "shader",
@@ -3968,7 +4624,10 @@
             "火",
             "冰"
           ],
-          "path": "/webgl/julia-sh"
+          "path": "/webgl/julia-sh",
+          "title_en": "Julia Fractal",
+          "hint_en": "Julia Colored",
+          "desc_en": "Every pixel as a complex number z，Repeatedly z = z² + c，After how many steps? |z| Surpass 2（Run away."
         },
         {
           "slug": "snow-sh",
@@ -3987,7 +4646,10 @@
             "大片",
             "小片"
           ],
-          "path": "/webgl/snow-sh"
+          "path": "/webgl/snow-sh",
+          "title_en": "Snowfall",
+          "hint_en": "Colored Snow",
+          "desc_en": "Each layer cuts the picture into a grid, each with a randomly shifting snowflake and moves downwards; the next layer is larger and faster, and wind forces the snowflakes down."
         },
         {
           "slug": "oil",
@@ -4006,9 +4668,14 @@
             "彩",
             "暗"
           ],
-          "path": "/webgl/oil"
+          "path": "/webgl/oil",
+          "title_en": "Oil-paint Noise",
+          "hint_en": "Painting",
+          "desc_en": "The coordinates are \"rotation + noise deflected\" over and over, and the more complex the pattern each time, the more the paint flows on the water; the rainbow film simulates the interference colour of soap bubbles."
         }
-      ]
+      ],
+      "name_en": "WebGL / Shaders",
+      "intro_en": "Native WebGL full-screen fragment shaders: procedural noise, plasma and raymarching, all computed live on the GPU."
     },
     {
       "key": "physics",
@@ -4023,7 +4690,7 @@
       "demos": [
         {
           "slug": "matter",
-          "title": "Matter.js 物理",
+          "title": "Matter.js 物理引擎",
           "hint": "按住物体抛出 · 指针推开物体",
           "desc": "真实刚体引擎：重力、冲量碰撞、弹性与摩擦。",
           "tag": "matter",
@@ -4037,7 +4704,10 @@
             "多物体",
             "大块"
           ],
-          "path": "/physics/matter"
+          "path": "/physics/matter",
+          "title_en": "Matter.js Physics",
+          "hint_en": "Hold the object and throw it · Point XII FAO Part II",
+          "desc_en": "Real hard core engine: gravity, Splash collision, E Typically NHRIs Participatory dedicates to conflict."
         },
         {
           "slug": "drag",
@@ -4055,7 +4725,10 @@
             "干脆",
             "多卡"
           ],
-          "path": "/physics/drag"
+          "path": "/physics/drag",
+          "title_en": "Drag to Reorder",
+          "hint_en": "Hold the card and drag it to another column · The spring is back",
+          "desc_en": "The board drags and drags, and the card returns to its location with a critical blocker."
         },
         {
           "slug": "magnetic",
@@ -4073,7 +4746,10 @@
             "慢跟随",
             "多按钮"
           ],
-          "path": "/physics/magnetic"
+          "path": "/physics/magnetic",
+          "title_en": "Magnetic Cursor Follow",
+          "hint_en": "Move the pointer to the button · Click Pulse",
+          "desc_en": "Magnetic sucking button (range decay)+ spring follows cursor and drag tails."
         },
         {
           "slug": "wall-ball",
@@ -4092,7 +4768,10 @@
             "高弹",
             "低弹"
           ],
-          "path": "/physics/wall-ball"
+          "path": "/physics/wall-ball",
+          "title_en": "Bouncing Balls",
+          "hint_en": "Grab the ball and throw it out. Board",
+          "desc_en": "The ball of gravity + the recovery coefficient, with constant inter-ball kinetic impact."
         },
         {
           "slug": "multigrav",
@@ -4111,7 +4790,10 @@
             "侧向",
             "混沌"
           ],
-          "path": "/physics/multigrav"
+          "path": "/physics/multigrav",
+          "title_en": "Multiple Gravity",
+          "hint_en": "Pointers are gravity wells · G Respon/1,",
+          "desc_en": "500 particles in multiple softened square gravitational wells."
         },
         {
           "slug": "spring",
@@ -4130,7 +4812,10 @@
             "鼠标拉",
             "静"
           ],
-          "path": "/physics/spring"
+          "path": "/physics/spring",
+          "title_en": "Spring Chain",
+          "hint_en": "The anchor follows the pointer · Pull the prime point",
+          "desc_en": "Hook's Law spring point chain, watch cycles with energy."
         },
         {
           "slug": "box-collide",
@@ -4149,7 +4834,10 @@
             "高弹",
             "粘滞"
           ],
-          "path": "/physics/box-collide"
+          "path": "/physics/box-collide",
+          "title_en": "Box Collisions",
+          "hint_en": "Grab the box and throw it · Pointer push box",
+          "desc_en": "AABB collision detection + impulse and friction, boxes can stack."
         },
         {
           "slug": "bubbles",
@@ -4168,7 +4856,10 @@
             "慢升",
             "快升"
           ],
-          "path": "/physics/bubbles"
+          "path": "/physics/bubbles",
+          "title_en": "Floating Bubbles",
+          "hint_en": "Click poking · Put the pointer away",
+          "desc_en": "Stokes's Law: Big bubbles rise faster than little bubbles (r²)。"
         },
         {
           "slug": "pendulum",
@@ -4187,7 +4878,10 @@
             "阻尼大",
             "阻尼小"
           ],
-          "path": "/physics/pendulum"
+          "path": "/physics/pendulum",
+          "title_en": "Pendulum",
+          "hint_en": "Drag the hammer to any angle and let go",
+          "desc_en": "RK4 Non-linear monopolistic blocker + resonance drive."
         },
         {
           "slug": "hourglass",
@@ -4206,7 +4900,10 @@
             "密",
             "疏"
           ],
-          "path": "/physics/hourglass"
+          "path": "/physics/hourglass",
+          "title_en": "Hourglass Sand",
+          "hint_en": "Click to flip · ARTICLE 338 Creation Plans Subparagraph 2",
+          "desc_en": "The particle cells are self-mobilized sandglasses, and the flow follows the Beverloo law."
         },
         {
           "slug": "magnet",
@@ -4225,7 +4922,10 @@
             "多点",
             "少点"
           ],
-          "path": "/physics/magnet"
+          "path": "/physics/magnet",
+          "title_en": "Magnetic Points",
+          "hint_en": "Move pointer (also magnetic pole) to watch the magnetic slide",
+          "desc_en": "The magnetic pin array shows a multi-magnetic superheavy magnetic field and magnetic sense line."
         },
         {
           "slug": "rope",
@@ -4244,7 +4944,10 @@
             "彩",
             "单"
           ],
-          "path": "/physics/rope"
+          "path": "/physics/rope",
+          "title_en": "Elastic Rope",
+          "hint_en": "Hold the introduce · Put the pointer away",
+          "desc_en": "Verlet + distance bound by hanging rope."
         },
         {
           "slug": "billiard",
@@ -4263,7 +4966,10 @@
             "高摩擦",
             "低摩擦"
           ],
-          "path": "/physics/billiard"
+          "path": "/physics/billiard",
+          "title_en": "Billiards",
+          "hint_en": "ratify it · Let go!",
+          "desc_en": "Wait for mass elastic collisions and rolling frictions to stop distance v²/2μg。"
         },
         {
           "slug": "orbit-p",
@@ -4282,7 +4988,10 @@
             "椭圆感",
             "圆"
           ],
-          "path": "/physics/orbit-p"
+          "path": "/physics/orbit-p",
+          "title_en": "Orbital Physics",
+          "hint_en": "Drag the planet back into orbit",
+          "desc_en": "Speed Verlet hard-core Caper orbit."
         },
         {
           "slug": "softbody",
@@ -4301,9 +5010,14 @@
             "多",
             "少"
           ],
-          "path": "/physics/softbody"
+          "path": "/physics/softbody",
+          "title_en": "Soft Body",
+          "hint_en": "Push the edge · Throw it out",
+          "desc_en": "Springpoint + Jell-O software with internal gas pressure."
         }
-      ]
+      ],
+      "name_en": "Physics & Interaction",
+      "intro_en": "Physics engines and pointer interaction: collisions, springs, pendulums, orbits, ropes, soft bodies, hourglasses and magnets — drag any of them and read energy, period and more in real time."
     },
     {
       "key": "audio",
@@ -4336,7 +5050,10 @@
             "强颤音",
             "低八度"
           ],
-          "path": "/audio/synth"
+          "path": "/audio/synth",
+          "title_en": "Synthesizer",
+          "hint_en": "The buttons · Advance sound 375 XXI",
+          "desc_en": "Oscillator waveform, LFO Treasure and Harmonisation Spectrum: See the square waves / Why"
         },
         {
           "slug": "mic",
@@ -4355,7 +5072,10 @@
             "不镜像",
             "无波形"
           ],
-          "path": "/audio/mic"
+          "path": "/audio/mic",
+          "title_en": "Microphone Visualizer",
+          "hint_en": "Dot right top · Show a human voice when there's no microphone",
+          "desc_en": "Ring spectrum + vowel resonance peak: Disassembly microphone sound in real time."
         },
         {
           "slug": "bars",
@@ -4374,7 +5094,10 @@
             "线性幅度",
             "慢峰值"
           ],
-          "path": "/audio/bars"
+          "path": "/audio/bars",
+          "title_en": "Spectrum Bars",
+          "hint_en": "Suspend the frequency and decor · Advance sound 375 XXI",
+          "desc_en": "Real FFT: Disassembly a piece of music into a frequency column with a peak remaining with a logarithmic frequency axis."
         },
         {
           "slug": "circle-wave",
@@ -4393,7 +5116,10 @@
             "单环",
             "长窗口"
           ],
-          "path": "/audio/circle-wave"
+          "path": "/audio/circle-wave",
+          "title_en": "Circular Waveform",
+          "hint_en": "Suspend to see phase and amplitude",
+          "desc_en": "Wraps the temporal waveform around a circle: Radius = Baseline + amplitude."
         },
         {
           "slug": "eq",
@@ -4412,7 +5138,10 @@
             "宽带",
             "静止"
           ],
-          "path": "/audio/eq"
+          "path": "/audio/eq",
+          "title_en": "Equalizer",
+          "hint_en": "Drag-band roundpoint gains · Suspend to see response",
+          "desc_en": "5 Peak balance (RBJ biquad): Drag point changes frequency and gain, see how spectrum is \"constructed\"."
         },
         {
           "slug": "part-audio",
@@ -4431,7 +5160,10 @@
             "爆发",
             "平稳"
           ],
-          "path": "/audio/part-audio"
+          "path": "/audio/part-audio",
+          "title_en": "Audio-reactive Particles",
+          "hint_en": "Drag Move Launch Point · The stronger the bass, the stronger the particles",
+          "desc_en": "Low / Medium / Number of energy driven particles in three high bands, Speed and colour."
         },
         {
           "slug": "scope",
@@ -4450,7 +5182,10 @@
             "慢扫",
             "李萨如"
           ],
-          "path": "/audio/scope"
+          "path": "/audio/scope",
+          "title_en": "Oscilloscope",
+          "hint_en": "Drag settings trigger level · Suspended read voltage",
+          "desc_en": "A trigger oscillator: Stable display periodic waveforms can also be switched to Lisa like XY."
         },
         {
           "slug": "polar",
@@ -4469,7 +5204,10 @@
             "单色",
             "高门限"
           ],
-          "path": "/audio/polar"
+          "path": "/audio/polar",
+          "title_en": "Polar Spectrum",
+          "hint_en": "Suspend to see the frequency of the angle",
+          "desc_en": "Wrap the spectrum around a circle: Angle = Frequency, Radius = Deutsche."
         },
         {
           "slug": "waterfall",
@@ -4488,7 +5226,10 @@
             "线性轴",
             "只听音乐"
           ],
-          "path": "/audio/waterfall"
+          "path": "/audio/waterfall",
+          "title_en": "Spectrogram Waterfall",
+          "hint_en": "Suspend to see the energy of a certain frequency at a certain moment",
+          "desc_en": "Short-time Fourier (STFT): trans-axis frequency, Axle Time, Colour = Energy."
         },
         {
           "slug": "beat",
@@ -4507,7 +5248,10 @@
             "慢歌",
             "迟钝"
           ],
-          "path": "/audio/beat"
+          "path": "/audio/beat",
+          "title_en": "Beat Detection",
+          "hint_en": "Staple Energy Curve Looking Threshold · Reporting SAR BPM",
+          "desc_en": "The energy surge detection beat: E > C × Average Energy I'll give you a shot and an estimate BPM。"
         },
         {
           "slug": "chord",
@@ -4526,7 +5270,10 @@
             "一转位",
             "低八度"
           ],
-          "path": "/audio/chord"
+          "path": "/audio/chord",
+          "title_en": "Chord Pad",
+          "hint_en": "Point & Thread Switch · Look at the composition",
+          "desc_en": "Third year of university / The composition of the trichord, Frequency ratio with synthetic wave shape, automatically C-G-Am-F."
         },
         {
           "slug": "noise-pad",
@@ -4545,7 +5292,10 @@
             "棕噪声",
             "尖锐共振"
           ],
-          "path": "/audio/noise-pad"
+          "path": "/audio/noise-pad",
+          "title_en": "Noise Filter Pad",
+          "hint_en": "Drag: Left/right cut-off frequency, up/down resonance",
+          "desc_en": "White / Pink / Brown noise is down / Bring it through / High-through filter, see how the spectrum is carved."
         },
         {
           "slug": "drum",
@@ -4564,9 +5314,14 @@
             "摇摆",
             "圆垫"
           ],
-          "path": "/audio/drum"
+          "path": "/audio/drum",
+          "title_en": "Drum Machine",
+          "hint_en": "Light the grid switch · Switch BPM Organized with Swing",
+          "desc_en": "16 Step Sequencer: Synthetic Bottom Drum, Military drums, Clap one's hands, Step on it, support the swing."
         }
-      ]
+      ],
+      "name_en": "Audio Visualization",
+      "intro_en": "13 audio demos built on real signal processing (synth models + FFT, filter responses, beat detection, sequencer). Hover or drag to read frequency and dB under the pointer; tap “Sound” at top-right to listen."
     },
     {
       "key": "dataviz",
@@ -4598,7 +5353,10 @@
             "大节点",
             "全部技术"
           ],
-          "path": "/dataviz/graph"
+          "path": "/dataviz/graph",
+          "title_en": "Network Graph",
+          "hint_en": "♪ retains a Presently High-L Instruments endorses · Drag Node · Roller Zoom",
+          "desc_en": "Network of technology links: Cologne repulsive + spring-driving power steering layout."
         },
         {
           "slug": "treemap",
@@ -4617,7 +5375,10 @@
             "静止数据",
             "单色"
           ],
-          "path": "/dataviz/treemap"
+          "path": "/dataviz/treemap",
+          "title_en": "Treemap",
+          "hint_en": "Suspend value · Click the drill / Back",
+          "desc_en": "Squarify Square Algorithms: Size is the size of the area, which compares it to the width of the slice method."
         },
         {
           "slug": "d3-force",
@@ -4636,7 +5397,10 @@
             "多分组",
             "两组"
           ],
-          "path": "/dataviz/d3-force"
+          "path": "/dataviz/d3-force",
+          "title_en": "Force-directed Graph",
+          "hint_en": "Drag Node to reheat",
+          "desc_en": "Power-oriented simulation of cluster clusters: charge, Electrical lead; connecting line, Collision between three forces and temperature cooling."
         },
         {
           "slug": "heatmap",
@@ -4655,7 +5419,10 @@
             "快变",
             "柔和"
           ],
-          "path": "/dataviz/heatmap"
+          "path": "/dataviz/heatmap",
+          "title_en": "Heatmap",
+          "hint_en": "Cascade value",
+          "desc_en": "Gaussian hotspot stacked grid data, gamma contrast and warm double colour bands."
         },
         {
           "slug": "radar",
@@ -4674,7 +5441,10 @@
             "十维",
             "三维"
           ],
-          "path": "/dataviz/radar"
+          "path": "/dataviz/radar",
+          "title_en": "Radar Chart",
+          "hint_en": "Turn the pointer around the center and look to the dimension",
+          "desc_en": "Multiple series multi-dimensional comparisons, real time polygonal size."
         },
         {
           "slug": "sankey",
@@ -4693,7 +5463,10 @@
             "直线",
             "单色"
           ],
-          "path": "/dataviz/sankey"
+          "path": "/dataviz/sankey",
+          "title_en": "Sankey Diagram",
+          "hint_en": "Suspend the stream to see the flow",
+          "desc_en": "Source → Page → Flow chart to go, intermediate node in = Out."
         },
         {
           "slug": "bubbles",
@@ -4711,7 +5484,10 @@
             "密集小泡",
             "大泡"
           ],
-          "path": "/dataviz/bubbles"
+          "path": "/dataviz/bubbles",
+          "title_en": "Bubble Scatter",
+          "hint_en": "Staple bubbles · Adjust the intensity of ID",
+          "desc_en": "Breakpoint + bubble size 3D data, real time Pearson r with regression line."
         },
         {
           "slug": "cal-heat",
@@ -4730,7 +5506,10 @@
             "低活跃",
             "火焰色"
           ],
-          "path": "/dataviz/cal-heat"
+          "path": "/dataviz/cal-heat",
+          "title_en": "Calendar Heatmap",
+          "hint_en": "Suspended for any day",
+          "desc_en": "GitHub week thermal effort: grade colour, Active number of Foreign Affairs Officers"
         },
         {
           "slug": "sunburst",
@@ -4749,7 +5528,10 @@
             "多分支",
             "单色"
           ],
-          "path": "/dataviz/sunburst"
+          "path": "/dataviz/sunburst",
+          "title_en": "Sunburst",
+          "hint_en": "Suspend Sector · Click the drill",
+          "desc_en": "The one-tier scale, the sector angle, the value."
         },
         {
           "slug": "chord",
@@ -4768,7 +5550,10 @@
             "十组",
             "单色"
           ],
-          "path": "/dataviz/chord"
+          "path": "/dataviz/chord",
+          "title_en": "Chord Diagram",
+          "hint_en": "Turn to view groups along the outer circle",
+          "desc_en": "Inter-city flow matrix: arc long arc flow, string wide two-way flow."
         },
         {
           "slug": "boxplot",
@@ -4786,7 +5571,10 @@
             "高离散",
             "只看箱"
           ],
-          "path": "/dataviz/boxplot"
+          "path": "/dataviz/boxplot",
+          "title_en": "Box Plot",
+          "hint_en": "Suspend group to see quartiles",
+          "desc_en": "Q1 in real time / Medium / Q3, 1.5 · IQR muster with an off-group point."
         },
         {
           "slug": "parallel",
@@ -4805,7 +5593,10 @@
             "只显选中",
             "少数据"
           ],
-          "path": "/dataviz/parallel"
+          "path": "/dataviz/parallel",
+          "title_en": "Parallel Coordinates",
+          "hint_en": "Move pointer brushes on axes",
+          "desc_en": "Multi-dimensional data fold + pointer filter, counting selected bars."
         },
         {
           "slug": "stream",
@@ -4824,7 +5615,10 @@
             "零基线",
             "单色"
           ],
-          "path": "/dataviz/stream"
+          "path": "/dataviz/stream",
+          "title_en": "Streamgraph",
+          "hint_en": "Suspended Time and Layer",
+          "desc_en": "A rolling stack of area maps over time, three baseline models."
         },
         {
           "slug": "wordcloud",
@@ -4843,7 +5637,10 @@
             "全横排",
             "单色"
           ],
-          "path": "/dataviz/wordcloud"
+          "path": "/dataviz/wordcloud",
+          "title_en": "Word Cloud",
+          "hint_en": "Suspended word for frequency characters",
+          "desc_en": "Zipov's word frequency + Akimid's screw Inspector, linear / √ / Map the numbers."
         },
         {
           "slug": "hierarchy",
@@ -4862,7 +5659,10 @@
             "无数值条",
             "手动"
           ],
-          "path": "/dataviz/hierarchy"
+          "path": "/dataviz/hierarchy",
+          "title_en": "Hierarchy List",
+          "hint_en": "Click to expand / Collapse",
+          "desc_en": "Collapseable indent tree with a value bar showing the overall ratio."
         },
         {
           "slug": "funnel",
@@ -4881,11 +5681,14 @@
             "窄漏斗",
             "彩色"
           ],
-          "path": "/dataviz/funnel"
+          "path": "/dataviz/funnel",
+          "title_en": "Conversion Funnel",
+          "hint_en": "Suspend to see conversion rate",
+          "desc_en": "Accesses the recommended multi-stage conversion, cumulative transformation = one-step conversion multiplier."
         },
         {
           "slug": "candle",
-          "title": "K 线图",
+          "title": "K 线图（蜡烛图）",
           "hint": "悬停看开高低收",
           "desc": "对数正态随机游走行情，实时跳动 + 均线 + 成交量。",
           "tag": "viz",
@@ -4900,7 +5703,10 @@
             "无均线",
             "无成交量"
           ],
-          "path": "/dataviz/candle"
+          "path": "/dataviz/candle",
+          "title_en": "Candlestick Chart",
+          "hint_en": "Hang on and see what happens",
+          "desc_en": "A logarithmic normal random walk, real time beat + mean line + barter."
         },
         {
           "slug": "icicle",
@@ -4919,7 +5725,10 @@
             "多分支",
             "单色"
           ],
-          "path": "/dataviz/icicle"
+          "path": "/dataviz/icicle",
+          "title_en": "Icicle Chart",
+          "hint_en": "Hover · Click under a block",
+          "desc_en": "rectangular layer partitions, with a sub-block located directly below the parent block and divided by value."
         },
         {
           "slug": "arc",
@@ -4938,13 +5747,18 @@
             "霓虹",
             "线性"
           ],
-          "path": "/dataviz/arc"
+          "path": "/dataviz/arc",
+          "title_en": "Arc Progress",
+          "hint_en": "Look at Preparedness INTERPOL Punisher / Target",
+          "desc_en": "Multilayer KPI Circle, Linear / Slow out / Resilient three slow animations."
         }
-      ]
+      ],
+      "name_en": "Advanced Data Viz",
+      "intro_en": "19 advanced charts built on real layout algorithms (squarify, force-directed, stacking, quartiles, spiral placement…). Hover or drag to see values and explanations."
     },
     {
       "key": "micro",
-      "name": "Lottie / 微交互",
+      "name": "Lottie 与微交互",
       "icon": "❤",
       "intro": "细节动效提升体验：关键帧矢量动画（Lottie 原理）、点赞粒子、开关与涟漪反馈，画布逐帧复现并读出动画数值。",
       "tech": [
@@ -4962,7 +5776,10 @@
           "mod": "kit-micro",
           "fn": "mount",
           "variant": "lottie",
-          "path": "/micro/lottie"
+          "path": "/micro/lottie",
+          "title_en": "Lottie Animation",
+          "hint_en": "Key frame plugin",
+          "desc_en": "Lottie Practise: By key frame position for each layer, Zoom, Rotates to do plugins."
         },
         {
           "slug": "like",
@@ -4973,7 +5790,10 @@
           "mod": "kit-micro",
           "fn": "mount",
           "variant": "like",
-          "path": "/micro/like"
+          "path": "/micro/like",
+          "title_en": "Like & Feedback",
+          "hint_en": "Click on Love and Button",
+          "desc_en": "I'm more than happy, Collect ; to put away for safekeeping;  to bookmark, .. Charg."
         },
         {
           "slug": "controls",
@@ -4984,7 +5804,10 @@
           "mod": "kit-micro",
           "fn": "mount",
           "variant": "controls",
-          "path": "/micro/controls"
+          "path": "/micro/controls",
+          "title_en": "Toggles & Ripples",
+          "hint_en": "Click on Controls",
+          "desc_en": "Toggle, Checkbox Placement 425 cancel, Material thallium with load button."
         },
         {
           "slug": "heart",
@@ -5003,7 +5826,10 @@
             "带Toast",
             "静赞"
           ],
-          "path": "/micro/heart"
+          "path": "/micro/heart",
+          "title_en": "Heartbeat Like",
+          "hint_en": "Touch it",
+          "desc_en": "The praised heart beats like the heart - quickly magnifying and then falling back, like a \"push-up.\""
         },
         {
           "slug": "check",
@@ -5022,7 +5848,10 @@
             "彩",
             "单"
           ],
-          "path": "/micro/check"
+          "path": "/micro/check",
+          "title_en": "Bouncy Checkbox",
+          "hint_en": "Bouncy Checkbox",
+          "desc_en": "When clicking the check box, narrow the box first, And then it goes Dominica, XII External, over the original size, and then it 25"
         },
         {
           "slug": "send",
@@ -5041,7 +5870,10 @@
             "大钮",
             "小钮"
           ],
-          "path": "/micro/send"
+          "path": "/micro/send",
+          "title_en": "Paper Plane Send",
+          "hint_en": "Send feedback",
+          "desc_en": "When you click \"Send,\" the paper airplane icon in the button goes up a double Bézier curve and leaves a trail. The button text becomes \"Send\" and then"
         },
         {
           "slug": "copy",
@@ -5060,7 +5892,10 @@
             "彩边",
             "单"
           ],
-          "path": "/micro/copy"
+          "path": "/micro/copy",
+          "title_en": "Copied!",
+          "hint_en": "Copy Toast",
+          "desc_en": "Click on a copy button at the top right corner of the code block, the code will be highlighted once (means selected), the button icon will change from \"two sheets of paper\" to \"tick\" and the bottom will pop up \""
         },
         {
           "slug": "download",
@@ -5079,7 +5914,10 @@
             "霓虹",
             "柔"
           ],
-          "path": "/micro/download"
+          "path": "/micro/download",
+          "title_en": "Download Progress",
+          "hint_en": "Progress Bar Download",
+          "desc_en": "A progress bar per document, from 0% to 100%."
         },
         {
           "slug": "skeleton",
@@ -5098,11 +5936,14 @@
             "亮",
             "暗"
           ],
-          "path": "/micro/skeleton"
+          "path": "/micro/skeleton",
+          "title_en": "Skeleton Screen",
+          "hint_en": "Load the skeleton",
+          "desc_en": "While the data is still being loaded, the broad contour of the page is drawn with a grey circle and long bars, and a high light is swept from the left to the right, telling the user that it is being loaded."
         },
         {
           "slug": "toast",
-          "title": "Toast",
+          "title": "轻提示 Toast",
           "hint": "弹出提示",
           "desc": "操作后在屏幕底部弹出一条短提示，几秒后自动消失，不打断用户。",
           "tag": "micro",
@@ -5117,7 +5958,10 @@
             "信息",
             "警告感"
           ],
-          "path": "/micro/toast"
+          "path": "/micro/toast",
+          "title_en": "Toast",
+          "hint_en": "Popup Tips",
+          "desc_en": "The operation will result in a short hint at the bottom of the screen and will automatically disappear after a few seconds without interrupting the user."
         },
         {
           "slug": "badge",
@@ -5136,7 +5980,10 @@
             "大",
             "小"
           ],
-          "path": "/micro/badge"
+          "path": "/micro/badge",
+          "title_en": "Bouncing Badge",
+          "hint_en": "Digital badge",
+          "desc_en": "icon."
         },
         {
           "slug": "drag",
@@ -5155,7 +6002,10 @@
             "单",
             "回弹感"
           ],
-          "path": "/micro/drag"
+          "path": "/micro/drag",
+          "title_en": "Draggable Card",
+          "hint_en": "Drag",
+          "desc_en": "Pressing the card allows for drag, and the card slightly magnifies, deepens the shadows and tilts in the direction of the drag; when it is released, the card bounces back to its original position as if it had been pulled by a spring."
         },
         {
           "slug": "longpress",
@@ -5174,7 +6024,10 @@
             "成功",
             "静"
           ],
-          "path": "/micro/longpress"
+          "path": "/micro/longpress",
+          "title_en": "Long-press Confirm",
+          "hint_en": "Long press trigger",
+          "desc_en": "Dangerous operations (e.g. deletions) do not wish to be misdirected, Evolution is required for a period of time."
         },
         {
           "slug": "shake",
@@ -5193,7 +6046,10 @@
             "彩",
             "单"
           ],
-          "path": "/micro/shake"
+          "path": "/micro/shake",
+          "title_en": "Shake Hint",
+          "hint_en": "Swing fast",
+          "desc_en": "When the password is lost wrong, the input box will shake a few times around the right or the left and turn red, with an error hint below."
         },
         {
           "slug": "slide-verify",
@@ -5212,7 +6068,10 @@
             "成功色",
             "默认"
           ],
-          "path": "/micro/slide-verify"
+          "path": "/micro/slide-verify",
+          "title_en": "Slide to Verify",
+          "hint_en": "Slider Authenticationibid",
+          "desc_en": "There's a gap in the puzzle shape, the user drags down slides, the puzzle blocks move horizontally, and if the puzzle is smaller than the gap, verify"
         },
         {
           "slug": "dblzoom",
@@ -5231,7 +6090,10 @@
             "彩",
             "单"
           ],
-          "path": "/micro/dblzoom"
+          "path": "/micro/dblzoom",
+          "title_en": "Double-tap Zoom",
+          "hint_en": "Double-click scaling",
+          "desc_en": "Two quick clicks on the picture, the picture is smoother and amplified (like a mobile phone album) with a double click back."
         },
         {
           "slug": "hover-mag",
@@ -5250,7 +6112,10 @@
             "大钮",
             "小钮"
           ],
-          "path": "/micro/hover-mag"
+          "path": "/micro/hover-mag",
+          "title_en": "Magnetic Hover",
+          "hint_en": "Staff button",
+          "desc_en": "When the pointer enters the sensor range around the button, the button moves a little bit in the direction of the pointer, and the text on the button moves even more (to create a sense of hierarchy) and bounces back to its place after leaving."
         },
         {
           "slug": "press-ripple",
@@ -5269,7 +6134,10 @@
             "白涟漪",
             "色涟漪"
           ],
-          "path": "/micro/press-ripple"
+          "path": "/micro/press-ripple",
+          "title_en": "Press Ripple",
+          "hint_en": "Click on the button",
+          "desc_en": "When you click the button, draw a circle from where you click, and the radius of the circle becomes rapidly larger, Colours fade and are cut inside the rounded rectangle of buttons."
         },
         {
           "slug": "toggle-spring",
@@ -5288,9 +6156,14 @@
             "慢弹",
             "图标感"
           ],
-          "path": "/micro/toggle-spring"
+          "path": "/micro/toggle-spring",
+          "title_en": "Spring Toggle",
+          "hint_en": "Spring switch",
+          "desc_en": "The switch's dots do not slip at a flat pace, but rather do it over the head like a spring and come back and hold it steady."
         }
-      ]
+      ],
+      "name_en": "Lottie & Micro-interactions",
+      "intro_en": "Small motion details that lift UX: keyframe vector animation (how Lottie works), like particles, toggles and ripple feedback, replayed frame by frame with live values."
     },
     {
       "key": "layout",
@@ -5306,7 +6179,7 @@
       "demos": [
         {
           "slug": "grid",
-          "title": "Grid 布局",
+          "title": "Grid 网格布局",
           "hint": "顶部切换 · +/− 增减元素 · 调列数/间距",
           "desc": "CSS Grid 玩具：浅色渐变单元格。",
           "tag": "grid",
@@ -5321,11 +6194,14 @@
             "无轨线",
             "圆角卡片"
           ],
-          "path": "/layout/grid"
+          "path": "/layout/grid",
+          "title_en": "Grid Layout",
+          "hint_en": "Top Switch · + / - Execution of additional elements · Align / Spacing",
+          "desc_en": "CSS Grid toys: light-color gradient cells."
         },
         {
           "slug": "flex",
-          "title": "Flex 布局",
+          "title": "Flex 弹性布局",
           "hint": "换行预设 · +/− 增减元素",
           "desc": "Flexbox 布局：子元素沿主轴排成一行，可调对齐方式、间距和换行。",
           "tag": "flex",
@@ -5340,11 +6216,14 @@
             "竖直",
             "贴边"
           ],
-          "path": "/layout/flex"
+          "path": "/layout/flex",
+          "title_en": "Flex Layout",
+          "hint_en": "Line Break Preset · + / - Execution of additional elements",
+          "desc_en": "Flexbox layout: The sub-elements are lined along the main axis to align, space and line breaks."
         },
         {
           "slug": "masonry",
-          "title": "Masonry 瀑布流",
+          "title": "瀑布流 Masonry",
           "hint": "调列数/间距/元素",
           "desc": "CSS columns 瀑布流。",
           "tag": "masonry",
@@ -5359,7 +6238,10 @@
             "疏",
             "圆角"
           ],
-          "path": "/layout/masonry"
+          "path": "/layout/masonry",
+          "title_en": "Masonry",
+          "hint_en": "Align / Spacing / Element",
+          "desc_en": "CSS falls."
         },
         {
           "slug": "columns",
@@ -5378,11 +6260,14 @@
             "无竖线",
             "无下沉"
           ],
-          "path": "/layout/columns"
+          "path": "/layout/columns",
+          "title_en": "Multi-column Text",
+          "hint_en": "Number of columns and spacing",
+          "desc_en": "A long text is automatically removed from the N column and the reading line is shorter."
         },
         {
           "slug": "sticky",
-          "title": "Sticky 粘滞",
+          "title": "Sticky 粘性定位",
           "hint": "面板内滚动观察",
           "desc": "position:sticky 侧栏/章节。",
           "tag": "sticky",
@@ -5397,7 +6282,10 @@
             "顶距大",
             "无顶栏"
           ],
-          "path": "/layout/sticky"
+          "path": "/layout/sticky",
+          "title_en": "Sticky",
+          "hint_en": "Scroll observation in panel",
+          "desc_en": "Position: sticky sidebar / Chapter."
         },
         {
           "slug": "layers",
@@ -5416,7 +6304,10 @@
             "无旋转",
             "同尺寸"
           ],
-          "path": "/layout/layers"
+          "path": "/layout/layers",
+          "title_en": "Absolute Layers",
+          "hint_en": "Cascade",
+          "desc_en": "The elements are removed from the ordinary flow, using coordinates and z-index to determine who is on top."
         },
         {
           "slug": "container",
@@ -5435,11 +6326,14 @@
             "早断点",
             "晚断点"
           ],
-          "path": "/layout/container"
+          "path": "/layout/container",
+          "title_en": "Container Queries",
+          "hint_en": "Align Number Simulate Breakpoints",
+          "desc_en": "Packaging width driven layout."
         },
         {
           "slug": "bento",
-          "title": "Bento 拼贴",
+          "title": "Bento 便当拼贴",
           "hint": "Bento 网格",
           "desc": "Bento 布局用同一套网格，让某些卡片跨多列多行，形成主次分明的拼贴，常见于产品首页与仪表盘。",
           "tag": "layout",
@@ -5454,11 +6348,14 @@
             "小圆角",
             "无标签"
           ],
-          "path": "/layout/bento"
+          "path": "/layout/bento",
+          "title_en": "Bento Grid",
+          "hint_en": "Bento Grid",
+          "desc_en": "Bento layout uses the same set of grids, which allow certain cards to cross multiple rows to form a masterly collage, which is common on the front page of the product and on the dashboard."
         },
         {
           "slug": "holy",
-          "title": "圣杯经典",
+          "title": "圣杯布局",
           "hint": "圣杯三栏",
           "desc": "上面一条标题，下面页脚，中间三栏。",
           "tag": "layout",
@@ -5473,7 +6370,10 @@
             "高顶",
             "宽右栏"
           ],
-          "path": "/layout/holy"
+          "path": "/layout/holy",
+          "title_en": "Holy Grail Layout",
+          "hint_en": "Three columns of the Grail",
+          "desc_en": "A heading above, bottom footer, three middle columns."
         },
         {
           "slug": "aspect",
@@ -5492,7 +6392,10 @@
             "21:9",
             "两列"
           ],
-          "path": "/layout/aspect"
+          "path": "/layout/aspect",
+          "title_en": "Aspect-ratio Cards",
+          "hint_en": "aspect-ratio",
+          "desc_en": "Video Cover, A card thumbnail requires a fixed ratio."
         },
         {
           "slug": "overlap",
@@ -5511,11 +6414,14 @@
             "竖直",
             "五张"
           ],
-          "path": "/layout/overlap"
+          "path": "/layout/overlap",
+          "title_en": "Overlapping Layers",
+          "hint_en": "Negative margin overlap",
+          "desc_en": "Heads, Stack notifications, The cover is overlapping."
         },
         {
           "slug": "subgrid",
-          "title": "子网格感",
+          "title": "子网格",
           "hint": "子网格对齐",
           "desc": "subgrid 让嵌套网格「借用」父级的行列线，卡片内部字段也能和隔壁卡片对齐。",
           "tag": "layout",
@@ -5530,9 +6436,14 @@
             "密",
             "无轨线"
           ],
-          "path": "/layout/subgrid"
+          "path": "/layout/subgrid",
+          "title_en": "Subgrid",
+          "hint_en": "Sub-grid Alignment",
+          "desc_en": "Subgrid allows embedded grids to \"borrow\" parent lines, and the internal fields of the cards are aligned with the next card."
         }
-      ]
+      ],
+      "name_en": "CSS Layout Toys",
+      "intro_en": "How Flex, Grid and container queries lay things out: canvas layouts driven by the real algorithms, with adjustable gaps, columns and alignment; hover to read sizes."
     },
     {
       "key": "filters",
@@ -5563,7 +6474,10 @@
             "定向感",
             "静"
           ],
-          "path": "/filters/blur"
+          "path": "/filters/blur",
+          "title_en": "Blur",
+          "hint_en": "Gaussian Blur",
+          "desc_en": "By replacing each pixel with the average of a circle of pixels around it, the details of the image were erased."
         },
         {
           "slug": "brightness",
@@ -5582,7 +6496,10 @@
             "强脉",
             "弱脉"
           ],
-          "path": "/filters/brightness"
+          "path": "/filters/brightness",
+          "title_en": "Brightness",
+          "hint_en": "Brightness Pulse",
+          "desc_en": "Red, Green, The waive Proportion 182"
         },
         {
           "slug": "contrast",
@@ -5601,7 +6518,10 @@
             "强",
             "弱"
           ],
-          "path": "/filters/contrast"
+          "path": "/filters/contrast",
+          "title_en": "Contrast",
+          "hint_en": "Contrast",
+          "desc_en": "The distance from each channel to the centre is multiplied by a multiple, with middle ash (0.5)."
         },
         {
           "slug": "saturate",
@@ -5620,7 +6540,10 @@
             "强",
             "弱"
           ],
-          "path": "/filters/saturate"
+          "path": "/filters/saturate",
+          "title_en": "Saturation",
+          "hint_en": "Saturation pulse",
+          "desc_en": "First, you figure out the \"grey\" of the colour, then you zoom in or out of the grey."
         },
         {
           "slug": "hue",
@@ -5639,7 +6562,10 @@
             "霓虹",
             "柔"
           ],
-          "path": "/filters/hue"
+          "path": "/filters/hue",
+          "title_en": "Hue Rotate",
+          "hint_en": "Hue Rotate",
+          "desc_en": "Turn each colour over the rings at the same angle, and the brightness remains essentially unchanged."
         },
         {
           "slug": "invert",
@@ -5658,7 +6584,10 @@
             "彩底",
             "暗底"
           ],
-          "path": "/filters/invert"
+          "path": "/filters/invert",
+          "title_en": "Invert",
+          "hint_en": "Invert",
+          "desc_en": "Change every channel to 255 minus it. Black to white, White to black, Red turns green, Leaders, just like old film negatives."
         },
         {
           "slug": "grayscale",
@@ -5677,11 +6606,14 @@
             "高对比",
             "柔"
           ],
-          "path": "/filters/grayscale"
+          "path": "/filters/grayscale",
+          "title_en": "Grayscale",
+          "hint_en": "Grayscale",
+          "desc_en": "Change the colour to the same gray with the same brightness."
         },
         {
           "slug": "sepia",
-          "title": "褐色",
+          "title": "怀旧褐色",
           "hint": "褐色",
           "desc": "模仿老照片发黄发褐的效果。",
           "tag": "filter",
@@ -5696,7 +6628,10 @@
             "暖",
             "冷褐"
           ],
-          "path": "/filters/sepia"
+          "path": "/filters/sepia",
+          "title_en": "Sepia",
+          "hint_en": "Brown",
+          "desc_en": "Impersonating the effects of old photographs with brown hair."
         },
         {
           "slug": "drop-shadow",
@@ -5715,7 +6650,10 @@
             "彩光",
             "白光"
           ],
-          "path": "/filters/drop-shadow"
+          "path": "/filters/drop-shadow",
+          "title_en": "Drop-shadow Glow",
+          "hint_en": "Project",
+          "desc_en": "Unlike box-shadow, the drop-shadow creates shadows along the true contours of the graphic (including transparency areas), so stars"
         },
         {
           "slug": "neon-combo",
@@ -5734,7 +6672,10 @@
             "快闪",
             "常亮"
           ],
-          "path": "/filters/neon-combo"
+          "path": "/filters/neon-combo",
+          "title_en": "Neon Combo",
+          "hint_en": "Multi-filter neon",
+          "desc_en": "The neon lights have the effect of stacking several layers of filters Coordinating a wide range, Transparent color glitter (drop-shadow), middle"
         },
         {
           "slug": "glass",
@@ -5753,7 +6694,10 @@
             "彩边",
             "无边"
           ],
-          "path": "/filters/glass"
+          "path": "/filters/glass",
+          "title_en": "Frosted Glass",
+          "hint_en": "Fur glass backboard",
+          "desc_en": "To blur the contents behind the cards, and cover a half-transparent white side with a bright side that looks like a sandglass."
         },
         {
           "slug": "duotone",
@@ -5772,7 +6716,10 @@
             "动",
             "静"
           ],
-          "path": "/filters/duotone"
+          "path": "/filters/duotone",
+          "title_en": "Duotone",
+          "hint_en": "Duotone",
+          "desc_en": "First turn the picture to greyscale and keep only \"light or dark\" information; then set two colours, darkest in the dark, brightest in the brightest"
         },
         {
           "slug": "glitch-f",
@@ -5791,7 +6738,10 @@
             "彩错",
             "单"
           ],
-          "path": "/filters/glitch-f"
+          "path": "/filters/glitch-f",
+          "title_en": "Glitch Jitter",
+          "hint_en": "Fault Filter",
+          "desc_en": "Simulation of bad signals on television."
         },
         {
           "slug": "vignette",
@@ -5810,7 +6760,10 @@
             "冷",
             "暖"
           ],
-          "path": "/filters/vignette"
+          "path": "/filters/vignette",
+          "title_en": "Vignette",
+          "hint_en": "Vignette",
+          "desc_en": "Letting the picture get darker and focus on the center, often in photography and movies."
         },
         {
           "slug": "glow-edge",
@@ -5829,7 +6782,10 @@
             "彩",
             "白"
           ],
-          "path": "/filters/glow-edge"
+          "path": "/filters/glow-edge",
+          "title_en": "Glowing Edge",
+          "hint_en": "Sketch the light",
+          "desc_en": "Draw contour lines only for graphics and add the same colour to the contour lines (drop-shadow) / I'll get"
         },
         {
           "slug": "backdrop",
@@ -5848,13 +6804,18 @@
             "彩",
             "单"
           ],
-          "path": "/filters/backdrop"
+          "path": "/filters/backdrop",
+          "title_en": "Backdrop Blur",
+          "hint_en": "Backdrop",
+          "desc_en": "Navigation bar for iOS, It's the effect of informing the center that the contents are rolling under the card, and the parts that you see through the card are vague, and you can see what's down there"
         }
-      ]
+      ],
+      "name_en": "CSS Filters & Blending",
+      "intro_en": "How filters and blending work: blur, brightness, contrast, hue-rotate, duotone, frosted glass and more, computed per pixel from the W3C formulas; drag the split line to compare."
     },
     {
       "key": "particles-fx",
-      "name": "粒子特效包",
+      "name": "粒子特效",
       "icon": "✦",
       "intro": "Canvas 粒子套件：星空、雪、烟、引力场等可调参数变体。",
       "tech": [
@@ -5880,7 +6841,10 @@
             "彩点",
             "远近"
           ],
-          "path": "/particles-fx/starfield"
+          "path": "/particles-fx/starfield",
+          "title_en": "Starfield",
+          "hint_en": "Stars floating · Renumber / Color",
+          "desc_en": "Each star has depth z, z decreases over time, screen position  Currently = centre + direction / z, the closer you get, the faster you get; a warp graft"
         },
         {
           "slug": "snow",
@@ -5899,7 +6863,10 @@
             "慢飘",
             "彩雪"
           ],
-          "path": "/particles-fx/snow"
+          "path": "/particles-fx/snow",
+          "title_en": "Snowfall",
+          "hint_en": "Snowflake's down · Turn speed",
+          "desc_en": "Snowflakes fall from the top at even speeds and waver around the right and the bottom resurfaces from the top; wind tilts the direction of the drop."
         },
         {
           "slug": "goldrain",
@@ -5918,7 +6885,10 @@
             "宽",
             "窄"
           ],
-          "path": "/particles-fx/goldrain"
+          "path": "/particles-fx/goldrain",
+          "title_en": "Golden Rain",
+          "hint_en": "Golden curtains",
+          "desc_en": "The long gold segment is fast-defeating, with small sparks s Adviceing at the bottom; some of the gold pellets are flashing crosslights."
         },
         {
           "slug": "smoke-col",
@@ -5937,7 +6907,10 @@
             "彩烟",
             "双柱感"
           ],
-          "path": "/particles-fx/smoke-col"
+          "path": "/particles-fx/smoke-col",
+          "title_en": "Smoke Column",
+          "hint_en": "Up the pipe",
+          "desc_en": "Smoke rises Population rises from bottom to height, Transparent and spread across the sides by a proliferation angle; the pointer blows the smoke like the wind."
         },
         {
           "slug": "firefly",
@@ -5956,7 +6929,10 @@
             "暖色",
             "冷色"
           ],
-          "path": "/particles-fx/firefly"
+          "path": "/particles-fx/firefly",
+          "title_en": "Fireflies",
+          "hint_en": "Fireflies blink",
+          "desc_en": "Each swirling curve along two different frequencies (Lisa trajectories) moves slowly, and the brightness breathes slowly; fireflies close to the pointer are attracted closer."
         },
         {
           "slug": "fountain",
@@ -5975,7 +6951,10 @@
             "彩火",
             "连喷"
           ],
-          "path": "/particles-fx/fountain"
+          "path": "/particles-fx/fountain",
+          "title_en": "Spark Fountain",
+          "hint_en": "Bottom fountain · Burst",
+          "desc_en": "Each spark ejected with a random angle and initial velocity, followed by a gravitational effect to act as parabolic motion, and the colour was darkened by white heat."
         },
         {
           "slug": "attractor",
@@ -5994,7 +6973,10 @@
             "密群",
             "疏群"
           ],
-          "path": "/particles-fx/attractor"
+          "path": "/particles-fx/attractor",
+          "title_en": "Gravity Well",
+          "hint_en": "Mouse attraction",
+          "desc_en": "Each particle orbits around the pointer around, and the more gravity, the smaller it is, The faster it goes (like planets: the faster it goes)."
         },
         {
           "slug": "repulsor",
@@ -6013,7 +6995,10 @@
             "密",
             "疏"
           ],
-          "path": "/particles-fx/repulsor"
+          "path": "/particles-fx/repulsor",
+          "title_en": "Repulsion Field",
+          "hint_en": "Mouse Exclusion",
+          "desc_en": "The particles are drawn into a full grid, the particles near the pointer are pushed away and the thrust decreases with distance; the post-exit bullet returns to its original position and takes a light breath."
         },
         {
           "slug": "follow-swarm",
@@ -6032,7 +7017,10 @@
             "彩虹",
             "单色"
           ],
-          "path": "/particles-fx/follow-swarm"
+          "path": "/particles-fx/follow-swarm",
+          "title_en": "Following Swarm",
+          "hint_en": "Mouse Follow Group",
+          "desc_en": "Each individual follows the pointer, but follows different delays and moves around the target in small circles, like a group. Small Fish / Bee."
         },
         {
           "slug": "explode",
@@ -6051,7 +7039,10 @@
             "彩屑",
             "慢散"
           ],
-          "path": "/particles-fx/explode"
+          "path": "/particles-fx/explode",
+          "title_en": "Explosion Debris",
+          "hint_en": "Click Break",
+          "desc_en": "Three staggered-time blast sites, debris coming out of the center in a random direction and slowing down, Gravity falls and gradually dies; the first blast point follows the pointer."
         },
         {
           "slug": "galaxy",
@@ -6070,7 +7061,10 @@
             "彩旋",
             "慢转"
           ],
-          "path": "/particles-fx/galaxy"
+          "path": "/particles-fx/galaxy",
+          "title_en": "Spiral Galaxy",
+          "hint_en": "Rotating the arm of the galaxy",
+          "desc_en": "The star point is distributed along a logarithmic spiral over several spiral arms, and the faster it moves in (distant rotation), the centre being a bright nuclear ball; the pointer tilts the galaxy."
         },
         {
           "slug": "heartfield",
@@ -6089,7 +7083,10 @@
             "脉动",
             "慢聚"
           ],
-          "path": "/particles-fx/heartfield"
+          "path": "/particles-fx/heartfield",
+          "title_en": "Heart Field",
+          "hint_en": "Heart attraction",
+          "desc_en": "The particles are distributed near the heart curve, and the whole body is scaled by the rhythm of the heartbeat (quick zooming), Slow down; particles are gently pushed away when the pointer approaches."
         },
         {
           "slug": "text-dots",
@@ -6108,7 +7105,10 @@
             "彩点",
             "单色"
           ],
-          "path": "/particles-fx/text-dots"
+          "path": "/particles-fx/text-dots",
+          "title_en": "Dot-matrix Text",
+          "hint_en": "Group",
+          "desc_en": "Draw the text to the screen canvas, then sample it every few pixels, and put a particle in colour; the particle floats slightly near the target position, the pointer approaches"
         },
         {
           "slug": "grid-pulse",
@@ -6127,7 +7127,10 @@
             "彩格",
             "单色"
           ],
-          "path": "/particles-fx/grid-pulse"
+          "path": "/particles-fx/grid-pulse",
+          "title_en": "Pulsing Grid",
+          "hint_en": "Grid pulse",
+          "desc_en": "A circle of circular waves is sent from the pointer position, and the points through which the peak passes magnify and brighten, as the buoys on the water rise and fall."
         },
         {
           "slug": "wave-part",
@@ -6146,7 +7149,10 @@
             "慢",
             "彩波"
           ],
-          "path": "/particles-fx/wave-part"
+          "path": "/particles-fx/wave-part",
+          "title_en": "Wave Particles",
+          "hint_en": "Rise and shine",
+          "desc_en": "The particles are lined in multiple rows, each line rises up and down along the sine wave, staggering between the rows into a 3D up and down surface; the wave at the pointer position is higher."
         },
         {
           "slug": "comet",
@@ -6165,7 +7171,10 @@
             "彩尾",
             "慢掠"
           ],
-          "path": "/particles-fx/comet"
+          "path": "/particles-fx/comet",
+          "title_en": "Comet",
+          "hint_en": "Drag the comet",
+          "desc_en": "Each comet cuts through the sky along an oscillating line, and the tail is made up of many small and faded particles that are the trajectory of the past position of the head of the comet."
         },
         {
           "slug": "bubbles",
@@ -6184,7 +7193,10 @@
             "慢升",
             "快升"
           ],
-          "path": "/particles-fx/bubbles"
+          "path": "/particles-fx/bubbles",
+          "title_en": "Rising Bubbles",
+          "hint_en": "Up bubbles",
+          "desc_en": "The bubble rises from the bottom, the right and left swings up, and the closer to the top, the more transparent it becomes; the bubble that the pointer touches will be pushed away."
         },
         {
           "slug": "leaves",
@@ -6203,7 +7215,10 @@
             "微风",
             "彩叶"
           ],
-          "path": "/particles-fx/leaves"
+          "path": "/particles-fx/leaves",
+          "title_en": "Falling Leaves",
+          "hint_en": "Flying leaves",
+          "desc_en": "The leaves are slowly falling, while the right and left are rocked and rotated around themselves; the shape of the leaves is an elliptical leaf spelled out in two arcs."
         },
         {
           "slug": "dust",
@@ -6222,7 +7237,10 @@
             "彩尘",
             "暗尘"
           ],
-          "path": "/particles-fx/dust"
+          "path": "/particles-fx/dust",
+          "title_en": "Dust Storm",
+          "hint_en": "Sand floats",
+          "desc_en": "A slanted light comes in from the left, and the floating dust is lighted in the beam, almost invisible outside the beam; the beam moves with the pointer."
         },
         {
           "slug": "neon-dots",
@@ -6241,7 +7259,10 @@
             "脉冲",
             "常亮"
           ],
-          "path": "/particles-fx/neon-dots"
+          "path": "/particles-fx/neon-dots",
+          "title_en": "Neon Dots",
+          "hint_en": "Neon flash",
+          "desc_en": "The point of light drifts in the image, drawing a line at a distance less than the \"connected distance\" and the closer the line becomes brighter; the color changes slowly with the position."
         },
         {
           "slug": "quantum",
@@ -6260,7 +7281,10 @@
             "彩跳",
             "单色"
           ],
-          "path": "/particles-fx/quantum"
+          "path": "/particles-fx/quantum",
+          "title_en": "Quantum Jitter",
+          "hint_en": "Random Jump",
+          "desc_en": "The atomic nucleus is at the centre, with electrons moving along an oscillating elliptical orbit; the more the electron clouds spread, the more the `probability cloud' particles around each electron spread, reflecting the uncertainty of quantum."
         },
         {
           "slug": "net",
@@ -6279,7 +7303,10 @@
             "发光",
             "淡线"
           ],
-          "path": "/particles-fx/net"
+          "path": "/particles-fx/net",
+          "title_en": "Connection Net",
+          "hint_en": "Neighborlink",
+          "desc_en": "Authorized to move slowly in the image and connect to the nearest node; the pointer is a special \"junction\" that will suffocate the nearby node lightly and connect all of it."
         },
         {
           "slug": "blackhole",
@@ -6298,7 +7325,10 @@
             "彩盘",
             "暗核"
           ],
-          "path": "/particles-fx/blackhole"
+          "path": "/particles-fx/blackhole",
+          "title_en": "Black-hole Accretion",
+          "hint_en": "Central inhaled",
+          "desc_en": "The more the particles rotate around the flat suction center, the faster they move inside, The hotter it gets, the more bright it gets"
         },
         {
           "slug": "rainbow",
@@ -6317,9 +7347,14 @@
             "高柱",
             "矮柱"
           ],
-          "path": "/particles-fx/rainbow"
+          "path": "/particles-fx/rainbow",
+          "title_en": "Rainbow Fountain",
+          "hint_en": "Rainbow injection",
+          "desc_en": "The particles line up multilayer concentric arcs into rainbows, each layer of color = Main color + Layer × Span / layers; particles flow along arc lines, point point points…"
         }
-      ]
+      ],
+      "name_en": "Particle Effects",
+      "intro_en": "A Canvas particle kit: starfields, snow, smoke, gravity fields and more, with tunable variants."
     },
     {
       "key": "generative",
@@ -6334,7 +7369,7 @@
       "demos": [
         {
           "slug": "flowfield",
-          "title": "Perlin 流场",
+          "title": "Perlin 噪声流场",
           "hint": "噪声流场 · 重生",
           "desc": "画面每一点都有一个「风向」，由平滑噪声决定。",
           "tag": "gen",
@@ -6349,11 +7384,14 @@
             "粗线",
             "细线"
           ],
-          "path": "/generative/flowfield"
+          "path": "/generative/flowfield",
+          "title_en": "Perlin Flow Field",
+          "hint_en": "Noise stream · Be reborn",
+          "desc_en": "There is a \"wind direction\" at every point in the picture, determined by smooth noise."
         },
         {
           "slug": "julia",
-          "title": "Julia 集",
+          "title": "Julia 分形集",
           "hint": "Julia 漫游",
           "desc": "Julia 集：每个点反复做 z = z² + c，数它多少步后跑远，按步数上色。",
           "tag": "gen",
@@ -6368,11 +7406,14 @@
             "深探",
             "浅探"
           ],
-          "path": "/generative/julia"
+          "path": "/generative/julia",
+          "title_en": "Julia Set",
+          "hint_en": "Julia Wandering",
+          "desc_en": "Julia Episode: Every point repeats z = z² + c，Count how many steps it takes to run away, and by the colours."
         },
         {
           "slug": "mandelbrot",
-          "title": "Mandelbrot",
+          "title": "曼德博集合",
           "hint": "曼德勃漫游",
           "desc": "对每个点 c，从 z = 0 开始反复做 z ← z² + c，看会不会逃到无穷远。",
           "tag": "gen",
@@ -6387,11 +7428,14 @@
             "宽景",
             "细部"
           ],
-          "path": "/generative/mandelbrot"
+          "path": "/generative/mandelbrot",
+          "title_en": "Mandelbrot Set",
+          "hint_en": "Mandebau roams",
+          "desc_en": "To every point c，From; through; via z = 0 Start doing it again and again z ← z² + c，Plans are underway."
         },
         {
           "slug": "gol",
-          "title": "生命游戏",
+          "title": "康威生命游戏",
           "hint": "细胞自动机",
           "desc": "生命游戏：每个格子看周围 8 个邻居，活邻居 2~3 个就活下去，正好 3 个就出生。",
           "tag": "gen",
@@ -6406,7 +7450,10 @@
             "大格",
             "小格"
           ],
-          "path": "/generative/gol"
+          "path": "/generative/gol",
+          "title_en": "Game of Life",
+          "hint_en": "Cell Motivation",
+          "desc_en": "Life game: each grid looks around 8 A neighbor. Live neighbor 2~3 Just live. That's it 3 One is born."
         },
         {
           "slug": "voronoi",
@@ -6425,7 +7472,10 @@
             "高对比",
             "柔边"
           ],
-          "path": "/generative/voronoi"
+          "path": "/generative/voronoi",
+          "title_en": "Voronoi Diagram",
+          "hint_en": "Voronoi Colour Block",
+          "desc_en": "Several \"seeds\" were scattered, each location on the image belonged to the nearest seed, and the plane was divided into blocks."
         },
         {
           "slug": "tree",
@@ -6444,11 +7494,14 @@
             "摇摆",
             "静"
           ],
-          "path": "/generative/tree"
+          "path": "/generative/tree",
+          "title_en": "Recursive Tree",
+          "hint_en": "Fractal Tree",
+          "desc_en": "Draw a branch, then draw a shorter branch around the end, and repeat the same thing for Comparison."
         },
         {
           "slug": "sierpinski",
-          "title": "Sierpinski",
+          "title": "谢尔宾斯基三角",
           "hint": "三角分形",
           "desc": "把一个三角形三条边的中点连起来，挖掉中间那个，剩下 3 个小三角；再对每个小三角重复。",
           "tag": "gen",
@@ -6463,7 +7516,10 @@
             "动",
             "静"
           ],
-          "path": "/generative/sierpinski"
+          "path": "/generative/sierpinski",
+          "title_en": "Sierpinski Triangle",
+          "hint_en": "Triangular Fractal",
+          "desc_en": "Connect a triangle to the middle of the three sides. Dig the middle one 3 Small triangles; repeat each."
         },
         {
           "slug": "circles",
@@ -6482,7 +7538,10 @@
             "大小差",
             "均匀"
           ],
-          "path": "/generative/circles"
+          "path": "/generative/circles",
+          "title_en": "Circle Packing",
+          "hint_en": "Round Stack",
+          "desc_en": "Select a random dot to calculate how far it is from the nearest circle and frame, where it is placed in a circle that happens to be non-overlapping; repeat it many times, with the big dot first, with the small dome filled."
         },
         {
           "slug": "terrain",
@@ -6501,7 +7560,10 @@
             "动态",
             "静态"
           ],
-          "path": "/generative/terrain"
+          "path": "/generative/terrain",
+          "title_en": "Noise Terrain",
+          "hint_en": "Wait for the noise",
+          "desc_en": "The smooth noise is used as an \"alt\", a line of cross-sampling lines, and the line is on, Close to the bottom, with pure colours covering the lines behind them, they form back and forth"
         },
         {
           "slug": "walk",
@@ -6520,11 +7582,14 @@
             "彩色",
             "单色"
           ],
-          "path": "/generative/walk"
+          "path": "/generative/walk",
+          "title_en": "Random Walk",
+          "hint_en": "Drunk trail",
+          "desc_en": "Every swimmer picks at random Comoros, Down, Left, One step right, like a drunk walking."
         },
         {
           "slug": "lsystem",
-          "title": "L-System",
+          "title": "L 系统植物",
           "hint": "文法植物",
           "desc": "从字符串 \"F\" 开始，按规则把每个 F 替换成一串更长的指令，反复几次；然后让「海龟」照着画：F 前进画线…",
           "tag": "gen",
@@ -6539,7 +7604,10 @@
             "疏",
             "摇摆"
           ],
-          "path": "/generative/lsystem"
+          "path": "/generative/lsystem",
+          "title_en": "L-System",
+          "hint_en": "Syntax:",
+          "desc_en": "Start with the string \"F\" and replace each F with a series of longer commands, repeated several times; then let the Sea Turtle paint: F Forward Line"
         },
         {
           "slug": "interfere",
@@ -6558,7 +7626,10 @@
             "强",
             "弱"
           ],
-          "path": "/generative/interfere"
+          "path": "/generative/interfere",
+          "title_en": "Wave Interference",
+          "hint_en": "Double-wave interference",
+          "desc_en": "Each wave source sends a circle of circular waves."
         },
         {
           "slug": "diffuse",
@@ -6577,7 +7648,10 @@
             "浓",
             "淡"
           ],
-          "path": "/generative/diffuse"
+          "path": "/generative/diffuse",
+          "title_en": "Dye Diffusion",
+          "hint_en": "Possible ink proliferation",
+          "desc_en": "Two \"Chemicals\" A and B spread and react in cells (A + 2B → 3B), A is constantly being added and B is being removed."
         },
         {
           "slug": "mosaic",
@@ -6596,7 +7670,10 @@
             "彩虹",
             "单色"
           ],
-          "path": "/generative/mosaic"
+          "path": "/generative/mosaic",
+          "title_en": "Mosaic Noise",
+          "hint_en": "Noise",
+          "desc_en": "Cut the image into square bricks, take the noise value of each brick from the centre, and round it to the \"chromatic steps\" rounded to the nearest colours."
         },
         {
           "slug": "polar-flower",
@@ -6615,7 +7692,10 @@
             "描边",
             "填充"
           ],
-          "path": "/generative/polar-flower"
+          "path": "/generative/polar-flower",
+          "title_en": "Polar Flower",
+          "hint_en": "Polar Coordinate Curve",
+          "desc_en": "Use angle θ + Radius r」Come and draw."
         },
         {
           "slug": "tri",
@@ -6634,7 +7714,10 @@
             "动",
             "静"
           ],
-          "path": "/generative/tri"
+          "path": "/generative/tri",
+          "title_en": "Triangulation",
+          "hint_en": "Triangular Network",
+          "desc_en": "Puts a vertebrae on the grid and allows each vertebrae to shake with the noise; each square cuts into two triangles along the diagonal line."
         },
         {
           "slug": "subdiv",
@@ -6653,7 +7736,10 @@
             "动",
             "静"
           ],
-          "path": "/generative/subdiv"
+          "path": "/generative/subdiv",
+          "title_en": "Square Subdivision",
+          "hint_en": "Four fork subdivision",
+          "desc_en": "Cuts a rectangle along the long edge into two pieces and repeats each of them until they reach depth or decide to stop at random."
         },
         {
           "slug": "contour",
@@ -6672,7 +7758,10 @@
             "动",
             "静"
           ],
-          "path": "/generative/contour"
+          "path": "/generative/contour",
+          "title_en": "Contour Lines",
+          "hint_en": "Noise is high",
+          "desc_en": "Use the noise value as the height on the map 1/n、2/n… It's like a line on a map."
         },
         {
           "slug": "inkdrop",
@@ -6691,7 +7780,10 @@
             "浓",
             "淡"
           ],
-          "path": "/generative/inkdrop"
+          "path": "/generative/inkdrop",
+          "title_en": "Ink Drop",
+          "hint_en": "Ink drops",
+          "desc_en": "A drop of ink in water spreads out, and the radius is growing slowly ∝ √Time) , one circle of colour, with the edge dimmed by the current."
         },
         {
           "slug": "fiber",
@@ -6710,7 +7802,10 @@
             "彩",
             "单色"
           ],
-          "path": "/generative/fiber"
+          "path": "/generative/fiber",
+          "title_en": "Fiber-optic Strands",
+          "hint_en": "Vertical fibre",
+          "desc_en": "A line of fibers spreads from the bottom to the same point, each with a double Bézier curve, and the control point moves with the wind and is attracted by the pointer."
         },
         {
           "slug": "pixelsort",
@@ -6729,7 +7824,10 @@
             "彩",
             "灰"
           ],
-          "path": "/generative/pixelsort"
+          "path": "/generative/pixelsort",
+          "title_en": "Pixel Sorting",
+          "hint_en": "Line Offset",
+          "desc_en": "A line-by-line scan of a picture that rearranges a series of pixels with a brightness above the threshold from the dark to the brightness will have the effect of being \"Raz.\""
         },
         {
           "slug": "cellgrow",
@@ -6748,7 +7846,10 @@
             "描边",
             "填充"
           ],
-          "path": "/generative/cellgrow"
+          "path": "/generative/cellgrow",
+          "title_en": "Cell Growth",
+          "hint_en": "Cyclical expansion",
+          "desc_en": "Each cell grows up in two, two subcells are separated in a random direction, each in half size (radi Ratified) ÷ √2）。"
         },
         {
           "slug": "gravline",
@@ -6767,7 +7868,10 @@
             "彩",
             "单"
           ],
-          "path": "/generative/gravline"
+          "path": "/generative/gravline",
+          "title_en": "Gravity Lines",
+          "hint_en": "Headings to the heart",
+          "desc_en": "A horizontal line, like a time grid; on the image 2 The \"mass\" of a circular motion plus the pointer, each of which pulls itself closer to the point in the vicinity…"
         },
         {
           "slug": "spiral-gen",
@@ -6786,9 +7890,14 @@
             "彩",
             "单"
           ],
-          "path": "/generative/spiral-gen"
+          "path": "/generative/spiral-gen",
+          "title_en": "Spiral Sampling",
+          "hint_en": "Archimed screw",
+          "desc_en": "I don't think so i Point in radius √i、Angle i × Spread out Location."
         }
-      ]
+      ],
+      "name_en": "Generative Art",
+      "intro_en": "Procedurally generated patterns: noise fields, cellular automata, recursive fractals and random walks."
     },
     {
       "key": "text-fx",
@@ -6818,11 +7927,14 @@
             "无标",
             "循环"
           ],
-          "path": "/text-fx/typewriter"
+          "path": "/text-fx/typewriter",
+          "title_en": "Typewriter",
+          "hint_en": "Type-by-word · Replay",
+          "desc_en": "The text appears one by one, followed by a blinking cursor; after a pause, delete it word for word, and recycle."
         },
         {
           "slug": "glitch",
-          "title": "故障 Glitch",
+          "title": "故障风文字",
           "hint": "故障抖动",
           "desc": "模仿信号干扰——把文字切成横条随机左右错位，并把红、青两个颜色通道错开。",
           "tag": "text",
@@ -6837,7 +7949,10 @@
             "彩错",
             "单色"
           ],
-          "path": "/text-fx/glitch"
+          "path": "/text-fx/glitch",
+          "title_en": "Glitch Text",
+          "hint_en": "Glitch Jitter",
+          "desc_en": "imitation of signal interference -- cutting text into strips and randomly misdirected and red, The two colour channels are staggered."
         },
         {
           "slug": "gradient",
@@ -6856,7 +7971,10 @@
             "快扫",
             "三色"
           ],
-          "path": "/text-fx/gradient"
+          "path": "/text-fx/gradient",
+          "title_en": "Gradient Shine",
+          "hint_en": "Gradient flow word",
+          "desc_en": "The text is filled with a horizontal colour gradient, which is smoothing to create a sense of movement; and a tilted white high light is plowed from the left to the right, like a metal reflection."
         },
         {
           "slug": "outline",
@@ -6875,7 +7993,10 @@
             "闪边",
             "静"
           ],
-          "path": "/text-fx/outline"
+          "path": "/text-fx/outline",
+          "title_en": "Outline Fill",
+          "hint_en": "By the hollow",
+          "desc_en": "First draw a contour of text (strokeText) and stagger several layers to the bottom right to form a stereo shadow; then solid colours \"push\" from left to right into text"
         },
         {
           "slug": "split-fall",
@@ -6894,7 +8015,10 @@
             "快",
             "慢"
           ],
-          "path": "/text-fx/split-fall"
+          "path": "/text-fx/split-fall",
+          "title_en": "Split & Fall",
+          "hint_en": "Letter Drop",
+          "desc_en": "Split a sentence into a single word, with each word falling from above, with a bit of a jump on the ground; and then drop the picture down one by one after a moment."
         },
         {
           "slug": "bounce-in",
@@ -6913,7 +8037,10 @@
             "快",
             "慢"
           ],
-          "path": "/text-fx/bounce-in"
+          "path": "/text-fx/bounce-in",
+          "title_en": "Elastic Bounce-in",
+          "hint_en": "Overload",
+          "desc_en": "Each word is zoomed in from 0 to its original size, because \"flexible\" will go beyond the original size and bounce back several times before stopping, like Jell-O."
         },
         {
           "slug": "blur-clear",
@@ -6932,7 +8059,10 @@
             "带色",
             "白"
           ],
-          "path": "/text-fx/blur-clear"
+          "path": "/text-fx/blur-clear",
+          "title_en": "Blur to Clear",
+          "hint_en": "It's all over",
+          "desc_en": "Each word begins with a dull beginning, and then becomes clear and sharp, like a lens to focus; then it stops and then changes from left to right."
         },
         {
           "slug": "mirror",
@@ -6951,7 +8081,10 @@
             "弹性",
             "线性"
           ],
-          "path": "/text-fx/mirror"
+          "path": "/text-fx/mirror",
+          "title_en": "Mirror Flip",
+          "hint_en": "Mirror Restoration",
+          "desc_en": "One turn in turn per word horizontal axis (vertical scaling from 1 →1 →1) and one upside down below Here, A faded reflection, like standing"
         },
         {
           "slug": "wave-text",
@@ -6970,7 +8103,10 @@
             "彩",
             "单色"
           ],
-          "path": "/text-fx/wave-text"
+          "path": "/text-fx/wave-text",
+          "title_en": "Wavy Text",
+          "hint_en": "Word by word",
+          "desc_en": "The top and bottom of each word is a sine wave, followed by a little later than the previous word (phase difference), which is linked to a line of buoys that rise and fall on the water."
         },
         {
           "slug": "perspective",
@@ -6989,7 +8125,10 @@
             "大",
             "小"
           ],
-          "path": "/text-fx/perspective"
+          "path": "/text-fx/perspective",
+          "title_en": "3D Perspective",
+          "hint_en": "Transverse Flip",
+          "desc_en": "The text is written on a backwards-down plane, which continues to move far away."
         },
         {
           "slug": "neon-text",
@@ -7008,7 +8147,10 @@
             "双色",
             "单色"
           ],
-          "path": "/text-fx/neon-text"
+          "path": "/text-fx/neon-text",
+          "title_en": "Neon Tube Text",
+          "hint_en": "Neon glows",
+          "desc_en": "The text is used as a light pipe with a liner, plus the same colour with a wide-scale blur (shadowBlur) as light."
         },
         {
           "slug": "scramble",
@@ -7027,7 +8169,10 @@
             "旋转",
             "平移"
           ],
-          "path": "/text-fx/scramble"
+          "path": "/text-fx/scramble",
+          "title_en": "Scramble",
+          "hint_en": "Spread out and get together again",
+          "desc_en": "All words are dispersed from their respective positions in a random direction and rotated, and then removed back to the original sentence, looping."
         },
         {
           "slug": "counter",
@@ -7046,7 +8191,10 @@
             "慢",
             "带号"
           ],
-          "path": "/text-fx/counter"
+          "path": "/text-fx/counter",
+          "title_en": "Rolling Counter",
+          "hint_en": "Digital Incremental",
+          "desc_en": "Each number is a vertical 0-9 tape, the lowest level continues to scroll when the value increases; when the lower position goes from nine to zero, the upper one follows"
         },
         {
           "slug": "decode",
@@ -7065,7 +8213,10 @@
             "循环",
             "一次"
           ],
-          "path": "/text-fx/decode"
+          "path": "/text-fx/decode",
+          "title_en": "Cipher Decode",
+          "hint_en": "Uncoded",
+          "desc_en": "The text is first displayed as a continuously changing charade, and then from the left to the right, a \"decipher\" becomes a real word, like the hacker interface in the movie."
         },
         {
           "slug": "ribbon",
@@ -7084,7 +8235,10 @@
             "循环",
             "一次"
           ],
-          "path": "/text-fx/ribbon"
+          "path": "/text-fx/ribbon",
+          "title_en": "Printer Ribbon",
+          "hint_en": "The color belt was cleaned",
+          "desc_en": "Simulates a small ticket printer - the head of the printing is scrutinised through the current line, and a line of paper is printed upwards."
         },
         {
           "slug": "handwrite",
@@ -7103,7 +8257,10 @@
             "循环",
             "一次"
           ],
-          "path": "/text-fx/handwrite"
+          "path": "/text-fx/handwrite",
+          "title_en": "Handwriting Progress",
+          "hint_en": "It's coming out",
+          "desc_en": "Painting the contours of the word with a dotted line technique -- extending the \"real segment\" of the dotted line slowly from 0 to the length of the contours, looking like a pen in a pen; every word"
         },
         {
           "slug": "karaoke",
@@ -7122,7 +8279,10 @@
             "循环",
             "一次"
           ],
-          "path": "/text-fx/karaoke"
+          "path": "/text-fx/karaoke",
+          "title_en": "Karaoke Subtitles",
+          "hint_en": "Highlight word for word",
+          "desc_en": "In the line that you're singing, the color goes from left to right \"brush\" and the brushes turn to bright color and light; after the line goes to the next line, go up and down"
         },
         {
           "slug": "vertical",
@@ -7141,7 +8301,10 @@
             "彩",
             "单"
           ],
-          "path": "/text-fx/vertical"
+          "path": "/text-fx/vertical",
+          "title_en": "Vertical Scroll Text",
+          "hint_en": "Vertical Text",
+          "desc_en": "Chinese from right to left, Line up and down."
         },
         {
           "slug": "pageflip",
@@ -7160,7 +8323,10 @@
             "大",
             "小"
           ],
-          "path": "/text-fx/pageflip"
+          "path": "/text-fx/pageflip",
+          "title_en": "Page Flip",
+          "hint_en": "Page Turner",
+          "desc_en": "The top two and a half of each grid are separated, the top half is turned down, the first half of the new word is shown, and the lower part of the new word is the second half of the latter."
         },
         {
           "slug": "liquid",
@@ -7179,7 +8345,10 @@
             "交错",
             "同步"
           ],
-          "path": "/text-fx/liquid"
+          "path": "/text-fx/liquid",
+          "title_en": "Liquid Morph",
+          "hint_en": "Liquid Zoom",
+          "desc_en": "Draws the text on a hidden canvas, then cuts it across into thin strips, staggering each by the sine wave, and looks like the text moves in the water."
         },
         {
           "slug": "pixel",
@@ -7198,7 +8367,10 @@
             "彩",
             "单"
           ],
-          "path": "/text-fx/pixel"
+          "path": "/text-fx/pixel",
+          "title_en": "Pixel Reveal",
+          "hint_en": "Pixels",
+          "desc_en": "The text is drawn on the hidden canvas, sampled by grid: the cells falling inside the font become a pixel."
         },
         {
           "slug": "smoke",
@@ -7217,7 +8389,10 @@
             "循环",
             "一次"
           ],
-          "path": "/text-fx/smoke"
+          "path": "/text-fx/smoke",
+          "title_en": "Smoke Dissolve",
+          "hint_en": "The smoke is gone",
+          "desc_en": "Words are broken into tiny particles."
         },
         {
           "slug": "magnetic",
@@ -7236,7 +8411,10 @@
             "回弹",
             "粘滞"
           ],
-          "path": "/text-fx/magnetic"
+          "path": "/text-fx/magnetic",
+          "title_en": "Magnetic Letters",
+          "hint_en": "Pointer Magnetic Suction",
+          "desc_en": "Words float freely in the image with noise; the pointer is like a magnet, and the closer to the pointer, the more it is sucked back into its position in the sentence and set it straight."
         },
         {
           "slug": "rainbow",
@@ -7255,9 +8433,14 @@
             "低波",
             "高波"
           ],
-          "path": "/text-fx/rainbow"
+          "path": "/text-fx/rainbow",
+          "title_en": "Rainbow Bounce",
+          "hint_en": "Rainbow rises and falls",
+          "desc_en": "Jump up and down every word in turn (|sin| Curves, like popping balls) while the colour flows along the chalk ring, the first word has the main color and the whole sentence crosses"
         }
-      ]
+      ],
+      "name_en": "Text Effects",
+      "intro_en": "Typewriter, glitch, gradient, outline, split entrances and more — laid out and animated letter by letter on canvas; hover to read each glyph’s state."
     },
     {
       "key": "scroll-fx",
@@ -7288,7 +8471,10 @@
             "慢",
             "快"
           ],
-          "path": "/scroll-fx/parallax"
+          "path": "/scroll-fx/parallax",
+          "title_en": "Parallax Layers",
+          "hint_en": "Scro Manual · Parallax",
+          "desc_en": "The mountains in the middle of reality seem to be moving slowly and the trees in the vicinity move fast."
         },
         {
           "slug": "progress",
@@ -7307,7 +8493,10 @@
             "发光",
             "朴素"
           ],
-          "path": "/scroll-fx/progress"
+          "path": "/scroll-fx/progress",
+          "title_en": "Reading Progress",
+          "hint_en": "Topbar Progress",
+          "desc_en": "Progress = Scroll distance ÷ Rollable total distance."
         },
         {
           "slug": "pin",
@@ -7326,7 +8515,10 @@
             "双钉",
             "单钉"
           ],
-          "path": "/scroll-fx/pin"
+          "path": "/scroll-fx/pin",
+          "title_en": "Pinned Sections",
+          "hint_en": "Sticky, nail it",
+          "desc_en": "The title of the chapter is normally scrolled along with the contents, and once it touches the top of the view, it remains \" sticky\" at the top; it is not pushed away from the next chapter until all the contents of the chapter have been rolled out."
         },
         {
           "slug": "reveal",
@@ -7345,7 +8537,10 @@
             "交错",
             "同步"
           ],
-          "path": "/scroll-fx/reveal"
+          "path": "/scroll-fx/reveal",
+          "title_en": "Fade-in Reveal",
+          "hint_en": "Scroll In",
+          "desc_en": "The card is transparent and biased when it's not in sight; when it's in sight from the bottom, progress e from 0 to 1, transparency becomes 1, Bit"
         },
         {
           "slug": "scale-in",
@@ -7364,7 +8559,10 @@
             "弹性",
             "线性"
           ],
-          "path": "/scroll-fx/scale-in"
+          "path": "/scroll-fx/scale-in",
+          "title_en": "Scale In",
+          "hint_en": "Scroll Zoom",
+          "desc_en": "The closer the cards are to the centre, the greater the light, and when they leave the centre, they become darker."
         },
         {
           "slug": "h-gallery",
@@ -7383,7 +8581,10 @@
             "吸附",
             "自由"
           ],
-          "path": "/scroll-fx/h-gallery"
+          "path": "/scroll-fx/h-gallery",
+          "title_en": "Horizontal Gallery",
+          "hint_en": "Scroll Horizontally",
+          "desc_en": "When the page scrolls vertically, converts the scroll progress to a horizontal orbit (translateX), and the card moves from right to left over the screen."
         },
         {
           "slug": "stack",
@@ -7402,7 +8603,10 @@
             "彩色",
             "单色"
           ],
-          "path": "/scroll-fx/stack"
+          "path": "/scroll-fx/stack",
+          "title_en": "Stacked Cards",
+          "hint_en": "Sticky Stack",
+          "desc_en": "Each card is position: sticky Sovereignty, nailed a bit lower (top = base + i) · Shige"
         },
         {
           "slug": "wipe-text",
@@ -7421,7 +8625,10 @@
             "强",
             "弱"
           ],
-          "path": "/scroll-fx/wipe-text"
+          "path": "/scroll-fx/wipe-text",
+          "title_en": "Text Wipe",
+          "hint_en": "Erase Show",
+          "desc_en": "Each line of Contrary Text is painted in dark colour, followed by a linear gradient from left to right (light) Colour → Transparent) coverage."
         },
         {
           "slug": "path-draw",
@@ -7440,7 +8647,10 @@
             "发光",
             "朴素"
           ],
-          "path": "/scroll-fx/path-draw"
+          "path": "/scroll-fx/path-draw",
+          "title_en": "Scroll Path Drawing",
+          "hint_en": "Scroll along",
+          "desc_en": "A snake-shaped SVG path runs through the entire page."
         },
         {
           "slug": "countup",
@@ -7459,7 +8669,10 @@
             "多组",
             "单组"
           ],
-          "path": "/scroll-fx/countup"
+          "path": "/scroll-fx/countup",
+          "title_en": "Count Up",
+          "hint_en": "Roll-in count",
+          "desc_en": "Statistics, which enter the view, are rolled from 0 to target values, often in the \"data flash\" area of the official network."
         },
         {
           "slug": "bg-shift",
@@ -7478,7 +8691,10 @@
             "双色",
             "多色"
           ],
-          "path": "/scroll-fx/bg-shift"
+          "path": "/scroll-fx/bg-shift",
+          "title_en": "Background Shift",
+          "hint_en": "Rolling background",
+          "desc_en": "The page is divided into paragraphs, each of which specifies a background colour."
         },
         {
           "slug": "split-wipe",
@@ -7497,7 +8713,10 @@
             "强对比",
             "柔"
           ],
-          "path": "/scroll-fx/split-wipe"
+          "path": "/scroll-fx/split-wipe",
+          "title_en": "Split-screen Wipe",
+          "hint_en": "Left- and Right-Screen",
+          "desc_en": "The screen is split in half, and the contents are moving in the opposite direction -- one side. Let' Acknowledging, One side down (or one side left), To the right side ACP 2011/12 3/"
         },
         {
           "slug": "snap",
@@ -7516,7 +8735,10 @@
             "快",
             "慢"
           ],
-          "path": "/scroll-fx/snap"
+          "path": "/scroll-fx/snap",
+          "title_en": "Scroll Snap",
+          "hint_en": "Paragraph adsorption",
+          "desc_en": "Sets the rolling container scroll-snap-type: y mandatory, each paragraph sets the scroll-sn"
         },
         {
           "slug": "toc",
@@ -7535,7 +8757,10 @@
             "胶囊",
             "下划线"
           ],
-          "path": "/scroll-fx/toc"
+          "path": "/scroll-fx/toc",
+          "title_en": "TOC Highlight",
+          "hint_en": "Align anchor",
+          "desc_en": "A directory next to a long document automatically highlights the current chapter as you read it."
         },
         {
           "slug": "cover",
@@ -7554,7 +8779,10 @@
             "字大",
             "字小"
           ],
-          "path": "/scroll-fx/cover"
+          "path": "/scroll-fx/cover",
+          "title_en": "Cover Reveal",
+          "hint_en": "Cover off",
+          "desc_en": "The page starts with a big cover."
         },
         {
           "slug": "timeline",
@@ -7573,7 +8801,10 @@
             "卡片",
             "纯文"
           ],
-          "path": "/scroll-fx/timeline"
+          "path": "/scroll-fx/timeline",
+          "title_en": "Scroll Timeline",
+          "hint_en": "Vertical Timeline",
+          "desc_en": "A vertical line runs through the page and each event is a node and a card on the line."
         },
         {
           "slug": "lazy-img",
@@ -7592,7 +8823,10 @@
             "网格",
             "单列"
           ],
-          "path": "/scroll-fx/lazy-img"
+          "path": "/scroll-fx/lazy-img",
+          "title_en": "Lazy Image Reveal",
+          "hint_en": "Scroll into Fig",
+          "desc_en": "The pictures on the page show the grey spaces first, and only when they are close to the viewer (less than \"loading\") do they actually start downloading, and when they are finished, they fade from the"
         },
         {
           "slug": "stagger-grid",
@@ -7611,7 +8845,10 @@
             "对角",
             "行优"
           ],
-          "path": "/scroll-fx/stagger-grid"
+          "path": "/scroll-fx/stagger-grid",
+          "title_en": "Staggered Grid",
+          "hint_en": "Grid staggering",
+          "desc_en": "It's not like it's all together, but it's one place after another."
         },
         {
           "slug": "totop",
@@ -7630,7 +8867,10 @@
             "渐显",
             "常显"
           ],
-          "path": "/scroll-fx/totop"
+          "path": "/scroll-fx/totop",
+          "title_en": "Back-to-top Bubble",
+          "hint_en": "Backtop button",
+          "desc_en": "When the page scrolls more than a certain distance, a circle button emerges at the lower right corner, and the progress loop in the outer circle of the button shows how much."
         },
         {
           "slug": "story",
@@ -7649,9 +8889,14 @@
             "插图",
             "纯文"
           ],
-          "path": "/scroll-fx/story"
+          "path": "/scroll-fx/story",
+          "title_en": "Scrollytelling",
+          "hint_en": "Long narrative",
+          "desc_en": "On one side is a static illustration (sticky) and on the other side is a paragraph text."
         }
-      ]
+      ],
+      "name_en": "Scroll Effects",
+      "intro_en": "Parallax, progress, pinning and reveal effects in a virtual scrolling page; the pointer drives the scroll position and progress is read out live."
     },
     {
       "key": "math",
@@ -7681,7 +8926,10 @@
             "大图",
             "慢动"
           ],
-          "path": "/math/pythagoras"
+          "path": "/math/pythagoras",
+          "title_en": "Pythagorean Theorem",
+          "hint_en": "a²+b²=c² Squares on sides",
+          "desc_en": "A dynamic demonstration of the square area relationship on the three sides of the straight angle triangle."
         },
         {
           "slug": "similar-tri",
@@ -7700,7 +8948,10 @@
             "大",
             "小"
           ],
-          "path": "/math/similar-tri"
+          "path": "/math/similar-tri",
+          "title_en": "Similar Triangles",
+          "hint_en": "Corresponding angle equal · Side Proportion",
+          "desc_en": "Parallel transects generate similar triangles, with ratios varying with parameters."
         },
         {
           "slug": "circle-angles",
@@ -7719,7 +8970,10 @@
             "大圆",
             "小圆"
           ],
-          "path": "/math/circle-angles"
+          "path": "/math/circle-angles",
+          "title_en": "Central & Inscribed Angles",
+          "hint_en": "Central angle=2×Inscribed angle",
+          "desc_en": "The angle of the arc to the centre is twice the angle of the circle."
         },
         {
           "slug": "area-volume",
@@ -7738,7 +8992,10 @@
             "高锥",
             "矮锥"
           ],
-          "path": "/math/area-volume"
+          "path": "/math/area-volume",
+          "title_en": "Pyramids & Spheres",
+          "hint_en": "Volume formula icon",
+          "desc_en": "The ball has a volume relationship with the cone, and the layer is coming closer."
         },
         {
           "slug": "coord-geo",
@@ -7757,7 +9014,10 @@
             "大刻度",
             "密"
           ],
-          "path": "/math/coord-geo"
+          "path": "/math/coord-geo",
+          "title_en": "Coordinate Geometry",
+          "hint_en": "Distance · Midpoint · Slope",
+          "desc_en": "Similarly Preparedness/1997/1 3.4 Accessibility, The movement of the midpoint and slope."
         },
         {
           "slug": "conics",
@@ -7776,7 +9036,10 @@
             "动",
             "静"
           ],
-          "path": "/math/conics"
+          "path": "/math/conics",
+          "title_en": "Conic Sections",
+          "hint_en": "Ellipse / Hyperbola / Parabola",
+          "desc_en": "Three conic curves and focus With the count switch type."
         },
         {
           "slug": "linear",
@@ -7795,7 +9058,10 @@
             "动",
             "静"
           ],
-          "path": "/math/linear"
+          "path": "/math/linear",
+          "title_en": "Linear Functions",
+          "hint_en": "y=kx+b",
+          "desc_en": "A straight line with slope and cut-off."
         },
         {
           "slug": "quadratic",
@@ -7814,7 +9080,10 @@
             "动顶点",
             "静"
           ],
-          "path": "/math/quadratic"
+          "path": "/math/quadratic",
+          "title_en": "Quadratic Functions",
+          "hint_en": "Parabola · Determination",
+          "desc_en": "vertex and sentencing changes with parameters."
         },
         {
           "slug": "exp-log",
@@ -7833,7 +9102,10 @@
             "慢",
             "静"
           ],
-          "path": "/math/exp-log"
+          "path": "/math/exp-log",
+          "title_en": "Exponentials & Logarithms",
+          "hint_en": "Inverse each other",
+          "desc_en": "Exponent / logarithmic curve with y=x symmetry."
         },
         {
           "slug": "power",
@@ -7852,7 +9124,10 @@
             "含负",
             "正"
           ],
-          "path": "/math/power"
+          "path": "/math/power",
+          "title_en": "Power Functions",
+          "hint_en": "y=xⁿ Race",
+          "desc_en": "A comparison of the entropy functions of different indices."
         },
         {
           "slug": "piecewise",
@@ -7871,7 +9146,10 @@
             "高对比",
             "柔"
           ],
-          "path": "/math/piecewise"
+          "path": "/math/piecewise",
+          "title_en": "Piecewise Functions",
+          "hint_en": "Multiple pieces",
+          "desc_en": "Division definition function and action point tracking."
         },
         {
           "slug": "parametric",
@@ -7890,7 +9168,10 @@
             "大",
             "小"
           ],
-          "path": "/math/parametric"
+          "path": "/math/parametric",
+          "title_en": "Parametric Equations",
+          "hint_en": "Lisa's curve",
+          "desc_en": "x=cost, y=sin kt parameter curve."
         },
         {
           "slug": "polar",
@@ -7909,7 +9190,10 @@
             "慢",
             "大"
           ],
-          "path": "/math/polar"
+          "path": "/math/polar",
+          "title_en": "Polar Coordinates",
+          "hint_en": "Roseline r=cos(kθ)",
+          "desc_en": "The rose curve on the polar coordinate grid."
         },
         {
           "slug": "trig-waves",
@@ -7928,7 +9212,10 @@
             "快速",
             "慢速"
           ],
-          "path": "/math/trig-waves"
+          "path": "/math/trig-waves",
+          "title_en": "Trig Functions",
+          "hint_en": "Unit circle · sin / cos / Tan Wave Sync",
+          "desc_en": "Projection of points on a circle sin/cos，Waves with angles θ Expand in real time;toggle tan、Align/Frequency/Am Affirms."
         },
         {
           "slug": "unit-circle",
@@ -7947,7 +9234,10 @@
             "小",
             "相位"
           ],
-          "path": "/math/unit-circle"
+          "path": "/math/unit-circle",
+          "title_en": "Unit Circle & Waves",
+          "hint_en": "2D sin / Cos spread",
+          "desc_en": "Units projection synchronizes the sine cosine wave."
         },
         {
           "slug": "trig-id",
@@ -7966,7 +9256,10 @@
             "小圆",
             "高亮"
           ],
-          "path": "/math/trig-id"
+          "path": "/math/trig-id",
+          "title_en": "Trig Identities",
+          "hint_en": "sin²+cos²=1",
+          "desc_en": "constant equation curve and unit circle geometry certificate."
         },
         {
           "slug": "law-sine",
@@ -7985,7 +9278,10 @@
             "大圆",
             "小"
           ],
-          "path": "/math/law-sine"
+          "path": "/math/law-sine",
+          "title_en": "Law of Sines",
+          "hint_en": "a/sinA=2R",
+          "desc_en": "The triangle outer circle and the sine theorem."
         },
         {
           "slug": "limit",
@@ -8004,7 +9300,10 @@
             "大",
             "小"
           ],
-          "path": "/math/limit"
+          "path": "/math/limit",
+          "title_en": "Limits",
+          "hint_en": "(sin x)/x→1",
+          "desc_en": "Both sides approach to show limits."
         },
         {
           "slug": "derivative",
@@ -8023,7 +9322,10 @@
             "显割线",
             "隐"
           ],
-          "path": "/math/derivative"
+          "path": "/math/derivative",
+          "title_en": "Derivatives & Tangents",
+          "hint_en": "Tilt = Wizard",
+          "desc_en": "Cutting lines close to the line."
         },
         {
           "slug": "integral",
@@ -8042,7 +9344,10 @@
             "高",
             "低"
           ],
-          "path": "/math/integral"
+          "path": "/math/integral",
+          "title_en": "Integrals & Area",
+          "hint_en": "Lehman and",
+          "desc_en": "Rectangle closes the area of the curved edge."
         },
         {
           "slug": "taylor",
@@ -8061,7 +9366,10 @@
             "快",
             "慢"
           ],
-          "path": "/math/taylor"
+          "path": "/math/taylor",
+          "title_en": "Taylor Series",
+          "hint_en": "sin x approach",
+          "desc_en": "Adds a step to the original function."
         },
         {
           "slug": "vectors",
@@ -8080,7 +9388,10 @@
             "大",
             "小"
           ],
-          "path": "/math/vectors"
+          "path": "/math/vectors",
+          "title_en": "Vector Operations",
+          "hint_en": "Add/decrease · Dot product · Cross product",
+          "desc_en": "Parallel quadrilateral law and quantity."
         },
         {
           "slug": "matrix-2d",
@@ -8099,7 +9410,10 @@
             "显基",
             "隐"
           ],
-          "path": "/math/matrix-2d"
+          "path": "/math/matrix-2d",
+          "title_en": "Matrix Transforms",
+          "hint_en": "2D Rotate Zoom",
+          "desc_en": "Linear transformation of squares in units."
         },
         {
           "slug": "determinant",
@@ -8118,7 +9432,10 @@
             "动",
             "静"
           ],
-          "path": "/math/determinant"
+          "path": "/math/determinant",
+          "title_en": "Determinant & Area",
+          "hint_en": "There's an area",
+          "desc_en": "A parallel quadrilateral with two columns of vectors."
         },
         {
           "slug": "eigen",
@@ -8137,7 +9454,10 @@
             "小",
             "高亮"
           ],
-          "path": "/math/eigen"
+          "path": "/math/eigen",
+          "title_en": "Eigenvalues & Eigenvectors",
+          "hint_en": "Av=λv",
+          "desc_en": "The characteristic direction is only condensed and not rotated."
         },
         {
           "slug": "venn",
@@ -8156,7 +9476,10 @@
             "大圆",
             "小"
           ],
-          "path": "/math/venn"
+          "path": "/math/venn",
+          "title_en": "Venn Diagrams",
+          "hint_en": "Submission and replenishment",
+          "desc_en": "And the two shall meet together."
         },
         {
           "slug": "combinatorics",
@@ -8175,7 +9498,10 @@
             "动",
             "静"
           ],
-          "path": "/math/combinatorics"
+          "path": "/math/combinatorics",
+          "title_en": "Permutations & Combinations",
+          "hint_en": "C(n,k) / P(n,k)",
+          "desc_en": "Select the Highlight and Count formula."
         },
         {
           "slug": "sequence",
@@ -8194,7 +9520,10 @@
             "快",
             "慢"
           ],
-          "path": "/math/sequence"
+          "path": "/math/sequence",
+          "title_en": "Recursive Sequences",
+          "hint_en": "Fibonacci / Geometric",
+          "desc_en": "Gradient columns spread."
         },
         {
           "slug": "shortest-path",
@@ -8213,7 +9542,10 @@
             "显权",
             "简"
           ],
-          "path": "/math/shortest-path"
+          "path": "/math/shortest-path",
+          "title_en": "Shortest Path",
+          "hint_en": "Dijkstra",
+          "desc_en": "The figure gradually relaxes the shortest path."
         },
         {
           "slug": "modular",
@@ -8232,7 +9564,10 @@
             "慢",
             "大"
           ],
-          "path": "/math/modular"
+          "path": "/math/modular",
+          "title_en": "Modular Arithmetic",
+          "hint_en": "The clock-face model",
+          "desc_en": "The remaining class of the whole number under the model m."
         },
         {
           "slug": "binomial",
@@ -8251,7 +9586,10 @@
             "动p",
             "静"
           ],
-          "path": "/math/binomial"
+          "path": "/math/binomial",
+          "title_en": "Binomial Distribution",
+          "hint_en": "B(n,p)",
+          "desc_en": "Benuli test success distribution."
         },
         {
           "slug": "normal",
@@ -8270,7 +9608,10 @@
             "大",
             "小"
           ],
-          "path": "/math/normal"
+          "path": "/math/normal",
+          "title_en": "Normal Distribution",
+          "hint_en": "Bell Curve",
+          "desc_en": "An adjustable normal density between the average and the square."
         },
         {
           "slug": "clt",
@@ -8289,13 +9630,18 @@
             "快",
             "慢"
           ],
-          "path": "/math/clt"
+          "path": "/math/clt",
+          "title_en": "Central Limit Theorem",
+          "hint_en": "Sample average→Normal",
+          "desc_en": "The dice equals histograms approaching normality."
         }
-      ]
+      ],
+      "name_en": "Math",
+      "intro_en": "Maths visualised from middle school up: geometry, functions, trigonometry, intro calculus, linear algebra, discrete maths and probability, with tunable parameters."
     },
     {
       "key": "convert",
-      "name": "数据转换",
+      "name": "单位换算",
       "icon": "⇄",
       "intro": "全球主流单位差异可视化：温度、时差、质量、长度、面积体积、进制、速度、压力与能量，参数可调。",
       "tech": [
@@ -8321,7 +9667,10 @@
             "动",
             "静"
           ],
-          "path": "/convert/temperature"
+          "path": "/convert/temperature",
+          "title_en": "Temperature",
+          "hint_en": "°C / °F / K / °R",
+          "desc_en": "Four temperature markers and two thermometers."
         },
         {
           "slug": "timezone",
@@ -8340,7 +9689,10 @@
             "快进",
             "慢"
           ],
-          "path": "/convert/timezone"
+          "path": "/convert/timezone",
+          "title_en": "World Time Zones",
+          "hint_en": "Major city UTC Offset",
+          "desc_en": "World clocks and multicity local time."
         },
         {
           "slug": "mass",
@@ -8359,7 +9711,10 @@
             "动",
             "静"
           ],
-          "path": "/convert/mass"
+          "path": "/convert/mass",
+          "title_en": "Weight & Mass",
+          "hint_en": "kg · lb · Catty · Two",
+          "desc_en": "Metric system / British / Quality conversion of municipal systems."
         },
         {
           "slug": "length",
@@ -8378,7 +9733,10 @@
             "动",
             "静"
           ],
-          "path": "/convert/length"
+          "path": "/convert/length",
+          "title_en": "Distance & Length",
+          "hint_en": "m · mile · Lining · nmi",
+          "desc_en": "cross-numeric lengths vs. several bars."
         },
         {
           "slug": "area-volume",
@@ -8397,7 +9755,10 @@
             "动",
             "静"
           ],
-          "path": "/convert/area-volume"
+          "path": "/convert/area-volume",
+          "title_en": "Area & Volume",
+          "hint_en": "m² · acre · L · gal",
+          "desc_en": "Area to volume mode switching."
         },
         {
           "slug": "radix",
@@ -8416,7 +9777,10 @@
             "慢增",
             "中值"
           ],
-          "path": "/convert/radix"
+          "path": "/convert/radix",
+          "title_en": "Number Bases",
+          "hint_en": "Two / Eight / Ten / XVI + Bitmap",
+          "desc_en": "Integer multi-digit and bit visualization."
         },
         {
           "slug": "speed",
@@ -8435,7 +9799,10 @@
             "动",
             "静"
           ],
-          "path": "/convert/speed"
+          "path": "/convert/speed",
+          "title_en": "Speed",
+          "hint_en": "km/h · mph · knot",
+          "desc_en": "Speed units and dashboards."
         },
         {
           "slug": "pressure",
@@ -8454,7 +9821,10 @@
             "大",
             "小"
           ],
-          "path": "/convert/pressure"
+          "path": "/convert/pressure",
+          "title_en": "Pressure",
+          "hint_en": "bar · psi · atm",
+          "desc_en": "Pressure units and pistons."
         },
         {
           "slug": "energy",
@@ -8473,9 +9843,14 @@
             "大",
             "小"
           ],
-          "path": "/convert/energy"
+          "path": "/convert/energy",
+          "title_en": "Energy",
+          "hint_en": "J · cal · kWh",
+          "desc_en": "Energy orders and batteries."
         }
-      ]
+      ],
+      "name_en": "Unit Conversion",
+      "intro_en": "Visualising differences between the world’s common units: temperature, time zones, mass, length, area/volume, number bases, speed, pressure and energy."
     }
   ],
   "totalDemos": 445

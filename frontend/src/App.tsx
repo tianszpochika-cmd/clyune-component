@@ -4,6 +4,47 @@ import { categories, routes, totalDemos, type Category, type DemoMeta } from './
 import { DemoHost } from './components/DemoHost';
 import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
 import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
+import { setLang, tr, tx, useLang } from './lib/i18n';
+import { setMusic, setMusicVol, useMusic } from './lib/music';
+
+const en = () => tr('zh', 'en') === 'en';
+const cName = (c: Category) => (en() ? c.name_en || c.name : c.name);
+const cIntro = (c: Category) => (en() ? c.intro_en || tx(c.intro) : c.intro);
+const dTitle = (d: DemoMeta) => (en() ? d.title_en || d.title : d.title);
+const dHint = (d: DemoMeta) => (en() ? d.hint_en || d.hint : d.hint);
+const dDesc = (d: DemoMeta) => (en() ? d.desc_en || d.desc : d.desc);
+const dTag = (d: DemoMeta) => tx(d.tag);
+const hay = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(' ').toLowerCase();
+
+function LangSwitch() {
+  const l = useLang();
+  return (
+    <button type="button" className="btn icon-btn lang-btn" onClick={() => setLang(l === 'en' ? 'zh' : 'en')}
+      aria-label={l === 'en' ? '切换到中文' : 'Switch to English'} title={l === 'en' ? '切换到中文' : 'Switch to English'}>
+      <span aria-hidden>{l === 'en' ? '中' : 'EN'}</span>
+    </button>
+  );
+}
+
+function MusicToggle() {
+  useLang();
+  const m = useMusic();
+  return (
+    <div className={`music-ctl${m.on ? ' on' : ''}${m.ducked ? ' ducked' : ''}`}>
+      <button type="button" className={`btn icon-btn music-btn${m.on ? ' on' : ''}`} aria-pressed={m.on}
+        aria-label={tr(m.on ? '关闭背景音乐' : '开启背景音乐', m.on ? 'Turn background music off' : 'Turn background music on')}
+        title={tr(m.on ? (m.ducked ? '背景音乐（演示发声中，已让路）' : '背景音乐：开') : '背景音乐：关', m.on ? (m.ducked ? 'Music (ducked for demo audio)' : 'Background music: on') : 'Background music: off')}
+        onClick={() => setMusic(!m.on)}>
+        <span aria-hidden>{m.on ? '♫' : '♪'}</span>
+        {m.on && !m.ducked ? <i className="music-eq" aria-hidden><b /><b /><b /></i> : null}
+      </button>
+      {m.on && (
+        <input type="range" className="music-vol" min={0} max={1} step={0.05} value={m.vol}
+          aria-label={tr('音量', 'Volume')} onChange={(e) => setMusicVol(+e.target.value)} />
+      )}
+    </div>
+  );
+}
 
 type Health = { ok: boolean; db: string; service?: string; version?: string };
 
@@ -156,6 +197,7 @@ function Sidebar({ open, onClose, filter, setFilter }: {
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
     : loc.pathname || '/';
+  const lang = useLang();
   const q = filter.trim().toLowerCase();
   /** Accordion: only one category open; null = all collapsed. */
   const [openKey, setOpenKey] = useState<string | null>(null);
@@ -176,14 +218,10 @@ function Sidebar({ open, onClose, filter, setFilter }: {
     return categories
       .map((c) => ({
         ...c,
-        demos: c.demos.filter((d) =>
-          d.title.toLowerCase().includes(q)
-          || d.slug.toLowerCase().includes(q)
-          || d.tag.toLowerCase().includes(q)
-          || c.name.toLowerCase().includes(q)),
+        demos: c.demos.filter((d) => hay(d.title, d.title_en, d.slug, d.tag, c.name, c.name_en).includes(q)),
       }))
-      .filter((c) => c.demos.length > 0 || c.name.toLowerCase().includes(q) || c.key.includes(q));
-  }, [q]);
+      .filter((c) => c.demos.length > 0 || hay(c.name, c.name_en).includes(q) || c.key.includes(q));
+  }, [q, lang]);
 
   useEffect(() => {
     const el = navRef.current?.querySelector('.nav-sub.active') as HTMLElement | null;
@@ -202,30 +240,30 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                 <div className="brand-sub">Rust + React · {totalDemos} demos</div>
               </div>
             </Link>
-            <button type="button" className="sidebar-close" aria-label="关闭导航" onClick={onClose}>✕</button>
+            <button type="button" className="sidebar-close" aria-label={tr('关闭导航', 'Close navigation')} onClick={onClose}>✕</button>
           </div>
           <label className="sidebar-search">
-            <span className="sr-only">筛选导航</span>
+            <span className="sr-only">{tr('筛选导航', 'Filter navigation')}</span>
             <input
               type="search"
-              placeholder="筛选分类 / Demo…"
+              placeholder={tr('筛选分类 / Demo…', 'Filter categories / demos…')}
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              aria-label="筛选侧栏"
+              aria-label={tr('筛选侧栏', 'Filter sidebar')}
             />
             {filter && (
-              <button type="button" className="sidebar-search-clear" onClick={() => setFilter('')} aria-label="清除">✕</button>
+              <button type="button" className="sidebar-search-clear" onClick={() => setFilter('')} aria-label={tr('清除', 'Clear')}>✕</button>
             )}
           </label>
         </div>
         <nav className="nav" aria-label="Categories" ref={navRef as never}>
-          <div className="nav-section-label">浏览</div>
+          <div className="nav-section-label">{tr('浏览', 'Browse')}</div>
           <Link to="/" className={`nav-item nav-home${r === '/' ? ' active' : ''}`}>
             <span className="icon">⌂</span>
-            <span className="nav-label">Home</span>
+            <span className="nav-label">{tr('首页', 'Home')}</span>
             <em className="count">{totalDemos}</em>
           </Link>
-          <div className="nav-section-label">演示库</div>
+          <div className="nav-section-label">{tr('演示库', 'Library')}</div>
           {filtered.map((c) => {
             const routeActive = r === `/${c.key}` || r.startsWith(`/${c.key}/`);
             // Search keeps matches open; otherwise pure accordion via openKey (collapse always works).
@@ -236,19 +274,19 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                   <button
                     type="button"
                     className={`nav-item nav-item-toggle${routeActive ? ' active' : ''}${groupOpen ? ' expanded' : ''}`}
-                    title={groupOpen ? `折叠 ${c.name}` : `展开 ${c.name}`}
+                    title={groupOpen ? tr(`折叠 ${c.name}`, `Collapse ${cName(c)}`) : tr(`展开 ${c.name}`, `Expand ${cName(c)}`)}
                     aria-expanded={groupOpen}
                     onClick={() => toggleGroup(c.key)}
                   >
                     <span className="icon">{c.icon}</span>
-                    <span className="nav-label">{c.name}</span>
+                    <span className="nav-label">{cName(c)}</span>
                     <em className="count">{c.demos.length}</em>
                     {!q && (
                       <span className={`nav-chevron-inline${groupOpen ? ' open' : ''}`} aria-hidden>▾</span>
                     )}
                   </button>
                 </div>
-                <AccordionPanel open={groupOpen} label={c.name}>
+                <AccordionPanel open={groupOpen} label={cName(c)}>
                     {c.demos.slice(0, q ? 80 : 48).map((d) => {
                       const path = `/${c.key}/${d.slug}`;
                       const on = r === path;
@@ -257,28 +295,28 @@ function Sidebar({ open, onClose, filter, setFilter }: {
                           key={d.slug}
                           to={path}
                           className={`nav-sub${on ? ' active' : ''}`}
-                          title={d.hint || d.desc}
+                          title={dHint(d) || dDesc(d)}
                           tabIndex={groupOpen ? 0 : -1}
                           onClick={onClose}
                         >
                           <span className="nav-sub-dot" aria-hidden />
-                          <span className="nav-sub-title">{d.title}</span>
-                          <span className="nav-sub-tag">{d.tag}</span>
+                          <span className="nav-sub-title">{dTitle(d)}</span>
+                          <span className="nav-sub-tag">{dTag(d)}</span>
                         </Link>
                       );
                     })}
                     {c.demos.length > (q ? 80 : 48) && (
-                      <Link to={`/${c.key}`} className="nav-sub more" tabIndex={groupOpen ? 0 : -1} onClick={onClose}>查看全部 {c.demos.length} →</Link>
+                      <Link to={`/${c.key}`} className="nav-sub more" tabIndex={groupOpen ? 0 : -1} onClick={onClose}>{tr(`查看全部 ${c.demos.length} →`, `View all ${c.demos.length} →`)}</Link>
                     )}
                 </AccordionPanel>
               </div>
             );
           })}
-          {filtered.length === 0 && <div className="nav-empty">无匹配演示</div>}
+          {filtered.length === 0 && <div className="nav-empty">{tr('无匹配演示', 'No matching demos')}</div>}
         </nav>
         <div className="sidebar-foot">
           <span>component.clyune.com</span>
-          <span className="sidebar-foot-meta">{categories.length} 类</span>
+          <span className="sidebar-foot-meta">{tr(`${categories.length} 类`, `${categories.length} categories`)}</span>
         </div>
       </aside>
       <div className={`sidebar-backdrop${open ? ' show' : ''}`} onClick={onClose} />
@@ -287,7 +325,7 @@ function Sidebar({ open, onClose, filter, setFilter }: {
 }
 
 function DbBadge({ health }: { health: Health | null }) {
-  if (!health) return <><b>…</b><span>数据库</span></>;
+  if (!health) return <><b>…</b><span>{tr('数据库', 'Database')}</span></>;
   const ok = health.ok && health.db === 'postgres';
   return (
     <>
@@ -298,16 +336,24 @@ function DbBadge({ health }: { health: Health | null }) {
 }
 
 function Home({ health }: { health: Health | null }) {
+  useLang();
   return (
     <>
       <section className="card hero">
         <h1>Component Gallery</h1>
-        <p>
-          管理后台风格的前端技术与 Web 特效演示站：{categories.length} 个分类、{totalDemos} 个可交互 Demo。
-          本仓库为 <strong>Rust (Axum) + React (Vite)</strong> 移植版；演示逻辑按需走 CDN / 本地 kit。
-        </p>
+        {en() ? (
+          <p>
+            An admin-dashboard-style showcase of front-end techniques and web effects: {categories.length} categories, {totalDemos} interactive demos.
+            This is the <strong>Rust (Axum) + React (Vite)</strong> port; demo code loads on demand from CDN / local kits.
+          </p>
+        ) : (
+          <p>
+            管理后台风格的前端技术与 Web 特效演示站：{categories.length} 个分类、{totalDemos} 个可交互 Demo。
+            本仓库为 <strong>Rust (Axum) + React (Vite)</strong> 移植版；演示逻辑按需走 CDN / 本地 kit。
+          </p>
+        )}
         <div className="stats">
-          <div><b><CountUp n={categories.length} /></b><span>分类</span></div>
+          <div><b><CountUp n={categories.length} /></b><span>{tr('分类', 'Categories')}</span></div>
           <div><b><CountUp n={totalDemos} /></b><span>Demos</span></div>
           <div><DbBadge health={health} /></div>
         </div>
@@ -317,26 +363,26 @@ function Home({ health }: { health: Health | null }) {
           <Link key={c.key} className="card tile ripple press" to={`/${c.key}`} style={{ ...catStyle(c.key), ['--i' as string]: Math.min(i, 14) }}>
             <div className="tile-head">
               <span className="tile-icon">{c.icon}</span>
-              <h3>{c.name}</h3>
+              <h3>{cName(c)}</h3>
             </div>
-            <p>{c.intro}</p>
+            <p>{cIntro(c)}</p>
             <span className="tag">{c.demos.length} demos</span>
           </Link>
         ))}
       </div>
       <section className="card overview">
-        <h2>分类总览</h2>
+        <h2>{tr('分类总览', 'Overview')}</h2>
         <div className="table-wrap">
           <table>
             <thead>
-              <tr><th>分类</th><th className="num">数量</th><th>Demos（节选）</th></tr>
+              <tr><th>{tr('分类', 'Category')}</th><th className="num">{tr('数量', 'Count')}</th><th>{tr('Demos（节选）', 'Demos (sample)')}</th></tr>
             </thead>
             <tbody>
               {categories.map((c) => (
                 <tr key={c.key}>
-                  <td><Link to={`/${c.key}`}>{c.icon} {c.name}</Link></td>
+                  <td><Link to={`/${c.key}`}>{c.icon} {cName(c)}</Link></td>
                   <td className="num">{c.demos.length}</td>
-                  <td className="muted">{c.demos.slice(0, 8).map((d) => d.title).join(' · ')}{c.demos.length > 8 ? ' …' : ''}</td>
+                  <td className="muted">{c.demos.slice(0, 8).map((d) => dTitle(d)).join(' · ')}{c.demos.length > 8 ? ' …' : ''}</td>
                 </tr>
               ))}
             </tbody>
@@ -351,11 +397,12 @@ function CategoryPage() {
   const { category } = useParams();
   const c = categories.find((x) => x.key === category);
   const [q, setQ] = useState('');
+  useLang();
   const { ready, live } = useCatalog();
   if (!c) return <NotFound />;
   const ql = q.trim().toLowerCase();
   const demos = ql
-    ? c.demos.filter((d) => d.title.toLowerCase().includes(ql) || d.tag.toLowerCase().includes(ql) || d.slug.includes(ql))
+    ? c.demos.filter((d) => hay(d.title, d.title_en, d.tag, d.slug).includes(ql))
     : c.demos;
   const tags = new Set(c.demos.map((d) => d.tag)).size;
   const n = (live?.byCat[c.key] || c.demos.length);
@@ -363,35 +410,35 @@ function CategoryPage() {
     <div className="cat-page" style={catStyle(c.key)}>
       <section className="card cat-hero">
         <div className="cat-hero-glow" aria-hidden />
-        <nav className="cat-crumb" aria-label="面包屑">
-          <Link to="/" className="cat-back ripple press" aria-label="返回首页">←</Link>
-          <Link to="/" className="cat-crumb-home">Home</Link>
+        <nav className="cat-crumb" aria-label={tr('面包屑', 'Breadcrumb')}>
+          <Link to="/" className="cat-back ripple press" aria-label={tr('返回首页', 'Back to home')}>←</Link>
+          <Link to="/" className="cat-crumb-home">{tr('首页', 'Home')}</Link>
           <span className="cat-crumb-sep">/</span>
-          <span className="cat-crumb-cur">{c.name}</span>
+          <span className="cat-crumb-cur">{cName(c)}</span>
         </nav>
         <div className="cat-hero-main">
           <span className="cat-icon" aria-hidden>{c.icon}</span>
           <div className="cat-hero-text">
-            <span className="cat-kicker">分类 · Level 2</span>
-            <h1>{c.name}</h1>
-            <p>{c.intro}</p>
+            <span className="cat-kicker">{tr('分类 · Level 2', 'Category · Level 2')}</span>
+            <h1>{cName(c)}</h1>
+            <p>{cIntro(c)}</p>
           </div>
         </div>
         <div className="cat-stats">
           <div><b>{ready ? <CountUp n={n} /> : <i className="skel skel-num" />}</b><span>Demos</span></div>
-          <div><b><CountUp n={tags} /></b><span>标签</span></div>
-          <div><b><CountUp n={c.tech.length} /></b><span>技术栈</span></div>
+          <div><b><CountUp n={tags} /></b><span>{tr('标签', 'Tags')}</span></div>
+          <div><b><CountUp n={c.tech.length} /></b><span>{tr('技术栈', 'Tech')}</span></div>
         </div>
         <div className="chips">
-          {c.tech.map((t) => <span key={t} className="chip">{t}</span>)}
+          {c.tech.map((t) => <span key={t} className="chip">{tx(t)}</span>)}
         </div>
         <div className="cat-search">
           <input
             type="search"
-            placeholder={`在 ${c.name} 中筛选…`}
+            placeholder={tr(`在 ${c.name} 中筛选…`, `Filter ${cName(c)}…`)}
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            aria-label="筛选演示"
+            aria-label={tr('筛选演示', 'Filter demos')}
           />
           <span className="muted">{demos.length} / {c.demos.length}</span>
         </div>
@@ -403,7 +450,7 @@ function CategoryPage() {
           ))}
         </div>
       ) : demos.length === 0 ? (
-        <section className="card placeholder fade-in"><h2>无结果</h2><p>换个关键词试试</p></section>
+        <section className="card placeholder fade-in"><h2>{tr('无结果', 'No results')}</h2><p>{tr('换个关键词试试', 'Try another keyword')}</p></section>
       ) : (
         <div className="demo-list stagger" key={ql}>
           {demos.map((d, i) => {
@@ -414,9 +461,9 @@ function CategoryPage() {
                   <span className="demo-num">{String(idx).padStart(2, '0')}</span>
                 </span>
                 <span className="demo-body">
-                  <span className="demo-row-title">{d.title}</span>
-                  <span className="demo-row-desc">{d.desc || d.hint}</span>
-                  <span className="demo-row-tags"><span className="chip">{d.tag}</span>{d.hint && d.desc ? <span className="demo-row-hint">{d.hint}</span> : null}</span>
+                  <span className="demo-row-title">{dTitle(d)}</span>
+                  <span className="demo-row-desc">{dDesc(d) || dHint(d)}</span>
+                  <span className="demo-row-tags"><span className="chip">{dTag(d)}</span>{d.hint && d.desc ? <span className="demo-row-hint">{dHint(d)}</span> : null}</span>
                 </span>
                 <span className="demo-go" aria-hidden>›</span>
               </Link>
@@ -434,6 +481,7 @@ function DemoPage() {
   const demo = routes[path] as DemoMeta | undefined;
   const [resetKey, setResetKey] = useState(0);
   const [autoDemo, setAuto] = useState(() => isAutoDemo());
+  const lang = useLang();
   useEffect(() => onAutoDemoChange(setAuto), []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -456,39 +504,39 @@ function DemoPage() {
     <div className="demo-wrap">
       <div className="card demo-toolbar">
         <div className="demo-title-block">
-          <h2>{demo.title}</h2>
+          <h2>{dTitle(demo)}</h2>
           <div className="demo-meta">
-            <span className="tag">{demo.tag}</span>
-            <span className="hint">{demo.hint || demo.desc}</span>
+            <span className="tag">{dTag(demo)}</span>
+            <span className="hint">{dHint(demo) || dDesc(demo)}</span>
           </div>
         </div>
         <div className="demo-actions">
-          <Link className="btn" to={`/${cat.key}`} title={cat.name}>
-            <span className="btn-full">← {cat.name}</span>
-            <span className="btn-short" aria-hidden>← 返回</span>
+          <Link className="btn" to={`/${cat.key}`} title={cName(cat)}>
+            <span className="btn-full">← {cName(cat)}</span>
+            <span className="btn-short" aria-hidden>{tr('← 返回', '← Back')}</span>
           </Link>
           {prev && (
-            <Link className="btn" to={`/${cat.key}/${prev.slug}`} title={prev.title}>
-              <span className="btn-full">‹ 上一个</span>
+            <Link className="btn" to={`/${cat.key}/${prev.slug}`} title={dTitle(prev)}>
+              <span className="btn-full">{tr('‹ 上一个', '‹ Prev')}</span>
               <span className="btn-short" aria-hidden>‹</span>
             </Link>
           )}
           {next && (
-            <Link className="btn" to={`/${cat.key}/${next.slug}`} title={next.title}>
-              <span className="btn-full">下一个 ›</span>
+            <Link className="btn" to={`/${cat.key}/${next.slug}`} title={dTitle(next)}>
+              <span className="btn-full">{tr('下一个 ›', 'Next ›')}</span>
               <span className="btn-short" aria-hidden>›</span>
             </Link>
           )}
           <button type="button" className={`btn auto-demo-btn${autoDemo ? ' on' : ''}`} aria-pressed={autoDemo}
-            title="开启后演示会自动滑动指针/滚动/示范操作；关闭后仅响应真实触摸或鼠标"
+            title={tr('开启后演示会自动滑动指针/滚动/示范操作；关闭后仅响应真实触摸或鼠标', 'When on, demos drive a synthetic pointer / scroll / walkthrough; when off they respond only to real touch or mouse')}
             onClick={() => setAuto(setAutoDemo(!autoDemo))}>
-            <span className="btn-full">{autoDemo ? '自动演示 开' : '自动演示 关'}</span>
-            <span className="btn-short" aria-hidden>{autoDemo ? '自动开' : '自动关'}</span>
+            <span className="btn-full">{autoDemo ? tr('自动演示 开', 'Auto demo: on') : tr('自动演示 关', 'Auto demo: off')}</span>
+            <span className="btn-short" aria-hidden>{autoDemo ? tr('自动开', 'Auto on') : tr('自动关', 'Auto off')}</span>
           </button>
-          <button type="button" className="btn primary" onClick={() => setResetKey((k) => k + 1)} title="快捷键 R">Reset</button>
+          <button type="button" className="btn primary" onClick={() => setResetKey((k) => k + 1)} title={tr('快捷键 R', 'Shortcut: R')}>{tr('重置', 'Reset')}</button>
         </div>
       </div>
-      <DemoHost key={resetKey} mod={demo.mod} fn={demo.fn} variant={demo.variant} slug={demo.slug} />
+      <DemoHost key={`${resetKey}-${lang}`} mod={demo.mod} fn={demo.fn} variant={demo.variant} slug={demo.slug} />
     </div>
   );
 }
@@ -497,8 +545,8 @@ function NotFound() {
   return (
     <section className="card placeholder">
       <h2>404</h2>
-      <p>未找到该页面</p>
-      <p><Link to="/">返回首页</Link></p>
+      <p>{tr('未找到该页面', 'Page not found')}</p>
+      <p><Link to="/">{tr('返回首页', 'Back to home')}</Link></p>
     </section>
   );
 }
@@ -508,14 +556,15 @@ export default function App() {
   const health = useHealth();
   useRipple();
   const [filter, setFilter] = useState('');
+  useLang();
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
     : loc.pathname || '/';
   const cat = categories.find((c) => `/${c.key}` === r);
   const demo = routes[r];
-  const crumb = r === '/' ? 'Home' : cat ? cat.name : demo ? `${demo.cat!.name} / ${demo.title}` : r;
-  const title = (demo ? demo.title + ' · ' : cat ? cat.name + ' · ' : '') + 'Clyune Component Gallery';
+  const crumb = r === '/' ? tr('首页', 'Home') : cat ? cName(cat) : demo ? `${cName(demo.cat!)} / ${dTitle(demo)}` : r;
+  const title = (demo ? dTitle(demo) + ' · ' : cat ? cName(cat) + ' · ' : '') + 'Clyune Component Gallery';
   useEffect(() => { document.title = title; }, [title]);
 
   return (
@@ -523,15 +572,15 @@ export default function App() {
       <Sidebar open={open} onClose={close} filter={filter} setFilter={setFilter} />
       <main className="main">
         <header className="topbar">
-          <button type="button" className={`menu-toggle${open ? ' open' : ''}`} aria-label="打开或关闭导航" aria-controls="sidebar" aria-expanded={open} onClick={() => setOpen((v) => !v)}>☰</button>
+          <button type="button" className={`menu-toggle${open ? ' open' : ''}`} aria-label={tr('打开或关闭导航', 'Toggle navigation')} aria-controls="sidebar" aria-expanded={open} onClick={() => setOpen((v) => !v)}>☰</button>
           <div className="breadcrumb">{crumb}</div>
           <div className="topbar-search">
             <input
               type="search"
-              placeholder="搜索演示…"
+              placeholder={tr('搜索演示…', 'Search demos…')}
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              aria-label="搜索演示"
+              aria-label={tr('搜索演示', 'Search demos')}
             />
           </div>
           <div className="topbar-right">
@@ -539,6 +588,8 @@ export default function App() {
               {health ? (health.db === 'postgres' ? 'DB · Postgres' : `DB · ${health.db}`) : 'DB · …'}
             </span>
             <span className="pill">rust+react</span>
+            <MusicToggle />
+            <LangSwitch />
           </div>
         </header>
         <div className={`content${demo ? ' content--demo' : ''}`} id="main-scroll">

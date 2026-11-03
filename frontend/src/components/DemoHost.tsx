@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { mountDemo } from '../demoLoader';
 // @ts-ignore js module
 import { onProgress, resetProgress } from '../lib/progress.js';
+import { getLang, loadDict, tr, translateTree } from '../lib/i18n';
 
 type Props = { mod: string; fn: string; variant?: string; slug?: string };
 type Phase = 'engine' | 'scene' | 'frame' | 'done' | 'error';
-const STEP: Record<string, string> = { engine: '加载引擎', scene: '初始化场景', frame: '编译着色器 / 绘制首帧' };
+const STEP = (): Record<string, string> => tr('zh', 'en') === 'en'
+  ? { engine: 'Loading engine', scene: 'Setting up scene', frame: 'Compiling shaders / first frame' }
+  : { engine: '加载引擎', scene: '初始化场景', frame: '编译着色器 / 绘制首帧' };
 const SLOW_MS = 12000, TIMEOUT_MS = 45000;
 
 /** Resolves once the stage has painted: 2 rAFs after mount, and (if present) a canvas with real size. */
@@ -38,6 +41,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     if (!el) return;
     let cancelled = false;
     let disposer: void | (() => void) | undefined;
+    let untr = () => {};
     setPhase('engine'); setError(null); setPct(0); setBytes(null); setSlow(false); setHide(false);
     el.innerHTML = '';
     resetProgress();
@@ -47,7 +51,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     let po: PerformanceObserver | null = null;
     try { po = new PerformanceObserver((l) => { for (const e of l.getEntries()) if (/\.(m?js|wasm|woff2?|mp3|ogg|json)(\?|$)/.test(e.name)) nMods++; if (!cancelled) setMods(nMods); }); po.observe({ type: 'resource', buffered: false }); } catch (_) { /* unsupported */ }
     const slowT = setTimeout(() => { if (!cancelled) setSlow(true); }, SLOW_MS);
-    const failT = setTimeout(() => { if (!cancelled) { setError('加载超时（网络较慢或 CDN 不可用）'); setPhase('error'); } }, TIMEOUT_MS);
+    const failT = setTimeout(() => { if (!cancelled) { setError(tr('加载超时（网络较慢或 CDN 不可用）', 'Timed out (slow network or CDN unavailable)')); setPhase('error'); } }, TIMEOUT_MS);
     // staged indeterminate progress: eases toward a phase ceiling; real CDN bytes override when known
     let p = 0; const t0 = performance.now();
     const ceil = { engine: 55, scene: 82, frame: 96, done: 100, error: 0 } as Record<Phase, number>;
@@ -57,6 +61,9 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
 
     (async () => {
       try {
+        if (getLang() === 'en') await loadDict();
+        if (cancelled) return;
+        untr = translateTree(el);
         const d = await mountDemo(mod, fn, el, { variant, slug }, (s: string) => go(s as Phase));
         if (cancelled) { if (typeof d === 'function') d(); return; }
         disposer = d;
@@ -72,7 +79,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     })();
 
     return () => {
-      cancelled = true; off(); po?.disconnect(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
+      cancelled = true; untr(); off(); po?.disconnect(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
       try { if (typeof disposer === 'function') disposer(); } catch (err) { console.warn(err); }
       el.innerHTML = '';
     };
@@ -86,21 +93,21 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
       {!hide && !error && (
         <div className={`stage-loader${phase === 'done' ? ' out' : ''}`} aria-live="polite" role="status" data-phase={phase}>
           <div className="sl-ring" aria-hidden><i /></div>
-          <div className="sl-step">{STEP[phase] || '就绪'}…</div>
+          <div className="sl-step">{STEP()[phase] || tr('就绪', 'Ready')}…</div>
           <div className="sl-bar" aria-hidden><i style={{ width: `${Math.round(shown)}%` }} /></div>
           <div className="sl-meta">
             <span>{Math.round(shown)}%</span>
-            {mods ? <span>{mods} 个模块</span> : null}
+            {mods ? <span>{tr(`${mods} 个模块`, `${mods} modules`)}</span> : null}
             {bytes ? <span>{kb(bytes.loaded)}{bytes.total ? ` / ${kb(bytes.total)}` : ''}</span> : null}
           </div>
-          {slow && <div className="sl-slow">网络较慢，仍在加载…</div>}
+          {slow && <div className="sl-slow">{tr('网络较慢，仍在加载…', 'Slow network, still loading…')}</div>}
         </div>
       )}
       {error && (
         <div className="stage-loader err" role="alert">
-          <div className="sl-step">加载失败</div>
+          <div className="sl-step">{tr('加载失败', 'Failed to load')}</div>
           <div className="sl-slow">{error}</div>
-          <button type="button" className="btn primary" onClick={() => setAttempt((a) => a + 1)}>重试</button>
+          <button type="button" className="btn primary" onClick={() => setAttempt((a) => a + 1)}>{tr('重试', 'Retry')}</button>
         </div>
       )}
       <div ref={hostRef} className="demo-mount" />
