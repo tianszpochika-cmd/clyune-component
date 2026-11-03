@@ -1366,7 +1366,7 @@ body.sidebar-open {
   background: linear-gradient(160deg, color-mix(in srgb, var(--cat) 16%, var(--panel)) 0%, var(--panel) 62%); }
 .cat-hero-glow { position: absolute; inset: -40% -10% auto auto; width: 70%; aspect-ratio: 1; pointer-events: none;
   background: radial-gradient(circle, color-mix(in srgb, var(--cat) 30%, transparent), transparent 62%); opacity: .7; }
-.cat-hero > * { position: relative; }
+.cat-hero > :not(.cat-hero-glow) { position: relative; }
 .cat-crumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin-bottom: 14px; min-width: 0; }
 .cat-back { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border-radius: 10px; text-decoration: none;
   color: var(--text); border: 1px solid color-mix(in srgb, var(--cat) 45%, var(--border)); background: rgba(255,255,255,.04); font-size: 16px; }
