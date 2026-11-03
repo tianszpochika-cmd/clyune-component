@@ -1,12 +1,13 @@
 // App-shell mobile audit (run via: MODE=shell node overlap-audit.mjs).
 // Pages: home, home+search results, every category page, first demo of every category, menu-open (home + a demo).
-// Viewports: 390x844, 375x667, 360x740, landscape 844x390.
+// Viewports: 390x844, 375x667, 360x740, landscape 844x390, desktop 1280/1440/1920 (+ button-overflow check).
 // Fails on: shell (topbar/search/menu/sidebar) covering content text/cards/canvas, topbar children overlapping
 // each other, horizontal page overflow, elements off the right edge, clipped text (no ellipsis/line-clamp).
 import { chromium } from 'playwright';
+import { BTN_CHECK } from './btn-check.mjs';
 import { registryCats } from './audit-cats.mjs';
 
-export const SHELL_VPS = [[390, 844, '390'], [375, 667, '375'], [360, 740, '360'], [844, 390, 'land']];
+export const SHELL_VPS = [[390, 844, '390'], [375, 667, '375'], [360, 740, '360'], [844, 390, 'land'], [1280, 800, '1280'], [1440, 900, '1440'], [1920, 1080, '1920']];
 
 const SHELL_CHECK = (menuOpen) => {
   const out = [];
@@ -81,9 +82,9 @@ export async function runShellAudit(BASE, SHOTS) {
   for (const [c, l] of Object.entries(cats)) { pages.push([`/${c}`, 'cat']); if (l[0]) pages.push([`/${c}/${l[0]}`, 'demo']); }
   pages.push([`/${Object.keys(cats)[0]}/${Object.values(cats)[0][0]}`, 'menu']);
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] });
-  const queue = pages.flatMap((p) => SHELL_VPS.map((v) => [...p, v])); const res = [];
+  const queue = pages.flatMap((p) => SHELL_VPS.filter((v) => !(p[1] === 'menu' && v[0] >= 900)).map((v) => [...p, v])); const res = [];
   const one = async ([path, kind, [w, h, tag]]) => {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900, deviceScaleFactor: 1 });
     const p = await ctx.newPage(); const fails = [];
     try {
       await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });
@@ -94,7 +95,7 @@ export async function runShellAudit(BASE, SHOTS) {
       const states = [['top', async () => {}]];
       if (kind !== 'menu') states.push(['scrolled', async () => { await p.evaluate(() => { const c = document.querySelector('.content'); c.scrollTop = Math.min(c.scrollHeight, 360); }); await p.waitForTimeout(250); }]);
       for (const [nm, fn] of states) {
-        await fn(); const r = await p.evaluate(SHELL_CHECK, menu);
+        await fn(); const r = [...await p.evaluate(SHELL_CHECK, menu), ...await p.evaluate(BTN_CHECK)];
         if (r.length) fails.push(`${nm}: ${r.join(', ')}`);
         if (SHOTS && (r.length || process.env.ALLSHOTS)) await p.screenshot({ path: `${SHOTS}/${path.replace(/\//g, '_')}-${kind}-${tag}-${nm}.png` });
       }
@@ -107,7 +108,7 @@ export async function runShellAudit(BASE, SHOTS) {
   let n = 0; const byKind = {};
   for (const r of res) { byKind[r.kind] = (byKind[r.kind] || 0) + (r.fails.length ? 1 : 0); if (r.fails.length) { n++; console.log(`FAIL ${r.path} [${r.kind}] ${r.tag}: ${r.fails.join(' | ')}`); } }
   console.log('BYKIND ' + JSON.stringify(byKind));
-  console.log(`\nSHELL ${pages.length} page-states x ${SHELL_VPS.length} viewports = ${res.length} runs, ${n} failing runs`);
+  console.log(`\nSHELL ${pages.length} page-states x ${SHELL_VPS.length} viewports (menu: mobile only) = ${res.length} runs, ${n} failing runs`);
   await browser.close();
   return n;
 }

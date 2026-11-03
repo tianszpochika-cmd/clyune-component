@@ -4,10 +4,13 @@
 import { auditCats, registryCats } from './audit-cats.mjs';
 import { chromium } from 'playwright';
 import fs from 'node:fs';
+import { BTN_CHECK } from './btn-check.mjs';
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
 // MODE=shell -> app-shell audit (home/search/category/demo/menu at 390x844, 375x667, 360x740, landscape 844x390)
 if (process.env.MODE === 'shell') { const { runShellAudit } = await import('./shell-audit.mjs'); const n = await runShellAudit(BASE, process.env.SHOTS); process.exit(n ? 1 : 0); }
-const VPS = [[390, 844, '390'], [375, 667, '375']];
+// VPS=390,375,1440 (default) — 1440 runs as desktop (no touch)
+const VPS_ALL = { 390: [390, 844, '390'], 375: [375, 667, '375'], 360: [360, 740, '360'], 1280: [1280, 800, '1280'], 1440: [1440, 900, '1440'], 1920: [1920, 1080, '1920'] };
+const VPS = (process.env.VPS || '390,375,1440').split(',').map((k) => VPS_ALL[k]).filter(Boolean);
 const cats = process.env.CAT ? auditCats({}) : registryCats();
 const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
 const SHOTS = process.env.SHOTS; if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
@@ -41,7 +44,7 @@ const CHECK = () => {
 };
 
 async function one(browser, c, s, [w, h, tag]) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900, deviceScaleFactor: 1 });
   const p = await ctx.newPage(); const path = `/${c}/${s}`; const fails = [];
   try {
     await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });
@@ -51,6 +54,7 @@ async function one(browser, c, s, [w, h, tag]) {
       ['params', async () => { const b = p.locator('.fx-toolbar button, .demo-controls button').filter({ hasText: '参数' }).first(); if (await b.count()) { await b.tap({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(400); } }]];
     for (const [nm, fn] of states) {
       await fn(); const r = await p.evaluate(CHECK);
+      const bo = await p.evaluate(BTN_CHECK); if (bo.length) r.hits = [...(r.hits || []), ...bo];
       if (r.err) fails.push(`${nm}: ${r.err}`); else if (r.hits.length) fails.push(`${nm}: ${r.hits.join(', ')}`);
       if (SHOTS && (r.hits?.length || process.env.ALLSHOTS)) await p.screenshot({ path: `${SHOTS}/${c}-${s}-${tag}-${nm}.png` });
     }
