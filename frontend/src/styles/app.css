@@ -1442,3 +1442,32 @@ body.sidebar-open {
   .press, .press:active, .demo-row:hover { transform: none; transition: none; }
   .ripple-dot { display: none; }
 }
+
+/* v9 global button sizing: text never spills past the border */
+.btn, .u-btn, .chip, .tag, .fx-toolbar button, .demo-controls button, .demo-actions .btn, button.btn {
+  white-space: nowrap; min-width: max-content; flex-shrink: 0; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.pill { flex-shrink: 0; white-space: nowrap; }
+
+/* v9 stage loader: shows on mount, real CDN bytes or staged progress, fades on first frame */
+.canvas-host { position: relative; }
+.stage-loader { position: absolute; inset: 0; z-index: 6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  padding: 20px; text-align: center; pointer-events: none; color: var(--text);
+  background: radial-gradient(ellipse at 50% 40%, rgba(129,140,248,.14), transparent 60%), rgba(8,12,24,.94);
+  border-radius: inherit; transition: opacity 260ms ease-out; animation: rv-fade 200ms ease-out both; }
+.stage-loader.out { opacity: 0; }
+.stage-loader.err { pointer-events: auto; color: #fda4af; }
+.sl-ring { width: 46px; height: 46px; border-radius: 50%; position: relative;
+  background: conic-gradient(from 0deg, transparent 0 25%, var(--accent) 60%, var(--accent-2)); animation: sl-spin 900ms linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px)); mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px)); }
+@keyframes sl-spin { to { transform: rotate(360deg); } }
+.sl-step { font-size: 14px; font-weight: 600; letter-spacing: .02em; }
+.sl-bar { width: min(260px, 70%); height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; position: relative; }
+.sl-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 200ms ease-out; }
+.sl-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent); transform: translateX(-100%); animation: sl-sweep 1.2s ease-in-out infinite; }
+@keyframes sl-sweep { to { transform: translateX(100%); } }
+.sl-meta { display: flex; gap: 12px; font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sl-slow { font-size: 12px; color: var(--muted); max-width: 320px; overflow-wrap: anywhere; }
+.stage-loader.err .sl-slow { color: #fecaca; }
+@media (prefers-reduced-motion: reduce) { .sl-ring, .sl-bar::after { animation: none; } .stage-loader { transition: none; animation: none; } }

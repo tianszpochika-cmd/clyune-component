@@ -112,10 +112,13 @@ export async function mountDemo(
   fn: string,
   host: HTMLElement,
   opts?: { variant?: string; slug?: string },
+  onStage?: (s: string) => void,
 ) {
   const load = loaders[mod];
   if (!load) throw new Error(`Unknown demo module: ${mod}`);
+  onStage?.('engine');
   const m = await load();
+  onStage?.('scene');
   const mount = m[fn];
   if (typeof mount !== 'function') throw new Error(`Missing export ${fn} in ${mod}`);
 

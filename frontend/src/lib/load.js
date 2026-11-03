@@ -9,7 +9,20 @@ export function cdn(pkg, ver, file) {
   ];
 }
 
-function inject(url) {
+import { fetchWithProgress } from './progress.js';
+
+// Prefer a streamed fetch (real byte progress for the stage loader), fall back to a plain <script src>.
+async function inject(url) {
+  try {
+    const src = await fetchWithProgress(url);
+    const s = document.createElement('script');
+    s.textContent = src + '\n//# sourceURL=' + url;
+    document.head.appendChild(s);
+    return;
+  } catch (_) { /* CORS / network: fall through to classic tag */ }
+  return injectTag(url);
+}
+function injectTag(url) {
   return new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = url; s.async = true;
