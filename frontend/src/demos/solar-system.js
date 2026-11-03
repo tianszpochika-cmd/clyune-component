@@ -958,11 +958,20 @@ export async function mountSolarSystem(outerHost, opts = {}) {
     el.style.transform = `translate(${((prj.x * 0.5 + 0.5) * w + pr + 4).toFixed(1)}px, ${((-prj.y * 0.5 + 0.5) * h - 7).toFixed(1)}px)`;
   };
 
+  const warmDt = [];
   const tick = (now) => {
     if (!alive) return;
     requestAnimationFrame(tick);
     const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
     last = now;
+    // one-shot adaptive render scale after a short warm-up (weak GPUs / software GL)
+    if (dt > 0 && warmDt.length < 24) {
+      warmDt.push(dt);
+      if (warmDt.length === 24) {
+        const med = [...warmDt].sort((a, b) => a - b)[12];
+        if (med > 0.034) { renderer.setPixelRatio(maxDpr(2) * Math.max(0.4, 0.028 / med)); renderer.setSize(lastW, lastH, false); }
+      }
+    }
     const L = live();
     const sz = L.size > 0 ? L.size : 1;
     const ts = (L.speed > 0 ? L.speed : 1) * speedMult;
