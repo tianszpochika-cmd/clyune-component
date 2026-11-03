@@ -3,6 +3,7 @@ import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-rou
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
 import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
+import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
 
 type Health = { ok: boolean; db: string; service?: string; version?: string };
 
@@ -432,6 +433,8 @@ function DemoPage() {
   const path = `/${category}/${slug}`;
   const demo = routes[path] as DemoMeta | undefined;
   const [resetKey, setResetKey] = useState(0);
+  const [autoDemo, setAuto] = useState(() => isAutoDemo());
+  useEffect(() => onAutoDemoChange(setAuto), []);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'r' && (e.metaKey || e.ctrlKey)) return;
@@ -476,6 +479,12 @@ function DemoPage() {
               <span className="btn-short" aria-hidden>›</span>
             </Link>
           )}
+          <button type="button" className={`btn auto-demo-btn${autoDemo ? ' on' : ''}`} aria-pressed={autoDemo}
+            title="开启后演示会自动滑动指针/滚动/示范操作；关闭后仅响应真实触摸或鼠标"
+            onClick={() => setAuto(setAutoDemo(!autoDemo))}>
+            <span className="btn-full">{autoDemo ? '自动演示 开' : '自动演示 关'}</span>
+            <span className="btn-short" aria-hidden>{autoDemo ? '自动开' : '自动关'}</span>
+          </button>
           <button type="button" className="btn primary" onClick={() => setResetKey((k) => k + 1)} title="快捷键 R">Reset</button>
         </div>
       </div>

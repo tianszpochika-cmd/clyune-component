@@ -204,7 +204,7 @@ FAM.draw = {
     return ({ ctx, W, H, dt, dtw, C, P }) => {
       ensure(W, H);
       const s = num(C.smooth, 0.5), base = num(C.size, 6), col = C.color || '#22d3ee';
-      const ghost = on(C.ghost ?? true) && S.isAutoDemo() && !P.user;
+      const ghost = on(C.ghost ?? false) && S.isAutoDemo() && !P.user;
       if (ghost && !ghostDown) { ghostDown = true; sp = { x: P.x, y: P.y }; strokes++; }
       if (!ghost && ghostDown && !P.down) { ghostDown = false; sp = null; }
       if (dtw > 0 && num(C.fade, 0.15) > 0) {
@@ -225,7 +225,7 @@ FAM.draw = {
       ctx.drawImage(L.c, 0, 0, W, H);
       ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(P.x, P.y, Math.max(3, (lastW || base) / 2 + 2), 0, TAU); ctx.stroke();
       ctx.fillStyle = rgba(col, 0.35); ctx.beginPath(); ctx.arc(P.x, P.y, Math.max(2, base / 2), 0, TAU); ctx.fill();
-      return { strokes, len, v: speed, w: lastW || base, s, col: String(col).toLowerCase(), fade: num(C.fade, 0.15), press: on(C.press ?? true), ghost: on(C.ghost ?? true), ix: `${strokes}:${len | 0}` };
+      return { strokes, len, v: speed, w: lastW || base, s, col: String(col).toLowerCase(), fade: num(C.fade, 0.15), press: on(C.press ?? true), ghost: on(C.ghost ?? false), ix: `${strokes}:${len | 0}` };
     };
   },
 };

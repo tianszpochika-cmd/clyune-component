@@ -101,7 +101,7 @@ FAM.matter = {
 
 /* ───────────────────────── drag (kanban reorder) ───────────────────────── */
 FAM.drag = {
-  spec: { color: { label: '卡片强调色', value: '#22d3ee' }, speed: SPD('动画时间流速'), size: { label: '卡片高度', min: 0.6, max: 1.4, step: 0.05, value: 1 }, count: { label: '卡片数', min: 4, max: 15, step: 1, value: 9, buttons: true }, extras: [R('w', '弹簧角频率 ω', 4, 30, 1, 14), R('zeta', '阻尼比 ζ', 0.2, 1.5, 0.05, 1), T('ghost', '自动示范拖拽', true)], remountKeys: [] },
+  spec: { color: { label: '卡片强调色', value: '#22d3ee' }, speed: SPD('动画时间流速'), size: { label: '卡片高度', min: 0.6, max: 1.4, step: 0.05, value: 1 }, count: { label: '卡片数', min: 4, max: 15, step: 1, value: 9, buttons: true }, extras: [R('w', '弹簧角频率 ω', 4, 30, 1, 14), R('zeta', '阻尼比 ζ', 0.2, 1.5, 0.05, 1), T('ghost', '自动示范拖拽', false)], remountKeys: [] },
   presets: { 默认: {}, 弹跳: { zeta: 0.3 }, 迟缓: { w: 5 }, 干脆: { w: 28, zeta: 1 }, 多卡: { count: 15 } },
   doc: {
     title: '拖拽排序 · 临界阻尼弹簧动画',
@@ -126,7 +126,7 @@ FAM.drag = {
       while (cards.length < n) { const id = nextId++; const c = cols.reduce((a, col, i) => (col.length < cols[a].length ? i : a), 0); cols[c].push(id); const [x, y] = slotPos(l, c, cols[c].length - 1); cards.push({ id, x, y: y + 30, vx: 0, vy: 0 }); }
       while (cards.length > n) { const cd = cards.pop(); for (const c of cols) { const k = c.indexOf(cd.id); if (k >= 0) c.splice(k, 1); } if (dragged === cd.id) { dragged = null; ghost = null; } }
       // ghost demo drag
-      if (on(C.ghost ?? true) && S.isAutoDemo() && !P.down && dragged == null && !ghost) { gTimer -= dt; if (gTimer <= 0 && cards.length) { gTimer = 0.9; const cd = cards[(t * 7 | 0) % cards.length]; const tc = (cols.findIndex((c) => c.includes(cd.id)) + 1 + ((t * 3) | 0) % 2) % 3; ghost = { id: cd.id, x0: cd.x, y0: cd.y, t0: t, c: tc, i: (t * 11 | 0) % (cols[tc].length + 1) }; dragged = cd.id; } }
+      if (on(C.ghost ?? false) && S.isAutoDemo() && !P.down && dragged == null && !ghost) { gTimer -= dt; if (gTimer <= 0 && cards.length) { gTimer = 0.9; const cd = cards[(t * 7 | 0) % cards.length]; const tc = (cols.findIndex((c) => c.includes(cd.id)) + 1 + ((t * 3) | 0) % 2) % 3; ghost = { id: cd.id, x0: cd.x, y0: cd.y, t0: t, c: tc, i: (t * 11 | 0) % (cols[tc].length + 1) }; dragged = cd.id; } }
       const w = num(C.w, 14), z = num(C.zeta, 1);
       let dx = 0, dy = 0;
       if (ghost) { const cd = cards.find((c) => c.id === ghost.id); if (!cd) { ghost = null; dragged = null; } else { ins = [ghost.c, Math.min(ghost.i, cols[ghost.c].filter((id) => id !== dragged).length)]; const [tx, ty] = slotPos(l, ins[0], ins[1]); const u = clamp((t - ghost.t0) / 1.2, 0, 1), e = u * u * (3 - 2 * u); dx = ghost.x0 + (tx - ghost.x0) * e; dy = ghost.y0 + (ty - ghost.y0) * e - Math.sin(Math.PI * e) * 30; if (u >= 1) { ghost = null; drop(); } } }

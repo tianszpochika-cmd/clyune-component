@@ -1475,3 +1475,7 @@ body.sidebar-open {
 /* route-view wrapper must pass the demo height chain through */
 .content.content--demo > .route-view,
 .content:has(.demo-wrap) > .route-view { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+
+/* auto-demo sticky toggle */
+.btn.auto-demo-btn.on { border-color: var(--accent-2); color: var(--accent-2); background: rgba(34,211,238,.1); }
+.btn.auto-demo-btn { flex-shrink: 0; }
