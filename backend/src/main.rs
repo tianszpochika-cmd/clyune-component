@@ -72,7 +72,14 @@ async fn main() -> anyhow::Result<()> {
         .and_then(|m| m.modified())
         .map(|t| chrono::DateTime::<chrono::Utc>::from(t).format("%Y-%m-%d").to_string())
         .unwrap_or_else(|_| chrono::Utc::now().format("%Y-%m-%d").to_string());
-    let seo = Arc::new(seo::Seo::new(&seo_registry, &site_url, lastmod));
+    // Docs pages (/:cat/:slug/docs): sections for the crawlable snapshot, next to registry.json.
+    let docs_path = registry_path.with_file_name("docs-seo.json");
+    let docs_seo: Value = std::fs::read_to_string(&docs_path)
+        .ok()
+        .and_then(|t| serde_json::from_str(&t).ok())
+        .unwrap_or(Value::Null);
+    tracing::info!("docs seo: {} ({} pages)", docs_path.display(), docs_seo.as_object().map(|o| o.len()).unwrap_or(0));
+    let seo = Arc::new(seo::Seo::new(&seo_registry, docs_seo, &site_url, lastmod));
     tracing::info!("seo: {} categories, {} demos, base {}", seo.cats.len(), seo.total, seo.base);
 
     let txt = |body: String, ct: &'static str| {

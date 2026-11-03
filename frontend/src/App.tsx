@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
@@ -7,6 +7,7 @@ import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
 import { setLang, syncUrlLang, tr, tx, useLang } from './lib/i18n';
 import { useSeo, type SeoPage } from './lib/seo';
 import { setSound, useSound } from './lib/sound';
+const DocsPage = lazy(() => import('./pages/DocsPage'));
 
 const en = () => tr('zh', 'en') === 'en';
 const cName = (c: Category) => (en() ? c.name_en || c.name : c.name);
@@ -597,8 +598,9 @@ export default function App() {
     : loc.pathname || '/';
   const cat = categories.find((c) => `/${c.key}` === r);
   const demo = routes[r];
-  const crumb = r === '/' ? tr('首页', 'Home') : cat ? cName(cat) : demo ? `${cName(demo.cat!)} / ${dTitle(demo)}` : r;
-  const seoPage: SeoPage = r === '/' ? { kind: 'home' } : cat ? { kind: 'cat', cat } : demo ? { kind: 'demo', cat: demo.cat!, demo } : { kind: '404' };
+  const docsDemo = !demo && r.endsWith('/docs') ? routes[r.slice(0, -5)] : undefined;
+  const crumb = r === '/' ? tr('首页', 'Home') : cat ? cName(cat) : demo ? `${cName(demo.cat!)} / ${dTitle(demo)}` : docsDemo ? `${cName(docsDemo.cat!)} / ${dTitle(docsDemo)} / ${tr('原理与代码', 'How it works')}` : r;
+  const seoPage: SeoPage = r === '/' ? { kind: 'home' } : cat ? { kind: 'cat', cat } : demo ? { kind: 'demo', cat: demo.cat!, demo } : docsDemo ? { kind: 'docs', cat: docsDemo.cat!, demo: docsDemo } : { kind: '404' };
   useSeo(seoPage, r, lang);
   useEffect(() => { syncUrlLang(); }, [loc.pathname, loc.search, lang]);
 
@@ -635,6 +637,7 @@ export default function App() {
               <Route path="/:category" element={<CategoryPage />} />
               <Route path="/threejs/trig-waves" element={<Navigate to="/math/trig-waves" replace />} />
               <Route path="/:category/:slug" element={<DemoPage />} />
+              <Route path="/:category/:slug/docs" element={<Suspense fallback={<section className="card dc-sec"><div className="skel" style={{ height: 14, width: '50%' }} /></section>}><DocsPage /></Suspense>} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           )} />

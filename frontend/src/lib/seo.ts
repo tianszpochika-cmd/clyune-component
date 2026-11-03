@@ -16,12 +16,13 @@ const cn = (c: Category, l: Lang) => (l === 'en' ? c.name_en || c.name : c.name)
 const ci = (c: Category, l: Lang) => (l === 'en' ? c.intro_en || c.intro : c.intro);
 const dt = (d: DemoMeta, l: Lang) => (l === 'en' ? d.title_en || d.title : d.title);
 
-export type SeoPage = { kind: 'home' } | { kind: 'cat'; cat: Category } | { kind: 'demo'; cat: Category; demo: DemoMeta } | { kind: '404' };
+export type SeoPage = { kind: 'home' } | { kind: 'cat'; cat: Category } | { kind: 'demo'; cat: Category; demo: DemoMeta } | { kind: 'docs'; cat: Category; demo: DemoMeta } | { kind: '404' };
 
 export function seoTitle(p: SeoPage, l: Lang): string {
   if (p.kind === 'home') return l === 'en' ? `${EN} — ${totalDemos} Interactive Front-end Demos & Web Effects` : `${ZH} Clyune Component Gallery｜${totalDemos} 个前端特效与交互组件在线演示`;
   if (p.kind === 'cat') return l === 'en' ? `${cn(p.cat, l)} Demos (${p.cat.demos.length}) | ${EN}` : `${p.cat.name}在线演示（${p.cat.demos.length} 个）｜${ZH} Clyune`;
   if (p.kind === 'demo') return l === 'en' ? `${dt(p.demo, l)} – ${cn(p.cat, l)} Interactive Demo | Clyune` : `${p.demo.title} - ${p.cat.name}在线演示｜${ZH}`;
+  if (p.kind === 'docs') return l === 'en' ? `How ${dt(p.demo, l)} works – source code & principles | Clyune` : `${p.demo.title} 原理与代码 - ${p.cat.name}｜${ZH}`;
   return l === 'en' ? `Page not found | ${EN}` : `页面不存在｜${ZH}`;
 }
 
@@ -45,6 +46,12 @@ export function seoDesc(p: SeoPage, l: Lang): string {
       return clip(`${dt(d, l)}${h && h !== ds ? ` (${h})` : ''}: ${ds} Tweak live parameters and see real-time readouts and formulas — an interactive ${cn(p.cat, l)} demo from ${EN}.`, 220);
     }
     return clip(`${d.title}${d.hint && d.hint !== d.desc ? `（${d.hint}）` : ''}：${d.desc} 可拖动参数、实时查看数据读数与公式说明——${ZH}·${p.cat.name}在线演示。`, 160);
+  }
+  if (p.kind === 'docs') {
+    const d = p.demo;
+    return l === 'en'
+      ? clip(`How the ${dt(d, l)} demo works: runtime logic, environment, dependencies with versions, imported APIs, the full source code with a line-by-line walkthrough, and the underlying principles. ${d.desc_en || d.desc}`, 220)
+      : clip(`${d.title}的原理与代码：运行逻辑、运行环境、依赖版本、引入的函数、完整源码与逐段解释，以及背后的数学/图形学原理。${d.desc}`, 160);
   }
   return '';
 }

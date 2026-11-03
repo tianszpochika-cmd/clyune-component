@@ -16,7 +16,7 @@
  *   tip        -> short interaction hint
  * }
  */
-import { tx } from '../../lib/i18n';
+import { tx, getLang } from '../../lib/i18n';
 const CSS = `
 .mip-layout{position:absolute;inset:0;display:flex;flex-direction:row;min-height:0;min-width:0}
 .mip-layout.mip-narrow{flex-direction:column}
@@ -48,6 +48,8 @@ const CSS = `
 .mip-row dd.chg{color:#fde68a}
 .mip-row.wide{grid-column:1/-1}
 .mip-tip{margin:8px 0 0;color:#64748b;font-size:11px}
+.mip-docs{display:flex;align-items:center;justify-content:center;gap:4px;margin:0 0 8px;padding:6px 10px;border-radius:9px;border:1px solid rgba(99,102,241,.45);background:rgba(99,102,241,.12);color:#c7d2fe;font-weight:600;font-size:12px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mip-docs:hover{background:rgba(99,102,241,.22);color:#e0e7ff}
 .mip-chips{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
 .mip-chip{appearance:none;border:1px solid rgba(129,140,248,.4);background:rgba(129,140,248,.08);color:#c7d2fe;
   border-radius:999px;padding:4px 11px;font:600 12px/1.3 inherit;cursor:pointer;display:inline-flex;align-items:center;gap:4px;min-height:28px}
@@ -104,6 +106,7 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
   aside.setAttribute('aria-label', '实时数据与说明');
   aside.innerHTML = `<div class="mip-grip"></div><div class="mip-scroll">
     <div class="mip-head"><span class="mip-dot"></span><span class="mip-title">${esc(doc?.title || '实时数据')}</span><span class="mip-live">LIVE</span></div>
+    <a class="mip-docs" data-mip-docs href="#">📖 原理与代码</a>
     <dl class="mip-rows" data-mip-rows></dl>
     ${doc?.tip ? `<p class="mip-tip">☝ ${esc(doc.tip)}</p>` : ''}
     <div class="mip-chips" role="group" aria-label="解释">${SECTIONS.map(([k, label, ic]) => `<button type="button" class="mip-chip" data-mip-chip="${k}" aria-expanded="false"><span aria-hidden="true">${ic}</span>${label}<span class="car" aria-hidden="true">▼</span></button>`).join('')}</div>
@@ -114,6 +117,22 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
   layout.appendChild(aside);
   stage.appendChild(layout);
 
+  /* 「原理与代码」: per-demo docs page (/:category/:slug/docs), in-app navigation */
+  const docsA = aside.querySelector('[data-mip-docs]');
+  if (docsA) {
+    const en = getLang() === 'en';
+    const base = location.pathname.replace(/\/+$/, '');
+    const parts = base.split('/').filter(Boolean);
+    if (parts.length === 2) {
+      docsA.href = `${base}/docs${en ? '?lang=en' : ''}`;
+      docsA.textContent = en ? '📖 How it works & code' : '📖 原理与代码';
+      docsA.title = en ? 'Runtime logic, dependencies, source code and principles of this demo' : '运行逻辑、依赖、源代码与原理讲解';
+      docsA.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault(); history.pushState({}, '', docsA.getAttribute('href')); dispatchEvent(new PopStateEvent('popstate'));
+      });
+    } else docsA.remove();
+  }
   const rowsEl = aside.querySelector('[data-mip-rows]');
   const dbgEl = aside.querySelector('[data-mip-dbg]');
   const open = new Set();
@@ -123,6 +142,12 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
   let exampleAt = 0;
 
   const resolve = (x, v) => (typeof x === 'function' ? x(v || {}) : x);
+  /* build-time docs harvest (scripts/docs/harvest-docs.mjs): expose the evaluated doc for this demo */
+  if (typeof globalThis.__ccDocHook === 'function') {
+    const r = (x) => { try { return resolve(x, lastV); } catch (_) { return ''; } };
+    globalThis.__ccDocHook(() => ({ title: doc?.title || '', tip: doc?.tip || '', formula: r(doc?.formula) || '', explain: r(doc?.explain) || '',
+      params: r(doc?.params) || [], example: r(doc?.example) || '', rows: (() => { try { return (doc?.rows?.(lastV) || []).map((x) => x[0]); } catch (_) { return []; } })() }));
+  }
   const bodyOf = (k) => aside.querySelector(`[data-mip-sec="${k}"] [data-mip-body]`);
   const renderSec = (k) => {
     const v = lastV;
