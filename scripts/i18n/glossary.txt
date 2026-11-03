@@ -456,3 +456,10 @@
 音频=Audio
 图表=Charts
 数据=Data
+拖黄点或右侧 a/b 滑条；可开关三边正方形=Drag the yellow dots or the a/b sliders on the right; toggle the squares on each side
+滑条；可开关三边正方形=sliders; toggle the squares on each side
+拖黄点或右侧 a=Drag the yellow dots or the right-side a
+螺旋前进=Helical motion
+日心/螺旋前进 · 卫星 · 缩放聚焦=Heliocentric / helical · Moons · Zoom to focus
+着色器太阳+日冕=Shader sun + corona
+着色器太阳+日冕、程序化行星与光环、30 颗卫星；可缩放聚焦，并切换太阳前进的螺旋轨迹模式。=Shader sun with corona, procedural planets and rings, 30 moons; zoom to focus, and switch to the helical-orbit mode where the sun moves forward.

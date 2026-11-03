@@ -75,12 +75,56 @@ function patchCanvas() {
   if (canvasPatched || typeof CanvasRenderingContext2D === 'undefined') return;
   canvasPatched = true;
   const P = CanvasRenderingContext2D.prototype as unknown as Record<string, (...a: unknown[]) => unknown>;
-  for (const k of ['fillText', 'strokeText', 'measureText']) {
+  const oMeasure = P.measureText as (t: string) => TextMetrics;
+  const capCache = new Map<string, number>();
+  /* English is often much wider than the Chinese it replaces; kits lay text out in fixed boxes, so cap the
+     translated width at ~1.3x the original (canvas condenses via maxWidth) and report the same width from measureText. */
+  const cap = (ctx: CanvasRenderingContext2D, zh: string, en: string): number => {
+    const key = ctx.font + '\u0001' + zh;
+    let c = capCache.get(key);
+    if (c === undefined) {
+      const zw = oMeasure.call(ctx, zh).width, ew = oMeasure.call(ctx, en).width;
+      const px = parseFloat((/(\d+(?:\.\d+)?)px/.exec(ctx.font) || [])[1] || '12');
+      const lim = Math.max(zw * 1.3, zw + px * 1.5);
+      c = ew > lim ? lim : -1;
+      if (capCache.size > 4000) capCache.clear();
+      capCache.set(key, c);
+    }
+    return c;
+  };
+  for (const k of ['fillText', 'strokeText']) {
     const orig = P[k];
-    P[k] = function (this: unknown, text: unknown, ...rest: unknown[]) {
-      return orig.call(this, lang === 'en' && typeof text === 'string' ? tx(text) : text, ...rest);
+    P[k] = function (this: CanvasRenderingContext2D, text: unknown, x: unknown, y: unknown, maxW?: unknown) {
+      if (lang !== 'en' || typeof text !== 'string') return orig.call(this, text, x, y, ...(maxW === undefined ? [] : [maxW]));
+      const t = tx(text);
+      if (t === text) return orig.call(this, t, x, y, ...(maxW === undefined ? [] : [maxW]));
+      let c = cap(this, text, t);
+      /* never run past the canvas right edge (left-aligned text only) */
+      const al = this.textAlign;
+      if ((al === 'left' || al === 'start') && typeof x === 'number' && this.canvas) {
+        const m2 = this.getTransform(), sx = Math.hypot(m2.a, m2.b) || 1;
+        if (Math.abs(m2.b) < 1e-6) {
+          const room = (this.canvas.width - (m2.a * x + m2.c * (y as number) + m2.e)) / sx - 4;
+          const w = c < 0 ? oMeasure.call(this, t).width : c;
+          if (room > 20 && w > room) c = room;
+        }
+      }
+      const m = c < 0 ? maxW : (typeof maxW === 'number' ? Math.min(maxW, c) : c);
+      return orig.call(this, t, x, y, ...(m === undefined ? [] : [m]));
     };
   }
+  P.measureText = function (this: CanvasRenderingContext2D, text: unknown) {
+    if (lang !== 'en' || typeof text !== 'string') return oMeasure.call(this, text as string);
+    const t = tx(text);
+    const r = oMeasure.call(this, t);
+    if (t === text) return r;
+    const c = cap(this, text, t);
+    if (c < 0) return r;
+    const f = c / (r.width || 1);
+    return { width: c, actualBoundingBoxLeft: r.actualBoundingBoxLeft * f, actualBoundingBoxRight: r.actualBoundingBoxRight * f,
+      actualBoundingBoxAscent: r.actualBoundingBoxAscent, actualBoundingBoxDescent: r.actualBoundingBoxDescent,
+      fontBoundingBoxAscent: r.fontBoundingBoxAscent, fontBoundingBoxDescent: r.fontBoundingBoxDescent } as TextMetrics;
+  };
 }
 
 /* ---------- DOM: translate text nodes + a few attributes inside a demo root ---------- */

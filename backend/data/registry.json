@@ -30,8 +30,8 @@
           ],
           "path": "/threejs/solar-system",
           "title_en": "Solar System Orbits",
-          "hint_en": "Day / Helix Forward · Satellite · Scale Focus",
-          "desc_en": "Colored Sun + Coron, Programmatic Planets and Halo-rings, 30 satellites; able to zoom in and switch the spiral pattern of the Sun forward."
+          "hint_en": "Heliocentric / helical · Moons · Zoom to focus",
+          "desc_en": "Shader sun with corona, procedural planets and rings, 30 moons; zoom to focus, and switch to the helical-orbit mode where the sun moves forward."
         },
         {
           "slug": "cube",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Merge zh/en i18n into registry.json (+ public copy, registry.ts) and build frontend/src/i18n/en.json.
-Sources: scripts/i18n/titles.txt (hand names), glossary.txt (hand UI words), mt.json (offline MT cache), CC-CEDICT (short words)."""
+Sources: scripts/i18n/titles.txt (hand names), glossary.txt (hand UI words), mt.json (offline MT cache), CC-CEDICT (short words; CC BY-SA 4.0, mdbg.net)."""
 import json, re, sys
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
