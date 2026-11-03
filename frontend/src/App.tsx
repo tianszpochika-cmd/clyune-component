@@ -6,7 +6,7 @@ import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from 
 import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
 import { setLang, syncUrlLang, tr, tx, useLang } from './lib/i18n';
 import { useSeo, type SeoPage } from './lib/seo';
-import { setMusic, setMusicVol, useMusic } from './lib/music';
+import { setSound, useSound } from './lib/sound';
 
 const en = () => tr('zh', 'en') === 'en';
 const cName = (c: Category) => (en() ? c.name_en || c.name : c.name);
@@ -45,22 +45,21 @@ function LangSwitch() {
   );
 }
 
-function MusicToggle() {
+/* Site-wide sound master switch (replaces the per-demo 「声音」 pills). Default off, sticky. */
+function SoundToggle() {
   useLang();
-  const m = useMusic();
+  const m = useSound();
+  const label = m.on ? tr('声音：开（点击静音全部演示）', 'Sound: on (click to mute all demos)') : tr('声音：关（点击开启，音频演示进入即发声）', 'Sound: off (click to turn on; audio demos play when opened)');
   return (
-    <div className={`music-ctl${m.on ? ' on' : ''}${m.ducked ? ' ducked' : ''}`}>
-      <button type="button" className={`btn icon-btn music-btn${m.on ? ' on' : ''}`} aria-pressed={m.on}
-        aria-label={tr(m.on ? '关闭背景音乐' : '开启背景音乐', m.on ? 'Turn background music off' : 'Turn background music on')}
-        title={tr(m.on ? (m.ducked ? '背景音乐（演示发声中，已让路）' : '背景音乐：开') : '背景音乐：关', m.on ? (m.ducked ? 'Music (ducked for demo audio)' : 'Background music: on') : 'Background music: off')}
-        onClick={() => setMusic(!m.on)}>
-        <span aria-hidden>{m.on ? '♫' : '♪'}</span>
-        {m.on && !m.ducked ? <i className="music-eq" aria-hidden><b /><b /><b /></i> : null}
+    <div className={`sound-ctl${m.on ? ' on' : ''}${m.blocked ? ' blocked' : ''}`}>
+      <button type="button" className={`btn icon-btn sound-btn${m.on ? ' on' : ''}`} aria-pressed={m.on}
+        aria-label={label} title={label} onClick={() => setSound(!m.on)}>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor" stroke="none" />
+          {m.on ? (<><path d="M16.5 8.5a5 5 0 0 1 0 7" /><path d="M19 6a8.5 8.5 0 0 1 0 12" /></>) : (<><path d="M17 9l5 6" /><path d="M22 9l-5 6" /></>)}
+        </svg>
       </button>
-      {m.on && (
-        <input type="range" className="music-vol" min={0} max={1} step={0.05} value={m.vol}
-          aria-label={tr('音量', 'Volume')} onChange={(e) => setMusicVol(+e.target.value)} />
-      )}
+      {m.on && m.blocked ? <span className="sound-hint" role="status">{tr('点击页面任意处开始发声', 'Tap anywhere to start sound')}</span> : null}
     </div>
   );
 }
@@ -625,7 +624,7 @@ export default function App() {
             </span>
             <span className="pill">rust+react</span>
             <SocialLinks />
-            <MusicToggle />
+            <SoundToggle />
             <LangSwitch />
           </div>
         </header>

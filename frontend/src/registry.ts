@@ -306,12 +306,12 @@ export const categories: Category[] = [
   },
   {
     key: 'audio', name: '音频可视化', icon: '♫',
-    intro: '13 个音频演示全部基于真实信号计算（合成器模型 + FFT、滤波器响应、节拍检测、音序器），悬停/拖动可读出指针下的频率与分贝，点右上角「声音」即可听到。',
+    intro: '13 个音频演示全部基于真实信号计算（合成器模型 + FFT、滤波器响应、节拍检测、音序器），悬停/拖动可读出指针下的频率与分贝，打开页面右上角的「声音」总开关即可听到。',
     tech: ['Web Audio API', 'FFT', 'biquad filter', 'STFT', 'onset detection', 'getUserMedia'],
     demos: [
-      { slug: 'synth', title: '合成器', hint: '点琴键演奏 · 右上角开声音', desc: '振荡器波形、LFO 颤音与谐波频谱：看清方波/锯齿波为什么"更亮"。', tag: 'oscillator', mod: 'kit-audio', fn: 'mount', variant: 'synth', presets: ['默认', '纯正弦', '方波', '三角柔音', '强颤音', '低八度'] },
+      { slug: 'synth', title: '合成器', hint: '点琴键演奏 · 右上角「声音」开关', desc: '振荡器波形、LFO 颤音与谐波频谱：看清方波/锯齿波为什么"更亮"。', tag: 'oscillator', mod: 'kit-audio', fn: 'mount', variant: 'synth', presets: ['默认', '纯正弦', '方波', '三角柔音', '强颤音', '低八度'] },
       { slug: 'mic', title: '麦克风可视化', hint: '点右上角授权麦克风 · 无麦克风时演示人声模型', desc: '环形频谱 + 元音共振峰：实时把麦克风声音拆成频率。', tag: 'mic', mod: 'kit-audio', fn: 'mount', variant: 'mic', presets: ['默认', '高灵敏', '细腻', '粗犷', '不镜像', '无波形'] },
-      { slug: 'bars', title: '柱状频谱', hint: '悬停看频率与分贝 · 右上角开声音', desc: '真实 FFT：把一段音乐拆成频率柱，带峰值保持与对数频率轴。', tag: 'fft', mod: 'kit-audio', fn: 'mount', variant: 'bars', presets: ['默认', '细柱', '粗柱', '线性轴', '线性幅度', '慢峰值'] },
+      { slug: 'bars', title: '柱状频谱', hint: '悬停看频率与分贝 · 右上角「声音」开关', desc: '真实 FFT：把一段音乐拆成频率柱，带峰值保持与对数频率轴。', tag: 'fft', mod: 'kit-audio', fn: 'mount', variant: 'bars', presets: ['默认', '细柱', '粗柱', '线性轴', '线性幅度', '慢峰值'] },
       { slug: 'circle-wave', title: '圆形波形', hint: '悬停看相位与振幅', desc: '把时域波形绕成一个圆：半径 = 基准 + 振幅。', tag: 'waveform', mod: 'kit-audio', fn: 'mount', variant: 'circle-wave', presets: ['默认', '细线', '粗线', '多环', '单环', '长窗口'] },
       { slug: 'eq', title: '均衡器', hint: '拖动频段圆点调增益 · 悬停看响应', desc: '5 段峰值均衡（RBJ biquad）：拖点改变频率与增益，看频谱怎样被"塑形"。', tag: 'eq', mod: 'kit-audio', fn: 'mount', variant: 'eq', presets: ['默认', '少段', '多段', '窄带', '宽带', '静止'] },
       { slug: 'part-audio', title: '粒子随音', hint: '拖动移动发射点 · 低音越强粒子越多', desc: '用低/中/高三个频段的能量驱动粒子的数量、速度和颜色。', tag: 'particles', mod: 'kit-audio', fn: 'mount', variant: 'part-audio', presets: ['默认', '少', '多', '大点', '爆发', '平稳'] },

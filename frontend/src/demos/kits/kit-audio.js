@@ -4,12 +4,13 @@
  * triangle partials + synthetic drums + noise) rendered into a sample buffer, then analysed with a real
  * radix-2 FFT (Hann window). Hover / drag any part of the picture: the info panel shows the frequency,
  * note, level or time under the pointer live, plus 公式/说明/参数/步骤 in beginner Chinese.
- * Tap the 「声音」 pill (top-right) to actually hear the same signal through Web Audio.
+ * Turn on the site-wide 「声音」 switch (top-right of the page header) to hear the same signal through Web Audio.
  */
 import { withControls } from './withControls.js';
 import { paramsFromSpec } from './_shared.js';
 import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
 import { F } from './info-panel.js';
+import { getAudio, onSound } from '../../lib/sound';
 
 const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
 const T = (key, label, value) => ({ key, type: 'toggle', label, value });
@@ -129,11 +130,20 @@ const song = (t, o = {}) => {
 
 /* ───────────────────────── real sound (Web Audio) ───────────────────────── */
 const mkAudio = () => {
-  let ac = null, master = null, pool = [], nz = null, bufs = {}, mic = null, an = null;
-  const ensure = () => { if (ac) return ac; const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; ac = new A(); master = ac.createGain(); master.gain.value = 0.16; master.connect(ac.destination); return ac; };
+  // Output goes through the site-wide shared AudioContext (lib/sound) and follows the top-right master switch:
+  // ON → this demo sounds immediately on mount; OFF → silent. The mic analyser uses its own context (no output).
+  let ac = null, master = null, pool = [], nz = null, bufs = {}, mic = null, an = null, mac = null;
+  const ensure = () => { if (ac) return ac; const c = getAudio(); if (!c) return null; ac = c; master = c.createGain(); master.gain.value = 0.16; master.connect(c.destination); return ac; };
+  const teardown = () => {
+    pool.forEach((p) => { try { p.o.stop(); } catch (_) { /* ignore */ } try { p.g.disconnect(); } catch (_) { /* ignore */ } });
+    try { nz?.s.stop(); } catch (_) { /* ignore */ } try { master?.disconnect(); } catch (_) { /* ignore */ }
+    ac = null; master = null; pool = []; nz = null; bufs = {};
+  };
+  const stopMic = () => { try { mic?.st.getTracks().forEach((t) => t.stop()); } catch (_) { /* ignore */ } mic = null; an = null; try { mac?.close(); } catch (_) { /* ignore */ } mac = null; };
+  const unsub = onSound((on) => { if (on) ensure(); else teardown(); });
+  ensure();
   const api = {
-    get on() { return !!ac && !mic; }, get mic() { return !!mic; }, get sr() { return ac ? ac.sampleRate : 48000; },
-    toggle() { if (ac) { api.close(); return false; } ensure(); return !!ac; },
+    get on() { return !!ac && !mic; }, get mic() { return !!mic; }, get sr() { return mic && mac ? mac.sampleRate : ac ? ac.sampleRate : 48000; },
     voices(list) {
       if (!ac || mic) return;
       while (pool.length < list.length && pool.length < 8) { const o = ac.createOscillator(), g = ac.createGain(); g.gain.value = 0; o.connect(g).connect(master); o.start(); pool.push({ o, g }); }
@@ -152,13 +162,14 @@ const mkAudio = () => {
       nz.c.type = 'lowpass'; nz.c.frequency.value = cfg.col === 0 ? 20000 : cfg.col === 1 ? 2500 : 500; nz.g.gain.setTargetAtTime(cfg.g, now, 0.03);
     },
     async startMic() {
-      if (!ensure()) throw new Error('no audio');
+      const A = window.AudioContext || window.webkitAudioContext; if (!A) throw new Error('no audio');
       const st = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mic = { st, src: ac.createMediaStreamSource(st) }; an = ac.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = 0; mic.src.connect(an);
-      pool.forEach((p) => p.g.gain.setTargetAtTime(0, ac.currentTime, 0.02));
+      mac = new A(); mic = { st, src: mac.createMediaStreamSource(st) }; an = mac.createAnalyser(); an.fftSize = 2048; an.smoothingTimeConstant = 0; mic.src.connect(an);
+      if (ac) pool.forEach((p) => p.g.gain.setTargetAtTime(0, ac.currentTime, 0.02));
     },
+    stopMic,
     micBuf(n) { if (!an) return null; const a = new Float32Array(an.fftSize); an.getFloatTimeDomainData(a); return a.subarray(an.fftSize - n); },
-    close() { try { mic?.st.getTracks().forEach((t) => t.stop()); } catch (_) { /* ignore */ } mic = null; an = null; try { ac?.close(); } catch (_) { /* ignore */ } ac = null; pool = []; nz = null; bufs = {}; },
+    close() { stopMic(); teardown(); unsub(); },
   };
   return api;
 };
@@ -191,7 +202,7 @@ FAM.synth = {
     title: '合成器 · 波形、谐波与频谱',
     rows: (v) => [['当前音符 / 基频 f₀', `${v.note} / ${hz(v.f0)}`, 'note'], ['波形 / 谐波上限', `${v.wn} / ${v.h} 个`], ['悬停区域', v.zone, 'zone'], ['悬停频率', v.fz, 'fz'], ['该处强度', v.lv, 'lv'], ['最近的谐波', v.kh, 'kh'], ['颤音 速率 / 深度', `${fmt(v.lfo, 1)} Hz / ${v.dep}¢`], ['音量', fmt(v.vol, 2)]],
     formula: () => F('音高：f₀ = 440 × 2^((n − 69) / 12)　（n = MIDI 音符号，A4 = 69）') + F('锯齿波 = Σ (1/k)·sin(2π·k·f₀·t)，方波只取奇数 k，三角波 1/k² 衰减') + F('颤音：f(t) = f₀ × 2^(深度·sin(2π·速率·t) / 1200)'),
-    explain: '<p><b>合成器</b>用数学函数直接"造"出声音。最简单的是<b>正弦波</b>：只有一个频率，听起来像口哨。方波、锯齿波、三角波都可以拆成很多个正弦波相加——这些正弦叫<b>谐波</b>，频率正好是基频 f₀ 的 1、2、3… 倍。</p><p>上方是<b>波形</b>（声音随时间的样子），中间是<b>频谱</b>（每个频率有多响），用 FFT（快速傅里叶变换）从波形算出来。你会看到频谱上等间距的"尖峰"，就是一根根谐波；谐波越多、越强，声音越"亮"、越"刺"。</p><p>下方琴键可以点按演奏；不碰它时会自动弹一段旋律。点右上角「声音」可以真的听到它。</p>',
+    explain: '<p><b>合成器</b>用数学函数直接"造"出声音。最简单的是<b>正弦波</b>：只有一个频率，听起来像口哨。方波、锯齿波、三角波都可以拆成很多个正弦波相加——这些正弦叫<b>谐波</b>，频率正好是基频 f₀ 的 1、2、3… 倍。</p><p>上方是<b>波形</b>（声音随时间的样子），中间是<b>频谱</b>（每个频率有多响），用 FFT（快速傅里叶变换）从波形算出来。你会看到频谱上等间距的"尖峰"，就是一根根谐波；谐波越多、越强，声音越"亮"、越"刺"。</p><p>下方琴键可以点按演奏；不碰它时会自动弹一段旋律。打开页面右上角的「声音」总开关就能真的听到它。</p>',
     params: [['音色颜色', '波形与频谱的颜色'], ['自动演奏速度', '自动旋律的快慢；0 = 停在当前音'], ['音量', '振幅大小，波形高度与频谱整体抬高'], ['谐波上限', '最多叠加多少根谐波（越多越接近理想方波/锯齿）'], ['波形', '0 正弦、1 方波、2 锯齿、3 三角'], ['颤音速率 Hz', '音高每秒抖动几次'], ['颤音深度（音分）', '抖动幅度，100 音分 = 半音'], ['八度', '整体音高往上/下移']],
     example: (v) => `<ol><li>当前音符 ${v.note}，MIDI 号 n = ${v.m}</li><li>f₀ = 440 × 2^((${v.m} − 69)/12) = ${fmt(v.f0, 1)} Hz</li><li>第 ${v.k} 根谐波频率 = ${v.k} × ${fmt(v.f0, 1)} = ${fmt(v.k * v.f0, 0)} Hz，理论强度 ${v.kth}</li></ol>`,
     tip: '点琴键弹奏；把指针放到频谱上看每根谐波的频率和强度。',
@@ -268,7 +279,7 @@ FAM.mic = {
   },
   build(S, A) {
     const st = { lv: [], err: '' };
-    S.onDown(async (P) => { if (!P.uiHit) return; P.ui = true; if (A.mic) { A.close(); return; } try { await A.startMic(); st.err = ''; } catch (e) { st.err = '未授权 / 不支持'; } });
+    S.onDown(async (P) => { if (!P.uiHit) return; P.ui = true; if (A.mic) { A.stopMic(); return; } try { await A.startMic(); st.err = ''; } catch (e) { st.err = '未授权 / 不支持'; } });
     return ({ ctx, W, H, t, dtw, C, P }) => {
       S.clear(); glow(ctx, W, H, C, 0.12);
       const fs = fsz(W, H), N = clamp(Math.round(num(C.count, 64)), 8, 160), gain = num(C.gain, 1.2), sm = num(C.smooth, 0.6), mir = on(C.mir);
@@ -750,7 +761,7 @@ FAM['noise-pad'] = {
     title: '噪声垫 · 用滤波器"雕刻"噪声',
     rows: (v) => [['噪声 / 滤波器', `${v.nc} / ${v.ft}`], ['截止频率 fc（横向）', hz(v.fc), 'fc'], ['共振 Q（纵向）', fmt(v.q, 2), 'q'], ['fc 处增益', db(v.gc), 'gc'], ['−3 dB 带宽', v.bw], ['指针下电平（频谱区）', v.lv, 'lv'], ['听起来像', v.feel]],
     formula: () => F('白噪声：每个频率能量相同；粉红：∝ 1/f（每个八度能量相同）；棕：∝ 1/f²') + F('二阶滤波器（RBJ biquad）：ω₀ = 2π·fc/fs，α = sin ω₀ / (2Q)') + F('输出频谱 = 噪声频谱 + 滤波器响应（dB 相加）'),
-    explain: '<p><b>噪声</b>是所有频率都有的随机声音，像电视雪花"沙沙"声。只要在后面接一个<b>滤波器</b>，就能把它变成风声、海浪、呼吸声：低通只留低频（闷、像远处的风），高通只留高频（嘶嘶声），带通只留中间一段（像吹口哨的风）。</p><p>这块 XY 垫子：<b>横向 = 截止频率</b>，<b>纵向 = 共振 Q</b>（越往上，截止频率附近越"尖"，会听到一个像音高的鸣响）。下方是滤波后的频谱和滤波器曲线。点右上角「声音」能听到真实效果。</p>',
+    explain: '<p><b>噪声</b>是所有频率都有的随机声音，像电视雪花"沙沙"声。只要在后面接一个<b>滤波器</b>，就能把它变成风声、海浪、呼吸声：低通只留低频（闷、像远处的风），高通只留高频（嘶嘶声），带通只留中间一段（像吹口哨的风）。</p><p>这块 XY 垫子：<b>横向 = 截止频率</b>，<b>纵向 = 共振 Q</b>（越往上，截止频率附近越"尖"，会听到一个像音高的鸣响）。下方是滤波后的频谱和滤波器曲线。打开页面右上角的「声音」总开关就能听到真实效果。</p>',
     params: [['滤波颜色', '曲线与光点颜色'], ['自动漂移速度', '无人操作时光点自己漂移'], ['光点大小', 'XY 光点的大小'], ['频谱柱数', '下方频谱分成多少条'], ['滤波类型', '0 低通、1 带通、2 高通'], ['噪声颜色', '0 白、1 粉红、2 棕（越往后越"闷"）'], ['Q 上限', '纵向顶部对应的 Q 值'], ['显示网格', '垫子上的参考网格']],
     example: (v) => `<ol><li>指针横向位置 → fc = 80 × (8000/80)^${fmt(v.ux, 2)} = ${hz(v.fc)}</li><li>纵向位置 → Q = 0.5 + ${fmt(v.uy, 2)} × (${fmt(v.qmax, 1)} − 0.5) = ${fmt(v.q, 2)}</li><li>${v.ft}在 fc 处的增益 = ${db(v.gc)}${v.q > 0.8 ? '（Q 大于 0.707 时会出现共振凸起）' : ''}</li></ol>`,
     tip: '在上方垫子里拖动：左右改截止频率，上下改共振。',
@@ -804,7 +815,7 @@ FAM.drum = {
     title: '鼓机 · 16 步音序器',
     rows: (v) => [['BPM / 每步时长', `${v.bpm} / ${fmt(v.sms, 0)} ms`], ['当前步', `${v.step} / ${v.n}`, 'step'], ['悬停格子', v.cell, 'cell'], ['该格时刻（小节.拍.16分）', v.pos, 'pos'], ['该格开关', v.onv, 'onv'], ['本步触发', v.trig], ['摇摆 swing', `${fmt(v.sw * 100, 0)}%`]],
     formula: () => F('一拍时长 = 60 / BPM 秒；一步 = 1/4 拍（十六分音符）') + F('第 k 步的时刻 = k × 一步时长（奇数步再推迟 swing × 一步）') + F('鼓声音全部是合成的：底鼓 = 下滑的正弦，军鼓 = 噪声 + 190 Hz 音，踩镲 = 高频噪声'),
-    explain: '<p><b>鼓机</b>把一小节分成 16 个小格（每格一个"十六分音符"），每一行是一种鼓，亮着的格子就会在播放头经过时敲一下。电子音乐、嘻哈的节奏几乎都是这样排出来的。</p><p>点击格子可以打开/关闭。BPM 决定快慢：BPM 120 时一拍 0.5 秒，一格 0.125 秒。<b>Swing</b>（摇摆）会把每个偶数后面的格子稍微推迟，节奏马上变得"晃"起来，爵士和 Lo-fi 常用。点右上角「声音」能听到。</p>',
+    explain: '<p><b>鼓机</b>把一小节分成 16 个小格（每格一个"十六分音符"），每一行是一种鼓，亮着的格子就会在播放头经过时敲一下。电子音乐、嘻哈的节奏几乎都是这样排出来的。</p><p>点击格子可以打开/关闭。BPM 决定快慢：BPM 120 时一拍 0.5 秒，一格 0.125 秒。<b>Swing</b>（摇摆）会把每个偶数后面的格子稍微推迟，节奏马上变得"晃"起来，爵士和 Lo-fi 常用。打开页面右上角的「声音」总开关就能听到。</p>',
     params: [['鼓垫颜色', '亮格子的颜色'], ['播放速度倍率', '在 BPM 基础上整体加速/减速'], ['垫子圆角', '格子的圆角大小'], ['步数', '一小节分成几步（8/12/16）'], ['BPM', '每分钟多少拍'], ['摇摆 swing', '奇数步推迟的比例'], ['重音标记', '每拍第一格加亮边'], ['底部波形', '显示当前鼓声波形']],
     example: (v) => `<ol><li>一拍 = 60 / ${v.bpm} = ${fmt(60 / v.bpm, 3)} s，一步 = ${fmt(v.sms, 0)} ms</li><li>悬停的是第 ${v.k + 1} 步 → 时刻 ${v.k} × ${fmt(v.sms, 0)}${v.k % 2 && v.sw ? ` + ${fmt(v.sw * 100, 0)}% × ${fmt(v.sms, 0)}` : ''} = ${fmt(v.tk, 0)} ms</li><li>${v.cell}：${v.onv}</li></ol>`,
     tip: '点格子开关鼓点；拖 BPM 和 swing 听节奏怎么变。',
@@ -875,9 +886,10 @@ function mountFamily(fam, host, opts) {
   const F0 = FAM[fam];
   const S = createCanvasStage(host, opts, { doc: F0.doc, spec: F0.spec, bg: '#060a14', auto: true, cursor: F0.cursor || 'crosshair' });
   const Au = mkAudio();
-  S.onDown((P) => { P.uiHit = inRect(P, spkRect(S.W, S.H, F0.label || '声音')); P.ui = false; if (P.uiHit && !F0.label) { P.ui = true; Au.toggle(); } });
+  // sound on/off now lives in the top-right master switch; only input pills (e.g. 「麦克风」) remain on stage
+  S.onDown((P) => { P.uiHit = !!F0.label && inRect(P, spkRect(S.W, S.H, F0.label)); P.ui = false; });
   const step = F0.build(S, Au);
   S.onFrame(step);
-  S.onFrame(({ ctx, W, H, C }) => { drawSpk(ctx, W, H, Au, C, F0.label ? `${F0.label} ${Au.mic ? '开' : '关'}` : null); return { snd: Au.on ? '开' : '关' }; });
+  S.onFrame(({ ctx, W, H, C }) => { if (F0.label) drawSpk(ctx, W, H, Au, C, `${F0.label} ${Au.mic ? '开' : '关'}`); return { snd: Au.on ? '开' : '关' }; });
   return () => { Au.close(); S.destroy(); };
 }
