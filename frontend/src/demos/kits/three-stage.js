@@ -92,6 +92,7 @@ export function createThreeStage(host, opts = {}, {
     onFrame(fn) { frames.push(fn); },
     disposers: [],
   };
+  const warm = [];
   const tick = (now) => {
     if (!alive) return;
     raf = requestAnimationFrame(tick);
@@ -99,8 +100,22 @@ export function createThreeStage(host, opts = {}, {
     const dtw = last < 0 ? 0 : Math.min(0.05, Math.max(0, (now - last) / 1000));
     last = now;
     // adaptive resolution: weak GPUs / software GL drop render scale instead of stuttering
-    if (dtw > 0) { slowN = dtw > 0.034 ? slowN + 1 : Math.max(0, slowN - 1); }
-    if (slowN > 20 && dprScale > 0.55) { dprScale = Math.max(0.5, dprScale * 0.75); slowN = 0; renderer.setPixelRatio(maxDpr(2) * dprScale); renderer.setSize(W, H, false); }
+    // Decide once during a short warm-up (first ~24 frames) and jump straight to the target scale, so the
+    // canvas doesn't visibly step down several times while the user is watching; afterwards only a long,
+    // sustained slowdown triggers one more step.
+    if (dtw > 0) {
+      if (warm.length < 24) {
+        warm.push(dtw);
+        if (warm.length === 24) {
+          const med = [...warm].sort((a, b) => a - b)[12];
+          const target = med > 0.034 ? Math.max(0.5, Math.min(1, 0.03 / med)) : 1;
+          if (target < 0.95) { dprScale = target; renderer.setPixelRatio(maxDpr(2) * dprScale); renderer.setSize(W, H, false); }
+        }
+      } else {
+        slowN = dtw > 0.045 ? slowN + 1 : Math.max(0, slowN - 1);
+        if (slowN > 180 && dprScale > 0.55) { dprScale = Math.max(0.5, dprScale * 0.75); slowN = 0; renderer.setPixelRatio(maxDpr(2) * dprScale); renderer.setSize(W, H, false); }
+      }
+    }
     const C = get();
     const spd = Number.isFinite(C.speed) ? C.speed : 1;
     sim += dtw * spd; wall += dtw;
