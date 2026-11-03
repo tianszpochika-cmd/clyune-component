@@ -11,6 +11,7 @@ Three.js · Canvas · WebGL shaders · physics · charts · GSAP · math visuali
 [![Live Demo](https://img.shields.io/badge/Live_Demo-component.clyune.com-6c5ce7?style=for-the-badge)](https://component.clyune.com)
 [![GitHub stars](https://img.shields.io/github/stars/tianszpochika-cmd/clyune-component?style=for-the-badge&logo=github)](https://github.com/tianszpochika-cmd/clyune-component/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Follow on X](https://img.shields.io/badge/Follow-@tiansongzhenam-000000?style=for-the-badge&logo=x)](https://x.com/tiansongzhenam)
 
 [简体中文](README.md) | **English**
 

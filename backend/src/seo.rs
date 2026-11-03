@@ -307,7 +307,7 @@ impl Seo {
                     "name": "云澜 Clyune", "alternateName": "Clyune",
                     "url": format!("{}/", self.base),
                     "logo": format!("{}/icon-512.png", self.base),
-                    "sameAs": [REPO_URL]
+                    "sameAs": [REPO_URL, "https://x.com/tiansongzhenam"]
                 }));
                 graph.push(json!({
                     "@type": "CollectionPage", "@id": format!("{url}#page"), "url": url,

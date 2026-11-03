@@ -11,6 +11,7 @@ Three.js · Canvas · WebGL 着色器 · 物理 · 图表 · GSAP · 数学可�
 [![Live Demo](https://img.shields.io/badge/在线体验-component.clyune.com-6c5ce7?style=for-the-badge)](https://component.clyune.com)
 [![GitHub stars](https://img.shields.io/github/stars/tianszpochika-cmd/clyune-component?style=for-the-badge&logo=github)](https://github.com/tianszpochika-cmd/clyune-component/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
+[![Follow on X](https://img.shields.io/badge/关注-@tiansongzhenam-000000?style=for-the-badge&logo=x)](https://x.com/tiansongzhenam)
 
 **简体中文** | [English](README.en.md)
 

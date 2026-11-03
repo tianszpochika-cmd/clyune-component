@@ -1514,3 +1514,9 @@ body.sidebar-open {
   .brand-link:hover .brand-logo .logo-w, .brand-link:focus-visible .brand-logo .logo-w { animation: none; }
   .brand-logo .logo-d { transition: none; }
 }
+
+/* v12: GitHub / X quick links */
+a.btn.social-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: inherit; flex-shrink: 0; transition: border-color .15s, background .15s, color .15s, transform .15s; }
+a.btn.social-btn:hover, a.btn.social-btn:focus-visible { border-color: rgba(99,102,241,.55); background: rgba(99,102,241,.16); color: #c7d2fe; }
+a.btn.social-btn:active { transform: scale(.94); }
+@media (max-width: 420px) { .topbar-right .pill:not(.db) { display: none; } }
