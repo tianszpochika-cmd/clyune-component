@@ -1,4 +1,5 @@
 import { auditCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
@@ -93,6 +94,7 @@ async function setControl(page, c) {
 
 async function auditOne(browser, cat, slug) {
   const ctx = await browser.newContext({ viewport: { width: 1180, height: 740 } });
+  await enableAutoDemo(ctx);
   await ctx.addInitScript(CLOCK);
   const page = await ctx.newPage();
   const path = `/${cat}/${slug}`;

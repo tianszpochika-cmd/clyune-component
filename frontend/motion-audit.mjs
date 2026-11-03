@@ -1,4 +1,5 @@
 import { auditCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 // Motion health audit: flicker / freeze / jank / canvas clear-resize, desktop + 390.
 // Usage: BASE=... ONLY=slug,slug MODE=d|m node motion-audit.mjs
 import { chromium } from 'playwright';
@@ -96,6 +97,7 @@ async function auditOne(browser, cat, slug, mobile) {
   fs.mkdirSync(vidDir, { recursive: true });
   const vp = mobile ? { width: 390, height: 844 } : { width: 1180, height: 740 };
   const ctx = await browser.newContext({ viewport: vp, isMobile: mobile, hasTouch: mobile, recordVideo: { dir: vidDir, size: { width: Math.round(vp.width / 2) * 2 > 800 ? 800 : vp.width, height: mobile ? 844 : 500 } } });
+  await enableAutoDemo(ctx);
   await ctx.addInitScript(INIT);
   const page = await ctx.newPage();
   const errs = [];

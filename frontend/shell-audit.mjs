@@ -6,6 +6,7 @@
 import { chromium } from 'playwright';
 import { BTN_CHECK } from './btn-check.mjs';
 import { registryCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 
 export const SHELL_VPS = [[390, 844, '390'], [375, 667, '375'], [360, 740, '360'], [844, 390, 'land'], [1280, 800, '1280'], [1440, 900, '1440'], [1920, 1080, '1920']];
 
@@ -85,6 +86,7 @@ export async function runShellAudit(BASE, SHOTS) {
   const queue = pages.flatMap((p) => SHELL_VPS.filter((v) => !(p[1] === 'menu' && v[0] >= 900)).map((v) => [...p, v])); const res = [];
   const one = async ([path, kind, [w, h, tag]]) => {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900, deviceScaleFactor: 1 });
+    await enableAutoDemo(ctx);
     const p = await ctx.newPage(); const fails = [];
     try {
       await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });

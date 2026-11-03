@@ -4,6 +4,7 @@
 // Fail if any sample shows neither a visible .stage-loader nor a painted stage (non-dark pixels in the stage screenshot).
 import { chromium } from 'playwright';
 import { registryCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 import fs from 'node:fs';
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
 const KBPS = +(process.env.KBPS || 400), LAT = +(process.env.LAT || 400);
@@ -15,6 +16,7 @@ const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl
 let fails = 0; const rows = [];
 for (const path of jobs) for (const [w, h] of VPS) {
   const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900 });
+  await enableAutoDemo(ctx);
   const p = await ctx.newPage(); const cdp = await ctx.newCDPSession(p);
   await cdp.send('Network.enable');
   await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: LAT, downloadThroughput: KBPS * 1024 / 8, uploadThroughput: KBPS * 1024 / 8 });

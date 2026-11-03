@@ -2,6 +2,7 @@
 // [BASE=..] [CAT=a,b] [ONLY=slug] [SHOTS=dir] node overlap-audit.mjs
 // MODE=shell [SHOTS=dir] node overlap-audit.mjs   (app shell: header/search/menu/cards, 4 mobile viewports)
 import { auditCats, registryCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import { BTN_CHECK } from './btn-check.mjs';
@@ -46,6 +47,7 @@ const CHECK = (desk) => {
 
 async function one(browser, c, s, [w, h, tag]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900, deviceScaleFactor: 1 });
+  await enableAutoDemo(ctx);
   const p = await ctx.newPage(); const path = `/${c}/${s}`; const fails = [];
   try {
     await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });

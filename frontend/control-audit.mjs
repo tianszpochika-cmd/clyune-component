@@ -1,4 +1,5 @@
 import { auditCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
@@ -71,6 +72,7 @@ async function auditOne(browser, cat, slug, mobile) {
   const page = await browser.newPage(mobile
     ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }
     : { viewport: { width: 1180, height: 740 } });
+  await enableAutoDemo(page);
   const path = `/${cat}/${slug}`;
   const fails = [];
   try {
@@ -170,6 +172,7 @@ async function dragSmoke(browser) {
   const out = [];
   for (const [cat, slug] of targets) {
     const page = await browser.newPage({ viewport: { width: 1100, height: 720 } });
+    await enableAutoDemo(page);
     try {
       await page.goto(`${BASE}/${cat}/${slug}`, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('canvas', { timeout: 10000 });
@@ -200,6 +203,7 @@ async function dragSmoke(browser) {
 
 async function redirectCheck(browser) {
   const page = await browser.newPage();
+  await enableAutoDemo(page);
   await page.goto(`${BASE}/threejs/trig-waves`, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(800);
   const url = page.url();

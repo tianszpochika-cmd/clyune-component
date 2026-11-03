@@ -1,4 +1,5 @@
 import { auditCats } from './audit-cats.mjs';
+import { enableAutoDemo } from './audit-auto.mjs';
 import { chromium } from 'playwright';
 
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
@@ -62,6 +63,7 @@ async function auditOne(browser, cat, slug, mobile) {
   const page = await browser.newPage(mobile
     ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }
     : { viewport: { width: 1180, height: 740 } });
+  await enableAutoDemo(page);
   const path = `/${cat}/${slug}`;
   const fails = [];
   const errs = [];
