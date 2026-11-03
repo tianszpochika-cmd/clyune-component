@@ -42,7 +42,7 @@ for (const path of jobs) for (const [w, h] of VPS) {
   if (done >= 0) {
     await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
     await p.waitForTimeout(600);
-    const bb = await p.evaluate(() => { const r = [...document.querySelectorAll('.demo-mount canvas, .demo-mount svg, .demo-mount .kit-stage, .canvas-host')].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 40 && r.height > 40).sort((a, b) => a.width * a.height - b.width * b.height)[0]; return r && r.width > 4 ? { x: Math.max(0, r.x), y: Math.max(0, r.y), width: Math.min(r.width, innerWidth - Math.max(0, r.x)), height: Math.min(r.height, innerHeight - Math.max(0, r.y)) } : null; });
+    const bb = await p.evaluate(() => { const r = document.querySelector('.canvas-host')?.getBoundingClientRect(); return r && r.width > 4 ? { x: Math.max(0, r.x), y: Math.max(0, r.y), width: Math.min(r.width, innerWidth - Math.max(0, r.x)), height: Math.min(r.height, innerHeight - Math.max(0, r.y)) } : null; });
     if (process.env.DBG) console.log("bb", JSON.stringify(bb));
     const buf = bb && bb.height > 4 ? await p.screenshot({ clip: bb, timeout: 10000 }).catch((e) => { console.log("shot err", String(e.message).slice(0, 120)); return null; }) : null;
     if (SHOTS && buf) fs.writeFileSync(`${SHOTS}/${path.replace('/', '_')}-${w}-final.png`, buf);
