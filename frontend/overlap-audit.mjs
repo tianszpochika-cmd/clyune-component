@@ -16,7 +16,7 @@ const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
 const SHOTS = process.env.SHOTS; if (SHOTS) fs.mkdirSync(SHOTS, { recursive: true });
 const jobs = Object.entries(cats).flatMap(([c, l]) => l.map((s) => [c, s])).filter(([c, s]) => !only || only.includes(s) || only.includes(`${c}/${s}`));
 
-const CHECK = () => {
+const CHECK = (desk) => {
   const vis = (el) => { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); return r.width > 1 && r.height > 1 && cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity > 0.05 && r.right > 0 && r.left < innerWidth; };
   const stage = document.querySelector('.demo-mount .kit-stage') || document.querySelector('.demo-mount');
   if (!stage) return { err: 'no stage' };
@@ -30,7 +30,8 @@ const CHECK = () => {
     const ix = Math.min(r.right, sr.right) - Math.max(r.left, sr.left), iy = Math.min(r.bottom, sr.bottom) - Math.max(r.top, sr.top);
     if (ix > 2 && iy > 2) hits.push(`${el.tagName.toLowerCase()}.${String(el.className).split(' ')[0] || ''}${el.textContent ? '「' + el.textContent.trim().slice(0, 8) + '」' : ''} ${Math.round(ix)}×${Math.round(iy)}`);
   }
-  // controls living inside the stage must not float over a canvas either
+  // controls living inside the stage must not float over a canvas either (mobile; desktop HUD overlays are by design)
+  if (desk) return { hits: [...new Set(hits)].slice(0, 6), stage: [Math.round(sr.x), Math.round(sr.y), Math.round(sr.width), Math.round(sr.height)] };
   const cvs = [...stage.querySelectorAll('canvas')].filter(vis).map((c) => c.getBoundingClientRect()).filter((r) => r.width * r.height > 8000);
   for (const el of stage.querySelectorAll('button, input, select, [role=button], .fx-bar, .btn-group')) {
     if (!vis(el) || el.closest('.mip')) continue;
@@ -53,7 +54,7 @@ async function one(browser, c, s, [w, h, tag]) {
       ['scrolled', async () => { await p.evaluate(() => { const st = document.querySelector('.demo-mount .kit-stage') || document.querySelector('.demo-mount'); st.scrollIntoView({ block: 'start' }); }); await p.waitForTimeout(300); }],
       ['params', async () => { const b = p.locator('.fx-toolbar button, .demo-controls button').filter({ hasText: '参数' }).first(); if (await b.count()) { await b.tap({ timeout: 2000 }).catch(() => {}); await p.waitForTimeout(400); } }]];
     for (const [nm, fn] of states) {
-      await fn(); const r = await p.evaluate(CHECK);
+      await fn(); const r = await p.evaluate(CHECK, w >= 900);
       const bo = await p.evaluate(BTN_CHECK); if (bo.length) r.hits = [...(r.hits || []), ...bo];
       if (r.err) fails.push(`${nm}: ${r.err}`); else if (r.hits.length) fails.push(`${nm}: ${r.hits.join(', ')}`);
       if (SHOTS && (r.hits?.length || process.env.ALLSHOTS)) await p.screenshot({ path: `${SHOTS}/${c}-${s}-${tag}-${nm}.png` });
