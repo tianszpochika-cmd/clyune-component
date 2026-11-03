@@ -7,7 +7,17 @@ const EVT = 'cc-lang';
 const HAS_ZH = /[\u3400-\u9fff]/;
 const ZH_RUN = /[\u3400-\u9fff][\u3400-\u9fff\u3000-\u303f\uff01-\uff5e·]*/g;
 
+/** `?lang=en|zh` in the URL wins (and becomes sticky) — this is what canonical / hreflang URLs point at. */
+function urlLang(): Lang | null {
+  try { const v = new URLSearchParams(location.search).get('lang'); if (v) return /^en/i.test(v) ? 'en' : /^zh/i.test(v) ? 'zh' : null; } catch (_) { /* ignore */ }
+  return null;
+}
+/* Crawlers must see the language the URL promises (no ?lang → 中文), not their own navigator.language. */
+const IS_BOT = typeof navigator !== 'undefined' && /bot|spider|crawl|slurp|baidu|bingpreview|lighthouse/i.test(navigator.userAgent || '');
 function detect(): Lang {
+  const u = urlLang();
+  if (u) { try { localStorage.setItem(KEY, u); } catch (_) { /* ignore */ } return u; }
+  if (IS_BOT) return 'zh';
   try { const s = localStorage.getItem(KEY); if (s === 'zh' || s === 'en') return s; } catch (_) { /* ignore */ }
   const nav = (typeof navigator !== 'undefined' && (navigator.languages?.[0] || navigator.language)) || 'zh';
   return /^zh/i.test(nav) ? 'zh' : 'en';
@@ -23,6 +33,7 @@ export function setLang(l: Lang) {
   lang = l;
   try { localStorage.setItem(KEY, l); } catch (_) { /* ignore */ }
   applyDocLang();
+  syncUrlLang();
   const fire = () => window.dispatchEvent(new CustomEvent(EVT, { detail: l }));
   if (l === 'en') loadDict().then(fire); else fire();
 }
@@ -39,6 +50,16 @@ export function useLang(): Lang {
 /** Pick zh/en literal. */
 export const tr = (zh: string, en: string) => (lang === 'en' ? en : zh);
 
+/** Keep `?lang=en` in the address bar while English is active (zh = no param), without a router navigation. */
+export function syncUrlLang() {
+  try {
+    const u = new URL(location.href);
+    const want = lang === 'en' ? 'en' : null;
+    if (u.searchParams.get('lang') === want) return;
+    if (want) u.searchParams.set('lang', want); else u.searchParams.delete('lang');
+    history.replaceState(history.state, '', u.pathname + u.search + u.hash);
+  } catch (_) { /* ignore */ }
+}
 function applyDocLang() { try { document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN'; } catch (_) { /* ignore */ } }
 
 export function loadDict(): Promise<void> {

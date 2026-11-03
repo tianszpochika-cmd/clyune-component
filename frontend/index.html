@@ -4,15 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#0b1020" />
-    <title>Clyune Component Gallery</title>
+    <!-- Per-route SEO tags (title / description / canonical / hreflang / OG / Twitter / JSON-LD) are injected
+         by the Axum server between the seo markers (backend/src/seo.rs) and kept in sync client-side (src/lib/seo.ts). -->
+    <!--seo:begin-->
+    <title>云澜组件库 Clyune Component Gallery｜前端特效与交互组件在线演示</title>
+    <meta name="description" content="云澜组件库（Clyune Component Gallery）：数百个可交互的前端特效与组件 Demo，带实时参数、数据读数和中文公式说明。" data-seo />
+    <!--seo:end-->
+    <meta name="applicable-device" content="pc,mobile" />
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="author" content="云澜 Clyune" />
+    <!--
+      Search-engine ownership verification (TODO, fill after registering — do NOT invent codes):
+      Preferred: set env vars in /srv/clyune-component/.env on the server and recreate the api container:
+        GOOGLE_SITE_VERIFICATION=<content value from Google Search Console "HTML tag" method>
+        BAIDU_SITE_VERIFICATION=<content value from 百度搜索资源平台 "HTML标签验证", e.g. codeva-xxxx>
+      The server then injects:
+        <meta name="google-site-verification" content="…" />
+        <meta name="baidu-site-verification" content="…" />
+      Alternative: drop the verification .html file given by Google / Baidu into frontend/public/.
+    -->
     <link rel="icon" href="/logo.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="alternate icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <noscript><style>#boot{display:none!important}</style></noscript>
+    <style>.ssr{max-width:960px;margin:0 auto;padding:24px 16px;color:#cbd5e1;background:#0b1020;font:15px/1.7 system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif}.ssr a{color:#a5b4fc}.ssr h1{font-size:26px;color:#fff}.ssr h2{font-size:18px;color:#e2e8f0}.ssr ul{padding-left:20px}.ssr img{vertical-align:middle}</style>
   </head>
   <body>
-    <div id="root"><div id="boot" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0b1020;color:#94a3b8;font:14px system-ui,-apple-system,'PingFang SC',sans-serif"><div style="width:40px;height:40px;border-radius:50%;border:3px solid rgba(129,140,248,.2);border-top-color:#818cf8;animation:bs 0.9s linear infinite"></div><div>加载应用…</div><style>@keyframes bs{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#boot div{animation:none!important}}</style></div></div>
+    <div id="root"><div id="boot" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#0b1020;color:#94a3b8;font:14px system-ui,-apple-system,'PingFang SC',sans-serif"><div style="width:40px;height:40px;border-radius:50%;border:3px solid rgba(129,140,248,.2);border-top-color:#818cf8;animation:bs 0.9s linear infinite"></div><div>加载应用…</div><style>@keyframes bs{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#boot div{animation:none!important}}</style></div><!--seo:body--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

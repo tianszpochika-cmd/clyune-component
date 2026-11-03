@@ -44,6 +44,9 @@ services:
       RUST_LOG: clyune_component=info,tower_http=info,sqlx=warn
       REGISTRY_PATH: /app/data/registry.json
       STATIC_DIR: /app/frontend/dist
+      SITE_URL: ${SITE_URL:-https://component.clyune.com}
+      GOOGLE_SITE_VERIFICATION: ${GOOGLE_SITE_VERIFICATION:-}
+      BAIDU_SITE_VERIFICATION: ${BAIDU_SITE_VERIFICATION:-}
     ports:
       - "127.0.0.1:${API_PORT:-18088}:8080"
     mem_limit: ${API_MEM_LIMIT:-256m}

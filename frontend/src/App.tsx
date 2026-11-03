@@ -4,7 +4,8 @@ import { categories, routes, totalDemos, type Category, type DemoMeta } from './
 import { DemoHost } from './components/DemoHost';
 import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
 import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
-import { setLang, tr, tx, useLang } from './lib/i18n';
+import { setLang, syncUrlLang, tr, tx, useLang } from './lib/i18n';
+import { useSeo, type SeoPage } from './lib/seo';
 import { setMusic, setMusicVol, useMusic } from './lib/music';
 
 const en = () => tr('zh', 'en') === 'en';
@@ -358,7 +359,7 @@ function Home({ health }: { health: Health | null }) {
   return (
     <>
       <section className="card hero">
-        <h1>Component Gallery</h1>
+        <h1>{tr('云澜组件库 · Component Gallery', 'Clyune Component Gallery')}</h1>
         {en() ? (
           <p>
             An admin-dashboard-style showcase of front-end techniques and web effects: {categories.length} categories, {totalDemos} interactive demos.
@@ -522,7 +523,7 @@ function DemoPage() {
     <div className="demo-wrap">
       <div className="card demo-toolbar">
         <div className="demo-title-block">
-          <h2>{dTitle(demo)}</h2>
+          <h1 className="demo-h1">{dTitle(demo)}</h1>
           <div className="demo-meta">
             <span className="tag">{dTag(demo)}</span>
             <span className="hint">{dHint(demo) || dDesc(demo)}</span>
@@ -574,7 +575,7 @@ export default function App() {
   const health = useHealth();
   useRipple();
   const [filter, setFilter] = useState('');
-  useLang();
+  const lang = useLang();
   const loc = useLocation();
   const r = loc.pathname.length > 1 && loc.pathname.endsWith('/')
     ? loc.pathname.slice(0, -1)
@@ -582,8 +583,9 @@ export default function App() {
   const cat = categories.find((c) => `/${c.key}` === r);
   const demo = routes[r];
   const crumb = r === '/' ? tr('首页', 'Home') : cat ? cName(cat) : demo ? `${cName(demo.cat!)} / ${dTitle(demo)}` : r;
-  const title = (demo ? dTitle(demo) + ' · ' : cat ? cName(cat) + ' · ' : '') + 'Clyune Component Gallery';
-  useEffect(() => { document.title = title; }, [title]);
+  const seoPage: SeoPage = r === '/' ? { kind: 'home' } : cat ? { kind: 'cat', cat } : demo ? { kind: 'demo', cat: demo.cat!, demo } : { kind: '404' };
+  useSeo(seoPage, r, lang);
+  useEffect(() => { syncUrlLang(); }, [loc.pathname, loc.search, lang]);
 
   return (
     <div id="app">

@@ -1,0 +1,596 @@
+//! Server-side SEO for the SPA: per-route <head> tags (title / description / canonical / hreflang /
+//! Open Graph / Twitter / JSON-LD), a crawlable static HTML snapshot inside #root (for Baidu and other
+//! crawlers that do not run JS), plus /robots.txt and /sitemap.xml generated from the registry.
+//!
+//! Language is carried in the URL: `/<path>` = 中文 (default, x-default), `/<path>?lang=en` = English.
+//! The React app reads the same `lang` query and keeps the URL in sync with its language switch.
+
+use serde_json::{json, Value};
+use std::fmt::Write as _;
+
+pub const SITE_NAME_ZH: &str = "云澜组件库";
+pub const SITE_NAME_EN: &str = "Clyune Component Gallery";
+pub const REPO_URL: &str = "https://github.com/tianszpochika-cmd/clyune-component";
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum Lang {
+    Zh,
+    En,
+}
+
+#[derive(Clone)]
+pub struct Demo {
+    pub slug: String,
+    pub title: String,
+    pub title_en: String,
+    pub hint: String,
+    pub hint_en: String,
+    pub desc: String,
+    pub desc_en: String,
+    pub tag: String,
+}
+
+#[derive(Clone)]
+pub struct Cat {
+    pub key: String,
+    pub name: String,
+    pub name_en: String,
+    pub intro: String,
+    pub intro_en: String,
+    pub tech: Vec<String>,
+    pub demos: Vec<Demo>,
+}
+
+#[derive(Clone)]
+pub struct Seo {
+    pub base: String,
+    pub cats: Vec<Cat>,
+    pub total: usize,
+    pub lastmod: String,
+    pub google_verify: Option<String>,
+    pub baidu_verify: Option<String>,
+    pub robots: String,
+    pub sitemap: String,
+}
+
+pub enum Page<'a> {
+    Home,
+    Category(&'a Cat),
+    Demo(&'a Cat, usize),
+}
+
+pub enum Resolved<'a> {
+    Page(Page<'a>),
+    Redirect(String),
+    NotFound,
+}
+
+fn s(v: &Value, k: &str) -> String {
+    v.get(k).and_then(|x| x.as_str()).unwrap_or("").trim().to_string()
+}
+
+fn or(a: String, b: &str) -> String {
+    if a.is_empty() {
+        b.to_string()
+    } else {
+        a
+    }
+}
+
+pub fn esc(t: &str) -> String {
+    let mut o = String::with_capacity(t.len());
+    for c in t.chars() {
+        match c {
+            '&' => o.push_str("&amp;"),
+            '<' => o.push_str("&lt;"),
+            '>' => o.push_str("&gt;"),
+            '"' => o.push_str("&quot;"),
+            '\'' => o.push_str("&#39;"),
+            _ => o.push(c),
+        }
+    }
+    o
+}
+
+fn clip(t: &str, max: usize) -> String {
+    let t = t.split_whitespace().collect::<Vec<_>>().join(" ");
+    if t.chars().count() <= max {
+        return t;
+    }
+    let mut o: String = t.chars().take(max - 1).collect();
+    o.push('…');
+    o
+}
+
+impl Seo {
+    pub fn new(registry: &Value, base: &str, lastmod: String) -> Self {
+        let mut cats = Vec::new();
+        for c in registry.get("categories").and_then(|v| v.as_array()).into_iter().flatten() {
+            let demos = c
+                .get("demos")
+                .and_then(|v| v.as_array())
+                .into_iter()
+                .flatten()
+                .map(|d| {
+                    let title = s(d, "title");
+                    let hint = s(d, "hint");
+                    let desc = s(d, "desc");
+                    Demo {
+                        slug: s(d, "slug"),
+                        title_en: or(s(d, "title_en"), &title),
+                        hint_en: or(s(d, "hint_en"), &hint),
+                        desc_en: or(s(d, "desc_en"), &desc),
+                        tag: s(d, "tag"),
+                        title,
+                        hint,
+                        desc,
+                    }
+                })
+                .filter(|d| !d.slug.is_empty())
+                .collect::<Vec<_>>();
+            let name = s(c, "name");
+            let intro = s(c, "intro");
+            cats.push(Cat {
+                key: s(c, "key"),
+                name_en: or(s(c, "name_en"), &name),
+                intro_en: or(s(c, "intro_en"), &intro),
+                tech: c
+                    .get("tech")
+                    .and_then(|v| v.as_array())
+                    .map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect())
+                    .unwrap_or_default(),
+                name,
+                intro,
+                demos,
+            });
+        }
+        let total = cats.iter().map(|c| c.demos.len()).sum();
+        let env = |k: &str| std::env::var(k).ok().map(|v| v.trim().to_string()).filter(|v| !v.is_empty());
+        let mut me = Seo {
+            base: base.trim_end_matches('/').to_string(),
+            cats,
+            total,
+            lastmod,
+            google_verify: env("GOOGLE_SITE_VERIFICATION"),
+            baidu_verify: env("BAIDU_SITE_VERIFICATION"),
+            robots: String::new(),
+            sitemap: String::new(),
+        };
+        me.robots = me.build_robots();
+        me.sitemap = me.build_sitemap();
+        me
+    }
+
+    pub fn resolve(&self, path: &str) -> Resolved<'_> {
+        let p = path.trim_end_matches('/');
+        if p.is_empty() || p == "/index.html" {
+            return Resolved::Page(Page::Home);
+        }
+        if p == "/threejs/trig-waves" {
+            return Resolved::Redirect("/math/trig-waves".into());
+        }
+        let parts: Vec<&str> = p.trim_start_matches('/').split('/').collect();
+        match parts.as_slice() {
+            [c] => match self.cats.iter().find(|x| x.key == *c) {
+                Some(cat) => Resolved::Page(Page::Category(cat)),
+                None => Resolved::NotFound,
+            },
+            [c, d] => match self.cats.iter().find(|x| x.key == *c) {
+                Some(cat) => match cat.demos.iter().position(|x| x.slug == *d) {
+                    Some(i) => Resolved::Page(Page::Demo(cat, i)),
+                    None => Resolved::NotFound,
+                },
+                None => Resolved::NotFound,
+            },
+            _ => Resolved::NotFound,
+        }
+    }
+
+    fn url(&self, path: &str, lang: Lang) -> String {
+        let p = if path.is_empty() { "/" } else { path };
+        match lang {
+            Lang::Zh => format!("{}{}", self.base, p),
+            Lang::En => format!("{}{}?lang=en", self.base, p),
+        }
+    }
+
+    fn href(path: &str, lang: Lang) -> String {
+        match lang {
+            Lang::Zh => path.to_string(),
+            Lang::En => format!("{path}?lang=en"),
+        }
+    }
+
+    fn cn(c: &Cat, l: Lang) -> &str {
+        if l == Lang::En { &c.name_en } else { &c.name }
+    }
+    fn ci(c: &Cat, l: Lang) -> &str {
+        if l == Lang::En { &c.intro_en } else { &c.intro }
+    }
+    fn dt(d: &Demo, l: Lang) -> &str {
+        if l == Lang::En { &d.title_en } else { &d.title }
+    }
+    fn dd(d: &Demo, l: Lang) -> &str {
+        if l == Lang::En { &d.desc_en } else { &d.desc }
+    }
+    fn dh(d: &Demo, l: Lang) -> &str {
+        if l == Lang::En { &d.hint_en } else { &d.hint }
+    }
+
+    fn page_path(page: &Page) -> String {
+        match page {
+            Page::Home => "/".into(),
+            Page::Category(c) => format!("/{}", c.key),
+            Page::Demo(c, i) => format!("/{}/{}", c.key, c.demos[*i].slug),
+        }
+    }
+
+    /// Title / description formulas — keep in sync with frontend/src/lib/seo.ts.
+    pub fn title(&self, page: &Page, l: Lang) -> String {
+        match (page, l) {
+            (Page::Home, Lang::Zh) => format!("{SITE_NAME_ZH} Clyune Component Gallery｜{} 个前端特效与交互组件在线演示", self.total),
+            (Page::Home, Lang::En) => format!("{SITE_NAME_EN} — {} Interactive Front-end Demos & Web Effects", self.total),
+            (Page::Category(c), Lang::Zh) => format!("{}在线演示（{} 个）｜{SITE_NAME_ZH} Clyune", c.name, c.demos.len()),
+            (Page::Category(c), Lang::En) => format!("{} Demos ({}) | {SITE_NAME_EN}", c.name_en, c.demos.len()),
+            (Page::Demo(c, i), Lang::Zh) => format!("{} - {}在线演示｜{SITE_NAME_ZH}", c.demos[*i].title, c.name),
+            (Page::Demo(c, i), Lang::En) => format!("{} – {} Interactive Demo | Clyune", c.demos[*i].title_en, c.name_en),
+        }
+    }
+
+    pub fn description(&self, page: &Page, l: Lang) -> String {
+        match page {
+            Page::Home => {
+                let names: Vec<&str> = self.cats.iter().take(12).map(|c| Self::cn(c, l)).collect();
+                match l {
+                    Lang::Zh => format!(
+                        "{SITE_NAME_ZH}（Clyune Component Gallery）：{} 个可交互的前端特效与组件 Demo，覆盖{}等 {} 个分类。每个 Demo 都有可调参数、实时数据读数和通俗的中文公式说明，MIT 开源。",
+                        self.total, names.join("、"), self.cats.len()
+                    ),
+                    Lang::En => format!(
+                        "{SITE_NAME_EN}: {} interactive front-end demos and web effects across {} categories — {}. Live parameters, real-time readouts and plain-language formulas. Open source (MIT).",
+                        self.total, self.cats.len(), names.join(", ")
+                    ),
+                }
+            }
+            Page::Category(c) => {
+                let ex: Vec<&str> = c.demos.iter().take(6).map(|d| Self::dt(d, l)).collect();
+                match l {
+                    Lang::Zh => clip(&format!("{}共 {} 个可交互 Demo：{}等。{}", c.name, c.demos.len(), ex.join("、"), c.intro), 160),
+                    Lang::En => clip(&format!("{} interactive {} demos: {} and more. {}", c.demos.len(), c.name_en, ex.join(", "), c.intro_en), 200),
+                }
+            }
+            Page::Demo(c, i) => {
+                let d = &c.demos[*i];
+                match l {
+                    Lang::Zh => {
+                        let hint = if d.hint.is_empty() || d.hint == d.desc { String::new() } else { format!("（{}）", d.hint) };
+                        clip(&format!("{}{}：{} 可拖动参数、实时查看数据读数与公式说明——{SITE_NAME_ZH}·{}在线演示。", d.title, hint, d.desc, c.name), 160)
+                    }
+                    Lang::En => {
+                        let hint = if d.hint_en.is_empty() || d.hint_en == d.desc_en { String::new() } else { format!(" ({})", d.hint_en) };
+                        clip(&format!("{}{}: {} Tweak live parameters and see real-time readouts and formulas — an interactive {} demo from {SITE_NAME_EN}.", d.title_en, hint, d.desc_en, c.name_en), 220)
+                    }
+                }
+            }
+        }
+    }
+
+    fn json_ld(&self, page: &Page, l: Lang) -> Value {
+        let in_lang = if l == Lang::En { "en" } else { "zh-CN" };
+        let home = self.url("/", l);
+        let website_id = format!("{}/#website", self.base);
+        let org_id = format!("{}/#organization", self.base);
+        let path = Self::page_path(page);
+        let url = self.url(&path, l);
+        let crumb = |items: Vec<(String, String)>| {
+            json!({
+                "@type": "BreadcrumbList",
+                "itemListElement": items.iter().enumerate().map(|(i, (n, u))| json!({
+                    "@type": "ListItem", "position": i + 1, "name": n, "item": u
+                })).collect::<Vec<_>>()
+            })
+        };
+        let home_name = if l == Lang::En { "Home" } else { "首页" };
+        let mut graph = vec![];
+        match page {
+            Page::Home => {
+                graph.push(json!({
+                    "@type": "WebSite", "@id": website_id, "url": home,
+                    "name": if l == Lang::En { SITE_NAME_EN } else { SITE_NAME_ZH },
+                    "alternateName": [SITE_NAME_EN, SITE_NAME_ZH, "Clyune Component"],
+                    "description": self.description(page, l),
+                    "inLanguage": ["zh-CN", "en"],
+                    "publisher": { "@id": org_id }
+                }));
+                graph.push(json!({
+                    "@type": "Organization", "@id": org_id,
+                    "name": "云澜 Clyune", "alternateName": "Clyune",
+                    "url": format!("{}/", self.base),
+                    "logo": format!("{}/icon-512.png", self.base),
+                    "sameAs": [REPO_URL]
+                }));
+                graph.push(json!({
+                    "@type": "CollectionPage", "@id": format!("{url}#page"), "url": url,
+                    "name": self.title(page, l), "inLanguage": in_lang, "isPartOf": { "@id": website_id },
+                    "mainEntity": {
+                        "@type": "ItemList", "numberOfItems": self.cats.len(),
+                        "itemListElement": self.cats.iter().enumerate().map(|(i, c)| json!({
+                            "@type": "ListItem", "position": i + 1, "name": Self::cn(c, l),
+                            "url": self.url(&format!("/{}", c.key), l)
+                        })).collect::<Vec<_>>()
+                    }
+                }));
+            }
+            Page::Category(c) => {
+                graph.push(json!({
+                    "@type": "CollectionPage", "@id": format!("{url}#page"), "url": url,
+                    "name": self.title(page, l), "description": self.description(page, l),
+                    "inLanguage": in_lang, "isPartOf": { "@id": website_id },
+                    "mainEntity": {
+                        "@type": "ItemList", "numberOfItems": c.demos.len(),
+                        "itemListElement": c.demos.iter().enumerate().map(|(i, d)| json!({
+                            "@type": "ListItem", "position": i + 1, "name": Self::dt(d, l),
+                            "url": self.url(&format!("/{}/{}", c.key, d.slug), l)
+                        })).collect::<Vec<_>>()
+                    }
+                }));
+                graph.push(crumb(vec![(home_name.into(), home.clone()), (Self::cn(c, l).into(), url.clone())]));
+            }
+            Page::Demo(c, i) => {
+                let d = &c.demos[*i];
+                let mut kw: Vec<String> = vec![Self::cn(c, l).to_string()];
+                if !d.tag.is_empty() {
+                    kw.push(d.tag.clone());
+                }
+                kw.extend(c.tech.iter().cloned());
+                graph.push(json!({
+                    "@type": "CreativeWork", "@id": format!("{url}#demo"), "url": url,
+                    "name": Self::dt(d, l), "alternateName": if l == Lang::En { &d.title } else { &d.title_en },
+                    "description": self.description(page, l), "inLanguage": in_lang,
+                    "genre": Self::cn(c, l), "keywords": kw.join(", "),
+                    "isAccessibleForFree": true, "license": "https://opensource.org/licenses/MIT",
+                    "image": format!("{}/icon-512.png", self.base),
+                    "isPartOf": { "@id": website_id }, "publisher": { "@id": org_id }
+                }));
+                let cat_path = format!("/{}", c.key);
+                graph.push(crumb(vec![
+                    (home_name.into(), home.clone()),
+                    (Self::cn(c, l).into(), self.url(&cat_path, l)),
+                    (Self::dt(d, l).into(), url.clone()),
+                ]));
+            }
+        }
+        json!({ "@context": "https://schema.org", "@graph": graph })
+    }
+
+    pub fn head(&self, page: &Page, l: Lang) -> String {
+        let path = Self::page_path(page);
+        let title = self.title(page, l);
+        let desc = self.description(page, l);
+        let canon = self.url(&path, l);
+        let img = format!("{}/icon-512.png", self.base);
+        let mut h = String::new();
+        let _ = writeln!(h, "<title>{}</title>", esc(&title));
+        let _ = writeln!(h, "    <meta name=\"description\" content=\"{}\" data-seo />", esc(&desc));
+        if matches!(page, Page::Home) {
+            let kw = match l {
+                Lang::Zh => "前端特效,组件库,Three.js,WebGL,Canvas,CSS动画,数据可视化,在线演示,云澜",
+                Lang::En => "front-end effects,component gallery,Three.js,WebGL,Canvas,CSS animation,data visualization,interactive demos",
+            };
+            let _ = writeln!(h, "    <meta name=\"keywords\" content=\"{kw}\" data-seo />");
+        }
+        let _ = writeln!(h, "    <meta name=\"robots\" content=\"index,follow,max-image-preview:large\" data-seo />");
+        let _ = writeln!(h, "    <link rel=\"canonical\" href=\"{}\" data-seo />", esc(&canon));
+        let _ = writeln!(h, "    <link rel=\"alternate\" hreflang=\"zh-CN\" href=\"{}\" data-seo />", esc(&self.url(&path, Lang::Zh)));
+        let _ = writeln!(h, "    <link rel=\"alternate\" hreflang=\"en\" href=\"{}\" data-seo />", esc(&self.url(&path, Lang::En)));
+        let _ = writeln!(h, "    <link rel=\"alternate\" hreflang=\"x-default\" href=\"{}\" data-seo />", esc(&self.url(&path, Lang::Zh)));
+        let og_type = if matches!(page, Page::Home) { "website" } else { "article" };
+        let (loc, alt) = if l == Lang::En { ("en_US", "zh_CN") } else { ("zh_CN", "en_US") };
+        let site = if l == Lang::En { SITE_NAME_EN } else { "云澜组件库 Clyune Component Gallery" };
+        for (k, v) in [
+            ("og:type", og_type),
+            ("og:site_name", site),
+            ("og:title", title.as_str()),
+            ("og:description", desc.as_str()),
+            ("og:url", canon.as_str()),
+            ("og:image", img.as_str()),
+            ("og:image:width", "512"),
+            ("og:image:height", "512"),
+            ("og:image:alt", "云澜 Clyune logo"),
+            ("og:locale", loc),
+            ("og:locale:alternate", alt),
+        ] {
+            let _ = writeln!(h, "    <meta property=\"{k}\" content=\"{}\" data-seo />", esc(v));
+        }
+        for (k, v) in [
+            ("twitter:card", "summary"),
+            ("twitter:title", title.as_str()),
+            ("twitter:description", desc.as_str()),
+            ("twitter:image", img.as_str()),
+        ] {
+            let _ = writeln!(h, "    <meta name=\"{k}\" content=\"{}\" data-seo />", esc(v));
+        }
+        if let Some(v) = &self.google_verify {
+            let _ = writeln!(h, "    <meta name=\"google-site-verification\" content=\"{}\" />", esc(v));
+        }
+        if let Some(v) = &self.baidu_verify {
+            let _ = writeln!(h, "    <meta name=\"baidu-site-verification\" content=\"{}\" />", esc(v));
+        }
+        let ld = serde_json::to_string(&self.json_ld(page, l)).unwrap_or_default().replace("</", "<\\/");
+        let _ = write!(h, "    <script type=\"application/ld+json\" data-seo>{ld}</script>");
+        h
+    }
+
+    /// Static, crawlable snapshot of the page (replaced by React on mount).
+    pub fn body(&self, page: &Page, l: Lang) -> String {
+        let en = l == Lang::En;
+        let mut b = String::new();
+        let home_label = if en { "Home" } else { "首页" };
+        b.push_str("<div id=\"ssr\" class=\"ssr\">");
+        let _ = write!(
+            b,
+            "<header class=\"ssr-head\"><a href=\"{}\"><img src=\"/logo.svg\" alt=\"云澜 Clyune\" width=\"28\" height=\"28\" /> {}</a> · <a href=\"{}\" hreflang=\"{}\">{}</a></header>",
+            Self::href("/", l),
+            if en { SITE_NAME_EN } else { "云澜组件库 Clyune Component Gallery" },
+            esc(&match page {
+                Page::Home => Self::href("/", if en { Lang::Zh } else { Lang::En }),
+                _ => Self::href(&Self::page_path(page), if en { Lang::Zh } else { Lang::En }),
+            }),
+            if en { "zh-CN" } else { "en" },
+            if en { "中文" } else { "English" }
+        );
+        b.push_str("<main>");
+        match page {
+            Page::Home => {
+                let _ = write!(b, "<h1>{}</h1><p>{}</p>", if en { SITE_NAME_EN } else { "云澜组件库 · Clyune Component Gallery" }, esc(&self.description(page, l)));
+                b.push_str("<nav aria-label=\"categories\">");
+                for c in &self.cats {
+                    let _ = write!(b, "<section><h2><a href=\"{}\">{}</a></h2><p>{}</p><ul>", esc(&Self::href(&format!("/{}", c.key), l)), esc(Self::cn(c, l)), esc(Self::ci(c, l)));
+                    for d in &c.demos {
+                        let _ = write!(b, "<li><a href=\"{}\">{}</a></li>", esc(&Self::href(&format!("/{}/{}", c.key, d.slug), l)), esc(Self::dt(d, l)));
+                    }
+                    b.push_str("</ul></section>");
+                }
+                b.push_str("</nav>");
+            }
+            Page::Category(c) => {
+                let _ = write!(b, "<nav aria-label=\"breadcrumb\"><a href=\"{}\">{home_label}</a> / {}</nav>", Self::href("/", l), esc(Self::cn(c, l)));
+                let _ = write!(b, "<h1>{}</h1><p>{}</p><p>{}: {}</p><ul>", esc(Self::cn(c, l)), esc(Self::ci(c, l)), if en { "Tech" } else { "技术栈" }, esc(&c.tech.join(", ")));
+                for d in &c.demos {
+                    let desc = if Self::dd(d, l).is_empty() { Self::dh(d, l) } else { Self::dd(d, l) };
+                    let _ = write!(b, "<li><a href=\"{}\">{}</a> — {}</li>", esc(&Self::href(&format!("/{}/{}", c.key, d.slug), l)), esc(Self::dt(d, l)), esc(desc));
+                }
+                b.push_str("</ul>");
+                self.cat_nav(&mut b, l);
+            }
+            Page::Demo(c, i) => {
+                let d = &c.demos[*i];
+                let cp = format!("/{}", c.key);
+                let _ = write!(b, "<nav aria-label=\"breadcrumb\"><a href=\"{}\">{home_label}</a> / <a href=\"{}\">{}</a> / {}</nav>", Self::href("/", l), esc(&Self::href(&cp, l)), esc(Self::cn(c, l)), esc(Self::dt(d, l)));
+                let _ = write!(b, "<article><h1>{}</h1>", esc(Self::dt(d, l)));
+                if !Self::dh(d, l).is_empty() {
+                    let _ = write!(b, "<p><strong>{}</strong></p>", esc(Self::dh(d, l)));
+                }
+                let _ = write!(b, "<p>{}</p>", esc(Self::dd(d, l)));
+                let _ = write!(
+                    b,
+                    "<p>{}</p></article>",
+                    if en { "Interactive demo: open this page in a JavaScript-enabled browser to drag the parameters and watch the live readouts." } else { "交互演示：在支持 JavaScript 的浏览器中打开本页，即可拖动参数并查看实时数据读数。" }
+                );
+                let _ = write!(b, "<h2>{}</h2><ul>", if en { format!("More {} demos", c.name_en) } else { format!("更多{}演示", c.name) });
+                for (j, o) in c.demos.iter().enumerate() {
+                    if j == *i {
+                        continue;
+                    }
+                    let _ = write!(b, "<li><a href=\"{}\">{}</a></li>", esc(&Self::href(&format!("/{}/{}", c.key, o.slug), l)), esc(Self::dt(o, l)));
+                }
+                b.push_str("</ul>");
+                self.cat_nav(&mut b, l);
+            }
+        }
+        let _ = write!(b, "</main><footer class=\"ssr-foot\"><a href=\"{REPO_URL}\" rel=\"noopener\">GitHub</a> · MIT</footer></div>");
+        b
+    }
+
+    fn cat_nav(&self, b: &mut String, l: Lang) {
+        let _ = write!(b, "<nav aria-label=\"categories\"><h2>{}</h2><ul>", if l == Lang::En { "All categories" } else { "全部分类" });
+        for c in &self.cats {
+            let _ = write!(b, "<li><a href=\"{}\">{}</a></li>", esc(&Self::href(&format!("/{}", c.key), l)), esc(Self::cn(c, l)));
+        }
+        b.push_str("</ul></nav>");
+    }
+
+    /// Fill index.html template markers for a page.
+    pub fn render(&self, template: &str, page: &Page, l: Lang) -> String {
+        let head = self.head(page, l);
+        let mut out = replace_between(template, "<!--seo:begin-->", "<!--seo:end-->", &head);
+        if l == Lang::En {
+            out = out.replacen("<html lang=\"zh-CN\">", "<html lang=\"en\">", 1);
+        }
+        out.replacen("<!--seo:body-->", &self.body(page, l), 1)
+    }
+
+    /// 404 page: same shell, noindex.
+    pub fn render_404(&self, template: &str, l: Lang) -> String {
+        let t = if l == Lang::En { "Page not found | Clyune Component Gallery" } else { "页面不存在｜云澜组件库" };
+        let head = format!("<title>{t}</title>\n    <meta name=\"robots\" content=\"noindex,follow\" />");
+        let mut out = replace_between(template, "<!--seo:begin-->", "<!--seo:end-->", &head);
+        if l == Lang::En {
+            out = out.replacen("<html lang=\"zh-CN\">", "<html lang=\"en\">", 1);
+        }
+        let mut b = String::from("<div id=\"ssr\" class=\"ssr\"><main><h1>404</h1><p>");
+        b.push_str(if l == Lang::En { "Page not found. " } else { "未找到该页面。" });
+        let _ = write!(b, "<a href=\"{}\">{}</a></p>", Self::href("/", l), if l == Lang::En { "Back to home" } else { "返回首页" });
+        self.cat_nav(&mut b, l);
+        b.push_str("</main></div>");
+        out.replacen("<!--seo:body-->", &b, 1)
+    }
+
+    fn build_robots(&self) -> String {
+        format!(
+            "# {SITE_NAME_EN} — https://component.clyune.com\nUser-agent: *\nAllow: /\nDisallow: /api/\n\nUser-agent: Baiduspider\nAllow: /\nDisallow: /api/\n\nSitemap: {}/sitemap.xml\n",
+            self.base
+        )
+    }
+
+    fn build_sitemap(&self) -> String {
+        let mut paths: Vec<(String, &str, &str)> = vec![("/".into(), "daily", "1.0")];
+        for c in &self.cats {
+            paths.push((format!("/{}", c.key), "weekly", "0.8"));
+        }
+        for c in &self.cats {
+            for d in &c.demos {
+                paths.push((format!("/{}/{}", c.key, d.slug), "monthly", "0.6"));
+            }
+        }
+        let mut x = String::from("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">\n");
+        for (p, freq, pri) in &paths {
+            let zh = esc(&self.url(p, Lang::Zh));
+            let en = esc(&self.url(p, Lang::En));
+            for (loc, pri) in [(&zh, *pri), (&en, if *pri == "1.0" { "0.9" } else { "0.5" })] {
+                let _ = write!(
+                    x,
+                    "  <url><loc>{loc}</loc><lastmod>{}</lastmod><changefreq>{freq}</changefreq><priority>{pri}</priority><xhtml:link rel=\"alternate\" hreflang=\"zh-CN\" href=\"{zh}\"/><xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{en}\"/><xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{zh}\"/></url>\n",
+                    self.lastmod
+                );
+            }
+        }
+        x.push_str("</urlset>\n");
+        x
+    }
+
+    /// Plain list of zh URLs (one per line) — handy for 百度「普通收录」API / manual push.
+    pub fn url_list(&self) -> String {
+        let mut o = format!("{}/\n", self.base);
+        for c in &self.cats {
+            let _ = writeln!(o, "{}/{}", self.base, c.key);
+        }
+        for c in &self.cats {
+            for d in &c.demos {
+                let _ = writeln!(o, "{}/{}/{}", self.base, c.key, d.slug);
+            }
+        }
+        o
+    }
+}
+
+fn replace_between(src: &str, a: &str, b: &str, with: &str) -> String {
+    match (src.find(a), src.find(b)) {
+        (Some(i), Some(j)) if j > i => format!("{}{}{}", &src[..i], with, &src[j + b.len()..]),
+        _ => src.to_string(),
+    }
+}
+
+pub fn lang_from_query(q: Option<&str>) -> Lang {
+    let q = q.unwrap_or("");
+    for kv in q.split('&') {
+        let mut it = kv.splitn(2, '=');
+        if it.next() == Some("lang") {
+            let v = it.next().unwrap_or("").to_ascii_lowercase();
+            if v.starts_with("en") {
+                return Lang::En;
+            }
+        }
+    }
+    Lang::Zh
+}
