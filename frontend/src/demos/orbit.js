@@ -36,14 +36,14 @@ export async function mountOrbit(host, opts = {}) {
   renderer.shadowMap.enabled = true;
   const hemi = new THREE.HemisphereLight(0x9bb7ff, 0x223344, 0.6);
   const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(5, 8, 3); key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
+  key.shadow.mapSize.set(512, 512); key.shadow.radius = 3;
   const fill = new THREE.PointLight(0x22d3ee, 1.2, 20, 1); fill.position.set(-3, 2, 2);
   scene.add(hemi, key, fill);
   const floor = new THREE.Mesh(new THREE.CircleGeometry(6, 64), new THREE.MeshStandardMaterial({ color: 0x151d33, metalness: 0.2, roughness: 0.9 }));
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
-  const ball = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), new THREE.MeshStandardMaterial({ color: 0xf0f4ff, metalness: 0.85, roughness: 0.2 }));
+  const ball = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), new THREE.MeshStandardMaterial({ color: 0xf0f4ff, metalness: 0.85, roughness: 0.2 }));
   ball.position.y = 1; ball.castShadow = true; scene.add(ball);
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.08, 16, 100), new THREE.MeshStandardMaterial({ color: 0x818cf8, emissive: 0x312e81, metalness: 0.4, roughness: 0.3 }));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.6, 0.08, 12, 72), new THREE.MeshStandardMaterial({ color: 0x818cf8, emissive: 0x312e81, metalness: 0.4, roughness: 0.3 }));
   ring.rotation.x = Math.PI / 2.4; ring.position.y = 1; ring.castShadow = true; scene.add(ring);
   let phi = 0;
   S.onFrame(({ dt, C }) => {

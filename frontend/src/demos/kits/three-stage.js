@@ -108,7 +108,7 @@ export function createThreeStage(host, opts = {}, {
         warm.push(dtw);
         if (warm.length === 24) {
           const med = [...warm].sort((a, b) => a - b)[12];
-          const target = med > 0.034 ? Math.max(0.5, Math.min(1, 0.03 / med)) : 1;
+          const target = med > 0.034 ? Math.max(0.4, Math.min(1, 0.028 / med)) : 1;
           if (target < 0.95) { dprScale = target; renderer.setPixelRatio(maxDpr(2) * dprScale); renderer.setSize(W, H, false); }
         }
       } else {
