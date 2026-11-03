@@ -1,9 +1,12 @@
 // Mobile overlap audit: no toolbar / search / button / panel may intersect the demo stage.
 // [BASE=..] [CAT=a,b] [ONLY=slug] [SHOTS=dir] node overlap-audit.mjs
+// MODE=shell [SHOTS=dir] node overlap-audit.mjs   (app shell: header/search/menu/cards, 4 mobile viewports)
 import { auditCats, registryCats } from './audit-cats.mjs';
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 const BASE = process.env.BASE || 'http://127.0.0.1:4179';
+// MODE=shell -> app-shell audit (home/search/category/demo/menu at 390x844, 375x667, 360x740, landscape 844x390)
+if (process.env.MODE === 'shell') { const { runShellAudit } = await import('./shell-audit.mjs'); const n = await runShellAudit(BASE, process.env.SHOTS); process.exit(n ? 1 : 0); }
 const VPS = [[390, 844, '390'], [375, 667, '375']];
 const cats = process.env.CAT ? auditCats({}) : registryCats();
 const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
