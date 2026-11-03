@@ -267,7 +267,7 @@ FAM['spring'] = {
       const style = clamp(Math.round(num(C.count, 0)), 0, 7), sz = num(C.size, 1), spd = num(C.speed, 0.9), boost = num(C.boost, 1);
       const names = ['弹入','弹出','过冲缩放','橡皮筋','沉降回弹','左右晃回','旋转过冲','连环弹跳'];
       const cx = W / 2, cy = H / 2; const ph = t * spd * 2.2;
-      const damp = Math.exp(-0.35 * (ph % 6)); const osc = Math.sin(ph * 3) * damp * boost;
+      const damp = 0.35 + 0.65 * Math.exp(-0.35 * (ph % 6)); const osc = Math.sin(ph * 3) * damp * boost;
       let dx = 0, dy = 0, sc = 1, rot = 0;
       if (style === 0 || style === 1) sc = 0.7 + 0.3 * (1 - damp) + osc * 0.08;
       if (style === 2) sc = 1 + osc * 0.25;
@@ -861,7 +861,7 @@ FAM['liquid'] = {
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), visc = num(C.visc, 1);
       const names = ['按钮变形','blob 边','水滴菜单','果冻点击','波浪底边','粘滞切换'];
       const cx = W / 2, cy = H / 2; const over = Math.hypot(P.x - cx, P.y - cy) < Math.min(W, H) * 0.3;
-      const morph = (over ? 1 : 0.35) * (0.7 + 0.3 * Math.sin(t * spd * 2 / visc));
+      const morph = (over ? 1 : 0.35) * (0.55 + 0.45 * Math.sin(t * spd * 2 / Math.max(0.25, visc))) * (0.75 + 0.35 / Math.max(0.35, visc));
       ctx.fillStyle = C.color || '#818cf8';
       ctx.beginPath();
       const R = Math.min(W, H) * 0.22 * sz;
