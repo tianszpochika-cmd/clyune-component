@@ -31,6 +31,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
   const [slow, setSlow] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [hide, setHide] = useState(false);
+  const [mods, setMods] = useState(0);
 
   useEffect(() => {
     const el = hostRef.current;
@@ -41,6 +42,10 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     el.innerHTML = '';
     resetProgress();
     const off = onProgress((s: { loaded: number; total: number }) => { if (!cancelled && s.loaded) setBytes({ loaded: s.loaded, total: s.total }); });
+    // per-asset count: JS/wasm/font/audio resources finished since mount (lazy chunks can't be byte-streamed)
+    let nMods = 0; setMods(0);
+    let po: PerformanceObserver | null = null;
+    try { po = new PerformanceObserver((l) => { for (const e of l.getEntries()) if (/\.(m?js|wasm|woff2?|mp3|ogg|json)(\?|$)/.test(e.name)) nMods++; if (!cancelled) setMods(nMods); }); po.observe({ type: 'resource', buffered: false }); } catch (_) { /* unsupported */ }
     const slowT = setTimeout(() => { if (!cancelled) setSlow(true); }, SLOW_MS);
     const failT = setTimeout(() => { if (!cancelled) { setError('加载超时（网络较慢或 CDN 不可用）'); setPhase('error'); } }, TIMEOUT_MS);
     // staged indeterminate progress: eases toward a phase ceiling; real CDN bytes override when known
@@ -67,7 +72,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     })();
 
     return () => {
-      cancelled = true; off(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
+      cancelled = true; off(); po?.disconnect(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
       try { if (typeof disposer === 'function') disposer(); } catch (err) { console.warn(err); }
       el.innerHTML = '';
     };
@@ -85,6 +90,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
           <div className="sl-bar" aria-hidden><i style={{ width: `${Math.round(shown)}%` }} /></div>
           <div className="sl-meta">
             <span>{Math.round(shown)}%</span>
+            {mods ? <span>{mods} 个模块</span> : null}
             {bytes ? <span>{kb(bytes.loaded)}{bytes.total ? ` / ${kb(bytes.total)}` : ''}</span> : null}
           </div>
           {slow && <div className="sl-slow">网络较慢，仍在加载…</div>}
