@@ -142,7 +142,9 @@ function scFam(d) {
       return ({ ctx, W, H, t, C, P }) => {
         S.clear();
         ctx.fillStyle = '#060a14'; ctx.fillRect(0, 8, W, H);
-        const col = C.color || '#818cf8', tt = t * num(C.speed, 0.9), vh = H - 12;
+        // accumulate scaled time so changing the speed knob never teleports the scroll position
+        const dtt = st.lt == null ? 0 : Math.min(0.1, Math.max(0, t - st.lt)); st.lt = t; st.tt = (st.tt || 0) + dtt * num(C.speed, 0.9);
+        const col = C.color || '#818cf8', tt = st.tt, vh = H - 12;
         const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), x: exVal(C), col, hue: hueOf(col), cx: W / 2, cy: (H + 8) / 2, vh, sp: 0.5 - 0.5 * Math.cos((TAU * tt) / 14) };
         k.sy = (pageH) => k.sp * Math.max(0, pageH - vh);
         ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip(); ctx.translate(0, Math.sin(tt * 1.7) * 2.5);
