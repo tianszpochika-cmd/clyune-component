@@ -139,11 +139,11 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
       const k = P.user ? 1 - Math.exp(-dtw * 3) : 1;
       P.x += (ax - P.x) * k; P.y += (ay - P.y) * k;
       if (P.user && Math.hypot(ax - P.x, ay - P.y) < 2) P.user = false;
-    } else if (!P.user && !P.down && P.x === 0 && P.y === 0 && W && H) {
-      // park at stage center when auto-demo is off so demos don't treat (0,0) as a hover
-      P.x = W * 0.5; P.y = H * 0.5; P.px = P.x; P.py = P.y;
+    } else if (!P.user && !P.down && !isAutoDemo()) {
+      // off-stage rest: no synthetic hover/hit when 「自动演示」 is off
+      P.x = -1e3; P.y = -1e3; P.px = P.x; P.py = P.y; P.vx = 0; P.vy = 0;
     }
-    P.x = clamp(P.x, 0, W); P.y = clamp(P.y, 0, H);
+    if (P.user || P.down || isAutoDemo()) { P.x = clamp(P.x, 0, W); P.y = clamp(P.y, 0, H); }
     if (dtw > 0) { P.vx = (P.x - P.px) / dtw; P.vy = (P.y - P.py) / dtw; }
     P.px = P.x; P.py = P.y;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -157,7 +157,7 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
     info.update(v, {
       ix: `${Math.round(P.x)},${Math.round(P.y)},${P.down ? 1 : 0}|${ix}`,
       handle: `${Math.round(hx)},${Math.round(hy)}`,
-      ctl: [[P.user ? '指针 (x, y)' : '自动指针 (x, y)', `${Math.round(P.x)}, ${Math.round(P.y)}${P.down ? ' · 按下' : ''}`]],
+      ctl: [[P.user ? '指针 (x, y)' : '自动指针 (x, y)', (P.user || isAutoDemo()) ? `${Math.round(P.x)}, ${Math.round(P.y)}${P.down ? ' · 按下' : ''}` : '关（真实指针）']],
     });
   };
   raf = requestAnimationFrame(tick);
