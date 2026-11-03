@@ -164,10 +164,13 @@ const mkAudio = () => {
 };
 /** schedule drum hits whose onset crossed into (t0, t1] */
 const playHits = (A, hits, t0, t1) => { if (!A.on || !(t1 > t0) || t1 - t0 > 0.25) return; for (const h of hits) if (h.t0 > t0 && h.t0 <= t1) A.hit(h.k, h.a ?? 1); };
-const spkRect = (W, H) => { const fs = fsz(W, H); const w = fs * 4.6, h = fs * 1.9; return { x: W - w - fs * 0.5, y: fs * 0.5, w, h }; };
+let _mc = null;
+const measure = (s, size) => { _mc ??= document.createElement('canvas').getContext('2d'); _mc.font = `600 ${size}px ui-sans-serif,system-ui,"PingFang SC","Microsoft YaHei",sans-serif`; return _mc.measureText(s).width; };
+/** pill sized to its widest label (icon + gap + text + right padding) so text never spills past the border */
+const spkRect = (W, H, label = '声音') => { const fs = fsz(W, H), h = fs * 1.9; const tw = Math.max(measure(`${label} 开`, fs * 0.9), measure(`${label} 关`, fs * 0.9)); const w = Math.ceil(h * 1.05 + tw + h * 0.5); return { x: W - w - fs * 0.5, y: fs * 0.5, w, h }; };
 const inRect = (P, r) => P.x >= r.x && P.x <= r.x + r.w && P.y >= r.y && P.y <= r.y + r.h;
 const drawSpk = (ctx, W, H, A, C, label) => {
-  const r = spkRect(W, H), fs = fsz(W, H), lit = A.on || A.mic;
+  const r = spkRect(W, H, label ? label.replace(/ [开关]$/, '') : '声音'), fs = fsz(W, H), lit = A.on || A.mic;
   ctx.fillStyle = lit ? rgba(C.color, 0.9) : 'rgba(15,23,42,.85)'; rrect(ctx, r.x, r.y, r.w, r.h, r.h / 2); ctx.fill();
   ctx.strokeStyle = lit ? 'rgba(255,255,255,.7)' : 'rgba(148,163,184,.45)'; ctx.lineWidth = 1; ctx.stroke();
   const cx = r.x + r.h * 0.55, cy = r.y + r.h / 2, s = r.h * 0.22;
@@ -872,7 +875,7 @@ function mountFamily(fam, host, opts) {
   const F0 = FAM[fam];
   const S = createCanvasStage(host, opts, { doc: F0.doc, spec: F0.spec, bg: '#060a14', auto: true, cursor: F0.cursor || 'crosshair' });
   const Au = mkAudio();
-  S.onDown((P) => { P.uiHit = inRect(P, spkRect(S.W, S.H)); P.ui = false; if (P.uiHit && !F0.label) { P.ui = true; Au.toggle(); } });
+  S.onDown((P) => { P.uiHit = inRect(P, spkRect(S.W, S.H, F0.label || '声音')); P.ui = false; if (P.uiHit && !F0.label) { P.ui = true; Au.toggle(); } });
   const step = F0.build(S, Au);
   S.onFrame(step);
   S.onFrame(({ ctx, W, H, C }) => { drawSpk(ctx, W, H, Au, C, F0.label ? `${F0.label} ${Au.mic ? '开' : '关'}` : null); return { snd: Au.on ? '开' : '关' }; });
