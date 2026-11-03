@@ -1378,7 +1378,8 @@ function drawShortest(ctx, w, h, tint, tt, sz, n, style, ix) {
     ctx.fillText(String.fromCharCode(65 + i), p[0], p[1] + 4);
   });
   const sel = ix.nodeSet ? ix.node : path[progress];
-  OUT = { ...OUT, progress, path, sel, dist, onPath: path.includes(sel) };
+  const pct = Math.round((Number.isFinite(ix.sc) ? ix.sc : progress / Math.max(1, path.length - 1)) * 100);
+  OUT = { ...OUT, progress, path, sel, dist, onPath: path.includes(sel), pct };
   OUT._pts.sel = nodes[sel];
   caption(ctx, `进度 ${progress} · 点击节点 / 速度推进`, 16, h - 16);
 }

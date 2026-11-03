@@ -284,7 +284,7 @@ export const MATH_DOCS = {
     tip: '点击节点或左右拖动沿路径推进',
     rows: (v) => {
       const L = (i) => String.fromCharCode(65 + i);
-      return [['选中节点', L(v.sel), 'sel'], ['d(A→选中)', fmt(v.dist?.[v.sel], 0)], ['在最短路上', v.onPath ? '是' : '否'], ['路径进度', `${v.progress}/${(v.path?.length || 1) - 1}`],
+      return [['选中节点', L(v.sel), 'sel'], ['d(A→选中)', fmt(v.dist?.[v.sel], 0)], ['在最短路上', v.onPath ? '是' : '否'], ['路径进度', `${v.progress}/${(v.path?.length || 1) - 1}`], ['拖动推进', `${v.pct ?? 0}%`],
         ['A→G 最短', (v.path || []).map(L).join('→')], ['总长', fmt(v.dist?.[6], 0)]];
     },
     formula: F('d[v] = min(d[v], d[u] + w(u,v))') + F('每次取未确定的最小 d[u] 扩展'),
