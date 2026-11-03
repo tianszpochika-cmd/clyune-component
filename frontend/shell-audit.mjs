@@ -83,10 +83,12 @@ export async function runShellAudit(BASE, SHOTS) {
   for (const [c, l] of Object.entries(cats)) { pages.push([`/${c}`, 'cat']); if (l[0]) pages.push([`/${c}/${l[0]}`, 'demo']); }
   pages.push([`/${Object.keys(cats)[0]}/${Object.values(cats)[0][0]}`, 'menu']);
   const browser = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-webgl', '--ignore-gpu-blocklist'] });
-  const queue = pages.flatMap((p) => SHELL_VPS.filter((v) => !(p[1] === 'menu' && v[0] >= 900)).map((v) => [...p, v])); const res = [];
+  const vps = process.env.VPS ? SHELL_VPS.filter((v) => process.env.VPS.split(',').includes(v[2])) : SHELL_VPS;
+  const queue = pages.flatMap((p) => vps.filter((v) => !(p[1] === 'menu' && v[0] >= 900)).map((v) => [...p, v])); const res = [];
   const one = async ([path, kind, [w, h, tag]]) => {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: w < 900, hasTouch: w < 900, deviceScaleFactor: 1 });
     await enableAutoDemo(ctx);
+    if (process.env.UILANG) await ctx.addInitScript((l) => { try { localStorage.setItem('cc-lang', l); } catch (_) {} }, process.env.UILANG);
     const p = await ctx.newPage(); const fails = [];
     try {
       await p.goto(BASE + path, { waitUntil: 'domcontentloaded' });

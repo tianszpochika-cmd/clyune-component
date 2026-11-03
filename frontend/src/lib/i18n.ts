@@ -26,6 +26,22 @@ let lang: Lang = detect();
 let dict: Record<string, string> | null = null;
 let dictP: Promise<void> | null = null;
 const cache = new Map<string, string>();
+/* Context overrides: the same zh word means different things per demo (水 = Water in a palette, Mercury in the solar system).
+   ctx.json maps a route ('/threejs/solar-system') or category ('/threejs/') to { zh: en }; checked before the global dict. */
+let ctxAll: Record<string, Record<string, string>> | null = null;
+let scope: Record<string, string> | null = null;
+let scopePath = '';
+function buildScope() {
+  if (!ctxAll || !scopePath) { scope = null; return; }
+  const cat = '/' + (scopePath.split('/')[1] || '') + '/';
+  const a = ctxAll[cat], b = ctxAll[scopePath];
+  scope = a || b ? { ...(a || {}), ...(b || {}) } : null;
+}
+/** Set the active demo route for context-aware translation. */
+export function setTxScope(path: string) {
+  if (path === scopePath) return;
+  scopePath = path; buildScope(); cache.clear();
+}
 
 export const getLang = () => lang;
 export function setLang(l: Lang) {
@@ -42,10 +58,12 @@ export function onLangChange(fn: (l: Lang) => void) {
   window.addEventListener(EVT, h);
   return () => window.removeEventListener(EVT, h);
 }
+/* Re-render on every cc-lang event, including the one fired when the en dictionary finishes loading
+   (lang itself is unchanged then, so a plain useState(lang) would bail out and leave Chinese on screen). */
 export function useLang(): Lang {
-  const [l, set] = useState(lang);
-  useEffect(() => onLangChange(set), []);
-  return l;
+  const [, bump] = useState(0);
+  useEffect(() => onLangChange(() => bump((n) => n + 1)), []);
+  return lang;
 }
 /** Pick zh/en literal. */
 export const tr = (zh: string, en: string) => (lang === 'en' ? en : zh);
@@ -64,29 +82,72 @@ function applyDocLang() { try { document.documentElement.lang = lang === 'en' ? 
 
 export function loadDict(): Promise<void> {
   if (dict) return Promise.resolve();
-  if (!dictP) dictP = import('../i18n/en.json').then((m) => { dict = (m.default || m) as Record<string, string>; cache.clear(); }).catch(() => { dict = {}; });
+  if (!dictP) dictP = Promise.all([import('../i18n/en.json'), import('../i18n/ctx.json')]).then(([m, c]) => {
+    dict = (m.default || m) as Record<string, string>;
+    ctxAll = (c.default || c) as Record<string, Record<string, string>>;
+    buildScope(); cache.clear();
+  }).catch(() => { dict = dict || {}; });
   return dictP;
 }
 export const dictReady = () => !!dict;
 
-/** Translate an arbitrary zh string with the demo dictionary (exact hit, else per-run replacement). */
+/* Full-width punctuation → ASCII once the Chinese around it is gone. */
+const PUNCT: Record<string, string> = { '：': ': ', '，': ', ', '。': '. ', '；': '; ', '、': ', ', '（': ' (', '）': ') ', '【': '[', '】': '] ',
+  '「': '“', '」': '”', '『': '“', '』': '”', '？': '? ', '！': '! ', '《': '“', '》': '”', '～': '~', '　': ' ', '·': '·' };
+const FW = /[：，。；、（）【】「」『』？！《》～　]/g;
+const NUM = /\d+(?:\.\d+)?/g;
+function look(k: string): string | undefined {
+  return (scope && scope[k]) ?? dict![k];
+}
+/* numbers are templated: "流行：1.5（12.7%）" hits the dictionary key "流行：{0}（{1}%）" */
+function lookTpl(k: string): string | undefined {
+  if (!/\d/.test(k)) return undefined;
+  const nums: string[] = [];
+  const key = k.replace(NUM, (m) => `{${nums.push(m) - 1}}`);
+  const e = look(key);
+  return e === undefined ? undefined : e.replace(/\{(\d+)\}/g, (_, i) => nums[+i] ?? '');
+}
+function runTx(m: string): string | undefined {
+  const e = look(m);
+  if (e !== undefined) return e;
+  /* split a run at full-width punctuation and translate the pieces (keeps "流行：" → "Pop: ") */
+  const parts = m.split(/([：，。；、（）【】「」『』？！《》～　·]+)/);
+  if (parts.length < 2) return undefined;
+  let hit = false;
+  const out = parts.map((p) => { if (!p || !HAS_ZH.test(p)) return p; const w = look(p); if (w !== undefined) { hit = true; return w; } return p; }).join('');
+  return hit ? out : undefined;
+}
+function tidy(o: string) {
+  if (HAS_ZH.test(o)) return o;
+  return o.replace(FW, (c) => PUNCT[c] ?? c).replace(/ +([,.;:!?)\]”])/g, '$1').replace(/([(\[“]) +/g, '$1').replace(/ {2,}/g, ' ').replace(/^ (?=\S)/, '').trimEnd() + (/\s$/.test(o) ? ' ' : '');
+}
+
+/** Translate an arbitrary zh string with the demo dictionary (scoped + exact hit, number template, else per-run replacement). */
 export function tx(s: string): string {
   if (lang !== 'en' || !dict || typeof s !== 'string' || !HAS_ZH.test(s)) return s;
   const c = cache.get(s); if (c !== undefined) return c;
   const t = s.trim();
-  let out = dict[s] ?? dict[t];
+  let out = look(s) ?? look(t);
+  if (out === undefined) { const v = lookTpl(t); if (v !== undefined) out = t !== s ? s.replace(t, v) : v; }
+  else if (t !== s) out = s.replace(t, out);
   if (out === undefined) {
+    /* Runwise only for short UI runs. Long theory/explain paragraphs must hit exact/template
+       keys — partial replacement creates mixed zh/en garbage that is worse than leaving Chinese. */
     out = s.replace(ZH_RUN, (m, off: number) => {
-      const e = dict![m];
+      if (m.length > 20) return m;
+      const e = runTx(m);
       if (e === undefined) return m;
-      const pre = off > 0 && /[A-Za-z0-9)]/.test(s[off - 1]) ? ' ' : '';
+      const pre = off > 0 && /[A-Za-z0-9)%]/.test(s[off - 1]) ? ' ' : '';
       const nx = s[off + m.length];
       const post = nx && /[A-Za-z0-9(]/.test(nx) ? ' ' : '';
       return pre + e + post;
     });
-  } else if (t !== s) out = s.replace(t, out);
+    out = tidy(out);
+  }
   if (cache.size > 20000) cache.clear();
   cache.set(s, out);
+  const lg = (globalThis as unknown as { __txlog?: [string, string, string][] }).__txlog;
+  if (lg) lg.push([scopePath, s, out]);
   return out;
 }
 

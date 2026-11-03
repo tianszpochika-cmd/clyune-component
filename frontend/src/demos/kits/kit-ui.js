@@ -7,6 +7,7 @@ import { withControls } from './withControls.js';
 import { paramsFromSpec } from './_shared.js';
 import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
 import { F } from './info-panel.js';
+import { getLang, tx } from '../../lib/i18n';
 
 const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
 const T = (key, label, value) => ({ key, type: 'toggle', label, value });
@@ -289,7 +290,7 @@ FAM.tip = uiFam({ title: '提示', size: { label: '气泡宽度', min: 100, max:
     const n = clamp(k.n, 1, 6), labels = ['保存', '分享', '删除', '设置', '帮助', '收藏'], gw = (W - 40) / n, cy = H * 0.62; let hovI = -1;
     for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); if (Math.hypot(P.x - cx, P.y - cy) < 26) hovI = i; }
     const act = hovI >= 0 ? hovI : (k.demo ? Math.floor(t * 0.6) % n : 0), ph = hovI >= 0 ? 1 : (k.demo ? easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4)) : 0);
-    for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); ctx.fillStyle = i === act ? k.col : '#24314f'; ctx.beginPath(); ctx.arc(cx, cy, 24, 0, TAU); ctx.fill(); text(ctx, labels[i][0], cx, cy, { size: fsz(W, H), col: i === act ? '#0b1020' : '#cbd5e1', align: 'center', bold: true }); }
+    for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); ctx.fillStyle = i === act ? k.col : '#24314f'; ctx.beginPath(); ctx.arc(cx, cy, 24, 0, TAU); ctx.fill(); text(ctx, (getLang() === 'en' ? tx(labels[i]) : labels[i])[0], cx, cy, { size: fsz(W, H), col: i === act ? '#0b1020' : '#cbd5e1', align: 'center', bold: true }); }
     const cx = 20 + gw * (act + 0.5), bw = k.s, bh = 44, bx = clamp(cx - bw / 2, 8, W - bw - 8), by = cy - 40 - bh - (1 - ph) * 6;
     ctx.globalAlpha = ph; ctx.fillStyle = '#f8fafc'; rrect(ctx, bx, by, bw, bh, 8); ctx.fill();
     if (on(C.arrow)) { ctx.beginPath(); ctx.moveTo(cx - 8, by + bh); ctx.lineTo(cx + 8, by + bh); ctx.lineTo(cx, by + bh + 9); ctx.closePath(); ctx.fill(); }
@@ -461,7 +462,7 @@ FAM.avatar = uiFam({ title: '头像组', size: { label: '头像直径', min: 28,
     const n = clamp(k.n, 2, 10), d = k.s, step = d * (1 - num(C.overlap, 0.3)), show = Math.min(n, 5), total = (show - 1) * step + d + (n > 5 ? step : 0), x0 = (W - total) / 2 + d / 2, cy = H / 2; let cell = null;
     for (let i = 0; i < show; i++) { const x = x0 + i * step, hov = Math.hypot(P.x - x, P.y - cy) < d / 2, lift = hov ? -8 : 0; if (hov) cell = `成员 ${i + 1}`;
       ctx.fillStyle = '#0a1020'; ctx.beginPath(); ctx.arc(x, cy + lift, d / 2 + 3, 0, TAU); ctx.fill();
-      ctx.fillStyle = pastel(C, i, show); ctx.beginPath(); ctx.arc(x, cy + lift, d / 2, 0, TAU); ctx.fill(); text(ctx, '张王李赵刘'[i], x, cy + lift, { size: d * 0.38, col: '#0b1020', align: 'center', bold: true });
+      ctx.fillStyle = pastel(C, i, show); ctx.beginPath(); ctx.arc(x, cy + lift, d / 2, 0, TAU); ctx.fill(); text(ctx, (getLang() === 'en' ? 'AMJKS' : '张王李赵刘')[i], x, cy + lift, { size: d * 0.38, col: '#0b1020', align: 'center', bold: true });
       if (i % 2 === 0) { ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(x + d * 0.35, cy + lift + d * 0.35, d * 0.1 * (1 + 0.2 * Math.sin(t * 3 + i)), 0, TAU); ctx.fill(); } }
     if (n > 5) { const x = x0 + show * step; ctx.fillStyle = '#24314f'; ctx.beginPath(); ctx.arc(x, cy, d / 2, 0, TAU); ctx.fill(); text(ctx, `+${n - 5}`, x, cy, { size: d * 0.34, col: k.col, align: 'center', bold: true }); }
     text(ctx, `${n} 位成员在线协作`, W / 2, cy + d / 2 + 28, { size: fsz(W, H), col: '#94a3b8', align: 'center' });
@@ -539,7 +540,7 @@ FAM.command = uiFam({ title: '命令面板', size: { label: '面板宽度', min:
   draw(ctx, W, H, t, C, P, k) {
     const n = clamp(k.n, 2, 8), pw = W * k.s, px = (W - pw) / 2, cmds = ['打开文件', '切换主题', '新建窗口', '查找替换', '格式化文档', '运行测试', '提交代码', '设置'];
     ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 8, W, H); ctx.fillStyle = '#18233d'; rrect(ctx, px, 24, pw, H - 40, 14); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
-    const q = '打开文件切换', typed = q.slice(0, 1 + Math.floor((t * 2) % q.length)); text(ctx, '› ' + typed, px + 16, 48, { size: fsz(W, H, 1.05), col: '#f8fafc' });
+    const q = getLang() === 'en' ? 'Open file' : '打开文件切换', typed = q.slice(0, 1 + Math.floor((t * 2) % q.length)); text(ctx, '› ' + typed, px + 16, 48, { size: fsz(W, H, 1.05), col: '#f8fafc' });
     ctx.font = `${fsz(W, H, 1.05)}px ui-sans-serif`; caret(ctx, px + 30 + ctx.measureText(typed).width, 48, t, k.col); line(ctx, px, 70, px + pw, 70, '#24314f', 1);
     const rh = Math.min(38, (H - 100) / n), hi = k.demo ? Math.floor(t * 0.8) % n : 0; let cell = null;
     for (let i = 0; i < n; i++) { const y = 78 + i * rh, hov = inR(P, px, y, pw, rh); if (hov) cell = cmds[i];
@@ -617,7 +618,7 @@ FAM.banner = uiFam({ title: '横幅', size: { label: '横幅高度', min: 40, ma
     const ent = easeFn('ease-out', Math.min(1, ((t * 0.25) % 1) * 4));
     for (let i = 0; i < n; i++) { const y = 16 + i * (bh + 8) - (i === 0 ? (1 - ent) * (bh + 16) : 0), [lab, c] = kinds[i];
       ctx.fillStyle = hsla(hueOf(c), 70, 45, 0.3); rrect(ctx, 12, y, W - 24, bh, 10); ctx.fill(); ctx.fillStyle = c; rrect(ctx, 12, y, 6, bh, 3); ctx.fill();
-      ctx.save(); rrect(ctx, 24, y, W - 80, bh, 0); ctx.clip(); const msg = `【${lab}】系统将于今晚 23:00 维护升级，预计 30 分钟，请提前保存工作。　　`;
+      ctx.save(); rrect(ctx, 24, y, W - 80, bh, 0); ctx.clip(); const msg = getLang() === 'en' ? `[${tx(lab)}] Maintenance tonight at 23:00, about 30 minutes. Please save your work.　　` : `【${lab}】系统将于今晚 23:00 维护升级，预计 30 分钟，请提前保存工作。　　`;
       ctx.font = `${fsz(W, H)}px ui-sans-serif`; const mw = ctx.measureText(msg).width, off = on(C.marquee) ? -((t * 40) % mw) : 0;
       text(ctx, msg, 30 + off, y + bh / 2, { size: fsz(W, H), col: '#f8fafc' }); if (on(C.marquee)) text(ctx, msg, 30 + off + mw, y + bh / 2, { size: fsz(W, H), col: '#f8fafc' }); ctx.restore();
       text(ctx, '×', W - 36, y + bh / 2, { size: fsz(W, H, 1.2), col: '#cbd5e1', align: 'center' }); if (inR(P, 12, y, W - 24, bh)) cell = lab; }

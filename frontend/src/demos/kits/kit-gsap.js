@@ -8,6 +8,7 @@ import { withControls } from './withControls.js';
 import { paramsFromSpec } from './_shared.js';
 import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
 import { F } from './info-panel.js';
+import { getLang, tx } from '../../lib/i18n';
 
 const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
 const T = (key, label, value) => ({ key, type: 'toggle', label, value });
@@ -232,13 +233,14 @@ FAM.scroll = gFam({ title: 'ScrollTrigger', count: NC('内容区块数', 2, 8, 5
   } });
 
 const PHR = ['GSAP 文字动画', '逐字拆分 SplitText', 'stagger 交错入场', 'back.out 回弹'];
+const PHR_EN = ['GSAP text motion', 'SplitText by char', 'stagger entrance', 'back.out bounce'];
 FAM.text = gFam({ title: '文字交错动画', count: NC('文字行数', 1, 4, 2), extra: R('stagger', '每字间隔', 0, 0.2, 0.005, 0.05), size: SZ('字号', 14, 72, 40), color: '#f472b6',
   countDoc: '参与动画的文字行数', extraDoc: '相邻两个字开始动画的时间差（秒），即 stagger 的值', sizeDoc: '文字大小（像素，放不下时自动缩小）',
   presets: { 单行: { count: 1 }, 四行: { count: 4 }, 同时出现: { stagger: 0 }, 慢慢出现: { stagger: 0.18 }, 大字: { size: 70 } },
   explain: '文字交错动画：先把一句话拆成一个个单字（SplitText 做的事），再给每个字设置相同的入场动画——从下方升起、旋转回正、由透明变清晰，只是每个字比前一个字晚一点出发，于是整行文字像波浪一样依次弹出。淡色的字是每个字最终停下的位置。',
   formula: '第 g 个字的延迟 = g · stagger，ease: back.out(1.7)', formula2: 'gsap.from(split.chars, { y: 40, opacity: 0, rotation: 30, stagger: 0.05, ease: "back.out(1.7)" })',
   draw(ctx, W, H, t, C, P, k) {
-    const lines = PHR.slice(0, k.n), N = lines.reduce((a, s) => a + [...s].length, 0), st = k.x, inT = 0.6 + st * N, L = 2 * inT + 1.8, lt = t % L, outS = inT + 1.2; let g = 0, cell = null;
+    const lines = (getLang() === 'en' ? PHR_EN : PHR).slice(0, k.n), N = lines.reduce((a, s) => a + [...s].length, 0), st = k.x, inT = 0.6 + st * N, L = 2 * inT + 1.8, lt = t % L, outS = inT + 1.2; let g = 0, cell = null;
     ctx.font = `700 ${k.s}px ${FONT2}`; const maxW = Math.max(...lines.map((s) => ctx.measureText(s).width)), fs = Math.min(k.s, (k.s * (W * 0.88)) / maxW, (H - 40) / (k.n * 1.4)), lh = fs * 1.4, y0 = k.cy - (k.n * lh) / 2 + lh / 2;
     ctx.font = `700 ${fs}px ${FONT2}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
     lines.forEach((s, li) => { const ch = [...s], wTot = ctx.measureText(s).width, y = y0 + li * lh; let x = (W - wTot) / 2;
@@ -383,13 +385,14 @@ FAM.ring = gFam({ title: '进度环', count: NC('环数', 1, 4, 2), extra: R('lw
   } });
 
 const TYP = ['你好，GSAP！', '这是打字机效果', '每个字依次出现', '然后再删除回去'];
+const TYP_EN = ['Hello, GSAP!', 'A typewriter effect', 'One letter at a time', 'Then back it goes'];
 FAM.type = gFam({ title: '打字机', count: NC('文字行数', 1, 4, 2), extra: R('cps', '每字耗时', 0.02, 0.3, 0.005, 0.08), size: SZ('字号', 14, 64, 32), color: '#facc15',
   countDoc: '要打出的文字行数', extraDoc: '打出一个字需要多少秒，越小打得越快', sizeDoc: '文字大小（像素，放不下时自动缩小）',
   presets: { 单行: { count: 1 }, 四行: { count: 4 }, 飞快: { cps: 0.02 }, 慢慢打: { cps: 0.28 }, 大字: { size: 62 } },
   explain: '打字机：时间轴上每隔固定时间「多显示一个字」，看起来就像有人在打字；全部打完停 1 秒，再用一半的时间一个字一个字删掉。闪烁的竖线是光标。用 GSAP 实现时，可以对一个数字做补间（从 0 到总字数），每帧把文字截取到这个长度。',
   formula: '已显示字数 = floor(时间 / 每字耗时)', formula2: 'gsap.to(state, { n: 总字数, duration: 总字数 · 0.08, ease: "none", onUpdate: () => el.textContent = text.slice(0, state.n) })',
   draw(ctx, W, H, t, C, P, k) {
-    const lines = TYP.slice(0, k.n), N = lines.reduce((a, s) => a + [...s].length, 0), cps = k.x, tT = N * cps, L = tT + 1 + tT * 0.5 + 0.5, lt = t % L, shown = lt < tT ? Math.floor(lt / cps) : lt < tT + 1 ? N : Math.max(0, N - Math.floor((lt - tT - 1) / (cps * 0.5)));
+    const lines = (getLang() === 'en' ? TYP_EN : TYP).slice(0, k.n), N = lines.reduce((a, s) => a + [...s].length, 0), cps = k.x, tT = N * cps, L = tT + 1 + tT * 0.5 + 0.5, lt = t % L, shown = lt < tT ? Math.floor(lt / cps) : lt < tT + 1 ? N : Math.max(0, N - Math.floor((lt - tT - 1) / (cps * 0.5)));
     const maxC = Math.max(...lines.map((s) => [...s].length)), fs = Math.min(k.s, (W * 0.84) / maxC, (H - 40) / (k.n * 1.5)), lh = fs * 1.5, x0 = Math.max(16, (W - fs * maxC) / 2), y0 = k.cy - (k.n * lh) / 2 + lh / 2; let left = shown, cx = x0, cy = y0, cell = null;
     ctx.font = `600 ${fs}px ${FONT2}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
     lines.forEach((s, i) => { const ch = [...s], m = clamp(left, 0, ch.length), y = y0 + i * lh, str = ch.slice(0, m).join(''); ctx.fillStyle = hsla(k.hue, 90, 70); ctx.fillText(str, x0, y);

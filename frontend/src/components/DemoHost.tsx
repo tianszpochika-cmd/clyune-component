@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { mountDemo } from '../demoLoader';
 // @ts-ignore js module
 import { onProgress, resetProgress } from '../lib/progress.js';
-import { getLang, loadDict, tr, translateTree } from '../lib/i18n';
+import { getLang, loadDict, setTxScope, tr, translateTree } from '../lib/i18n';
 
 type Props = { mod: string; fn: string; variant?: string; slug?: string };
 type Phase = 'engine' | 'scene' | 'frame' | 'done' | 'error';
@@ -61,6 +61,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
 
     (async () => {
       try {
+        setTxScope(location.pathname.replace(/\/+$/, ''));
         if (getLang() === 'en') await loadDict();
         if (cancelled) return;
         untr = translateTree(el);
@@ -79,7 +80,7 @@ export function DemoHost({ mod, fn, variant, slug }: Props) {
     })();
 
     return () => {
-      cancelled = true; untr(); off(); po?.disconnect(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
+      cancelled = true; untr(); setTxScope(''); off(); po?.disconnect(); clearInterval(iv); clearTimeout(slowT); clearTimeout(failT);
       try { if (typeof disposer === 'function') disposer(); } catch (err) { console.warn(err); }
       el.innerHTML = '';
     };

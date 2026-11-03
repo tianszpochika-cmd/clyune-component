@@ -7,6 +7,7 @@ import { withControls } from './withControls.js';
 import { paramsFromSpec } from './_shared.js';
 import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
 import { F } from './info-panel.js';
+import { getLang } from '../../lib/i18n';
 
 const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
 const T = (key, label, value) => ({ key, type: 'toggle', label, value });
@@ -62,7 +63,9 @@ const hh = (i, s = 0) => { const x = Math.sin(i * 127.1 + s * 311.7) * 43758.545
 const fract = (x) => x - Math.floor(x);
 const smooth = (x) => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
 const FONT = (fs, w = 800) => `${w} ${Math.round(fs)}px "PingFang SC","Noto Sans CJK SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif`;
-const TXT = '文字特效让每一个字都动起来TEXT FX 创意排版动画与交互设计灵感';
+const TXT_ZH = '文字特效让每一个字都动起来TEXT FX 创意排版动画与交互设计灵感';
+/* en mode animates an English sample: per-glyph effects can't be translated one Chinese character at a time */
+const TXT_EN = 'Text effects bring every letter to life · TEXT FX · creative type & motion';
 const GLY = ['ア', 'ネ', '字', '#', '%', '&', '@', '0', '1', '7', 'X', 'Ω', '∑', '◆', '§', '?', '光', '码'];
 const LAY = new Map();
 /** wrap glyphs to width; returns { g: [{ ch, x, y, w }], lines, lh } centered in the stage */
@@ -116,7 +119,7 @@ function tFam(d) {
         const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, spec.size.value), x: exVal(C), col, hue: hueOf(col) };
         k.lay = (str, fs = k.s, lhK) => layout(ctx, str, fs, W, H, 8, lhK);
         k.font = (fs = k.s, w) => { ctx.font = FONT(fs, w); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; };
-        k.str = (n = k.n) => [...TXT].slice(0, n).join('');
+        k.str = (n = k.n) => [...(getLang() === 'en' ? TXT_EN : TXT_ZH)].slice(0, n).join('');
         k.nearest = (g) => { let b = -1, bd = 1e9; g.forEach((q, i) => { const dd = (q.x - P.x) ** 2 + (q.y - P.y) ** 2; if (dd < bd) { bd = dd; b = i; } }); return b < 0 ? null : { i: b, ch: g[b].ch, d: Math.sqrt(bd) }; };
         ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip(); ctx.translate(0, Math.sin(tt * 1.7) * 2.5);
         const r = d.draw(ctx, W, H, tt, C, P, k, st) || {};
@@ -124,7 +127,7 @@ function tFam(d) {
         const lp = fract(tt / 6); ctx.fillStyle = hsla(k.hue, 80, 60, 0.18); ctx.fillRect(0, H - 4, W, 4); ctx.fillStyle = hsla(k.hue, 85, 65, 0.7); ctx.fillRect(0, H - 4, W * lp, 4);
         chip(ctx, W, H, C);
         let cell = r.cell;
-        if (!cell && r.g) { const nb = k.nearest(r.g); cell = nb ? (nb.d < k.s ? `指针在第 ${nb.i + 1} 个字「${nb.ch}」上` : `最近的字是第 ${nb.i + 1} 个「${nb.ch}」，距 ${Math.round(nb.d)}px`) : '画面中暂时没有文字'; }
+        if (!cell && r.g) { const nb = k.nearest(r.g); cell = getLang() === 'en' ? (nb ? (nb.d < k.s ? `On glyph #${nb.i + 1} “${nb.ch}”` : `Nearest glyph #${nb.i + 1} “${nb.ch}”, ${Math.round(nb.d)}px away`) : 'No text on screen yet') : (nb ? (nb.d < k.s ? `指针在第 ${nb.i + 1} 个字「${nb.ch}」上` : `最近的字是第 ${nb.i + 1} 个「${nb.ch}」，距 ${Math.round(nb.d)}px`) : '画面中暂时没有文字'); }
         return { mode: r.mode || exTxt(C), n: String(r.n ?? k.n), cell: cell || '指针不在文字附近', colorHex: String(col).toLowerCase(), hx: P.x, hy: P.y };
       };
     },

@@ -16,6 +16,7 @@
  *   tip        -> short interaction hint
  * }
  */
+import { tx } from '../../lib/i18n';
 const CSS = `
 .mip-layout{position:absolute;inset:0;display:flex;flex-direction:row;min-height:0;min-width:0}
 .mip-layout.mip-narrow{flex-direction:column}
@@ -132,6 +133,8 @@ export function createInfoPanel(stage, { doc, onHover } = {}) {
       else if (k === 'params') html = `<ul>${(resolve(doc.params, v) || []).map(([n, d]) => `<li><b>${n}</b>：${d}</li>`).join('')}</ul>`;
       else if (k === 'example') html = resolve(doc.example, v);
     } catch (err) { html = `<em>（${esc(err.message)}）</em>`; }
+    /* en: translate the whole HTML block at once (tags kept) instead of word fragments between <b> tags */
+    if (html) html = tx(html);
     const b = bodyOf(k);
     if (b && b.innerHTML !== html) b.innerHTML = html || '—';
   };

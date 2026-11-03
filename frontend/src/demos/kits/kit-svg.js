@@ -7,6 +7,7 @@ import { withControls } from './withControls.js';
 import { paramsFromSpec } from './_shared.js';
 import { createCanvasStage, hexRgb, hueOf, clamp, TAU, fmt } from './canvas-stage.js';
 import { F } from './info-panel.js';
+import { getLang } from '../../lib/i18n';
 
 const R = (key, label, min, max, step, value) => ({ key, type: 'range', label, min, max, step, value });
 const T = (key, label, value) => ({ key, type: 'toggle', label, value });
@@ -353,7 +354,7 @@ FAM.drawtext = sFam({ title: '文字描边', count: NC('字数', 2, 13, 8), extr
   explain: '文字描边：SVG 的 <text> 也可以只画轮廓（fill="none" + stroke）。给轮廓加上 stroke-dasharray，让 dashoffset 从大变小，字的笔画轮廓就会被一笔笔描出来；描完后等待「填充延迟」秒，再把 fill 的透明度从 0 渐变到 1。每个字比前一个晚 0.12 秒开始。',
   formula: '描边进度ᵢ = 缓动((t − 0.12i) / 1.5)', formula2: '填充透明度ᵢ = 缓动((t − 0.12i − 1.5 − 填充延迟) / 0.5)',
   draw(ctx, W, H, t, C, P, k) {
-    const chars = [...DTX].slice(0, k.n), fs = k.s, g = layout(ctx, chars, fs, W, H), T0 = 1.5 + k.n * 0.12 + k.x + 0.5 + 1.2 + 0.6, ph = ((t % T0) + T0) % T0, out = 1 - smooth((ph - (T0 - 0.6)) / 0.6), Lg = fs * 6;
+    const chars = [...(getLang() === 'en' ? 'SVG STROKE FX' : DTX)].slice(0, k.n), fs = k.s, g = layout(ctx, chars, fs, W, H), T0 = 1.5 + k.n * 0.12 + k.x + 0.5 + 1.2 + 0.6, ph = ((t % T0) + T0) % T0, out = 1 - smooth((ph - (T0 - 0.6)) / 0.6), Lg = fs * 6;
     ctx.font = FONT(fs); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round'; ctx.lineWidth = Math.max(1.2, fs / 40); let sum = 0, cell = null, bd = 1e9;
     g.forEach((q, i) => {
       const p = smooth((ph - i * 0.12) / 1.5), fa = smooth((ph - i * 0.12 - 1.5 - k.x) / 0.5); sum += p;

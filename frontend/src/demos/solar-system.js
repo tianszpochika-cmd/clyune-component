@@ -3,6 +3,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { readLiveControls, colorToRgb } from './kits/_shared.js';
 import { maxDpr, preferLiteFx, tuneOrbitControls } from '../lib/mobile.js';
 import { createInfoPanel, alignDocParams, fmt, F, dockControls } from './kits/info-panel.js';
+import { getLang } from '../lib/i18n';
+
+/* Proper English names (the generic dictionary would read 水/金/火 as Water/Gold/Fire). */
+const EN_NAME = {
+  太阳: 'Sun', 水星: 'Mercury', 金星: 'Venus', 地球: 'Earth', 火星: 'Mars', 木星: 'Jupiter', 土星: 'Saturn', 天王星: 'Uranus', 海王星: 'Neptune',
+  月球: 'Moon', 火卫一: 'Phobos', 火卫二: 'Deimos', 木卫一: 'Io', 木卫二: 'Europa', 木卫三: 'Ganymede', 木卫四: 'Callisto',
+  土卫一: 'Mimas', 土卫二: 'Enceladus', 土卫三: 'Tethys', 土卫四: 'Dione', 土卫五: 'Rhea', 土卫六: 'Titan',
+  天卫五: 'Miranda', 天卫一: 'Ariel', 天卫二: 'Umbriel', 天卫三: 'Titania', 天卫四: 'Oberon', 海卫八: 'Proteus', 海卫一: 'Triton',
+};
+const EN = () => getLang() === 'en';
+const nm = (s) => (s && EN() ? EN_NAME[s] || s : s);
 
 export const PARAMS_SPEC = {
   color: { label: '轨道线颜色', value: '#818cf8' },
@@ -16,7 +27,7 @@ const SS_DOC = {
   title: '太阳系 · 开普勒轨道',
   rows: (v) => [
     ['模式', v.mode === 'helix' ? '螺旋前进（太阳在动）' : '日心（太阳静止）'],
-    ['聚焦', v.focus || '太阳', 'focus'],
+    ['聚焦', v.focus || nm('太阳'), 'focus'],
     ['已过 地球年', fmt(v.years ?? 0, 2)],
     ['半长轴 a', v.a != null ? fmt(v.a, 1) : '—'],
     ['偏心率 e', v.e != null ? fmt(v.e, 3) : '—'],
@@ -29,7 +40,7 @@ const SS_DOC = {
   explain: '<p>每颗行星沿<b>椭圆</b>轨道绕太阳转，太阳在椭圆的一个焦点上。偏心率 e 越大椭圆越扁（水星 e≈0.21 最明显）。</p><p>行星离太阳近时跑得快、远时跑得慢（开普勒第二定律：相同时间扫过相同面积），所以角速度公式里带着 (1+e·cosθ)²。</p><p>离太阳越远，公转周期越长：周期的平方与半长轴的立方成正比，所以面板里的 <b>T²/a³</b> 对每颗行星几乎都一样。</p><p>切到“螺旋前进”模式，太阳本身也在银河中前进，行星轨迹被拉成螺旋线。</p>',
   params: [['轨道线颜色', '轨道椭圆线的色调'], ['时间流速', '模拟时间倍率，越大公转越快'], ['整体缩放', '整个太阳系的缩放（含相机距离）'], ['行星数', '从水星起显示前 N 颗行星（会重建场景）']],
   example: (v) => (v.a != null ? `<ol><li>${v.focus}：a = ${fmt(v.a, 1)}，T = 2π/n = ${fmt(v.T, 1)} 秒</li><li>T² / a³ = ${fmt(v.T, 1)}² / ${fmt(v.a, 1)}³ = ${fmt(v.k, 3)}（≈ (2π/3.5)² ≈ 3.223）</li><li>当前日距 r = ${fmt(v.r, 2)}，近日点 a(1−e) = ${fmt(v.a * (1 - v.e), 2)}，远日点 a(1+e) = ${fmt(v.a * (1 + v.e), 2)}</li></ol>` : '<p>点击一颗行星（或上方按钮）聚焦它，这里会算出它的开普勒参数。</p>'),
-  tip: '点行星聚焦、双击空白回到太阳；拖动旋转，滚轮/双指缩放。',
+  tip: '点击行星聚焦，双击空白回到太阳；拖动旋转，滚轮或双指缩放。',
 };
 
 /* ------------------------------------------------------------------ data */
@@ -709,7 +720,7 @@ export async function mountSolarSystem(outerHost, opts = {}) {
       moonLines.push(line);
       const lab = document.createElement('span');
       lab.className = 'ss-label moon';
-      lab.textContent = m.name;
+      lab.textContent = nm(m.name);
       lab.style.display = 'none';
       labelsEl.appendChild(lab);
       return { mesh, d: md, w: m.w, phase: hash3(idx, mi, 3, 9) * Math.PI * 2, label: lab, name: m.name };
@@ -722,7 +733,7 @@ export async function mountSolarSystem(outerHost, opts = {}) {
 
     const label = document.createElement('span');
     label.className = 'ss-label';
-    label.textContent = p.name;
+    label.textContent = nm(p.name);
     labelsEl.appendChild(label);
 
     const trail = makeTrail(p.trail, lite ? 600 : 1400);
@@ -767,8 +778,8 @@ export async function mountSolarSystem(outerHost, opts = {}) {
       <button type="button" data-act="reset">复位</button>
     </div>
     <div class="ss-row" data-row="focus">
-      <button type="button" data-focus="sun">☉</button>
-      ${bodies.map((b, i) => `<button type="button" data-focus="${i}">${b.p.name.slice(0, 1)}</button>`).join('')}
+      <button type="button" data-focus="sun" title="${nm('太阳')}">☉</button>
+      ${bodies.map((b, i) => `<button type="button" data-focus="${i}" title="${nm(b.p.name)}">${EN() ? nm(b.p.name) : b.p.name.slice(0, 1)}</button>`).join('')}
     </div>
     <div class="ss-hint" data-hint>滚轮/滑条缩放 · 点击行星聚焦</div>`;
   host.appendChild(ui);
@@ -799,7 +810,9 @@ export async function mountSolarSystem(outerHost, opts = {}) {
     host.dataset.focus = focus == null ? 'sun' : bodies[focus].p.key;
     hint.textContent = focus == null
       ? (mode === 'helix' ? '螺旋前进：太阳沿轴前进，行星边转边走' : '滚轮/滑条缩放 · 点击行星聚焦')
-      : `聚焦 ${bodies[focus].p.name} · ${bodies[focus].moons.length} 颗卫星`;
+      : EN()
+        ? `Focus: ${nm(bodies[focus].p.name)} · ${bodies[focus].moons.length || 'no'} moon${bodies[focus].moons.length === 1 ? '' : 's'}`
+        : `聚焦 ${bodies[focus].p.name} · ${bodies[focus].moons.length} 颗卫星`;
   };
 
   const resetTrails = () => {
@@ -1092,7 +1105,7 @@ export async function mountSolarSystem(outerHost, opts = {}) {
 
     renderer.render(scene, camera);
     const fb = focus != null ? bodies[focus] : null;
-    const iv = { mode, n: bodies.length, years: (simT * EARTH_N) / (2 * Math.PI), focus: fb ? fb.p.name : null };
+    const iv = { mode, n: bodies.length, years: (simT * EARTH_N) / (2 * Math.PI), focus: fb ? nm(fb.p.name) : null };
     if (fb) {
       const T = (2 * Math.PI) / fb.n;
       Object.assign(iv, { a: fb.p.a, e: fb.p.e, r: orbitR(fb.p.a, fb.p.e, fb.th), T, Ty: (T * EARTH_N) / (2 * Math.PI), k: (T * T) / fb.p.a ** 3 });

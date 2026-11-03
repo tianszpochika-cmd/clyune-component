@@ -1,0 +1,16 @@
+# Context-aware overrides (checked before the global dictionary while a demo route is mounted).
+# "@/category/" applies to every demo in that category; "@/category/slug" to one demo.
+@/threejs/solar-system
+日心=Heliocentric
+日心模式=Heliocentric
+☉ 日心=☉ Heliocentric
+复位=Reset
+颗卫星=moons
+水=Mercury
+金=Venus
+地=Earth
+火=Mars
+木=Jupiter
+土=Saturn
+天=Uranus
+海=Neptune
