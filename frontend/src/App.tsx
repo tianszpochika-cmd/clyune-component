@@ -16,6 +16,24 @@ const dDesc = (d: DemoMeta) => (en() ? d.desc_en || d.desc : d.desc);
 const dTag = (d: DemoMeta) => tx(d.tag);
 const hay = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(' ').toLowerCase();
 
+
+/** 云澜 mark: an indigo→cyan "C" wrapping a 澜 ripple, with a droplet at the opening. Same geometry as /logo.svg. */
+function BrandLogo() {
+  return (
+    <svg className="brand-logo" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="bl-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#1b2150" /><stop offset="1" stopColor="#0a0f22" /></linearGradient>
+        <linearGradient id="bl-c" x1="0.15" y1="0.1" x2="0.85" y2="0.95"><stop offset="0" stopColor="#a5b4fc" /><stop offset=".5" stopColor="#818cf8" /><stop offset="1" stopColor="#22d3ee" /></linearGradient>
+        <linearGradient id="bl-w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stopColor="#67e8f9" /><stop offset="1" stopColor="#22d3ee" /></linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="15" fill="url(#bl-bg)" />
+      <path className="logo-c" d="M47.6 19.4A20 20 0 1 0 47.6 44.6" fill="none" stroke="url(#bl-c)" strokeWidth="7.5" strokeLinecap="round" />
+      <path className="logo-w" d="M20 34.5c4-6 8-6 12 0s8 6 12 0" fill="none" stroke="url(#bl-w)" strokeWidth="4.6" strokeLinecap="round" />
+      <circle className="logo-d" cx="50.5" cy="32" r="3.2" fill="#22d3ee" />
+    </svg>
+  );
+}
+
 function LangSwitch() {
   const l = useLang();
   return (
@@ -234,7 +252,7 @@ function Sidebar({ open, onClose, filter, setFilter }: {
         <div className="brand sticky-brand">
           <div className="brand-top">
             <Link to="/" className="brand-link" onClick={onClose}>
-              <div className="brand-mark">C</div>
+              <div className="brand-mark"><BrandLogo /></div>
               <div>
                 <div className="brand-title">Component</div>
                 <div className="brand-sub">Rust + React · {totalDemos} demos</div>

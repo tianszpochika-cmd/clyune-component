@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Clyune Component">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b2150"/><stop offset="1" stop-color="#0a0f22"/></linearGradient>
+    <linearGradient id="c" x1="0.15" y1="0.1" x2="0.85" y2="0.95"><stop offset="0" stop-color="#a5b4fc"/><stop offset=".5" stop-color="#818cf8"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#67e8f9"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  <rect x=".75" y=".75" width="62.5" height="62.5" rx="14.25" fill="none" stroke="#818cf8" stroke-opacity=".28" stroke-width="1.5"/>
+  <path class="logo-c" d="M47.6 19.4A20 20 0 1 0 47.6 44.6" fill="none" stroke="url(#c)" stroke-width="7.5" stroke-linecap="round"/>
+  <path class="logo-w" d="M20 34.5c4-6 8-6 12 0s8 6 12 0" fill="none" stroke="url(#w)" stroke-width="4.6" stroke-linecap="round"/>
+  <circle class="logo-d" cx="50.5" cy="32" r="3.2" fill="#22d3ee"/>
+</svg>

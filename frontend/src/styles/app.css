@@ -1500,3 +1500,17 @@ body.sidebar-open {
   .topbar-search { min-width: 0; }
 }
 @media (max-width: 420px) { .topbar-right .pill.db { display: none; } }
+
+/* ---- v11: 云澜 brand logo ---- */
+.brand-mark { background: none; padding: 0; overflow: hidden; color: inherit; }
+.brand-logo { width: 100%; height: 100%; display: block; }
+.brand-logo .logo-w { transform-box: fill-box; transform-origin: center; }
+.brand-logo .logo-d { transform-box: fill-box; transform-origin: center; transition: transform 300ms ease-out; }
+.brand-link:hover .brand-logo .logo-w, .brand-link:focus-visible .brand-logo .logo-w { animation: logo-ripple 900ms ease-in-out 1; }
+.brand-link:hover .brand-logo .logo-d, .brand-link:focus-visible .brand-logo .logo-d { transform: scale(1.25); }
+.brand-link:hover .brand-mark { box-shadow: 0 0 0 1px rgba(34,211,238,.35), 0 8px 26px rgba(34,211,238,.25); }
+@keyframes logo-ripple { 0%,100% { transform: translateX(0) scaleY(1); } 35% { transform: translateX(-1.5px) scaleY(1.18); } 70% { transform: translateX(1.5px) scaleY(.88); } }
+@media (prefers-reduced-motion: reduce) {
+  .brand-link:hover .brand-logo .logo-w, .brand-link:focus-visible .brand-logo .logo-w { animation: none; }
+  .brand-logo .logo-d { transition: none; }
+}
