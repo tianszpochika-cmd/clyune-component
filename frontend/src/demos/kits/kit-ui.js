@@ -83,7 +83,7 @@ function uiFam(d) {
         S.clear();
         ctx.fillStyle = '#0a1020'; ctx.fillRect(0, 8, W, H);
         chip(ctx, W, H, C);
-        const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), spd: num(C.speed, 0.9), col: C.color || '#818cf8' };
+        const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), spd: num(C.speed, 0.9), col: C.color || '#818cf8', demo: S.isAutoDemo() };
         const r = d.draw(ctx, W, H, t * k.spd, C, P, k) || {};
         { const bx = ((t * 0.25) % 1) * (W + 80) - 80; ctx.fillStyle = hsla(hueOf(k.col), 70, 62, 0.55); rrect(ctx, Math.max(0, bx), H - 4, Math.min(80, W - Math.max(0, bx)), 3, 1.5); ctx.fill(); }
         return { mode: r.mode || d.title, n: String(r.n ?? k.n), cell: r.cell || '（移到组件上）', colorHex: String(C.color || '').toLowerCase(), hx: r.hx ?? W / 2, hy: r.hy ?? H / 2 };
@@ -145,7 +145,7 @@ FAM.input = uiFam({ title: '输入控件', size: { label: '输入框高度', min
     const total = n * (h + 18 + gap), y0 = Math.max(20, (H - total) / 2);
     const focus = Math.floor(t * 0.5) % n;
     for (let i = 0; i < n; i++) {
-      const y = y0 + i * (h + 18 + gap) + 16, hov = inR(P, x, y, w, h), f = hov || (!P.user && i === focus), err = on(C.err) && i === n - 1;
+      const y = y0 + i * (h + 18 + gap) + 16, hov = inR(P, x, y, w, h), f = hov || (k.demo && !P.user && i === focus), err = on(C.err) && i === n - 1;
       text(ctx, labels[i], x, y - 9, { size: fsz(W, H, 0.85), col: '#94a3b8' });
       if (f && !err) { ctx.strokeStyle = hsla(hueOf(k.col), 80, 65, 0.3); ctx.lineWidth = 6; rrect(ctx, x, y, w, h, 10); ctx.stroke(); }
       ctx.fillStyle = '#0d1426'; rrect(ctx, x, y, w, h, 10); ctx.fill();
@@ -181,7 +181,7 @@ FAM.acc = uiFam({ title: '手风琴组件', size: { label: '标题高度', min: 
   extras: [T('multi', '允许多开', false)], presets: { 少: { count: 2 }, 多: { count: 6 }, 多开: { multi: true }, 高: { size: 58 } },
   explain: '手风琴：点击标题展开内容，高度平滑过渡；单开模式下展开一个会收起其它。', formula: 'height: 0 → 内容高度（ease-out）', formula2: '箭头 rotate(0 → 90°)',
   draw(ctx, W, H, t, C, P, k) {
-    const n = clamp(k.n, 2, 6), hh = k.s, x = 20, w = W - 40; const open = Math.floor(t * 0.4) % n;
+    const n = clamp(k.n, 2, 6), hh = k.s, x = 20, w = W - 40; const open = k.demo ? Math.floor(t * 0.4) % n : 0;
     const avail = H - 36 - n * (hh + 6); const bodyH = Math.max(30, on(C.multi) ? avail / 2 : avail);
     let y = 22, cell = null;
     for (let i = 0; i < n; i++) {
@@ -269,7 +269,7 @@ FAM.drop = uiFam({ title: '下拉', size: { label: '选项高度', min: 26, max:
   draw(ctx, W, H, t, C, P, k) {
     const n = clamp(k.n, 2, 8), rh = k.s, w = Math.min(320, W - 40), x = (W - w) / 2, ty = 24, opts = ['北京', '上海', '广州', '深圳', '杭州', '成都', '西安', '南京'];
     ctx.fillStyle = '#0d1426'; rrect(ctx, x, ty, w, 40, 10); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
-    const cur = Math.floor(t * 0.6) % n; text(ctx, opts[cur], x + 14, ty + 20, { size: fsz(W, H), col: '#e2e8f0' }); text(ctx, '▾', x + w - 18, ty + 20, { size: fsz(W, H), col: k.col, align: 'center' });
+    const cur = k.demo ? Math.floor(t * 0.6) % n : 0; text(ctx, opts[cur], x + 14, ty + 20, { size: fsz(W, H), col: '#e2e8f0' }); text(ctx, '▾', x + w - 18, ty + 20, { size: fsz(W, H), col: k.col, align: 'center' });
     let my = ty + 48; const o = easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4));
     const mh = (on(C.search) ? 40 : 0) + n * rh + 8; ctx.save(); ctx.globalAlpha = o; ctx.translate(0, my); ctx.scale(1, 0.9 + 0.1 * o); ctx.translate(0, -my);
     ctx.fillStyle = '#18233d'; rrect(ctx, x, my, w, Math.min(mh, H - my - 10), 10); ctx.fill();
@@ -288,7 +288,7 @@ FAM.tip = uiFam({ title: '提示', size: { label: '气泡宽度', min: 100, max:
   draw(ctx, W, H, t, C, P, k) {
     const n = clamp(k.n, 1, 6), labels = ['保存', '分享', '删除', '设置', '帮助', '收藏'], gw = (W - 40) / n, cy = H * 0.62; let hovI = -1;
     for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); if (Math.hypot(P.x - cx, P.y - cy) < 26) hovI = i; }
-    const act = hovI >= 0 ? hovI : Math.floor(t * 0.6) % n, ph = hovI >= 0 ? 1 : easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4));
+    const act = hovI >= 0 ? hovI : (k.demo ? Math.floor(t * 0.6) % n : 0), ph = hovI >= 0 ? 1 : (k.demo ? easeFn('ease-out', Math.min(1, ((t * 0.6) % 1) * 4)) : 0);
     for (let i = 0; i < n; i++) { const cx = 20 + gw * (i + 0.5); ctx.fillStyle = i === act ? k.col : '#24314f'; ctx.beginPath(); ctx.arc(cx, cy, 24, 0, TAU); ctx.fill(); text(ctx, labels[i][0], cx, cy, { size: fsz(W, H), col: i === act ? '#0b1020' : '#cbd5e1', align: 'center', bold: true }); }
     const cx = 20 + gw * (act + 0.5), bw = k.s, bh = 44, bx = clamp(cx - bw / 2, 8, W - bw - 8), by = cy - 40 - bh - (1 - ph) * 6;
     ctx.globalAlpha = ph; ctx.fillStyle = '#f8fafc'; rrect(ctx, bx, by, bw, bh, 8); ctx.fill();
@@ -367,7 +367,7 @@ FAM.tabs = uiFam({ title: 'Tabs 动效', size: { label: '标签高度', min: 30,
     const n = clamp(k.n, 2, 6), th = k.s, names = ['概览', '数据', '设置', '成员', '日志', '账单'], tw = (W - 40) / n;
     ctx.fillStyle = '#121a2f'; rrect(ctx, 20, 22, W - 40, th, 10); ctx.fill(); let hovI = -1;
     for (let i = 0; i < n; i++) if (inR(P, 20 + i * tw, 22, tw, th)) hovI = i;
-    const cyc = (t * 0.4) % n, fi = Math.floor(cyc), fr = easeFn('ease-in-out', clamp((cyc - fi - 0.6) / 0.4, 0, 1)), cur = hovI >= 0 ? hovI : fi + fr;
+    const cyc = (t * 0.4) % n, fi = Math.floor(cyc), fr = easeFn('ease-in-out', clamp((cyc - fi - 0.6) / 0.4, 0, 1)), cur = hovI >= 0 ? hovI : (k.demo ? fi + fr : 0);
     ctx.fillStyle = k.col; rrect(ctx, 22 + cur * tw, 24, tw - 4, th - 4, 8); ctx.fill();
     for (let i = 0; i < n; i++) text(ctx, names[i], 20 + i * tw + tw / 2, 22 + th / 2, { size: fsz(W, H), col: Math.round(cur) === i ? '#0b1020' : '#cbd5e1', align: 'center', bold: true });
     const py = 32 + th, ph = H - py - 12; ctx.save(); rrect(ctx, 20, py, W - 40, ph, 12); ctx.clip();
@@ -398,7 +398,7 @@ FAM.tree = uiFam({ title: '树形', size: { label: '缩进宽度', min: 12, max:
   draw(ctx, W, H, t, C, P, k) {
     const depth = clamp(k.n, 1, 4), ind = k.s, nodes = [];
     const walk = (d, name) => { nodes.push([d, name]); if (d < depth) for (let i = 0; i < (d === 0 ? 3 : 2); i++) walk(d + 1, `${name}.${i + 1}`); };
-    walk(0, 'src'); const rh = Math.min(28, (H - 30) / nodes.length), sel = Math.floor(t * 1.2) % nodes.length; let cell = null;
+    walk(0, 'src'); const rh = Math.min(28, (H - 30) / nodes.length), sel = k.demo ? Math.floor(t * 1.2) % nodes.length : 0; let cell = null;
     nodes.forEach(([d, name], i) => { const y = 20 + i * rh, x = 20 + d * ind; const hov = inR(P, 0, y, W, rh);
       if (i === sel || hov) { ctx.fillStyle = hov ? hsla(hueOf(k.col), 70, 60, 0.25) : hsla(hueOf(k.col), 70, 60, 0.14); ctx.fillRect(10, y, W - 20, rh - 2); }
       if (on(C.guide) && d > 0) { line(ctx, x - ind + 6, y - rh / 2, x - ind + 6, y + rh / 2, '#334155', 1); line(ctx, x - ind + 6, y + rh / 2 - 1, x - 2, y + rh / 2 - 1, '#334155', 1); }
@@ -427,7 +427,7 @@ FAM.chip = uiFam({ title: '芯片/标签', size: { label: '芯片高度', min: 2
   explain: '标签芯片：自动换行排列，选中态填充主色；带 × 的可删除，新标签弹入。', formula: '换行: x + w > 宽 → 下一行', formula2: '选中 = 主色背景',
   draw(ctx, W, H, t, C, P, k) {
     const n = clamp(k.n, 3, 14), h = k.s, tags = ['React', 'Vue', 'Svelte', 'Canvas', 'WebGL', 'CSS', 'TypeScript', 'Node', 'Vite', 'Three', 'D3', 'Rust', 'Go', 'AI'];
-    let x = 20, y = 24; const sel = Math.floor(t * 0.8) % n; let cell = null; ctx.font = `${fsz(W, H, 0.9)}px ui-sans-serif`;
+    let x = 20, y = 24; const sel = k.demo ? Math.floor(t * 0.8) % n : 0; let cell = null; ctx.font = `${fsz(W, H, 0.9)}px ui-sans-serif`;
     for (let i = 0; i < n; i++) { const tw = ctx.measureText(tags[i]).width + 24 + (on(C.close) ? 18 : 0); if (x + tw > W - 20) { x = 20; y += h + 10; }
       const pop = i === n - 1 ? easeFn('back', Math.min(1, ((t * 0.5) % 1) * 3)) : 1, s2 = i === sel;
       ctx.save(); ctx.translate(x + tw / 2, y + h / 2); ctx.scale(pop, pop); ctx.translate(-(x + tw / 2), -(y + h / 2));
@@ -508,7 +508,7 @@ FAM.colorpick = uiFam({ title: '取色器', size: { label: '色盘大小', min: 
     const n = clamp(k.n, 3, 10), R0 = Math.min(W * 0.32, H * 0.42) * k.s, cx = Math.max(R0 + 20, W * 0.34), cy = H / 2, L = num(C.light, 55);
     for (let a = 0; a < 360; a += 3) { ctx.strokeStyle = hsla(a, 80, L); ctx.lineWidth = R0 * 0.28; ctx.beginPath(); ctx.arc(cx, cy, R0 * 0.86, (a - 1.6) * Math.PI / 180, (a + 1.6) * Math.PI / 180); ctx.stroke(); }
     const dist = Math.hypot(P.x - cx, P.y - cy), onRing = P.user && dist > R0 * 0.7 && dist < R0;
-    const hue = onRing ? ((Math.atan2(P.y - cy, P.x - cx) * 180 / Math.PI) + 360) % 360 : (hueOf(k.col) + t * 20) % 360;
+    const hue = onRing ? ((Math.atan2(P.y - cy, P.x - cx) * 180 / Math.PI) + 360) % 360 : (k.demo ? (hueOf(k.col) + t * 20) % 360 : hueOf(k.col));
     const ka = hue * Math.PI / 180; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(cx + Math.cos(ka) * R0 * 0.86, cy + Math.sin(ka) * R0 * 0.86, 9, 0, TAU); ctx.stroke();
     ctx.fillStyle = hsla(hue, 80, L); ctx.beginPath(); ctx.arc(cx, cy, R0 * 0.5, 0, TAU); ctx.fill();
     const px = Math.min(W - 160, cx + R0 + 30), sw = 22;
@@ -541,7 +541,7 @@ FAM.command = uiFam({ title: '命令面板', size: { label: '面板宽度', min:
     ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(0, 8, W, H); ctx.fillStyle = '#18233d'; rrect(ctx, px, 24, pw, H - 40, 14); ctx.fill(); ctx.strokeStyle = k.col; ctx.lineWidth = 1.5; ctx.stroke();
     const q = '打开文件切换', typed = q.slice(0, 1 + Math.floor((t * 2) % q.length)); text(ctx, '› ' + typed, px + 16, 48, { size: fsz(W, H, 1.05), col: '#f8fafc' });
     ctx.font = `${fsz(W, H, 1.05)}px ui-sans-serif`; caret(ctx, px + 30 + ctx.measureText(typed).width, 48, t, k.col); line(ctx, px, 70, px + pw, 70, '#24314f', 1);
-    const rh = Math.min(38, (H - 100) / n), hi = Math.floor(t * 0.8) % n; let cell = null;
+    const rh = Math.min(38, (H - 100) / n), hi = k.demo ? Math.floor(t * 0.8) % n : 0; let cell = null;
     for (let i = 0; i < n; i++) { const y = 78 + i * rh, hov = inR(P, px, y, pw, rh); if (hov) cell = cmds[i];
       if (i === hi || hov) { ctx.fillStyle = hov ? hsla(hueOf(k.col), 70, 60, 0.3) : hsla(hueOf(k.col), 70, 60, 0.18); rrect(ctx, px + 6, y, pw - 12, rh - 4, 8); ctx.fill(); }
       text(ctx, cmds[i], px + 18, y + rh / 2 - 2, { size: fsz(W, H, 0.9), col: '#e2e8f0' });
@@ -553,7 +553,7 @@ FAM.pagination = uiFam({ title: '分页器', size: { label: '页码尺寸', min:
   extras: [T('ellipsis', '省略号折叠', true)], presets: { 少页: { count: 3 }, 多页: { count: 20 }, 不折叠: { ellipsis: false }, 大: { size: 46 } },
   explain: '分页器：当前页高亮块滑动到目标页；页数多时中间折叠成 …，始终显示首尾页。', formula: '显示 = 1, 当前±1, 末页', formula2: '高亮 x = lerp(旧, 新, ease)',
   draw(ctx, W, H, t, C, P, k) {
-    const n = clamp(k.n, 3, 20), s = k.s, cur = Math.floor(t * 0.5) % n + 1; let items = [];
+    const n = clamp(k.n, 3, 20), s = k.s, cur = (k.demo ? Math.floor(t * 0.5) % n : 0) + 1; let items = [];
     if (!on(C.ellipsis) || n <= 7) for (let i = 1; i <= n; i++) items.push(i);
     else { items = [1]; if (cur > 3) items.push('…'); for (let i = Math.max(2, cur - 1); i <= Math.min(n - 1, cur + 1); i++) items.push(i); if (cur < n - 2) items.push('…'); items.push(n); }
     items = ['‹', ...items, '›']; const gap = 6, maxW = W - 30, sz = Math.min(s, (maxW - gap * items.length) / items.length), tw = items.length * (sz + gap), x0 = (W - tw) / 2, cy = H * 0.45; let cell = null;

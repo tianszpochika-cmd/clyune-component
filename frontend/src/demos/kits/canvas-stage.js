@@ -139,6 +139,9 @@ export function createCanvasStage(host, opts = {}, { doc, spec = {}, bg = '#060a
       const k = P.user ? 1 - Math.exp(-dtw * 3) : 1;
       P.x += (ax - P.x) * k; P.y += (ay - P.y) * k;
       if (P.user && Math.hypot(ax - P.x, ay - P.y) < 2) P.user = false;
+    } else if (!P.user && !P.down && P.x === 0 && P.y === 0 && W && H) {
+      // park at stage center when auto-demo is off so demos don't treat (0,0) as a hover
+      P.x = W * 0.5; P.y = H * 0.5; P.px = P.x; P.py = P.y;
     }
     P.x = clamp(P.x, 0, W); P.y = clamp(P.y, 0, H);
     if (dtw > 0) { P.vx = (P.x - P.px) / dtw; P.vy = (P.y - P.py) / dtw; }

@@ -647,8 +647,8 @@ FAM['ripple'] = {
   build(S) { return ({ ctx, W, H, t, C, P }) => { S.clear(); chip(ctx, W, H, C);
 
       const n = clamp(Math.round(num(C.count, 3)), 1, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), square = on(C.square);
-      const cx = P.user ? P.x : W * (0.5 + 0.25 * Math.cos(t * 0.4));
-      const cy = P.user ? P.y : H * (0.5 + 0.2 * Math.sin(t * 0.55));
+      const cx = P.user ? P.x : (S.isAutoDemo() ? W * (0.5 + 0.25 * Math.cos(t * 0.4)) : W * 0.5);
+      const cy = P.user ? P.y : (S.isAutoDemo() ? H * (0.5 + 0.2 * Math.sin(t * 0.55)) : H * 0.5);
       // button
       const bw = Math.min(W, H) * 0.35 * sz, bh = bw * 0.45;
       ctx.fillStyle = C.color || '#818cf8'; rrect(ctx, W / 2 - bw / 2, H / 2 - bh / 2, bw, bh, 12); ctx.fill();
@@ -1065,8 +1065,8 @@ FAM['cursor-fx'] = {
 
       const style = clamp(Math.round(num(C.count, 0)), 0, 5), sz = num(C.size, 1), spd = num(C.speed, 0.9), trail = on(C.trail);
       const names = ['环','点','拖尾','混合','大','小'];
-      const cx = P.user ? P.x : W * (0.5 + 0.35 * Math.cos(t * spd * 0.7));
-      const cy = P.user ? P.y : H * (0.5 + 0.28 * Math.sin(t * spd * 0.9));
+      const cx = P.user ? P.x : (S.isAutoDemo() ? W * (0.5 + 0.35 * Math.cos(t * spd * 0.7)) : W * 0.5);
+      const cy = P.user ? P.y : (S.isAutoDemo() ? H * (0.5 + 0.28 * Math.sin(t * spd * 0.9)) : H * 0.5);
       // decorative cards
       for (let i = 0; i < 3; i++) { ctx.fillStyle = pastel(C, i, 3, 0.35); rrect(ctx, 40 + i * (W / 4), 60 + (i % 2) * 40, W * 0.2, H * 0.35, 14); ctx.fill(); }
       const R = 18 * sz * (style === 4 ? 1.5 : style === 5 ? 0.6 : 1);
@@ -1182,8 +1182,8 @@ FAM['spotlight'] = {
         ctx.fillStyle = pastel(C, i, 6, 0.85); rrect(ctx, x, y, W / 3.6, H / 3.2, 14); ctx.fill();
         text(ctx, `Card ${i + 1}`, x + 16, y + 28, { size: fsz(W, H), col: '#0b1020', bold: true });
       }
-      const sx = P.user ? P.x : W * (0.5 + 0.3 * Math.cos(t * spd * 0.6));
-      const sy = P.user ? P.y : H * (0.5 + 0.25 * Math.sin(t * spd * 0.8));
+      const sx = P.user ? P.x : (S.isAutoDemo() ? W * (0.5 + 0.3 * Math.cos(t * spd * 0.6)) : W * 0.5);
+      const sy = P.user ? P.y : (S.isAutoDemo() ? H * (0.5 + 0.25 * Math.sin(t * spd * 0.8)) : H * 0.5);
       const R = Math.min(W, H) * 0.28 * sz;
       const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R);
       const col = style === 5 ? '255,255,255' : (style === 4 ? `${Math.round(hsla(hueOf(C.color)+t*40,80,60).length && 129)},140,248` : null);

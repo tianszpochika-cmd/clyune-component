@@ -157,7 +157,8 @@ function mFam(d) {
         ctx.fillStyle = '#060a14'; ctx.fillRect(0, 8, W, H);
         const col = C.color || '#818cf8', tt = t * num(C.speed, 0.9); st.now = tt;
         const user = st.tc != null && tt - st.tc < per && tt >= st.tc, u = user ? (tt - st.tc) / per : fract(tt / per);
-        const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), x: exVal(C), col, hue: hueOf(col), cx: W / 2, cy: (H + 8) / 2, u, user, tt, per, cyc: Math.floor(tt / per) };
+        const demo = !user && S.isAutoDemo();
+        const k = { n: Math.round(num(C.count, d.count.value)), s: num(C.size, d.size.value), x: exVal(C), col, hue: hueOf(col), cx: W / 2, cy: (H + 8) / 2, u, user, demo, tt, per, cyc: Math.floor(tt / per) };
         ctx.save(); ctx.beginPath(); ctx.rect(0, 8, W, H - 8); ctx.clip(); ctx.translate(0, Math.sin(tt * 1.7) * 2.5);
         const r = d.draw(ctx, W, H, tt, C, P, k, st) || {};
         ctx.restore();
@@ -206,7 +207,7 @@ FAM.like = mFam({ title: '点赞与反馈', count: NC('粒子数', 6, 40, 16), e
     heartP(ctx, cx, cy, s * sc); if (liked) { ctx.fillStyle = hsla(k.hue, 85, 58); ctx.fill(); } else { ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.stroke(); }
     const nx = cx + s * 1.4, roll = eo(win(u, 0.2, 0.45)), fs = clamp(s * 0.5, 14, 48);
     ctx.save(); ctx.beginPath(); ctx.rect(nx, cy - fs, W, fs * 2); ctx.clip(); text(ctx, String(base), nx, cy - roll * fs * 1.2, { size: fs, col: '#94a3b8', bold: true }); text(ctx, String(base + 1), nx, cy + (1 - roll) * fs * 1.2, { size: fs, col: hsla(k.hue, 85, 70), bold: true }); ctx.restore();
-    if (!k.user) cursorAt(ctx, cx + 6, cy + 6, u > 0.08 && u < 0.2 ? 1 : 0);
+    if (k.demo) cursorAt(ctx, cx + 6, cy + 6, u > 0.08 && u < 0.2 ? 1 : 0);
     const over = Math.hypot(P.x - cx, P.y - cy) < s;
     return { mode: `${liked ? '已赞' : '未赞'} · 爆发半径 ${Math.round(k.x)}px · 赞数 ${liked && roll > 0.5 ? base + 1 : base}`, cell: over ? `爱心按钮（${liked ? '已点亮' : '点击点赞'}）` : null };
   } });
@@ -276,7 +277,7 @@ FAM.send = mFam({ title: '发送纸飞机', count: NC('尾迹点数', 0, 30, 12)
     const plane = (x, y, a, sz) => { ctx.save(); ctx.translate(x, y); ctx.rotate(a); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(sz, 0); ctx.lineTo(-sz, -sz * 0.7); ctx.lineTo(-sz * 0.4, 0); ctx.lineTo(-sz, sz * 0.7); ctx.closePath(); ctx.fill(); ctx.restore(); };
     for (let i = 1; i <= k.n; i++) { const q = e - i * 0.025; if (q <= 0 || e >= 1) continue; const [x, y] = B(q); ctx.fillStyle = hsla(k.hue + i * 6, 80, 70, 0.8 * (1 - i / (k.n + 1))); ctx.beginPath(); ctx.arc(x, y, 3 * (1 - i / (k.n + 2)) + 1, 0, TAU); ctx.fill(); }
     if (e <= 0) plane(...p0, 0, bh * 0.2); else if (e < 1) { const [x, y] = B(e), [x2, y2] = B(Math.min(1, e + 0.01)); plane(x, y, Math.atan2(y2 - y, x2 - x), bh * 0.22 * (1 + e * 0.4)); } else if (u > 0.85) { ctx.globalAlpha = win(u, 0.85, 0.95); plane(...p0, 0, bh * 0.2); ctx.globalAlpha = 1; }
-    if (!k.user) cursorAt(ctx, W / 2 + 10, by + bh / 2 + 6, pr);
+    if (k.demo) cursorAt(ctx, W / 2 + 10, by + bh / 2 + 6, pr);
     const over = P.x > bx && P.x < bx + bw && P.y > by && P.y < by + bh;
     return { mode: `${sent ? '已发送' : e > 0 ? '飞行中' : '待发送'} · 弧度 ${fmt(k.x, 2)} · 尾迹 ${k.n} 点`, cell: over ? `发送按钮（${sent ? '已发送' : '可点击'}）` : null };
   } });
@@ -295,7 +296,7 @@ FAM.copy = mFam({ title: '复制成功', count: NC('代码行数', 1, 8, 3), ext
     const ib = 30, ix = bx + bw - ib - 10, iy = by + 8; ctx.fillStyle = done ? hsla(k.hue + 100, 60, 40) : '#1e293b'; rrect(ctx, ix, iy, ib, ib, 7); ctx.fill();
     if (done) checkMark(ctx, ix + ib / 2, iy + ib / 2, 12, eo(win(ts, clk, clk + 0.3)), '#fff', 2.5); else { ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.6; ctx.strokeRect(ix + 8, iy + 10, 10, 12); ctx.strokeRect(ix + 12, iy + 6, 10, 12); }
     const ta = smooth(win(ts, clk, clk + 0.25)) * (1 - smooth(win(ts, clk + 0.25 + k.x, clk + 0.55 + k.x))); if (ta > 0) { const tw = 170, tx = W / 2 - tw / 2, ty = by + bh + 16 + (1 - ta) * 14; ctx.globalAlpha = ta; ctx.fillStyle = 'rgba(15,23,42,.95)'; rrect(ctx, tx, ty, tw, 36, 18); ctx.fill(); ctx.strokeStyle = hsla(k.hue, 80, 65); ctx.stroke(); text(ctx, '✓ 已复制到剪贴板', W / 2, ty + 18, { size: 13, col: '#f8fafc', align: 'center', bold: true }); ctx.globalAlpha = 1; }
-    if (!k.user) cursorAt(ctx, ix + ib / 2, iy + ib / 2, ts > clk - 0.1 && ts < clk + 0.1 ? 1 : 0);
+    if (k.demo) cursorAt(ctx, ix + ib / 2, iy + ib / 2, ts > clk - 0.1 && ts < clk + 0.1 ? 1 : 0);
     const cell = P.x > ix && P.x < ix + ib && P.y > iy && P.y < iy + ib ? '复制按钮' : P.x > bx && P.x < bx + bw && P.y > by && P.y < by + bh ? `代码第 ${clamp(Math.floor((P.y - by - 20) / lh) + 1, 1, k.n)} 行` : null;
     return { mode: `${done ? '已复制' : '待复制'} · 提示停留 ${fmt(k.x, 2)} 秒`, cell };
   } });
@@ -389,7 +390,7 @@ FAM.drag = mFam({ title: '拖动卡片', count: NC('卡片数', 1, 6, 3), extra:
       const s = c.r * (k.s / 65), w = s * 1.5, h = s * 1.1; let dx = 0, dy = 0, lift = 0, tilt = 0;
       if (st.grab === i && P.down) { dx = P.x - st.gx; dy = P.y - st.gy; lift = 1; tilt = clamp(P.vx * 0.0015, -0.3, 0.3); st.ldx = dx; st.ldy = dy; }
       else if (st.rel && st.rel.i === i && st.now - st.rel.t < 2.5) { const f = 1 - spr((st.now - st.rel.t) * (0.6 + k.x), k.x); dx = st.rel.dx * f; dy = st.rel.dy * f; lift = clamp(Math.abs(f), 0, 1); }
-      else if (!k.user || st.grab == null) { const ph = fract(k.u + i * 0.21), g = win(ph, 0.1, 0.45), r2 = ph > 0.45 ? 1 - spr((ph - 0.45) * k.per * (0.6 + k.x), k.x) : 1, a = i * 1.3 + 0.6, amp = c.r * 0.9 * smooth(g) * r2; dx = Math.cos(a) * amp; dy = Math.sin(a) * amp * 0.6; lift = ph > 0.1 && ph < 0.45 ? 1 : clamp(r2, 0, 1); tilt = ph > 0.1 && ph < 0.45 ? 0.12 * Math.cos(a) * (1 - g) : 0; if (i === 0 && !k.user) cursorAt(ctx, c.x + dx + 6, c.y + dy + 6, lift > 0.5 ? 1 : 0); }
+      else if (k.demo) { const ph = fract(k.u + i * 0.21), g = win(ph, 0.1, 0.45), r2 = ph > 0.45 ? 1 - spr((ph - 0.45) * k.per * (0.6 + k.x), k.x) : 1, a = i * 1.3 + 0.6, amp = c.r * 0.9 * smooth(g) * r2; dx = Math.cos(a) * amp; dy = Math.sin(a) * amp * 0.6; lift = ph > 0.1 && ph < 0.45 ? 1 : clamp(r2, 0, 1); tilt = ph > 0.1 && ph < 0.45 ? 0.12 * Math.cos(a) * (1 - g) : 0; if (i === 0 && k.demo) cursorAt(ctx, c.x + dx + 6, c.y + dy + 6, lift > 0.5 ? 1 : 0); }
       ctx.save(); ctx.translate(c.x + dx, c.y + dy); ctx.rotate(tilt); ctx.scale(1 + 0.06 * lift, 1 + 0.06 * lift); ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 8 + 24 * lift; ctx.shadowOffsetY = 4 + 10 * lift;
       ctx.fillStyle = hsla(k.hue + i * 40, 65, 50); rrect(ctx, -w / 2, -h / 2, w, h, 14); ctx.fill(); ctx.shadowColor = 'transparent'; text(ctx, `卡片 ${i + 1}`, -w / 2 + 14, -h / 2 + 20, { size: clamp(s * 0.22, 11, 18), col: '#fff', bold: true }); bars(ctx, -w / 2 + 14, -h / 2 + 40, w - 28, 2, 18, 'rgba(255,255,255,.35)', i); ctx.restore();
       if (Math.abs(P.x - c.x - dx) < w / 2 && Math.abs(P.y - c.y - dy) < h / 2) { st.hit = i; cell = `卡片 ${i + 1}：偏移 (${Math.round(dx)}, ${Math.round(dy)})`; }
@@ -407,12 +408,12 @@ FAM.longpress = mFam({ title: '长按确认', count: NC('按钮数', 1, 4, 2), e
     cells.forEach((c, i) => {
       const s = c.r * (k.s / 60) * 0.75; let held = 0, rel = 0;
       if (P.down && st.down != null && Math.hypot(st.dx - c.x, st.dy - c.y) < s) held = st.now - st.down;
-      else if (!k.user && i === act) { held = clamp(ts - 0.3, 0, hold); rel = ts > 0.3 + hold ? ts - 0.3 - hold : 0; }
+      else if (k.demo && i === act) { held = clamp(ts - 0.3, 0, hold); rel = ts > 0.3 + hold ? ts - 0.3 - hold : 0; }
       const p = Math.min(held / k.x, 1), ok = p >= 1, shown = rel > 0 && !ok ? p * (1 - eo(rel / 0.3)) : p; if (ok) okN++;
       ctx.fillStyle = ok ? hsla(k.hue + 110, 60, 40) : hsla(k.hue + i * 30, 70, 45 - 8 * (held > 0 && !rel ? 1 : 0)); ctx.beginPath(); ctx.arc(c.x, c.y, s * (1 - 0.06 * (held > 0 && !rel ? 1 : 0)), 0, TAU); ctx.fill();
       ctx.lineWidth = Math.max(3, s * 0.1); ctx.strokeStyle = 'rgba(148,163,184,.2)'; ctx.beginPath(); ctx.arc(c.x, c.y, s + 8, 0, TAU); ctx.stroke(); ctx.strokeStyle = ok ? hsla(k.hue + 110, 70, 60) : hsla(k.hue, 90, 62); ctx.lineCap = 'round'; ctx.beginPath(); ctx.arc(c.x, c.y, s + 8, -Math.PI / 2, -Math.PI / 2 + TAU * shown); ctx.stroke();
       if (ok) checkMark(ctx, c.x, c.y, s * 0.6, 1, '#fff', Math.max(3, s * 0.1)); else text(ctx, held > 0 && !rel ? `${fmt(held, 1)}s` : rel > 0 ? '松手太早' : '长按删除', c.x, c.y, { size: clamp(s * 0.28, 11, 22), col: '#fff', align: 'center', bold: true });
-      if (!k.user && i === act) cursorAt(ctx, c.x + 4, c.y + 4, held > 0 && !rel ? 1 : 0);
+      if (k.demo && i === act) cursorAt(ctx, c.x + 4, c.y + 4, held > 0 && !rel ? 1 : 0);
       if (Math.hypot(P.x - c.x, P.y - c.y) < s + 10) cell = `按钮 ${i + 1}：进度 ${Math.round(shown * 100)}%`;
     });
     return { mode: `阈值 ${fmt(k.x, 2)} 秒 · ${okN ? '已确认' : '未确认'}`, cell };
@@ -452,7 +453,7 @@ FAM['slide-verify'] = mFam({ title: '滑动验证', count: NC('拼图凸起', 1,
     const ty = iy + ih + 24, th = 40, sw = th; ctx.fillStyle = '#1e293b'; rrect(ctx, ix, ty, iw, th, th / 2); ctx.fill(); ctx.fillStyle = hsla(k.hue, 70, 45, 0.5); rrect(ctx, ix, ty, Math.max(th, px - ix + sw), th, th / 2); ctx.fill();
     text(ctx, done ? (pass ? `✓ 验证通过（误差 ${fmt(Math.abs(err), 1)}px）` : `✗ 验证失败（误差 ${fmt(Math.abs(err), 1)}px）`) : '向右拖动滑块完成拼图', ix + iw / 2, ty + th / 2, { size: 13, col: '#cbd5e1', align: 'center' });
     const kx = clamp(px - 8 + shk, ix, ix + iw - sw); ctx.fillStyle = '#fff'; rrect(ctx, kx, ty, sw, th, th / 2); ctx.fill(); text(ctx, '→', kx + sw / 2, ty + th / 2, { size: 16, col: '#0f172a', align: 'center', bold: true });
-    if (!k.user) cursorAt(ctx, kx + sw / 2, ty + th / 2, ts > 0.2 && ts < 1.6 ? 1 : 0);
+    if (k.demo) cursorAt(ctx, kx + sw / 2, ty + th / 2, ts > 0.2 && ts < 1.6 ? 1 : 0);
     return { mode: `容差 ${fmt(k.x, 1)}px · 本次误差 ${fmt(Math.abs(err), 1)}px · ${done ? (pass ? '通过' : '失败') : '拖动中'}`, cell: P.y > ty && P.y < ty + th ? '滑块轨道' : P.y > iy && P.y < iy + ih ? `图片：缺口在 x = ${Math.round(gx - ix)}px` : null };
   } });
 
@@ -471,7 +472,7 @@ FAM.dblzoom = mFam({ title: '双击放大', count: NC('图片数', 1, 6, 2), ext
       ctx.fillStyle = hsla(k.hue + i * 50 + 40, 90, 75); ctx.beginPath(); ctx.arc(x0 + w * 0.72, y0 + h * 0.28, h * 0.1, 0, TAU); ctx.fill(); ctx.fillStyle = hsla(k.hue + i * 50 + 120, 40, 14); ctx.beginPath(); ctx.moveTo(x0, y0 + h); ctx.lineTo(x0 + w * 0.3, y0 + h * 0.45); ctx.lineTo(x0 + w * 0.55, y0 + h * 0.75); ctx.lineTo(x0 + w * 0.75, y0 + h * 0.5); ctx.lineTo(x0 + w, y0 + h); ctx.fill();
       for (let q = 0; q < 6; q++) { ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(x0 + w * (0.1 + q * 0.15), y0 + h * 0.85, w * 0.05, h * 0.06); }
       ctx.restore(); ctx.strokeStyle = 'rgba(148,163,184,.3)'; ctx.lineWidth = 1; rrect(ctx, x0, y0, w, h, 10); ctx.stroke();
-      if (i === act) { const tap = (a) => win(ts, a, a + 0.15) > 0 && win(ts, a, a + 0.15) < 1; if (!k.user) cursorAt(ctx, fx, fy, tap(0.3) || tap(0.5) ? 1 : 0); text(ctx, `${fmt(z, 2)}×`, x0 + 10, y0 + 16, { size: 12, col: '#fff', bold: true }); }
+      if (i === act) { const tap = (a) => win(ts, a, a + 0.15) > 0 && win(ts, a, a + 0.15) < 1; if (k.demo) cursorAt(ctx, fx, fy, tap(0.3) || tap(0.5) ? 1 : 0); text(ctx, `${fmt(z, 2)}×`, x0 + 10, y0 + 16, { size: 12, col: '#fff', bold: true }); }
       if (P.x > x0 && P.x < x0 + w && P.y > y0 && P.y < y0 + h) cell = `图片 ${i + 1}：缩放 ${fmt(i === act ? z : 1, 2)}×`;
     });
     return { mode: `放大倍数 ${fmt(k.x, 2)} · 当前 ${fmt(curZ, 2)}×`, cell };
@@ -484,15 +485,16 @@ FAM['hover-mag'] = mFam({ title: '悬停磁吸', count: NC('按钮数', 1, 6, 3)
   formula: '偏移 = (指针 − 中心) · 强度 · (1 − 距离 / 感应半径)', formula2: '文字偏移 = 按钮偏移 · 1.5',
   draw(ctx, W, H, t, C, P, k, st) {
     const cells = grid(k.n, W, H - 6); st.off = st.off || []; let cell = null, maxD = 0;
+    const live = P.user || k.demo; const px = live ? P.x : -1e9, py = live ? P.y : -1e9;
     cells.forEach((c, i) => {
-      const s = c.r * (k.s / 60), w = s * 1.7, h = s * 0.7, R2 = s * 1.8, dx = P.x - c.x, dy = P.y - c.y, d = Math.hypot(dx, dy), f = d < R2 ? k.x * (1 - d / R2) : 0, o = st.off[i] || (st.off[i] = { x: 0, y: 0 });
+      const s = c.r * (k.s / 60), w = s * 1.7, h = s * 0.7, R2 = s * 1.8, dx = px - c.x, dy = py - c.y, d = Math.hypot(dx, dy), f = d < R2 ? k.x * (1 - d / R2) : 0, o = st.off[i] || (st.off[i] = { x: 0, y: 0 });
       o.x += (dx * f * 0.6 - o.x) * 0.2; o.y += (dy * f * 0.6 - o.y) * 0.2; const m = Math.hypot(o.x, o.y); maxD = Math.max(maxD, m);
       ctx.strokeStyle = 'rgba(148,163,184,.12)'; ctx.setLineDash([4, 6]); ctx.beginPath(); ctx.arc(c.x, c.y, R2, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
       ctx.save(); ctx.translate(c.x + o.x, c.y + o.y); ctx.shadowColor = hsla(k.hue + i * 30, 90, 60); ctx.shadowBlur = 10 + m; ctx.fillStyle = hsla(k.hue + i * 30, 75, 45 + Math.min(15, m)); rrect(ctx, -w / 2, -h / 2, w, h, h / 2); ctx.fill(); ctx.shadowColor = 'transparent';
       text(ctx, '悬停我', o.x * 0.5, o.y * 0.5, { size: clamp(h * 0.36, 11, 24), col: '#fff', align: 'center', bold: true }); ctx.restore();
       if (d < R2) cell = `按钮 ${i + 1}：偏移 ${fmt(m, 1)}px`;
     });
-    cursorAt(ctx, P.x, P.y, 0);
+    if (live) cursorAt(ctx, P.x, P.y, 0);
     return { mode: `磁吸强度 ${fmt(k.x, 2)} · 最大偏移 ${fmt(maxD, 1)}px`, cell };
   } });
 
@@ -508,7 +510,7 @@ FAM['press-ripple'] = mFam({ title: '按压波纹', count: NC('涟漪数', 1, 6,
     ctx.save(); ctx.translate(0, press * 2); ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 16 - press * 8; ctx.shadowOffsetY = 6 - press * 4; rrect(ctx, bx, by, bw, bh, 14); ctx.fillStyle = hsla(k.hue, 70, 52); ctx.fill(); ctx.shadowColor = 'transparent'; ctx.clip();
     taps.forEach((p) => { for (const off of [0, 1]) { const e = (k.u + off - p.a) / 0.5; if (e <= 0 || e >= 1) continue; live++; ctx.fillStyle = `rgba(255,255,255,${0.4 * (1 - e)})`; ctx.beginPath(); ctx.arc(p.x, p.y, k.x * bw * eo(e), 0, TAU); ctx.fill(); } });
     ctx.restore(); text(ctx, '按下我', W / 2, by + bh / 2 + press * 2, { size: clamp(bh * 0.3, 12, 32), col: '#fff', align: 'center', bold: true });
-    if (!k.user) { const p = taps.reduce((b, q) => (k.u >= q.a ? q : b), taps[taps.length - 1]); cursorAt(ctx, p.x, p.y, press); }
+    if (k.demo) { const p = taps.reduce((b, q) => (k.u >= q.a ? q : b), taps[taps.length - 1]); cursorAt(ctx, p.x, p.y, press); }
     return { mode: `扩散半径 ${fmt(k.x, 2)} 倍 · 正在扩散 ${live} 个涟漪`, cell: P.x > bx && P.x < bx + bw && P.y > by && P.y < by + bh ? `按钮内 (${Math.round(P.x - bx)}, ${Math.round(P.y - by)})` : null };
   } });
 
