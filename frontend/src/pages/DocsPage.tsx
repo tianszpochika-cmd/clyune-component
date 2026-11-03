@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { routes, type Category, type DemoMeta } from '../registry';
 import { tr, useLang, translateTree } from '../lib/i18n';
-import { thumbStyle } from '../lib/ux';
+import { Cover, thumbStyle } from '../lib/ux';
 
 type L2 = { zh: string; en: string };
 type Code = { title: string; file: string; url: string; a: number; b: number; html: string[]; raw: string };
@@ -137,6 +137,7 @@ export default function DocsPage() {
     <div className="docs-wrap">
       <header className="card dc-hero">
         <Link className="dc-thumb" to={demoPath + lq} style={thumbStyle(cat.key, demo.slug, Math.max(0, idx))} aria-label={tr('打开演示', 'Open the demo')}>
+          <Cover cat={cat.key} slug={demo.slug} tag={demo.tag} />
           <span className="dc-thumb-play" aria-hidden>▶</span>
           <span className="dc-thumb-num">{String(idx + 1).padStart(2, '0')}</span>
         </Link>

@@ -2,21 +2,10 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useLocation, type Location } from 'react-router-dom';
 
-const HUE: Record<string, number> = {
-  threejs: 265, charts: 200, ui: 230, 'css-fx': 320, canvas: 28, svg: 160, gsap: 95, webgl: 290,
-  physics: 12, audio: 340, dataviz: 185, micro: 350, layout: 210, filters: 275, 'particles-fx': 45,
-  generative: 140, 'text-fx': 55, 'scroll-fx': 175, math: 245, convert: 20,
-};
-export const catHue = (key: string) => HUE[key] ?? 240;
-export function catStyle(key: string): CSSProperties {
-  const h = catHue(key);
-  return { ['--cat' as string]: `hsl(${h} 85% 66%)`, ['--cat-2' as string]: `hsl(${(h + 40) % 360} 80% 60%)`, ['--cat-h' as string]: String(h) } as CSSProperties;
-}
-/** Deterministic preview gradient per demo (category hue +/- a slug hash). */
-export function thumbStyle(key: string, slug: string, i: number): CSSProperties {
-  let x = 0; for (let k = 0; k < slug.length; k++) x = (x * 31 + slug.charCodeAt(k)) | 0;
-  const h = catHue(key), a = (h + ((x & 63) - 32)) % 360, b = (h + 50 + ((x >> 6) & 63)) % 360, ang = (x >>> 12) % 360;
-  return { background: `radial-gradient(circle at ${20 + ((x >>> 3) % 60)}% ${25 + ((x >>> 9) % 50)}%, hsl(${b} 90% 70% / .55), transparent 55%), linear-gradient(${ang}deg, hsl(${a} 70% 34%), hsl(${b} 75% 22%))`, ['--i' as string]: String(Math.min(i, 14)) } as CSSProperties;
+export { catHue, catStyle, catPal, Cover } from './covers';
+/** Stagger index for card entrance (covers are now vector, see ./covers). */
+export function thumbStyle(_key: string, _slug: string, i: number): CSSProperties {
+  return { ['--i' as string]: String(Math.min(i, 14)) } as CSSProperties;
 }
 
 export const reducedMotion = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;

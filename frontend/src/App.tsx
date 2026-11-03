@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useLayoutEffect, useMemo, useRef, useState, 
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { categories, routes, totalDemos, type Category, type DemoMeta } from './registry';
 import { DemoHost } from './components/DemoHost';
-import { CountUp, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
+import { CountUp, Cover, RouteView, catStyle, thumbStyle, useCatalog, useRipple } from './lib/ux';
 import { isAutoDemo, setAutoDemo, onAutoDemoChange } from './lib/autoDemo';
 import { setLang, syncUrlLang, tr, tx, useLang } from './lib/i18n';
 import { useSeo, type SeoPage } from './lib/seo';
@@ -400,6 +400,7 @@ function Home({ health }: { health: Health | null }) {
               <span className="tile-icon">{c.icon}</span>
               <h3>{cName(c)}</h3>
             </div>
+            <span className="tile-cover" aria-hidden><Cover cat={c.key} slug={c.key} bare /></span>
             <p>{cIntro(c)}</p>
             <span className="tag">{c.demos.length} demos</span>
           </Link>
@@ -493,6 +494,7 @@ function CategoryPage() {
             return (
               <Link key={d.slug} className="card demo-row ripple press" to={`/${c.key}/${d.slug}`} style={{ ['--i' as string]: Math.min(i, 14) }}>
                 <span className="demo-thumb" style={thumbStyle(c.key, d.slug, i)} aria-hidden>
+                  <Cover cat={c.key} slug={d.slug} tag={d.tag} />
                   <span className="demo-num">{String(idx).padStart(2, '0')}</span>
                 </span>
                 <span className="demo-body">
